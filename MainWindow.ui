@@ -1,0 +1,1062 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1029</width>
+    <height>794</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Adcirc Subdomain Modeling Tool</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <layout class="QHBoxLayout" name="topLayout">
+      <item>
+       <layout class="QVBoxLayout" name="treeLayout">
+        <item>
+         <layout class="QHBoxLayout" name="treeButtonsLayout">
+          <item>
+           <widget class="QToolButton" name="newProjectButton">
+            <property name="toolTip">
+             <string>Create New Project</string>
+            </property>
+            <property name="statusTip">
+             <string>Create New Project</string>
+            </property>
+            <property name="whatsThis">
+             <string>Create New Project</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset theme="folder-new">
+              <normaloff/>
+             </iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="openProjectButton">
+            <property name="toolTip">
+             <string>Open Project</string>
+            </property>
+            <property name="statusTip">
+             <string>Open Project</string>
+            </property>
+            <property name="whatsThis">
+             <string>Open Project</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset theme="folder-open">
+              <normaloff/>
+             </iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="addFileToProjectButton">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="toolTip">
+             <string>Add File To Project</string>
+            </property>
+            <property name="statusTip">
+             <string>Add File To Project</string>
+            </property>
+            <property name="whatsThis">
+             <string>Add File To Project</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset theme="list-add">
+              <normaloff/>
+             </iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="projectOptionsButton">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="toolTip">
+             <string>Project Preferences</string>
+            </property>
+            <property name="statusTip">
+             <string>Project Preferences</string>
+            </property>
+            <property name="whatsThis">
+             <string>Project Preferences</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset theme="preferences-system">
+              <normaloff/>
+             </iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="saveProjectButton">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="toolTip">
+             <string>Save Project</string>
+            </property>
+            <property name="statusTip">
+             <string>Save Project</string>
+            </property>
+            <property name="whatsThis">
+             <string>Save Project</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset theme="document-save">
+              <normaloff/>
+             </iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Minimum</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QToolButton" name="openFileButton">
+            <property name="toolTip">
+             <string>Open File</string>
+            </property>
+            <property name="statusTip">
+             <string>Open File</string>
+            </property>
+            <property name="whatsThis">
+             <string>Open File</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset theme="document-open">
+              <normaloff/>
+             </iconset>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTreeWidget" name="projectTree">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="cursor" stdset="0">
+           <cursorShape>ArrowCursor</cursorShape>
+          </property>
+          <property name="columnCount">
+           <number>1</number>
+          </property>
+          <column>
+           <property name="text">
+            <string notr="true">Project Explorer</string>
+           </property>
+          </column>
+          <item>
+           <property name="text">
+            <string>Example Project</string>
+           </property>
+           <item>
+            <property name="text">
+             <string>Full Domain</string>
+            </property>
+            <item>
+             <property name="text">
+              <string>fort.14</string>
+             </property>
+             <property name="icon">
+              <iconset theme="text-x-generic">
+               <normaloff/>
+              </iconset>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>fort.63</string>
+             </property>
+             <property name="icon">
+              <iconset theme="text-x-generic">
+               <normaloff/>
+              </iconset>
+             </property>
+            </item>
+           </item>
+           <item>
+            <property name="text">
+             <string>Sub Domains</string>
+            </property>
+            <item>
+             <property name="text">
+              <string>Example 1</string>
+             </property>
+             <property name="icon">
+              <iconset theme="package">
+               <normaloff/>
+              </iconset>
+             </property>
+             <item>
+              <property name="text">
+               <string>fort.14</string>
+              </property>
+              <property name="icon">
+               <iconset theme="text-x-generic">
+                <normaloff/>
+               </iconset>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>fort.63</string>
+              </property>
+              <property name="icon">
+               <iconset theme="text-x-generic">
+                <normaloff/>
+               </iconset>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>py.140</string>
+              </property>
+              <property name="icon">
+               <iconset theme="text-x-generic">
+                <normaloff/>
+               </iconset>
+              </property>
+             </item>
+            </item>
+            <item>
+             <property name="text">
+              <string>Example 2</string>
+             </property>
+             <property name="icon">
+              <iconset theme="package">
+               <normaloff/>
+              </iconset>
+             </property>
+             <item>
+              <property name="text">
+               <string>fort.14</string>
+              </property>
+              <property name="icon">
+               <iconset theme="text-x-generic">
+                <normaloff/>
+               </iconset>
+              </property>
+             </item>
+            </item>
+            <item>
+             <property name="text">
+              <string>Example 3</string>
+             </property>
+             <property name="icon">
+              <iconset theme="package">
+               <normaloff/>
+              </iconset>
+             </property>
+             <item>
+              <property name="text">
+               <string>fort.14</string>
+              </property>
+              <property name="icon">
+               <iconset theme="text-x-generic">
+                <normaloff/>
+               </iconset>
+              </property>
+             </item>
+            </item>
+           </item>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="GLLayout">
+        <item>
+         <widget class="OpenGLPanel" name="GLPanel" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="GLPanelStatusLayout">
+          <item>
+           <widget class="QProgressBar" name="progressBar">
+            <property name="maximumSize">
+             <size>
+              <width>150</width>
+              <height>15</height>
+             </size>
+            </property>
+            <property name="autoFillBackground">
+             <bool>false</bool>
+            </property>
+            <property name="value">
+             <number>0</number>
+            </property>
+            <property name="textVisible">
+             <bool>false</bool>
+            </property>
+            <property name="invertedAppearance">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="minimizeMainTabButton">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset theme="zoom-out">
+              <normaloff/>
+             </iconset>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QTabWidget" name="mainTabWidget">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string/>
+      </property>
+      <property name="statusTip">
+       <string/>
+      </property>
+      <property name="tabPosition">
+       <enum>QTabWidget::South</enum>
+      </property>
+      <property name="tabShape">
+       <enum>QTabWidget::Rounded</enum>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <property name="tabsClosable">
+       <bool>false</bool>
+      </property>
+      <widget class="QWidget" name="displayTab">
+       <attribute name="title">
+        <string>Display Options</string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item>
+         <layout class="QVBoxLayout" name="visibleDomainLayout">
+          <item>
+           <widget class="QLabel" name="visibleDomainLabel">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Visible Domain</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QListWidget" name="visibleDomainList">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <item>
+             <property name="text">
+              <string>Full Domain</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Example 1</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Example 2</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Example 3</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="visibleLayersLayout">
+          <item>
+           <widget class="QLabel" name="visibleLayersLabel">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Visible Layers</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QListWidget" name="visibleLayersList">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="selectionMode">
+             <enum>QAbstractItemView::SingleSelection</enum>
+            </property>
+            <item>
+             <property name="text">
+              <string>Terrain - fort.14</string>
+             </property>
+             <property name="checkState">
+              <enum>Checked</enum>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Water - fort.63</string>
+             </property>
+             <property name="checkState">
+              <enum>Unchecked</enum>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Water - fort.63</string>
+             </property>
+             <property name="checkState">
+              <enum>Unchecked</enum>
+             </property>
+            </item>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTabWidget" name="colorTabs">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="tabPosition">
+           <enum>QTabWidget::West</enum>
+          </property>
+          <property name="tabShape">
+           <enum>QTabWidget::Rounded</enum>
+          </property>
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <property name="tabsClosable">
+           <bool>false</bool>
+          </property>
+          <widget class="QWidget" name="fillTab">
+           <attribute name="title">
+            <string>Fill</string>
+           </attribute>
+           <layout class="QHBoxLayout" name="horizontalLayout_8">
+            <item>
+             <layout class="QVBoxLayout" name="fillSolidLayout">
+              <item>
+               <widget class="QRadioButton" name="fillSolidRadioButton">
+                <property name="text">
+                 <string>Solid Color</string>
+                </property>
+                <attribute name="buttonGroup">
+                 <string notr="true">fillColorButtonGroup</string>
+                </attribute>
+               </widget>
+              </item>
+              <item>
+               <widget class="QToolButton" name="fillSolidColorButton">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">background-color: rgb(23, 255, 127);</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="toolButtonStyle">
+                 <enum>Qt::ToolButtonFollowStyle</enum>
+                </property>
+                <property name="autoRaise">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="Line" name="fillVerticalLine">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="fillGradientLayout">
+              <property name="sizeConstraint">
+               <enum>QLayout::SetDefaultConstraint</enum>
+              </property>
+              <item>
+               <widget class="QRadioButton" name="fillGradientRadioButton">
+                <property name="text">
+                 <string>Color Gradient</string>
+                </property>
+                <attribute name="buttonGroup">
+                 <string notr="true">fillColorButtonGroup</string>
+                </attribute>
+               </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="fillHighGradientLayout">
+                <item>
+                 <widget class="QToolButton" name="fillTopGradientButton">
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(23, 255, 127)</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="autoRaise">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="Line" name="line_4">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QToolButton" name="fillUseMaxButton">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="statusTip">
+                   <string>Use maximum value</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset theme="go-up">
+                    <normaloff/>
+                   </iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="fillHighValue">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="fillHighLabel">
+                  <property name="text">
+                   <string>High Value</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="fillLowGradientLayout">
+                <item>
+                 <widget class="QToolButton" name="fillBottomGradientButton">
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(7, 99, 21)</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="autoRaise">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="Line" name="line_5">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QToolButton" name="fillUseMinButton">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="statusTip">
+                   <string>Use minimum value</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset theme="go-down">
+                    <normaloff/>
+                   </iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="fillLowValue">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="fillLowLabel">
+                  <property name="text">
+                   <string>Low Value</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <widget class="QFrame" name="fillGradientDisplay">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>24</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(7, 99, 21, 255), stop:1 rgba(23, 255, 127, 255))</string>
+                </property>
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="outlineTab">
+           <attribute name="title">
+            <string>Outline</string>
+           </attribute>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="toolsTab">
+       <attribute name="title">
+        <string>Subdomain Tools</string>
+       </attribute>
+      </widget>
+      <widget class="QWidget" name="plotTab">
+       <attribute name="title">
+        <string>Plotting</string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <layout class="QHBoxLayout" name="plottingLayout">
+          <item>
+           <widget class="QListWidget" name="plottingList">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="alternatingRowColors">
+             <bool>false</bool>
+            </property>
+            <item>
+             <property name="text">
+              <string>Node Time-History</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Custom...</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item>
+           <widget class="QStackedWidget" name="plottingStack">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="currentIndex">
+             <number>0</number>
+            </property>
+            <widget class="QWidget" name="defaultPage">
+             <layout class="QHBoxLayout" name="horizontalLayout_7">
+              <item>
+               <spacer name="defaultPageLeftSpacer">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QLabel" name="defaultPageLabel">
+                <property name="text">
+                 <string>Choose A Plotting Tool</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="defaultPageRightSpacer">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="nodeTimeHistoryPage">
+             <layout class="QHBoxLayout" name="horizontalLayout_3">
+              <item>
+               <layout class="QVBoxLayout" name="nth_column1Layout">
+                <item>
+                 <layout class="QHBoxLayout" name="nth_nodeNumberLayout">
+                  <item>
+                   <widget class="QToolButton" name="nth_pickNodeButton">
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset theme="input-mouse">
+                      <normaloff/>
+                     </iconset>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLineEdit" name="nth_nodeNumber">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="nth_nodeNumberLabel">
+                    <property name="text">
+                     <string>Node Number</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <widget class="Line" name="nth_column1Line">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="nodeTimeHistory_Advanced">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="text">
+                   <string>Advanced...</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="nth_column1Spacer">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <widget class="Line" name="nth_line1">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QListWidget" name="nth_filesList">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Ignored">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="alternatingRowColors">
+                 <bool>false</bool>
+                </property>
+                <property name="selectionMode">
+                 <enum>QAbstractItemView::SingleSelection</enum>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Full Domain - fort.63</string>
+                 </property>
+                 <property name="checkState">
+                  <enum>Unchecked</enum>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Example 1 - fort.63</string>
+                 </property>
+                 <property name="checkState">
+                  <enum>Unchecked</enum>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Example 1 - fort.64</string>
+                 </property>
+                 <property name="checkState">
+                  <enum>Unchecked</enum>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item>
+               <widget class="Line" name="nth_line2">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="nth_column3Layout">
+                <item>
+                 <widget class="QRadioButton" name="nth_singlePlotRadio">
+                  <property name="text">
+                   <string>Single Plot</string>
+                  </property>
+                  <attribute name="buttonGroup">
+                   <string notr="true">nth_PlotTypeButtonGroup</string>
+                  </attribute>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QRadioButton" name="nth_separatePlotRadio">
+                  <property name="text">
+                   <string>Separate Plots</string>
+                  </property>
+                  <attribute name="buttonGroup">
+                   <string notr="true">nth_PlotTypeButtonGroup</string>
+                  </attribute>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="nth_plotTypeSpacer">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="nth_createPlotButton">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="text">
+                   <string>Create Plot</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1029</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menuADCIRC">
+    <property name="title">
+     <string>ADCIRC</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuADCIRC"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>OpenGLPanel</class>
+   <extends>QWidget</extends>
+   <header>OpenGL/OpenGLPanel.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+ <buttongroups>
+  <buttongroup name="nth_PlotTypeButtonGroup"/>
+  <buttongroup name="fillColorButtonGroup"/>
+ </buttongroups>
+</ui>
