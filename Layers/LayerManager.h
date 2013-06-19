@@ -15,8 +15,53 @@
 #include "OpenGL/Shaders/SolidShader.h"
 
 /**
- * @brief This class is used to keep track of all Layers and Shaders and to manage
- * all threading and allocated memory that the Layers and Shaders use.
+ * @brief This class is meant to provide a layer of abstraction between the UI and the numerous
+ * objects that need to be created and organized in order to properly draw ADCIRC data in an
+ * OpenGL context.
+ *
+ * The LayerManager class is meant to provide a layer of abstraction between the UI and the numerous
+ * objects that need to be created and organized in order to properly draw ADCIRC data in an
+ * OpenGL context.
+ *
+ * <H2>Layer/Shader Organization</H2>
+ *
+ * It provides a number of abstractions, the most important being the REFERENCE TABLE, which can be though of
+ * as a simple table where the columns represent the different ADCIRC layers that need to be drawn and the rows
+ * represent all of the different types ofshading programs that are used to draw the data. Here is and example that
+ * shows the basic structure of the table:
+ *
+ * <TABLE>
+ * <TR style="background-color: #B8B8B8">
+ * <TD><STRONG>Visible Layers</STRONG></TD>		<TD>*Layer1</TD>	<TD></TD>	<TD></TD>		<TD>*Layer4</TD>
+ * </TR>
+ * <TR style="background-color: #B8B8B8">
+ * <TD><STRONG>Hidden Layers</STRONG></TD>		<TD></TD>		<TD>*Layer2</TD><TD>*Layer3</TD>	<TD> </TD>
+ * </TR>
+ * <TR>
+ * <TD><STRONG>Solid Outline Shader</STRONG></TD>	<TD>*shdr1</TD>		<TD>*shdr2</TD>	<TD>*shdr3</TD>		<TD>*shdr4</TD>
+ * </TR>
+ * <TR>
+ * <TD><STRONG>Solid Fill Shader</STRONG></TD>		<TD>*shdr5</TD>		<TD>*shdr6</TD>	<TD>*shdr7</TD>		<TD>*shdr8</TD>
+ * </TR>
+ * <TR>
+ * <TD><STRONG>Gradient Fill Shader</STRONG></TD>	<TD></TD>		<TD></TD>	<TD>*shdr9</TD>		<TD></TD>
+ * </TR>
+ * </TABLE>
+ *
+ * When a new Layer is created, a new column is added to the table (by calling LayerManager::AddReferenceTableSlot()) and
+ * the pointer to the new Layer is either put in the Visible Layers or Hidden Layers row.
+ *
+ * Next, any shaders that are needed to initially display the layer are created and their pointers are put into the
+ * appropriate rows. In this example, each of the four layers has a solid fill and a solid outline shader, but only
+ * Layer3 has a gradient shader.
+ *
+ * The reasoning behind this structure is that it gives us an easy way to update the user interface with appropriate data
+ * based on the options that the user selects by providing quick, organized access to highly specific classes. It also
+ * allows us to save the state of data that is not currently being displayed to the user interface without disrupting
+ * the state of the data.
+ *
+ * <H2>Memory Management</H2>
+ *
  */
 class LayerManager : public QObject
 {

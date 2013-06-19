@@ -147,6 +147,7 @@ void LayerManager::HideLayer(unsigned int layerID)
 /**
  * @brief Creates a new TerrainLayer and prepares it for drawing
  * @param fort14Location The absolute path to the fort.14 file
+ * @param progressBar Pointer to a QProgressBar that can be used to show the current progress in reading the file
  *
  * This function creates the new TerrainLayer object, moves the object to the
  * LayerThread so that all slots are executed separately from the GUI thread,
