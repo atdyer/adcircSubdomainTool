@@ -9,9 +9,16 @@
 
 /** QT_DEBUG Macro used for displaying debug output
  *
- * This macro will only print output if compiling/running from the Debug version of the code.
+ * This macro will only print output if compiling/running in debug mode in Qt Creator.
  * It accepts either a single string to print or a formatted string followed by a list of
  * values to print.
+ *
+ * If you aren't using Qt Creator, you can still print debug output by adding
+ * the line
+ *
+ *    #define QT_DEBUG
+ *
+ * before this definition.
  *
  */
 #ifdef QT_DEBUG

@@ -42,23 +42,30 @@ class LayerManager : public QObject
 		unsigned int	CreateNewTerrainLayer(std::string fort14Location, QProgressBar* progressBar = 0);
 
 		// Shader Functions
-		void	PairOutlineShader(unsigned int layerID, unsigned int shaderID);
-		void	PairFillShader(unsigned int layerID, unsigned int shaderID);
+		void	UseSolidOutline(unsigned int layerID);
+		void	UseSolidFill(unsigned int layerID);
 
 
 	protected:
 
-		QThread*		LayerThread;	/**< The thread that all Layer slots will operate on */
-
+		QThread*		layerThread;	/**< The thread that all Layer slots will operate on */
 		GLCamera*		currentCam;	/**< The camera to be used by all shaders */
-		std::vector<GLCamera*>	cameras;	/**< List of all Camera objects */
 
-		std::vector<Layer*>		visibleLayers;	/**< Ordered list of visible Layers */
-		std::vector<Layer*>		hiddenLayers;	/**< Ordered list of hidden Layers */
-		std::vector<TerrainLayer*>	terrainLayers;	/**< List of all TerrainLayer objects */
 
-		std::vector<GLShader*>		allShaders;	/**< List of all GLShader objects */
-		std::vector<SolidShader*>	solidShaders;	/**< List of all SolidShader objects */
+		std::vector<GLCamera*>		cameras;	/**< MEMORY MANAGEMENT - List of all GLCamera objects */
+		std::vector<TerrainLayer*>	terrainLayers;	/**< MEMORY MANAGEMENT - List of all TerrainLayer objects */
+		std::vector<SolidShader*>	solidShaders;	/**< MEMORY MANAGEMENT - List of all SolidShader objects*/
+
+		std::vector<Layer*>		allLayers;	/**< MASS ACCESS - List of all Layer objects */
+		std::vector<GLShader*>		allShaders;	/**< MASS ACCESS - List of all GLShader objects*/
+
+		std::vector<Layer*>		visibleLayers;		/**< REFERENCE TABLE - List of visible Layers */
+		std::vector<Layer*>		hiddenLayers;		/**< REFERENCE TABLE - List of hidden Layers */
+		std::vector<SolidShader*>	solidOutlineShaders;	/**< REFERENCE TABLE - List of SolidShader objects used as outlines for each Layer */
+		std::vector<SolidShader*>	solidFillShaders;	/**< REFERENCE TABLE - List of SolidShdaer objects used as fill for each Layer */
+
+		unsigned int	AddReferenceTableSlot();
+		int		GetReferenceTableColumn(unsigned int layerID);
 
 		Layer*		GetLayerByID(unsigned int layerID);
 		GLShader*	GetShaderByID(unsigned int shaderID);
