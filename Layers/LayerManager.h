@@ -27,7 +27,7 @@ class LayerManager : public QObject
 		~LayerManager();
 
 		// Camera functions
-		GLCamera	*GetCurrentCamera();
+		GLCamera*	GetCurrentCamera();
 		void		SwitchToCamera(unsigned int camID);
 
 		// Drawing Functions

@@ -35,6 +35,13 @@ LayerManager::~LayerManager()
 		DEBUG("Deleting Solid Shader\n");
 		delete solidShaders[i];
 	}
+
+	// Delete all GLCamera objects
+	for (unsigned int i=0; i<cameras.size(); i++)
+	{
+		DEBUG("Deleting Camera\n");
+		delete cameras[i];
+	}
 }
 
 
@@ -192,7 +199,7 @@ unsigned int LayerManager::CreateNewTerrainLayer(std::string fort14Location, QPr
 
 
 /**
- * @brief Assigns the desired shader to be used in drawing the outline of the desired layer
+ * @brief Assigns the shader to be used in drawing the outline of the desired layer
  * @param layerID The unique ID of the layer
  * @param shaderID The unique ID of the shader
  */
@@ -215,7 +222,7 @@ void LayerManager::PairOutlineShader(unsigned int layerID, unsigned int shaderID
 
 
 /**
- * @brief Assigns the desired shader to be used in drawing the fill of the desired layer
+ * @brief Assigns the shader to be used in drawing the fill of the desired layer
  * @param layerID The unique ID of the layer
  * @param shaderID The unique ID of the shader
  */
