@@ -25,21 +25,21 @@ LayerManager::~LayerManager()
 	// Delete all TerrainLayer objects
 	for (unsigned int i=0; i<terrainLayers.size(); i++)
 	{
-		DEBUG("Deleting Terrain Layer\n");
+		DEBUG("Deleting Terrain Layer. Layer ID: %i\n", terrainLayers[i]->GetID());
 		delete terrainLayers[i];
 	}
 
 	// Delete all FillShader objects
 	for (unsigned int i=0; i<solidShaders.size(); i++)
 	{
-		DEBUG("Deleting Solid Shader\n");
+		DEBUG("Deleting Solid Shader. Shader ID: %i\n", solidShaders[i]->GetID());
 		delete solidShaders[i];
 	}
 
 	// Delete all GLCamera objects
 	for (unsigned int i=0; i<cameras.size(); i++)
 	{
-		DEBUG("Deleting Camera\n");
+		DEBUG("Deleting Camera. Camera ID: %i\n", cameras[i]->GetID());
 		delete cameras[i];
 	}
 }
@@ -217,7 +217,7 @@ unsigned int LayerManager::CreateNewTerrainLayer(std::string fort14Location, QPr
  * @param layerID The unique ID of the Layer
  * @param shaderID The unique ID of the GLShader
  */
-void LayerManager::UseSolidOutline(unsigned int layerID)
+void LayerManager::UseSolidOutlineShader(unsigned int layerID)
 {
 	// Find the Shader
 	int column = GetReferenceTableColumn(layerID);
@@ -254,7 +254,7 @@ void LayerManager::UseSolidOutline(unsigned int layerID)
  * @param layerID The unique ID of the Layer
  * @param shaderID The unique ID of the GLShader
  */
-void LayerManager::UseSolidFill(unsigned int layerID)
+void LayerManager::UseSolidFillShader(unsigned int layerID)
 {
 	// Find the Shader
 	int column = GetReferenceTableColumn(layerID);
@@ -277,6 +277,40 @@ void LayerManager::UseSolidFill(unsigned int layerID)
 			}
 		}
 	}
+}
+
+
+/**
+ * @brief Retrieves a pointer to the specified Layer object's solid outline shader
+ * @param layerID The desired Layer
+ * @return Pointer to the SolidShader object used to draw this Layer object's outline
+ * @return 0 if the Layer doesn't exist or if the Layer does't use a solid outline shader
+ */
+SolidShader* LayerManager::GetSolidOutlineShader(unsigned int layerID)
+{
+	int column = GetReferenceTableColumn(layerID);
+
+	if (column != -1)
+		return solidOutlineShaders[column];
+	else
+		return 0;
+}
+
+
+/**
+ * @brief Retrieves a pointer to the specified Layer object's solid fill shader
+ * @param layerID The desired Layer
+ * @return Pointer to the SolidShader object used to draw this Layer object's fill
+ * @return 0 if the Layer doesn't exist or if the Layer doesn't use a solid fill shader
+ */
+SolidShader* LayerManager::GetSolidFillShader(unsigned int layerID)
+{
+	int column = GetReferenceTableColumn(layerID);
+
+	if (column != -1)
+		return solidFillShaders[column];
+	else
+		return 0;
 }
 
 

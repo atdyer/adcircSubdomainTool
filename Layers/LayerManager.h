@@ -42,8 +42,10 @@ class LayerManager : public QObject
 		unsigned int	CreateNewTerrainLayer(std::string fort14Location, QProgressBar* progressBar = 0);
 
 		// Shader Functions
-		void	UseSolidOutline(unsigned int layerID);
-		void	UseSolidFill(unsigned int layerID);
+		void	UseSolidOutlineShader(unsigned int layerID);
+		void	UseSolidFillShader(unsigned int layerID);
+		SolidShader*	GetSolidOutlineShader(unsigned int layerID);
+		SolidShader*	GetSolidFillShader(unsigned int layerID);
 
 
 	protected:
