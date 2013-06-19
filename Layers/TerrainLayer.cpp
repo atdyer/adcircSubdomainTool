@@ -33,7 +33,7 @@ TerrainLayer::~TerrainLayer()
  */
 void TerrainLayer::Draw()
 {
-	std::cout << "layer: " << this->thread()->currentThreadId() << std::endl;
+
 }
 
 
@@ -283,7 +283,6 @@ void TerrainLayer::readFort14()
 		usleep(10000);
 		emit progress(i+1);
 	}
-	this->Draw();
 	emit finishedReadingFort14();
 	emit emitMessage(QString("Terrain layer created"));
 }

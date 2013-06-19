@@ -73,7 +73,6 @@ void MainWindow::on_minimizeMainTabButton_clicked()
 
 void MainWindow::on_openFileButton_clicked()
 {
-	std::cout << "Main thread: " << this->thread()->currentThreadId() << std::endl;
 	layerManager.CreateNewTerrainLayer("/home/tristan/Desktop/fort.14", ui->progressBar);
 }
 

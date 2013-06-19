@@ -80,36 +80,6 @@ void LayerManager::DrawVisibleLayers()
 
 
 /**
- * @brief Tells the LayerManager to start drawing a Layer that is not currently begin drawn
- *
- * Use this function to begin drawing a Layer that is neither visible nor hidden. It adds
- * the Layer to the visibleLayers list as well as a spot for it in the hiddenLayers list.
- *
- * @param layerID The ID of the Layer to display
- */
-void LayerManager::DisplayLayer(unsigned int layerID)
-{
-	visibleLayers.push_back(GetLayerByID(layerID));
-	hiddenLayers.push_back(0);
-}
-
-
-/**
- * @brief Tells the LayerManager to only draw the specified Layer
- *
- * Use this function to clear the view and draw only the specified Layer
- *
- * @param layerID The ID of the Layer to display
- */
-void LayerManager::DisplayLayerUnique(unsigned int layerID)
-{
-	visibleLayers.clear();
-	hiddenLayers.clear();
-	DisplayLayer(layerID);
-}
-
-
-/**
  * @brief Makes a hidden Layer visible
  *
  * This function is used to make a hidden Layer visible without changing the
@@ -119,14 +89,31 @@ void LayerManager::DisplayLayerUnique(unsigned int layerID)
  */
 void LayerManager::ShowLayer(unsigned int layerID)
 {
-	// This test should always pass
-	if (visibleLayers.size() == hiddenLayers.size())
-		for (unsigned int i=0; i<hiddenLayers.size(); i++)
-			if (hiddenLayers[i]->GetID() == layerID && visibleLayers[i] == 0)
-			{
-				visibleLayers[i] = hiddenLayers[i];
-				hiddenLayers[i] = 0;
-			}
+	for (unsigned int i=0; i<hiddenLayers.size(); i++)
+		if (hiddenLayers[i]->GetID() == layerID)
+		{
+			visibleLayers[i] = hiddenLayers[i];
+			hiddenLayers[i] = 0;
+		}
+}
+
+
+/**
+ * @brief Makes selected Layer the only one visible
+ *
+ * This function is used to make the selected layer the only visible Layer without
+ * modifying the draw order used in visibleLayers.
+ *
+ * @param layerID The ID of the Layer to show
+ */
+void LayerManager::ShowOnlyLayer(unsigned int layerID)
+{
+	for (unsigned int i=0; i<visibleLayers.size(); i++)
+		if (visibleLayers[i]->GetID() != layerID)
+		{
+			hiddenLayers[i] = visibleLayers[i];
+			visibleLayers[i] = 0;
+		}
 }
 
 
@@ -140,14 +127,12 @@ void LayerManager::ShowLayer(unsigned int layerID)
  */
 void LayerManager::HideLayer(unsigned int layerID)
 {
-	// This test should always pass
-	if (visibleLayers.size() == hiddenLayers.size())
-		for (unsigned int i=0; i<visibleLayers.size(); i++)
-			if (visibleLayers[i]->GetID() == layerID && hiddenLayers[i] == 0)
-			{
-				hiddenLayers[i] = visibleLayers[i];
-				visibleLayers[i] = 0;
-			}
+	for (unsigned int i=0; i<visibleLayers.size(); i++)
+		if (visibleLayers[i]->GetID() == layerID)
+		{
+			hiddenLayers[i] = visibleLayers[i];
+			visibleLayers[i] = 0;
+		}
 }
 
 
@@ -188,24 +173,18 @@ unsigned int LayerManager::CreateNewTerrainLayer(std::string fort14Location, QPr
 	// Set the fort.14 location to begin reading the file
 	newLayer->SetFort14Location(fort14Location);
 
-	// Add the new TerrainLayer to the list of TerrainLayers
+	// Add the new TerrainLayer to the list of TerrainLayers and visible layers
 	terrainLayers.push_back(newLayer);
+	visibleLayers.push_back(newLayer);
+	hiddenLayers.push_back(0);
 
 	// Create a solid outline shader and solid fill shader with some nice default terrain colors
-	SolidShader* outlineShader = new SolidShader();
-	SolidShader* fillShader = new SolidShader();
-	outlineShader->SetColor(0.2, 0.2, 0.2, 0.5);
-	fillShader->SetColor(0.0, 1.0, 0.0, 1.0);
+	SolidShader* outlineShader = NewSolidShader(0.2, 0.2, 0.2, 0.5);
+	SolidShader* fillShader = NewSolidShader(0.0, 1.0, 0.0, 1.0);
 
-	// Tell the new shaders to use the current camera
-	outlineShader->SetCamera(currentCam);
-	fillShader->SetCamera(currentCam);
-
-	// Add the new shaders to the lists
-	allShaders.push_back(outlineShader);
-	allShaders.push_back(fillShader);
-	solidShaders.push_back(outlineShader);
-	solidShaders.push_back(fillShader);
+	// Tell the new TerrainLayer to use the newly created shaders
+	newLayer->SetOutlineShader(outlineShader);
+	newLayer->SetFillShader(fillShader);
 
 	// Return the new TerrainLayer's ID
 	return newLayer->GetID();
@@ -259,7 +238,7 @@ void LayerManager::PairFillShader(unsigned int layerID, unsigned int shaderID)
 
 
 /**
- * @brief Helper function that looks through all of the lists for the desired GLShader
+ * @brief Helper function that looks through all of the lists for the desired Layer
  * @param layerID The unique ID of the Layer
  * @return A pointer to the Layer
  */
@@ -272,17 +251,48 @@ Layer* LayerManager::GetLayerByID(unsigned int layerID)
 }
 
 
+/**
+ * @brief Helper function that looks through the list of all shaders for the desired GLShader
+ * @param shaderID The unique ID of the GLShader
+ * @return  A pointer to the GLShader
+ */
 GLShader* LayerManager::GetShaderByID(unsigned int shaderID)
 {
-	for (unsigned int i=0; i<solidShaders.size(); i++)
-		if (solidShaders[i]->GetID() == shaderID)
-			return solidShaders[i];
+	for (unsigned int i=0; i<allShaders.size(); i++)
+		if (allShaders[i]->GetID() == shaderID)
+			return allShaders[i];
 	return 0;
 }
 
 
+
+/**
+ * @brief Helper function that updates the camera in all GLShader objects to the
+ * currently active camera
+ */
 void LayerManager::UpdateShaderCameras()
 {
 	for (unsigned int i=0; i<allShaders.size(); i++)
 		allShaders[i]->SetCamera(currentCam);
+}
+
+
+/**
+ * @brief Helper function that creates a new SolidShader with the desired color
+ * @param r Red
+ * @param g Green
+ * @param b Blue
+ * @param a Alpha
+ * @return A new SolidShader object owned by the LayerManager
+ */
+SolidShader* LayerManager::NewSolidShader(float r, float g, float b, float a)
+{
+	SolidShader* newShader = new SolidShader();
+	newShader->SetColor(r, g, b, a);
+	newShader->SetCamera(currentCam);
+
+	allShaders.push_back(newShader);
+	solidShaders.push_back(newShader);
+
+	return newShader;
 }

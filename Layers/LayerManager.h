@@ -34,9 +34,8 @@ class LayerManager : public QObject
 		void	DrawVisibleLayers();
 
 		// Layer Displaying Functions
-		void	DisplayLayer(unsigned int layerID);
-		void	DisplayLayerUnique(unsigned int layerID);
 		void	ShowLayer(unsigned int layerID);
+		void	ShowOnlyLayer(unsigned int layerID);
 		void	HideLayer(unsigned int layerID);
 
 		// Layer Creation Functions
@@ -65,6 +64,8 @@ class LayerManager : public QObject
 		GLShader*	GetShaderByID(unsigned int shaderID);
 
 		void	UpdateShaderCameras();
+
+		SolidShader*	NewSolidShader(float r, float g, float b, float a);
 
 	signals:
 
