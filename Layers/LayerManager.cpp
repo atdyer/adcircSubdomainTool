@@ -124,6 +124,8 @@ void LayerManager::HideLayer(unsigned int layerID)
  */
 unsigned int LayerManager::CreateNewTerrainLayer(std::string fort14Location, QProgressBar *progressBar)
 {
+	emit emitMessage("Creating new terrain layer...");
+
 	// Create the new TerrainLayer
 	TerrainLayer* newLayer = new TerrainLayer();
 	if (!newLayer)

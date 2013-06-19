@@ -23,14 +23,24 @@ MainWindow::MainWindow(QWidget *parent) :
 	// Start out maximized
 	// this->showMaximized();
 
-
-
+	// Connect all necessary components to the output box
+	connect(&layerManager, SIGNAL(emitMessage(const char*)), this, SLOT(displayOutput(const char*)));
 
 }
 
 MainWindow::~MainWindow()
 {
 	delete ui;
+}
+
+
+/**
+ * @brief Displays output to the text box in the Output tab
+ * @param The text (or rich HTML) to be displayed
+ */
+void MainWindow::displayOutput(const char* text)
+{
+	ui->outputBox->append(text);
 }
 
 
@@ -70,5 +80,5 @@ void MainWindow::on_openFileButton_clicked()
 
 void MainWindow::on_newProjectButton_clicked()
 {
-
+	displayOutput("Test");
 }

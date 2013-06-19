@@ -48,6 +48,9 @@ class Layer : public QObject
 		static unsigned int	nextID;		/**< The next available layerID */
 		unsigned int		layerID;	/**< A unique unsigned integer that identifies this Layer */
 
+	signals:
+
+		void emitMessage(const char*);
 };
 
 #endif // LAYER_H

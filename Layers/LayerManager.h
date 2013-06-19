@@ -53,6 +53,7 @@ class LayerManager : public QObject
 
 	signals:
 
+		void	emitMessage(const char*);
 		void	beingDestroyed();
 };
 

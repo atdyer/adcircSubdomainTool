@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+
 #include <QMainWindow>
 #include <QThread>
 #include <qwt_plot.h>
@@ -18,14 +19,19 @@ class MainWindow : public QMainWindow
 	public:
 		explicit MainWindow(QWidget *parent = 0);
 		~MainWindow();
-		
+
+
+
+	public slots:
+
+		void displayOutput(const char* text);
+
 	private slots:
+
+		// User interface event handlers
 		void on_plottingList_currentRowChanged(int currentRow);
-
 		void on_minimizeMainTabButton_clicked();
-
 		void on_openFileButton_clicked();
-
 		void on_newProjectButton_clicked();
 
 	private:

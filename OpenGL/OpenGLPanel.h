@@ -22,6 +22,10 @@ class OpenGLPanel : public QGLWidget
 		void		initializeGL();
 		void		resizeGL(int w, int h);
 		void		paintGL();
+
+	signals:
+
+		void	emitMessage(const char*);
 };
 
 #endif // OPENGLPANEL_H
