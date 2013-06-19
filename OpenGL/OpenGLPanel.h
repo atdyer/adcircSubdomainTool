@@ -4,6 +4,8 @@
 #include "glew.h"
 #include <QGLWidget>
 
+#include <OpenGL/GLCamera.h>
+
 
 /**
  * @brief This is a custom widget that is used specifically for drawing Layer objects
@@ -17,7 +19,11 @@ class OpenGLPanel : public QGLWidget
 	public:
 		explicit	OpenGLPanel(QWidget *parent = 0);
 
+		void	SetCamera(GLCamera* newCam);
+
 	protected:
+
+		GLCamera*	camera;
 
 		void		initializeGL();
 		void		resizeGL(int w, int h);
@@ -25,7 +31,7 @@ class OpenGLPanel : public QGLWidget
 
 	signals:
 
-		void	emitMessage(const char*);
+		void	emitMessage(const QString &);
 };
 
 #endif // OPENGLPANEL_H

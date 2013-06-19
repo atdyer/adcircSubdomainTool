@@ -285,4 +285,5 @@ void TerrainLayer::readFort14()
 	}
 	this->Draw();
 	emit finishedReadingFort14();
+	emit emitMessage(QString("Terrain layer created"));
 }

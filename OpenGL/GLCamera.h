@@ -53,7 +53,14 @@ class GLCamera
 		void	ResetView();
 		void	GetUnprojectedPoint(float x, float y, float *resultX, float *resultY);
 
+		unsigned int	GetID();
+		unsigned int	GetNumCameras();
+
 	private:
+
+		static unsigned int	cameraCount;	/**< A running count of the number of GLCamera objects */
+		static unsigned int	nextID;		/**< The next available cameraID */
+		unsigned int		cameraID;	/**< A unique integer that identifies this GLCamera */
 
 		// Functions used to update various matrices
 		void	UpdateModel();

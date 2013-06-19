@@ -28,6 +28,31 @@ LayerManager::~LayerManager()
 
 
 /**
+ * @brief This function must be called before any drawing will occur
+ * @param panel The OpenGLPanel on the UI that containts the OpenGL context
+ */
+void LayerManager::Initialize(OpenGLPanel *panel)
+{
+	if (panel)
+	{
+		GLPanel = panel;
+
+		// Create the first camera to be used
+		GLCamera* newCam = new GLCamera();
+		GLPanel->SetCamera(newCam);
+		currentCam = newCam;
+		cameras.push_back(newCam);
+	}
+}
+
+
+void LayerManager::SwitchToCamera(unsigned int cam)
+{
+
+}
+
+
+/**
  * @brief Draws all visible layers onto the OpenGL context
  *
  * This function attempts to draw all visible layers onto the OpenGL context.
@@ -124,7 +149,7 @@ void LayerManager::HideLayer(unsigned int layerID)
  */
 unsigned int LayerManager::CreateNewTerrainLayer(std::string fort14Location, QProgressBar *progressBar)
 {
-	emit emitMessage("Creating new terrain layer...");
+	emit emitMessage(QString::fromStdString("Creating new terrain layer from file: <b>" + fort14Location + "</b>"));
 
 	// Create the new TerrainLayer
 	TerrainLayer* newLayer = new TerrainLayer();
@@ -134,8 +159,9 @@ unsigned int LayerManager::CreateNewTerrainLayer(std::string fort14Location, QPr
 	// Move the new TerrainLayer to the LayerThread
 	newLayer->moveToThread(LayerThread);
 
-	// Get the layer ready for drawing
+	// Get the layer ready for reading
 	connect(newLayer, SIGNAL(fort14Valid()), newLayer, SLOT(readFort14()));
+	connect(newLayer, SIGNAL(emitMessage(QString)), this, SIGNAL(emitMessage(QString)));
 
 	// Hook up the progress bar if one has been provided
 	if (progressBar)
@@ -151,6 +177,16 @@ unsigned int LayerManager::CreateNewTerrainLayer(std::string fort14Location, QPr
 	// Add the new TerrainLayer to the list of TerrainLayers
 	terrainLayers.push_back(newLayer);
 
+	// Create a solid outline shader and solid fill shader with some nice default terrain colors
+	SolidShader* outlineShader = new SolidShader();
+	SolidShader* fillShader = new SolidShader();
+	outlineShader->SetColor(0.2, 0.2, 0.2, 0.5);
+	fillShader->SetColor(0.0, 1.0, 0.0, 1.0);
+
+	// Tell the new shaders to use the current camera
+	outlineShader->SetCamera(currentCam);
+	fillShader->SetCamera(currentCam);
+
 	// Return the new TerrainLayer's ID
 	return newLayer->GetID();
 }
@@ -163,7 +199,19 @@ unsigned int LayerManager::CreateNewTerrainLayer(std::string fort14Location, QPr
  */
 void LayerManager::PairOutlineShader(unsigned int layerID, unsigned int shaderID)
 {
+	// Find the Shader
+	GLShader* targetShader = GetShaderByID(shaderID);
 
+	// Find the Layer if a Shader was found
+	if (targetShader)
+	{
+		// Only look through Layer types that have an outline
+		for (unsigned int i=0; i<terrainLayers.size(); i++)
+			if (terrainLayers[i]->GetID() == layerID)
+			{
+				terrainLayers[i]->SetOutlineShader(targetShader);
+			}
+	}
 }
 
 
@@ -174,7 +222,19 @@ void LayerManager::PairOutlineShader(unsigned int layerID, unsigned int shaderID
  */
 void LayerManager::PairFillShader(unsigned int layerID, unsigned int shaderID)
 {
+	// Find the Shader
+	GLShader* targetShader = GetShaderByID(shaderID);
 
+	// Find the Layer if a Shader was found
+	if (targetShader)
+	{
+		// Only look through Layer types that have a fill
+		for (unsigned int i=0; i<terrainLayers.size(); i++)
+			if (terrainLayers[i]->GetID() == layerID)
+			{
+				terrainLayers[i]->SetFillShader(targetShader);
+			}
+	}
 }
 
 
@@ -188,5 +248,14 @@ Layer* LayerManager::GetLayerByID(unsigned int layerID)
 	for (unsigned int i=0; i<terrainLayers.size(); i++)
 		if (terrainLayers[i]->GetID() == layerID)
 			return terrainLayers[i];
+	return 0;
+}
+
+
+GLShader* LayerManager::GetShaderByID(unsigned int shaderID)
+{
+	for (unsigned int i=0; i<solidShaders.size(); i++)
+		if (solidShaders[i]->GetID() == shaderID)
+			return solidShaders[i];
 	return 0;
 }

@@ -1,7 +1,16 @@
 #include "GLCamera.h"
 
+// Initialize static members
+unsigned int	GLCamera::cameraCount = 0;
+unsigned int	GLCamera::nextID = 1;
+
 GLCamera::GLCamera()
 {
+	// ID initialization
+	cameraCount++;
+	cameraID = nextID;
+	nextID++;
+
 	// All matrices begin as the identity matrix
 	MVPMatrix = IDENTITY_MATRIX;
 	ModelMatrix = IDENTITY_MATRIX;
@@ -30,6 +39,26 @@ GLCamera::GLCamera()
 
 	// Calculate ratio of window width to viewport width
 	pixelToViewRatio = ((window[1]-window[0]/2.0)/viewportX);
+}
+
+
+/**
+ * @brief Returns the unique ID associated with the Camera object
+ * @return The unique ID associated with the Camera object
+ */
+unsigned int GLCamera::GetID()
+{
+	return cameraID;
+}
+
+
+/**
+ * @brief Returns the total number of cameras the currently exist
+ * @return The total number of cameras that currently exist
+ */
+unsigned int GLCamera::GetNumCameras()
+{
+	return cameraCount;
 }
 
 

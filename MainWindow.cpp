@@ -20,11 +20,11 @@ MainWindow::MainWindow(QWidget *parent) :
 	// Expand the project tree
 	ui->projectTree->expandAll();
 
-	// Start out maximized
-	// this->showMaximized();
+	// Give the layer manager access to the current camera
+	layerManager.Initialize(ui->GLPanel);
 
 	// Connect all necessary components to the output box
-	connect(&layerManager, SIGNAL(emitMessage(const char*)), this, SLOT(displayOutput(const char*)));
+	connect(&layerManager, SIGNAL(emitMessage(QString)), this, SLOT(displayOutput(QString)));
 
 }
 
@@ -38,7 +38,7 @@ MainWindow::~MainWindow()
  * @brief Displays output to the text box in the Output tab
  * @param The text (or rich HTML) to be displayed
  */
-void MainWindow::displayOutput(const char* text)
+void MainWindow::displayOutput(QString text)
 {
 	ui->outputBox->append(text);
 }
@@ -74,7 +74,7 @@ void MainWindow::on_minimizeMainTabButton_clicked()
 void MainWindow::on_openFileButton_clicked()
 {
 	std::cout << "Main thread: " << this->thread()->currentThreadId() << std::endl;
-	layerManager.CreateNewTerrainLayer("hello", ui->progressBar);
+	layerManager.CreateNewTerrainLayer("/home/tristan/Desktop/fort.14", ui->progressBar);
 }
 
 

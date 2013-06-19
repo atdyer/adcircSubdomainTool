@@ -6,6 +6,14 @@ OpenGLPanel::OpenGLPanel(QWidget *parent) :
 {
 }
 
+
+void OpenGLPanel::SetCamera(GLCamera *newCam)
+{
+	if (newCam)
+		camera = newCam;
+}
+
+
 void OpenGLPanel::initializeGL()
 {
 	glewExperimental = true;

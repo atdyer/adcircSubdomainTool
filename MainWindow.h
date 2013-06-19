@@ -24,7 +24,7 @@ class MainWindow : public QMainWindow
 
 	public slots:
 
-		void displayOutput(const char* text);
+		void displayOutput(QString text);
 
 	private slots:
 

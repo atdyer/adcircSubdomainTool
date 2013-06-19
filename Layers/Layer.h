@@ -50,7 +50,7 @@ class Layer : public QObject
 
 	signals:
 
-		void emitMessage(const char*);
+		void emitMessage(QString);
 };
 
 #endif // LAYER_H

@@ -4,11 +4,13 @@
 #include <QObject>
 #include <QThread>
 #include <QProgressBar>
+
 #include <vector>
 
 #include "Layer.h"
 #include "TerrainLayer.h"
 
+#include <OpenGL/OpenGLPanel.h>
 #include "OpenGL/Shaders/GLShader.h"
 #include "OpenGL/Shaders/SolidShader.h"
 
@@ -23,6 +25,12 @@ class LayerManager : public QObject
 
 		LayerManager(QObject* parent=0);
 		~LayerManager();
+
+		// Required initialization function
+		void	Initialize(OpenGLPanel* panel);
+
+		// Camera functions
+		void	SwitchToCamera(unsigned int cam);
 
 		// Drawing Functions
 		void	DrawVisibleLayers();
@@ -44,16 +52,23 @@ class LayerManager : public QObject
 	protected:
 
 		Layer*		GetLayerByID(unsigned int layerID);
+		GLShader*	GetShaderByID(unsigned int shaderID);
 
 		QThread*		LayerThread;	/**< The thread that all Layer slots will operate on */
+
+		OpenGLPanel*		GLPanel;	/**< The OpenGLPanel on the UI that displays everything */
+		GLCamera*		currentCam;	/**< The camera to be used by all shaders */
+		std::vector<GLCamera*>	cameras;	/**< List of all Camera objects */
 
 		std::vector<Layer*>		visibleLayers;	/**< Ordered list of visible Layers */
 		std::vector<Layer*>		hiddenLayers;	/**< Ordered list of hidden Layers */
 		std::vector<TerrainLayer*>	terrainLayers;	/**< List of all TerrainLayer objects */
 
+		std::vector<SolidShader*>	solidShaders;	/**< List of all SolidShader objects */
+
 	signals:
 
-		void	emitMessage(const char*);
+		void	emitMessage(QString);
 		void	beingDestroyed();
 };
 
