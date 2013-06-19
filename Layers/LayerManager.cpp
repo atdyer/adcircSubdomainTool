@@ -10,6 +10,10 @@ LayerManager::LayerManager(QObject *parent) : QObject(parent)
 		connect(LayerThread, SIGNAL(finished()), LayerThread, SLOT(deleteLater()));
 		LayerThread->start();
 	}
+
+	// Initialize the first camera
+	currentCam = new GLCamera();
+	cameras.push_back(currentCam);
 }
 
 
@@ -21,34 +25,44 @@ LayerManager::~LayerManager()
 	// Delete all TerrainLayer objects
 	for (unsigned int i=0; i<terrainLayers.size(); i++)
 	{
-		std::cout << "Deleting Terrain Layer" << std::endl;
+		DEBUG("Deleting Terrain Layer\n");
 		delete terrainLayers[i];
+	}
+
+	// Delete all FillShader objects
+	for (unsigned int i=0; i<solidShaders.size(); i++)
+	{
+		DEBUG("Deleting Solid Shader\n");
+		delete solidShaders[i];
 	}
 }
 
 
 /**
- * @brief This function must be called before any drawing will occur
- * @param panel The OpenGLPanel on the UI that containts the OpenGL context
+ * @brief Returns the GLCamera currently being used by the shaders
+ * @return Pointer to the current GLCamera
  */
-void LayerManager::Initialize(OpenGLPanel *panel)
+GLCamera* LayerManager::GetCurrentCamera()
 {
-	if (panel)
-	{
-		GLPanel = panel;
-
-		// Create the first camera to be used
-		GLCamera* newCam = new GLCamera();
-		GLPanel->SetCamera(newCam);
-		currentCam = newCam;
-		cameras.push_back(newCam);
-	}
+	return currentCam;
 }
 
 
-void LayerManager::SwitchToCamera(unsigned int cam)
+/**
+ * @brief Changes the GLCamera currently being used by the shaders
+ * @param camID The ID of the new GLCamera to use
+ */
+void LayerManager::SwitchToCamera(unsigned int camID)
 {
-
+	for (unsigned int i=0; i<cameras.size(); i++)
+	{
+		if (cameras[i]->GetID() == camID)
+		{
+			currentCam = cameras[i];
+			UpdateShaderCameras();
+			emit cameraChanged();
+		}
+	}
 }
 
 
@@ -187,6 +201,12 @@ unsigned int LayerManager::CreateNewTerrainLayer(std::string fort14Location, QPr
 	outlineShader->SetCamera(currentCam);
 	fillShader->SetCamera(currentCam);
 
+	// Add the new shaders to the lists
+	allShaders.push_back(outlineShader);
+	allShaders.push_back(fillShader);
+	solidShaders.push_back(outlineShader);
+	solidShaders.push_back(fillShader);
+
 	// Return the new TerrainLayer's ID
 	return newLayer->GetID();
 }
@@ -258,4 +278,11 @@ GLShader* LayerManager::GetShaderByID(unsigned int shaderID)
 		if (solidShaders[i]->GetID() == shaderID)
 			return solidShaders[i];
 	return 0;
+}
+
+
+void LayerManager::UpdateShaderCameras()
+{
+	for (unsigned int i=0; i<allShaders.size(); i++)
+		allShaders[i]->SetCamera(currentCam);
 }

@@ -10,7 +10,7 @@
 #include "Layer.h"
 #include "TerrainLayer.h"
 
-#include <OpenGL/OpenGLPanel.h>
+#include <OpenGL/GLCamera.h>
 #include "OpenGL/Shaders/GLShader.h"
 #include "OpenGL/Shaders/SolidShader.h"
 
@@ -26,11 +26,9 @@ class LayerManager : public QObject
 		LayerManager(QObject* parent=0);
 		~LayerManager();
 
-		// Required initialization function
-		void	Initialize(OpenGLPanel* panel);
-
 		// Camera functions
-		void	SwitchToCamera(unsigned int cam);
+		GLCamera	*GetCurrentCamera();
+		void		SwitchToCamera(unsigned int camID);
 
 		// Drawing Functions
 		void	DrawVisibleLayers();
@@ -51,12 +49,8 @@ class LayerManager : public QObject
 
 	protected:
 
-		Layer*		GetLayerByID(unsigned int layerID);
-		GLShader*	GetShaderByID(unsigned int shaderID);
-
 		QThread*		LayerThread;	/**< The thread that all Layer slots will operate on */
 
-		OpenGLPanel*		GLPanel;	/**< The OpenGLPanel on the UI that displays everything */
 		GLCamera*		currentCam;	/**< The camera to be used by all shaders */
 		std::vector<GLCamera*>	cameras;	/**< List of all Camera objects */
 
@@ -64,11 +58,18 @@ class LayerManager : public QObject
 		std::vector<Layer*>		hiddenLayers;	/**< Ordered list of hidden Layers */
 		std::vector<TerrainLayer*>	terrainLayers;	/**< List of all TerrainLayer objects */
 
+		std::vector<GLShader*>		allShaders;	/**< List of all GLShader objects */
 		std::vector<SolidShader*>	solidShaders;	/**< List of all SolidShader objects */
+
+		Layer*		GetLayerByID(unsigned int layerID);
+		GLShader*	GetShaderByID(unsigned int shaderID);
+
+		void	UpdateShaderCameras();
 
 	signals:
 
 		void	emitMessage(QString);
+		void	cameraChanged();
 		void	beingDestroyed();
 };
 

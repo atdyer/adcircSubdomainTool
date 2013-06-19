@@ -20,8 +20,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	// Expand the project tree
 	ui->projectTree->expandAll();
 
-	// Give the layer manager access to the current camera
-	layerManager.Initialize(ui->GLPanel);
+	// Set up communication between the LayerManager and the GLPanel
+	connect(&layerManager, SIGNAL(cameraChanged()), ui->GLPanel, SLOT(updateCurrentCamera()));
 
 	// Connect all necessary components to the output box
 	connect(&layerManager, SIGNAL(emitMessage(QString)), this, SLOT(displayOutput(QString)));

@@ -3,8 +3,11 @@
 
 #include "glew.h"
 #include <QGLWidget>
+#include <Layers/LayerManager.h>
 
-#include <OpenGL/GLCamera.h>
+
+// Forward declaration of LayerManger class
+//class LayerManager;
 
 
 /**
@@ -18,20 +21,24 @@ class OpenGLPanel : public QGLWidget
 		Q_OBJECT
 	public:
 		explicit	OpenGLPanel(QWidget *parent = 0);
-
-		void	SetCamera(GLCamera* newCam);
+		void		SetLayerManager(LayerManager* newManager);
 
 	protected:
 
-		GLCamera*	camera;
+		LayerManager*	layerManager;	/**< The LayerManager that will do all of the drawing */
+		GLCamera*	currentCam;	/**< The GLCamera currently being used in the LayerManager */
 
 		void		initializeGL();
 		void		resizeGL(int w, int h);
 		void		paintGL();
 
+	public slots:
+
+		void	updateCurrentCamera();
+
 	signals:
 
-		void	emitMessage(const QString &);
+		void	emitMessage(QString);
 };
 
 #endif // OPENGLPANEL_H
