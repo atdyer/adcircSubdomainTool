@@ -1,5 +1,16 @@
 #include "LayerManager.h"
 
+
+/**
+ * @brief Constructor for the LayerManager
+ *
+ * The constructor creates a default camera to be used when drawing operations begin.
+ *
+ * In addition, it creates the QThread on which all file reading for Layer objects is going
+ * to occur.
+ *
+ * @param parent The parent QObject
+ */
 LayerManager::LayerManager(QObject *parent) : QObject(parent)
 {
 	// Get the LayerThread up and running
@@ -17,6 +28,14 @@ LayerManager::LayerManager(QObject *parent) : QObject(parent)
 }
 
 
+/**
+ * @brief Destructor for the LayerManager
+ *
+ * This destructor handles the deallocation of all memory that was allocated on the
+ * heap for various objects. It will delete every object stored in the
+ * MEMORY MANAGEMENT lists.
+ *
+ */
 LayerManager::~LayerManager()
 {
 	// Tell the LayerThread it needs to be finish up and then be destroyed
