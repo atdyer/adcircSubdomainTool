@@ -4,7 +4,7 @@
 
 #include <QMainWindow>
 #include <QThread>
-#include <qwt_plot.h>
+//#include <qwt_plot.h>
 
 #include "Layers/LayerManager.h"
 
