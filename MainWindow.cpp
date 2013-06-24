@@ -71,8 +71,16 @@ void MainWindow::on_minimizeMainTabButton_clicked()
 }
 
 
+/**
+  * @brief Event Handler: Open File tool button is clicked
+  *
+  * Opens a dialog window which is connected to the appropriate slots for
+  * handling any number of selected files
+  *
+  */
 void MainWindow::on_openFileButton_clicked()
 {
+	// Testing the Layer Manager by adding a terrain layer
 	layerManager.CreateNewTerrainLayer("/home/tristan/Desktop/fort.14", ui->progressBar);
 }
 

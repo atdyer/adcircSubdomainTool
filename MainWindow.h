@@ -35,6 +35,8 @@ class MainWindow : public QMainWindow
 		void on_newProjectButton_clicked();
 
 	private:
+
+		// The Main Window
 		Ui::MainWindow *ui;
 
 		// The status bar specific to the GLPanel
