@@ -26,8 +26,7 @@ SOURCES += main.cpp\
     Layers/Quadtree.cpp \
     Layers/LayerManager.cpp \
     OpenGL/Shaders/GLShader.cpp \
-    OpenGL/Shaders/SolidShader.cpp \
-    Dialog_OpenFile.cpp
+    OpenGL/Shaders/SolidShader.cpp
 
 HEADERS  += MainWindow.h \
     OpenGL/OpenGLPanel.h \
@@ -42,8 +41,6 @@ HEADERS  += MainWindow.h \
     Layers/Quadtree.h \
     Layers/LayerManager.h \
     OpenGL/Shaders/GLShader.h \
-    OpenGL/Shaders/SolidShader.h \
-    Dialog_OpenFile.h
+    OpenGL/Shaders/SolidShader.h
 
-FORMS    += MainWindow.ui \
-    Dialog_OpenFile.ui
+FORMS    += MainWindow.ui
