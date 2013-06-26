@@ -21,7 +21,29 @@ TerrainLayer::TerrainLayer()
 
 TerrainLayer::~TerrainLayer()
 {
+	if (fileLoaded)
+	{
+		glBindVertexArray(VAOId);
 
+		if (fillShader)
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			glPolygonOffset(6, 6);
+			fillShader->Use();
+			glDrawElements(GL_TRIANGLES, numElements*3, GL_UNSIGNED_INT, (GLvoid*)0);
+		}
+
+		if (outlineShader)
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			glPolygonOffset(4, 4);
+			outlineShader->Use();
+			glDrawElements(GL_TRIANGLES, numElements*3, GL_UNSIGNED_INT, (GLvoid*)0);
+		}
+
+		glBindVertexArray(0);
+		glUseProgram(0);
+	}
 }
 
 
@@ -33,7 +55,7 @@ TerrainLayer::~TerrainLayer()
  */
 void TerrainLayer::Draw()
 {
-
+	std::cout << "Drawing" << std::endl;
 }
 
 

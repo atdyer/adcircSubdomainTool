@@ -83,6 +83,8 @@ void OpenGLPanel::paintGL()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	if (layerManager)
 		layerManager->DrawVisibleLayers();
+	else
+		DEBUG("No Layer Manager Assigned\n");
 }
 
 
