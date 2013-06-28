@@ -3,6 +3,8 @@
 TerrainLayer::TerrainLayer()
 {
 	fort14Location = "";
+	numNodes = 0;
+	numElements = 0;
 	minX = 0.0;
 	maxX = 0.0;
 	minY = 0.0;
@@ -153,6 +155,8 @@ Element* TerrainLayer::GetElement(unsigned int elementNumber)
  */
 Element* TerrainLayer::GetElement(float x, float y)
 {
+	if (x || y)
+		return 0;
 	return 0;
 }
 
@@ -298,13 +302,71 @@ void TerrainLayer::SetFillShader(GLShader *newShader)
  */
 void TerrainLayer::readFort14()
 {
-	// Simulate a file being read
-	emit startedReadingFort14();
-	for (unsigned int i=0; i<100; i++)
+	std::ifstream fort14 (fort14Location.data());
+
+	if (fort14.is_open())
 	{
-		usleep(10000);
-		emit progress(i+1);
+		emit startedReadingFort14();
+
+		std::string line;
+		std::getline(fort14, infoLine);
+		std::getline(fort14, line);
+		std::stringstream(line) >> numElements >> numNodes;
+
+		// Progress bar stuff
+		int linesRead = 0;
+		int linesToRead = numElements+numNodes;
+
+		if (numNodes > 0 && numElements > 0)
+		{
+			nodes.reserve(numNodes);
+			elements.reserve(numElements);
+
+			Node currNode;
+			for (unsigned int i=0; i<numNodes; i++)
+			{
+				fort14 >> currNode.nodeNumber;
+				fort14 >> currNode.x;
+				fort14 >> currNode.y;
+				fort14 >> currNode.z;
+				if (flipZValue)
+					currNode.z *= -1.0;
+				nodes.push_back(currNode);
+				emit progress((++linesRead)/linesToRead);
+			}
+
+			Element currElement;
+			int trash;
+			for (unsigned int i=0; i<numElements; i++)
+			{
+				fort14 >> currElement.elementNumber;
+				fort14 >> trash;
+				fort14 >> currElement.n1;
+				fort14 >> currElement.n2;
+				fort14 >> currElement.n3;
+				elements.push_back(currElement);
+				emit progress((++linesRead)/linesToRead);
+			}
+
+			fort14.close();
+
+			fileLoaded = true;
+
+			emit finishedReadingFort14();
+			emit emitMessage(QString("Terrain layer created: <strong>").append(infoLine.data()).append("</strong>"));
+		}
+	} else {
+		fileLoaded = false;
+		emit emitMessage("Error opening fort.14 file");
 	}
-	emit finishedReadingFort14();
-	emit emitMessage(QString("Terrain layer created"));
+
+//	// Simulate a file being read
+//	emit startedReadingFort14();
+//	for (unsigned int i=0; i<100; i++)
+//	{
+//		usleep(10000);
+//		emit progress(i+1);
+//	}
+//	emit finishedReadingFort14();
+//	emit emitMessage(QString("Terrain layer created"));
 }

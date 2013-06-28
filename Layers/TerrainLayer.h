@@ -8,6 +8,8 @@
 
 #include <string>
 #include <vector>
+#include <fstream>
+#include <sstream>
 #include <iostream>
 #include <QThread>
 
@@ -58,6 +60,7 @@ class TerrainLayer : public Layer
 		std::string		fort14Location; /**< The absolute path of the fort.14 file */
 		std::vector<Node>	nodes;		/**< List of all Nodes in the Layer */
 		std::vector<Element>	elements;	/**< List of all Elements in the Layer */
+		std::string		infoLine;	/**< The info line in the fort.14 file */
 		unsigned int		numNodes;	/**< The number of Nodes in the Layer as specified in fort.14 */
 		unsigned int		numElements;	/**< The number of Elements in the Layer as specified in fort.14 */
 		float			minX;		/**< The minimum x-value */
