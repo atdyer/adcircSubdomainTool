@@ -126,12 +126,14 @@ GLuint GLShader::CompileShaderPart(const char *source, GLenum shaderType)
 		glGetShaderiv(shaderID, GL_COMPILE_STATUS, &compileResult);
 		if (compileResult != GL_TRUE)
 		{
-			DEBUG("Shader Compile Error: %i", compileResult);
+			DEBUG("Shader Compile Error: " << compileResult);
 
-			char log[250];
+			GLint logSize;
+			glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &logSize);
+			char log[logSize];
 			glGetShaderInfoLog(shaderID, 250, NULL, log);
 
-			DEBUG("Shader Log:\n%s", log);
+			DEBUG("Shader Log: " << log);
 
 			return 0;
 		} else {

@@ -44,21 +44,21 @@ LayerManager::~LayerManager()
 	// Delete all TerrainLayer objects
 	for (unsigned int i=0; i<terrainLayers.size(); i++)
 	{
-		DEBUG("Deleting Terrain Layer. Layer ID: %i\n", terrainLayers[i]->GetID());
+		DEBUG("Deleting Terrain Layer. Layer ID: " << terrainLayers[i]->GetID());
 		delete terrainLayers[i];
 	}
 
 	// Delete all FillShader objects
 	for (unsigned int i=0; i<solidShaders.size(); i++)
 	{
-		DEBUG("Deleting Solid Shader. Shader ID: %i\n", solidShaders[i]->GetID());
+		DEBUG("Deleting Solid Shader. Shader ID: " << solidShaders[i]->GetID());
 		delete solidShaders[i];
 	}
 
 	// Delete all GLCamera objects
 	for (unsigned int i=0; i<cameras.size(); i++)
 	{
-		DEBUG("Deleting Camera. Camera ID: %i\n", cameras[i]->GetID());
+		DEBUG("Deleting Camera. Camera ID: " << cameras[i]->GetID());
 		delete cameras[i];
 	}
 }
@@ -189,11 +189,8 @@ unsigned int LayerManager::CreateNewTerrainLayer(std::string fort14Location, QPr
 	// Move the new TerrainLayer to the layerThread
 	newLayer->moveToThread(layerThread);
 
-	// Get the layer ready for reading
-	connect(newLayer, SIGNAL(fort14Valid()), newLayer, SLOT(readFort14()));
+	// Set up message passing and hook up the progress bar if one has been provided
 	connect(newLayer, SIGNAL(emitMessage(QString)), this, SIGNAL(emitMessage(QString)));
-
-	// Hook up the progress bar if one has been provided
 	if (progressBar)
 	{
 		connect(newLayer, SIGNAL(startedReadingFort14()), progressBar, SLOT(show()));

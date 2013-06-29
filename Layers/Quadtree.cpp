@@ -274,7 +274,7 @@ void Quadtree::addNode(Node *currNode, branch *currBranch)
 	}
 
 	// This node doesn't fit anywhere, let the user know
-	DEBUG("Error adding Node to Quadtree, node picking will not work for node number %i", currNode->nodeNumber);
+	DEBUG("Error adding Node to Quadtree, node picking will not work for node number " << currNode->nodeNumber);
 }
 
 

@@ -5,12 +5,12 @@ TerrainLayer::TerrainLayer()
 	fort14Location = "";
 	numNodes = 0;
 	numElements = 0;
-	minX = 0.0;
-	maxX = 0.0;
-	minY = 0.0;
-	maxY = 0.0;
-	minZ = 0.0;
-	maxZ = 0.0;
+	minX = 99999.0;
+	maxX = -99999.0;
+	minY = 99999.0;
+	maxY = -99999.0;
+	minZ = 99999.0;
+	maxZ = -99999.0;
 
 	flipZValue = true;
 	normalizeCoords = true;
@@ -18,6 +18,8 @@ TerrainLayer::TerrainLayer()
 
 	outlineShader = 0;
 	fillShader = 0;
+
+	connect(this, SIGNAL(fort14Valid()), this, SLOT(readFort14()));
 }
 
 
@@ -252,12 +254,12 @@ float TerrainLayer::GetMaxZ()
  */
 void TerrainLayer::SetFort14Location(std::string newLocation)
 {
-	fort14Location = newLocation;
-
-	// Check fort.14 here
-
-
-	emit fort14Valid();
+	std::ifstream testFileValid (newLocation.data());
+	if (testFileValid.good())
+	{
+		fort14Location = newLocation;
+		emit fort14Valid();
+	}
 }
 
 
@@ -297,7 +299,8 @@ void TerrainLayer::SetFillShader(GLShader *newShader)
  * Typical threaded usage of this function:
  * - Create TerrainLayer object on heap (using new)
  * - Create new QThread
- * - Move the TerrainLayer object to the
+ * - Move the TerrainLayer object to the newly created QThread
+ * - Set the fort.14 file when ready to get everything ready for drawing
  *
  */
 void TerrainLayer::readFort14()
@@ -329,10 +332,24 @@ void TerrainLayer::readFort14()
 				fort14 >> currNode.x;
 				fort14 >> currNode.y;
 				fort14 >> currNode.z;
+
+				// Check against min/max values and flip the z-value if needed
+				if (currNode.x < minX)
+					minX = currNode.x;
+				else if (currNode.x > maxX)
+					maxX = currNode.x;
+				if (currNode.y < minY)
+					minY = currNode.y;
+				else if (currNode.y > maxY)
+					maxY = currNode.y;
 				if (flipZValue)
 					currNode.z *= -1.0;
+				if (currNode.z < minZ)
+					minZ = currNode.z;
+				else if (currNode.z > maxZ)
+					maxZ = currNode.z;
 				nodes.push_back(currNode);
-				emit progress((++linesRead)/linesToRead);
+				emit progress(100*(++linesRead)/linesToRead);
 			}
 
 			Element currElement;
@@ -345,7 +362,7 @@ void TerrainLayer::readFort14()
 				fort14 >> currElement.n2;
 				fort14 >> currElement.n3;
 				elements.push_back(currElement);
-				emit progress((++linesRead)/linesToRead);
+				emit progress(100*(++linesRead)/linesToRead);
 			}
 
 			fort14.close();
@@ -354,19 +371,19 @@ void TerrainLayer::readFort14()
 
 			emit finishedReadingFort14();
 			emit emitMessage(QString("Terrain layer created: <strong>").append(infoLine.data()).append("</strong>"));
+
+			DEBUG("x-range:\t" << minX << "\t" << maxX);
+			DEBUG("y-range:\t" << minY << "\t" << maxY);
+			DEBUG("z-range:\t" << minZ << "\t" << maxZ);
 		}
 	} else {
 		fileLoaded = false;
 		emit emitMessage("Error opening fort.14 file");
 	}
+}
 
-//	// Simulate a file being read
-//	emit startedReadingFort14();
-//	for (unsigned int i=0; i<100; i++)
-//	{
-//		usleep(10000);
-//		emit progress(i+1);
-//	}
-//	emit finishedReadingFort14();
-//	emit emitMessage(QString("Terrain layer created"));
+
+void TerrainLayer::loadDataToGPU()
+{
+
 }

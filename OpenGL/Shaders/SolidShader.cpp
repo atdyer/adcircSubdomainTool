@@ -7,6 +7,7 @@
 SolidShader::SolidShader()
 {
 	vertexSource =  "#version 330"
+			"\n"
 			"layout(location=0) in vec4 in_Position;"
 			"out vec4 ex_Color;"
 			"uniform mat4 MVPMatrix;"
@@ -18,6 +19,7 @@ SolidShader::SolidShader()
 			"}";
 
 	fragSource =	"#version 330"
+			"\n"
 			"in vec4 ex_Color;"
 			"out vec4 out_Color;"
 			"void main(void)"

@@ -84,7 +84,7 @@ void OpenGLPanel::paintGL()
 	if (layerManager)
 		layerManager->DrawVisibleLayers();
 	else
-		DEBUG("No Layer Manager Assigned\n");
+		DEBUG("No Layer Manager Assigned");
 }
 
 

@@ -1,7 +1,6 @@
 #ifndef TERRAINLAYER_H
 #define TERRAINLAYER_H
 
-#include "adcData.h"
 #include "Quadtree.h"
 #include "Layer.h"
 #include "OpenGL/Shaders/GLShader.h"
@@ -10,7 +9,6 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
-#include <iostream>
 #include <QThread>
 
 
@@ -85,10 +83,12 @@ class TerrainLayer : public Layer
 		// Picking Variables
 		Quadtree*	quadtree;	/**< The quadtree used for Node picking */
 
+
 	public slots:
 
 		// Slots used for work that needs to be performed on a worker thread
-		void	readFort14();
+		void	readFort14();		/**< Reads the fort.14 file */
+		void	loadDataToGPU();	/**< Loads data to the GPU for drawing */
 
 	signals:
 
