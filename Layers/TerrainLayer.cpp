@@ -13,7 +13,6 @@ TerrainLayer::TerrainLayer()
 	maxZ = -99999.0;
 
 	flipZValue = true;
-	normalizeCoords = true;
 	fileLoaded = false;
 	glLoaded = false;
 
@@ -114,8 +113,8 @@ void TerrainLayer::LoadDataToGPU()
 		{
 			for (unsigned int i=0; i<numNodes; i++)
 			{
-				glNodeData[4*i+0] = (GLfloat)nodes[i].x;
-				glNodeData[4*i+1] = (GLfloat)nodes[i].y;
+				glNodeData[4*i+0] = (GLfloat)nodes[i].normX;
+				glNodeData[4*i+1] = (GLfloat)nodes[i].normY;
 				glNodeData[4*i+2] = (GLfloat)nodes[i].z;
 				glNodeData[4*i+3] = (GLfloat)1.0;
 			}
@@ -484,6 +483,20 @@ void TerrainLayer::readFort14()
 			fort14.close();
 
 			fileLoaded = true;
+
+
+			// Calculate normalized coordinates
+			float midX, midY, max;
+			midX = minX + (maxX - minX) / 2.0;
+			midY = minY + (maxY - minY) / 2.0;
+			max = fmax(maxX-minX, maxY-minY);
+			for (unsigned int i=0; i<numNodes; i++)
+			{
+				nodes[i].normX = (nodes[i].x - midX)/max;
+				nodes[i].normY = (nodes[i].y - midY)/max;
+				std::cout << nodes[i].normX << std::endl;
+			}
+
 
 			emit finishedReadingFort14();
 			emit emitMessage(QString("Terrain layer created: <strong>").append(infoLine.data()).append("</strong>"));
