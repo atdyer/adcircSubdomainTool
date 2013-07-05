@@ -102,7 +102,16 @@ void SolidShader::UpdateUniforms()
 		glUniformMatrix4fv(MVPUniform, 1, GL_FALSE, camera->MVPMatrix.m);
 		glUniform4fv(ColorUniform, 1, rgba);
 
-		uniformsSet = true;
+		GLenum errVal = glGetError();
+		if (errVal != GL_NO_ERROR)
+		{
+			const GLubyte *errString = gluErrorString(errVal);
+			DEBUG("OpenGL Error: " << errString);
+			uniformsSet = false;
+		} else {
+			uniformsSet = true;
+		}
+
 	} else {
 		uniformsSet = false;
 	}

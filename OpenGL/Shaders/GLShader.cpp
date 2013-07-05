@@ -48,13 +48,15 @@ GLShader::~GLShader()
  * operations.
  *
  */
-void GLShader::Use()
+bool GLShader::Use()
 {
-	if (loaded && uniformsSet)
+	UpdateUniforms();
+	if (uniformsSet)
 	{
-		UpdateUniforms();
 		glUseProgram(programID);
+		return true;
 	}
+	return false;
 }
 
 
@@ -68,11 +70,14 @@ void GLShader::Use()
  */
 void GLShader::SetCamera(GLCamera *newCamera)
 {
-	if (camera != 0)
+	if (newCamera != 0)
 	{
 		camera = newCamera;
 		camSet = true;
+		DEBUG("Camera set for shader " << shaderID);
 		UpdateUniforms();
+	} else {
+		DEBUG("Error setting camera for shader " << shaderID << "  ---  " << newCamera);
 	}
 }
 

@@ -82,7 +82,7 @@ void MainWindow::on_minimizeMainTabButton_clicked()
 void MainWindow::on_openFileButton_clicked()
 {
 	// Testing the Layer Manager by adding a terrain layer
-	layerManager.CreateNewTerrainLayer("/home/tristan/Desktop/adcircFiles/fort.14", ui->progressBar);
+	layerManager.CreateNewTerrainLayer("/home/tristan/Desktop/adcSwan/sub/fort.14", ui->progressBar);
 }
 
 

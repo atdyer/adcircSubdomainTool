@@ -13,7 +13,7 @@
 
 
 /**
- * @brief This class is used to read a display terrain data from a fort.14 file
+ * @brief This class is used to read and display terrain data from a fort.14 file
  *
  * This class is responsible for all data associated with an ADCIRC fort.14 file. It is
  * capable of reading the file, storing the data, and quickly accessing and drawing the
@@ -31,6 +31,7 @@ class TerrainLayer : public Layer
 
 		// Virtual methods to override
 		virtual void	Draw();
+		virtual void	LoadDataToGPU();
 
 		// Getter Methods
 		std::string	GetFort14Location();
@@ -51,6 +52,8 @@ class TerrainLayer : public Layer
 		void	SetFort14Location(std::string newLocation);
 		void	SetOutlineShader(GLShader *newShader);
 		void	SetFillShader(GLShader *newShader);
+
+
 
 	protected:
 
@@ -79,16 +82,18 @@ class TerrainLayer : public Layer
 		bool	flipZValue;		/**< Flag that determines if the z-value is multiplied by -1 before being loaded to the GPU */
 		bool	normalizeCoords;	/**< Flag that determines if the xy-coords will be normalized before begin loaded to the GPU */
 		bool	fileLoaded;		/**< Flag that shows if data has been successfully read from the fort.14 file */
+		bool	glLoaded;		/**< Flat that shows if data has been successfully sent to the GPU */
 
 		// Picking Variables
 		Quadtree*	quadtree;	/**< The quadtree used for Node picking */
+
+
 
 
 	public slots:
 
 		// Slots used for work that needs to be performed on a worker thread
 		void	readFort14();		/**< Reads the fort.14 file */
-		void	loadDataToGPU();	/**< Loads data to the GPU for drawing */
 
 	signals:
 

@@ -15,9 +15,15 @@ TerrainLayer::TerrainLayer()
 	flipZValue = true;
 	normalizeCoords = true;
 	fileLoaded = false;
+	glLoaded = false;
 
+	VAOId = 0;
+	VBOId = 0;
+	IBOId = 0;
 	outlineShader = 0;
 	fillShader = 0;
+
+	quadtree = 0;
 
 	connect(this, SIGNAL(fort14Valid()), this, SLOT(readFort14()));
 }
@@ -25,29 +31,18 @@ TerrainLayer::TerrainLayer()
 
 TerrainLayer::~TerrainLayer()
 {
-	if (fileLoaded)
-	{
-		glBindVertexArray(VAOId);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-		if (fillShader)
-		{
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			glPolygonOffset(6, 6);
-			fillShader->Use();
-			glDrawElements(GL_TRIANGLES, numElements*3, GL_UNSIGNED_INT, (GLvoid*)0);
-		}
+	if (VBOId)
+		glDeleteBuffers(1, &VBOId);
+	if (VAOId)
+		glDeleteBuffers(1, &VAOId);
+	if (IBOId)
+		glDeleteBuffers(1, &IBOId);
 
-		if (outlineShader)
-		{
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			glPolygonOffset(4, 4);
-			outlineShader->Use();
-			glDrawElements(GL_TRIANGLES, numElements*3, GL_UNSIGNED_INT, (GLvoid*)0);
-		}
-
-		glBindVertexArray(0);
-		glUseProgram(0);
-	}
+	if (quadtree)
+		delete quadtree;
 }
 
 
@@ -60,6 +55,123 @@ TerrainLayer::~TerrainLayer()
 void TerrainLayer::Draw()
 {
 	std::cout << "Drawing" << std::endl;
+
+	if (fileLoaded && glLoaded)
+	{
+		glBindVertexArray(VAOId);
+
+		if (fillShader)
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			glPolygonOffset(6, 6);
+			if (fillShader->Use())
+				glDrawElements(GL_TRIANGLES, numElements*3, GL_UNSIGNED_INT, (GLvoid*)0);
+		}
+
+		if (outlineShader)
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			glPolygonOffset(4, 4);
+			if (outlineShader->Use())
+				glDrawElements(GL_TRIANGLES, numElements*3, GL_UNSIGNED_INT, (GLvoid*)0);
+		}
+
+		glBindVertexArray(0);
+		glUseProgram(0);
+	}
+}
+
+
+/**
+ * @brief Sends data to the GPU for use in drawing operations
+ *
+ * This function is used to send the data that is read from the fort.14 file to the GPU
+ * for use in drawing the layer. We make use of a Vertex Array Object, which keeps track of
+ * OpenGL state, as well as Vertex Buffer Objects and Index Buffer Objects, which are
+ * used for drawing large amounts of data very quickly.
+ *
+ */
+void TerrainLayer::LoadDataToGPU()
+{
+	if (fileLoaded)
+	{
+		const size_t VertexBufferSize = 4*sizeof(GLfloat)*numNodes;
+		const size_t IndexBufferSize = 3*sizeof(GLuint)*numElements;
+
+		glGenVertexArrays(1, &VAOId);
+		glGenBuffers(1, &VBOId);
+		glGenBuffers(1, &IBOId);
+
+		glBindVertexArray(VAOId);
+
+		// Send Vertex Data
+		glBindBuffer(GL_ARRAY_BUFFER, VBOId);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4*sizeof(GLfloat), 0);
+		glBufferData(GL_ARRAY_BUFFER, VertexBufferSize, NULL, GL_STATIC_DRAW);
+		GLfloat* glNodeData = (GLfloat *)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+		if (glNodeData)
+		{
+			for (unsigned int i=0; i<numNodes; i++)
+			{
+				glNodeData[4*i+0] = (GLfloat)nodes[i].x;
+				glNodeData[4*i+1] = (GLfloat)nodes[i].y;
+				glNodeData[4*i+2] = (GLfloat)nodes[i].z;
+				glNodeData[4*i+3] = (GLfloat)1.0;
+			}
+		} else {
+			glLoaded = false;
+			emit emitMessage("<p style:color='red'><strong>Error: Unable to load vertex data to GPU</strong>");
+			return;
+		}
+
+		if (glUnmapBuffer(GL_ARRAY_BUFFER) == GL_FALSE)
+		{
+			glLoaded = false;
+			DEBUG("ERROR: Unmapping vertex buffer for TerrainLayer " << GetID());
+			return;
+		}
+
+		// Send Index Data
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBOId);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, IndexBufferSize, NULL, GL_STATIC_DRAW);
+		GLuint* glElementData = (GLuint *)glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
+		if (glElementData)
+		{
+			for (unsigned int i=0; i<numElements; i++)
+			{
+				glElementData[3*i+0] = (GLuint)elements[i].n1-1;
+				glElementData[3*i+1] = (GLuint)elements[i].n2-1;
+				glElementData[3*i+2] = (GLuint)elements[i].n3-1;
+			}
+		} else {
+			glLoaded = false;
+			emit emitMessage("<p style:color='red'><strong>Error: Unable to load index data to GPU</strong>");
+			return;
+		}
+
+		if (glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER) == GL_FALSE)
+		{
+			glLoaded = false;
+			DEBUG("ERROR: Unmapping index buffer for TerrainLayer " << GetID());
+			return;
+		}
+
+		glBindVertexArray(0);
+
+		GLenum errorCheck = glGetError();
+		if (errorCheck == GL_NO_ERROR)
+		{
+			if (VAOId && VBOId && IBOId)
+			{
+				glLoaded = true;
+			}
+		} else {
+			const GLubyte *errString = gluErrorString(errorCheck);
+			DEBUG("OpenGL Error: " << errString);
+			glLoaded = false;
+		}
+	}
 }
 
 
@@ -259,6 +371,8 @@ void TerrainLayer::SetFort14Location(std::string newLocation)
 	{
 		fort14Location = newLocation;
 		emit fort14Valid();
+	} else {
+		emit emitMessage("<p style='color:red'><strong>Error:</strong> fort.14 file not found.</p>");
 	}
 }
 
@@ -273,6 +387,7 @@ void TerrainLayer::SetFort14Location(std::string newLocation)
  */
 void TerrainLayer::SetOutlineShader(GLShader *newShader)
 {
+	std::cout << "Outline Shader Set" << std::endl;
 	outlineShader = newShader;
 }
 
@@ -287,7 +402,8 @@ void TerrainLayer::SetOutlineShader(GLShader *newShader)
  */
 void TerrainLayer::SetFillShader(GLShader *newShader)
 {
-	outlineShader = newShader;
+	std::cout << "Fill Shader Set" << std::endl;
+	fillShader = newShader;
 }
 
 
@@ -382,8 +498,3 @@ void TerrainLayer::readFort14()
 	}
 }
 
-
-void TerrainLayer::loadDataToGPU()
-{
-
-}

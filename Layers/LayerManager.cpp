@@ -25,6 +25,9 @@ LayerManager::LayerManager(QObject *parent) : QObject(parent)
 	// Initialize the first camera
 	currentCam = new GLCamera();
 	cameras.push_back(currentCam);
+
+	// Nothing is currently loading
+	loadingLayer = 0;
 }
 
 
@@ -196,10 +199,12 @@ unsigned int LayerManager::CreateNewTerrainLayer(std::string fort14Location, QPr
 		connect(newLayer, SIGNAL(startedReadingFort14()), progressBar, SLOT(show()));
 		connect(newLayer, SIGNAL(progress(int)), progressBar, SLOT(setValue(int)));
 		connect(newLayer, SIGNAL(finishedReadingFort14()), progressBar, SLOT(hide()));
+		connect(newLayer, SIGNAL(finishedReadingFort14()), this, SLOT(LoadToGPU()));
 	}
 
 	// Set the fort.14 location to begin reading the file
 	newLayer->SetFort14Location(fort14Location);
+	loadingLayer = newLayer;
 
 	// Create a solid outline shader and solid fill shader with some nice default terrain colors
 	SolidShader* outlineShader = NewSolidShader(0.2, 0.2, 0.2, 0.5);
@@ -433,4 +438,28 @@ SolidShader* LayerManager::NewSolidShader(float r, float g, float b, float a)
 
 
 	return newShader;
+}
+
+
+/**
+ * @brief This slot is used to tell any layer that has just finished loading to
+ * send its data to the GPU
+ *
+ * This slot is necessary because OpenGL operations can only be performed on the main thread.
+ * Because we have decided to put all file reading operations for Layers onto a worker thread,
+ * we use this as a sort of dummy function that calls the Layer::LoadDataToGPU() function.
+ *
+ * This works because moving an object to a QThread only guarantees that slots will be executed
+ * on a separate thread. All other functions (such as the LoadDataToGPU() function) are executed
+ * on the main thread.
+ *
+ */
+void LayerManager::LoadToGPU()
+{
+	if (loadingLayer)
+	{
+		loadingLayer->LoadDataToGPU();
+		disconnect(loadingLayer, SIGNAL(finishedReadingFort14()), this, SLOT(LoadToGPU()));
+		loadingLayer = 0;
+	}
 }

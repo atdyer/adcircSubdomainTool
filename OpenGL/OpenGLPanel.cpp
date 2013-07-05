@@ -34,15 +34,15 @@ void OpenGLPanel::SetLayerManager(LayerManager *newManager)
  */
 void OpenGLPanel::initializeGL()
 {
-	glewExperimental = true;
+	glewExperimental = GL_TRUE;
 	GLenum err = glewInit();
 
 	if (err != GLEW_OK)
 	{
-		emit emitMessage("Error: GLEW unable to load OpenGL Extensions");
+		DEBUG("Error: GLEW unable to load OpenGL Extensions");
 		exit(EXIT_FAILURE);
 	} else {
-		emit emitMessage("OpenGL Extensions Loaded");
+		DEBUG("OpenGL Extensions Loaded");
 //		cout << "OpenGL Version: "  << glGetString(GL_VERSION) << endl;
 //		cout << "GLSL Version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << endl;
 //              cout << "GLEW Version: " << glewGetString(GLEW_VERSION) << endl;

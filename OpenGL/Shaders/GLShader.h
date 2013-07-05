@@ -24,7 +24,7 @@ class GLShader
 		~GLShader();
 
 		// Function Definitions
-		void	Use();
+		bool	Use();
 		void	SetCamera(GLCamera *newCamera);
 
 		// Getter Methods

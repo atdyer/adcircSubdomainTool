@@ -121,11 +121,19 @@ class LayerManager : public QObject
 
 		SolidShader*	NewSolidShader(float r, float g, float b, float a);
 
+	private:
+
+		Layer*	loadingLayer;
+
 	signals:
 
 		void	emitMessage(QString);
 		void	cameraChanged();
 		void	beingDestroyed();
+
+	public slots:
+
+		void	LoadToGPU();
 };
 
 #endif // LAYERMANAGER_H
