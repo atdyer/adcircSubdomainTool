@@ -4,6 +4,7 @@
 
 #include <QMainWindow>
 #include <QThread>
+#include <QLabel>
 //#include <qwt_plot.h>
 
 #include "Layers/LayerManager.h"
@@ -24,7 +25,10 @@ class MainWindow : public QMainWindow
 
 	public slots:
 
-		void displayOutput(QString text);
+		void	displayOutput(QString text);
+		void	showNumNodes(int numNodes);
+		void	showNumElements(int numElements);
+		void	showNumTS(int numTS);
 
 	private slots:
 
@@ -40,7 +44,8 @@ class MainWindow : public QMainWindow
 		Ui::MainWindow *ui;
 
 		// The status bar specific to the GLPanel
-		QStatusBar *glStatusBar;
+		QStatusBar	*glStatusBar;
+		QLabel		*numNodesLabel, *numElementsLabel, *numTSLabel;
 
 		// The LayerManager
 		LayerManager	layerManager;

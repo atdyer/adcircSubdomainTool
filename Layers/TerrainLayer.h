@@ -99,8 +99,11 @@ class TerrainLayer : public Layer
 		// Signals used during threaded reading of fort.14
 		void	fort14Valid();
 		void	startedReadingFort14();
+		void	foundNumNodes(int);
+		void	foundNumElements(int);
 		void	progress(int percentage);
 		void	finishedReadingFort14();
+		void	finishedLoadingToGPU();
 		void	error(QString err);
 };
 

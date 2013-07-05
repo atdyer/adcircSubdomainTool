@@ -200,6 +200,9 @@ unsigned int LayerManager::CreateNewTerrainLayer(std::string fort14Location, QPr
 		connect(newLayer, SIGNAL(progress(int)), progressBar, SLOT(setValue(int)));
 		connect(newLayer, SIGNAL(finishedReadingFort14()), progressBar, SLOT(hide()));
 		connect(newLayer, SIGNAL(finishedReadingFort14()), this, SLOT(LoadToGPU()));
+		connect(newLayer, SIGNAL(finishedLoadingToGPU()), this, SIGNAL(updateGL()));
+		connect(newLayer, SIGNAL(foundNumNodes(int)), this, SIGNAL(numNodesChanged(int)));
+		connect(newLayer, SIGNAL(foundNumElements(int)), this, SIGNAL(numElementsChanged(int)));
 	}
 
 	// Set the fort.14 location to begin reading the file

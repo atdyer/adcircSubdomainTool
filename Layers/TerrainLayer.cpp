@@ -162,6 +162,7 @@ void TerrainLayer::LoadDataToGPU()
 			if (VAOId && VBOId && IBOId)
 			{
 				glLoaded = true;
+				emit finishedLoadingToGPU();
 			}
 		} else {
 			const GLubyte *errString = gluErrorString(errorCheck);
@@ -429,6 +430,9 @@ void TerrainLayer::readFort14()
 		std::getline(fort14, line);
 		std::stringstream(line) >> numElements >> numNodes;
 
+		emit foundNumNodes(numNodes);
+		emit foundNumElements(numElements);
+
 		// Progress bar stuff
 		int progressPoint = 0;
 		int progressPoints = numElements+2*numNodes;
@@ -503,6 +507,9 @@ void TerrainLayer::readFort14()
 			DEBUG("x-range:\t" << minX << "\t" << maxX);
 			DEBUG("y-range:\t" << minY << "\t" << maxY);
 			DEBUG("z-range:\t" << minZ << "\t" << maxZ);
+		} else {
+			fileLoaded = false;
+			emit emitMessage("Error reading fort.14 file");
 		}
 	} else {
 		fileLoaded = false;

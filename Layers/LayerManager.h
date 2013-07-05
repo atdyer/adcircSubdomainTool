@@ -128,7 +128,11 @@ class LayerManager : public QObject
 	signals:
 
 		void	emitMessage(QString);
+		void	numNodesChanged(int);
+		void	numElementsChanged(int);
+		void	numTSChanged(int);
 		void	cameraChanged();
+		void	updateGL();
 		void	beingDestroyed();
 
 	public slots:

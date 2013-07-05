@@ -10,9 +10,19 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	// Create GLPanel status bar
 	glStatusBar = new QStatusBar();
+	numNodesLabel = new QLabel("<b>Nodes:</b> -       ");
+	numElementsLabel = new QLabel("<b>Elements:</b> -       ");
+	numTSLabel = new QLabel("<b>Timesteps:</b> -");
+
+	// Stylize GL Panel status bar stuff
 	glStatusBar->setSizeGripEnabled(false);
+	glStatusBar->setStyleSheet("QStatusBar::item {border: 0px solid black };");
+
+	// Add it all to the UI
 	ui->GLPanelStatusLayout->insertWidget(0, glStatusBar);
-	glStatusBar->showMessage("Nodes: -          Elements: -          Timesteps: -");
+	glStatusBar->insertWidget(0, numNodesLabel);
+	glStatusBar->insertWidget(1, numElementsLabel);
+	glStatusBar->insertWidget(2, numTSLabel);
 
 	// Hide the progress bar
 	ui->progressBar->hide();
@@ -26,6 +36,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	// Connect all necessary components to the output box
 	connect(&layerManager, SIGNAL(emitMessage(QString)), this, SLOT(displayOutput(QString)));
+
+	// Connect everything needed to update the GL Panel and GL Panel status bar
+	connect(&layerManager, SIGNAL(updateGL()), ui->GLPanel, SLOT(updateGL()));
+	connect(&layerManager, SIGNAL(numNodesChanged(int)), this, SLOT(showNumNodes(int)));
+	connect(&layerManager, SIGNAL(numElementsChanged(int)), this, SLOT(showNumElements(int)));
+	connect(&layerManager, SIGNAL(numTSChanged(int)), this, SLOT(showNumTS(int)));
 
 }
 
@@ -42,6 +58,39 @@ MainWindow::~MainWindow()
 void MainWindow::displayOutput(QString text)
 {
 	ui->outputBox->append(text);
+}
+
+
+/**
+ * @brief Updates the GL Panel status bar with a new number of nodes
+ * @param numNodes Number of nodes
+ */
+void MainWindow::showNumNodes(int numNodes)
+{
+	if (numNodesLabel)
+		numNodesLabel->setText(QString("<b>Nodes:</b> ").append(QString::number(numNodes)).append("   "));
+}
+
+
+/**
+ * @brief Updates the GL Panel status bar with a new number of elements
+ * @param numElements Number of elements
+ */
+void MainWindow::showNumElements(int numElements)
+{
+	if (numElementsLabel)
+		numElementsLabel->setText(QString("<b>Elements:</b> ").append(QString::number(numElements)).append("   "));
+}
+
+
+/**
+ * @brief Updates the GL Panel status bar with a new number of timesteps
+ * @param numTS Numer of timesteps
+ */
+void MainWindow::showNumTS(int numTS)
+{
+	if (numTSLabel)
+		numTSLabel->setText(QString("<b>Timesteps:</b> ").append(QString::number(numTS)).append("   "));
 }
 
 
