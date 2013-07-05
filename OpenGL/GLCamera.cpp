@@ -20,7 +20,7 @@ GLCamera::GLCamera()
 	// Set pan locations to zero and zoom levels on the order of lat/long granularity
 	panX = 0.0;
 	panY = 0.0;
-	zoomLevel = 1.0/EARTH_RADIUS;
+	zoomLevel = 1.0;
 	zoomScale = 1.1;
 
 	// Initial window values

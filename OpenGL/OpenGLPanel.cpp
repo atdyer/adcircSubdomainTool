@@ -4,6 +4,9 @@
 OpenGLPanel::OpenGLPanel(QWidget *parent) :
 	QGLWidget(parent)
 {
+	setFocus();
+	setFocusPolicy(Qt::ClickFocus);
+
 	layerManager = 0;
 	currentCam = 0;
 }
@@ -21,7 +24,10 @@ OpenGLPanel::OpenGLPanel(QWidget *parent) :
 void OpenGLPanel::SetLayerManager(LayerManager *newManager)
 {
 	if (newManager)
+	{
 		layerManager = newManager;
+		updateCurrentCamera();
+	}
 }
 
 
@@ -85,6 +91,53 @@ void OpenGLPanel::paintGL()
 		layerManager->DrawVisibleLayers();
 	else
 		DEBUG("No Layer Manager Assigned");
+}
+
+
+void OpenGLPanel::wheelEvent(QWheelEvent *event)
+{
+	if (currentCam)
+		currentCam->Zoom(event->delta());
+	updateGL();
+}
+
+
+void OpenGLPanel::mousePressEvent(QMouseEvent *event)
+{
+	pushedButton = event->button();
+	oldx = event->x();
+	oldy = event->y();
+	mouseMoved = false;
+}
+
+
+void OpenGLPanel::mouseMoveEvent(QMouseEvent *event)
+{
+	mouseMoved = true;
+	newx = event->x();
+	newy = event->y();
+	dx = newx-oldx;
+	dy = newy-oldy;
+
+	if (currentCam)
+		currentCam->Pan(dx, dy);
+
+	oldx = newx;
+	oldy = newy;
+
+	updateGL();
+}
+
+
+void OpenGLPanel::mouseReleaseEvent(QMouseEvent *event)
+{
+	if (!mouseMoved)
+	{
+		float x, y;
+		if (currentCam)
+			currentCam->GetUnprojectedPoint(event->x(), event->y(), &x, &y);
+	}
+	mouseMoved = false;
 }
 
 

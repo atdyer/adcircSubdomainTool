@@ -3,6 +3,7 @@
 
 #include "glew.h"
 #include <QGLWidget>
+#include <QWheelEvent>
 #include <Layers/LayerManager.h>
 
 
@@ -31,6 +32,18 @@ class OpenGLPanel : public QGLWidget
 		void		initializeGL();
 		void		resizeGL(int w, int h);
 		void		paintGL();
+
+		// Mouse and key events
+		void	wheelEvent(QWheelEvent *event);
+		void	mousePressEvent(QMouseEvent *event);
+		void	mouseMoveEvent(QMouseEvent *event);
+		void	mouseReleaseEvent(QMouseEvent *event);
+
+	private:
+
+		int	oldx, oldy, newx, newy, dx, dy;
+		bool	mouseMoved;
+		enum	Qt::MouseButton pushedButton;
 
 	public slots:
 

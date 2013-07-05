@@ -113,6 +113,7 @@ void SolidShader::UpdateUniforms()
 		}
 
 	} else {
+		DEBUG("Uniforms not updated");
 		uniformsSet = false;
 	}
 }

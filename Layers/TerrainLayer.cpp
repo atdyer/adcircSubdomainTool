@@ -53,8 +53,6 @@ TerrainLayer::~TerrainLayer()
  */
 void TerrainLayer::Draw()
 {
-	std::cout << "Drawing" << std::endl;
-
 	if (fileLoaded && glLoaded)
 	{
 		glBindVertexArray(VAOId);
@@ -115,7 +113,7 @@ void TerrainLayer::LoadDataToGPU()
 			{
 				glNodeData[4*i+0] = (GLfloat)nodes[i].normX;
 				glNodeData[4*i+1] = (GLfloat)nodes[i].normY;
-				glNodeData[4*i+2] = (GLfloat)nodes[i].z;
+				glNodeData[4*i+2] = (GLfloat)nodes[i].normZ;
 				glNodeData[4*i+3] = (GLfloat)1.0;
 			}
 		} else {
@@ -432,8 +430,8 @@ void TerrainLayer::readFort14()
 		std::stringstream(line) >> numElements >> numNodes;
 
 		// Progress bar stuff
-		int linesRead = 0;
-		int linesToRead = numElements+numNodes;
+		int progressPoint = 0;
+		int progressPoints = numElements+2*numNodes;
 
 		if (numNodes > 0 && numElements > 0)
 		{
@@ -464,7 +462,7 @@ void TerrainLayer::readFort14()
 				else if (currNode.z > maxZ)
 					maxZ = currNode.z;
 				nodes.push_back(currNode);
-				emit progress(100*(++linesRead)/linesToRead);
+				emit progress(100*(++progressPoint)/progressPoints);
 			}
 
 			Element currElement;
@@ -477,7 +475,7 @@ void TerrainLayer::readFort14()
 				fort14 >> currElement.n2;
 				fort14 >> currElement.n3;
 				elements.push_back(currElement);
-				emit progress(100*(++linesRead)/linesToRead);
+				emit progress(100*(++progressPoint)/progressPoints);
 			}
 
 			fort14.close();
@@ -494,7 +492,8 @@ void TerrainLayer::readFort14()
 			{
 				nodes[i].normX = (nodes[i].x - midX)/max;
 				nodes[i].normY = (nodes[i].y - midY)/max;
-				std::cout << nodes[i].normX << std::endl;
+				nodes[i].normZ = nodes[i].z / (maxZ-minZ);
+				emit progress(100*(++progressPoint)/progressPoints);
 			}
 
 

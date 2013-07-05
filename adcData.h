@@ -46,6 +46,7 @@ typedef struct {
 		float z;	/**< Third location coordinate defined in fort.14 file (depth with respect to GEOID) */
 		float normX;	/**< The normalized first location coordinate used for drawing operations */
 		float normY;	/**< The normalized second location coordinate used for drawing operations */
+		float normZ;	/**< The normalized third location coordinate used for drawing operations */
 } Node;
 
 
