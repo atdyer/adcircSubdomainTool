@@ -137,5 +137,5 @@ void MainWindow::on_openFileButton_clicked()
 
 void MainWindow::on_newProjectButton_clicked()
 {
-	displayOutput("Test");
+	ui->GLPanel->enterCircleSubdomainMode();
 }

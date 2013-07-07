@@ -4,8 +4,9 @@
 #include "glew.h"
 #include <QGLWidget>
 #include <QWheelEvent>
-#include <Layers/LayerManager.h>
 
+#include <Layers/LayerManager.h>
+#include <SubdomainTools/CircleTool.h>
 
 /**
  * @brief The Mode enum contains the available states for the OpenGLPanel. The
@@ -31,6 +32,8 @@ class OpenGLPanel : public QGLWidget
 
 		LayerManager*	layerManager;	/**< The LayerManager that will do all of the drawing */
 		GLCamera*	currentCam;	/**< The GLCamera currently being used in the LayerManager */
+
+		CircleTool	circleTool;
 
 		void		initializeGL();
 		void		resizeGL(int w, int h);

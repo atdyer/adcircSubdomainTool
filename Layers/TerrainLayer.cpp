@@ -60,7 +60,7 @@ void TerrainLayer::Draw()
 		if (fillShader)
 		{
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			glPolygonOffset(10, 10);
+//			glPolygonOffset(10, 10);
 			if (fillShader->Use())
 				glDrawElements(GL_TRIANGLES, numElements*3, GL_UNSIGNED_INT, (GLvoid*)0);
 		}
@@ -68,7 +68,7 @@ void TerrainLayer::Draw()
 		if (outlineShader)
 		{
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			glPolygonOffset(0, 0);
+//			glPolygonOffset(0, 0);
 			if (outlineShader->Use())
 				glDrawElements(GL_TRIANGLES, numElements*3, GL_UNSIGNED_INT, (GLvoid*)0);
 		}

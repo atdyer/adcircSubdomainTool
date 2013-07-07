@@ -59,14 +59,15 @@ void OpenGLPanel::initializeGL()
 	}
 
 	glClearColor(0.1, 0.2, 0.3, 1.0);
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_POLYGON_OFFSET_FILL);
-	glEnable(GL_POLYGON_OFFSET_LINE);
-	glDepthFunc(GL_LESS);
+	glDisable(GL_DEPTH_TEST);
+//	glEnable(GL_POLYGON_OFFSET_FILL);
+//	glEnable(GL_POLYGON_OFFSET_LINE);
+//	glDepthFunc(GL_LESS);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glPointSize(10);
-	glEnable(GL_POINT_SMOOTH);
+//	glPointSize(10);
+//	glEnable(GL_POINT_SMOOTH);
+	glEnable(GL_LINE_SMOOTH);
 }
 
 
@@ -79,7 +80,9 @@ void OpenGLPanel::resizeGL(int w, int h)
 {
 	glViewport(0, 0, w, h);
 	if (currentCam)
-		currentCam->SetWindowSize(-1.0*w/h, 1.0*w/h, -1.0, 1.0, -100.0, 100.0);
+		currentCam->SetWindowSize(-1.0*w/h, 1.0*w/h, -1.0, 1.0, -1000.0, 1000.0);
+
+	circleTool.SetViewportSize(w, h);
 }
 
 
@@ -93,29 +96,46 @@ void OpenGLPanel::paintGL()
 		layerManager->DrawVisibleLayers();
 	else
 		DEBUG("No Layer Manager Assigned");
+
+	if (viewMode == CircleSubdomainMode)
+		circleTool.Draw();
 }
 
 
+/**
+ * @brief Event fired when the mouse wheel is scrolled
+ * @param event
+ */
 void OpenGLPanel::wheelEvent(QWheelEvent *event)
 {
-	if (viewMode == DisplayMode)
-	{
-		if (currentCam)
-			currentCam->Zoom(event->delta());
-	}
+
+	if (currentCam)
+		currentCam->Zoom(event->delta());
+
 	updateGL();
 }
 
 
+/**
+ * @brief Event fired when a mouse button is clicked
+ * @param event
+ */
 void OpenGLPanel::mousePressEvent(QMouseEvent *event)
 {
 	pushedButton = event->button();
 	oldx = event->x();
 	oldy = event->y();
 	mouseMoved = false;
+
+	if (viewMode == CircleSubdomainMode)
+		circleTool.SetCenter(event->x(), event->y());
 }
 
 
+/**
+ * @brief Event fired when the mouse is moved while a mouse button is being held down
+ * @param event
+ */
 void OpenGLPanel::mouseMoveEvent(QMouseEvent *event)
 {
 	mouseMoved = true;
@@ -129,6 +149,10 @@ void OpenGLPanel::mouseMoveEvent(QMouseEvent *event)
 		if (currentCam)
 			currentCam->Pan(dx, dy);
 	}
+	else if (viewMode == CircleSubdomainMode)
+	{
+		circleTool.SetRadius(sqrt(pow(circleTool.GetX() - event->x(), 2.0) + pow(circleTool.GetY() - event->y(), 2.0)));
+	}
 
 	oldx = newx;
 	oldy = newy;
@@ -137,6 +161,10 @@ void OpenGLPanel::mouseMoveEvent(QMouseEvent *event)
 }
 
 
+/**
+ * @brief Event fired when a mouse button is released
+ * @param event
+ */
 void OpenGLPanel::mouseReleaseEvent(QMouseEvent *event)
 {
 	if (!mouseMoved)
@@ -152,6 +180,10 @@ void OpenGLPanel::mouseReleaseEvent(QMouseEvent *event)
 }
 
 
+/**
+ * @brief Retrieves the pointer to the camera currently being used by the Layer Manager
+ * and uses it for drawing.
+ */
 void OpenGLPanel::updateCurrentCamera()
 {
 	if (layerManager)
@@ -159,13 +191,19 @@ void OpenGLPanel::updateCurrentCamera()
 }
 
 
+/**
+ * @brief Sets the current view mode to Display Mode
+ */
 void OpenGLPanel::enterDisplayMode()
 {
-
+	viewMode = DisplayMode;
 }
 
 
+/**
+ * @brief Sets the current view mode to Circle Subdomain Mode
+ */
 void OpenGLPanel::enterCircleSubdomainMode()
 {
-
+	viewMode = CircleSubdomainMode;
 }
