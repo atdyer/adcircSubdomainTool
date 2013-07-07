@@ -210,7 +210,7 @@ unsigned int LayerManager::CreateNewTerrainLayer(std::string fort14Location, QPr
 	loadingLayer = newLayer;
 
 	// Create a solid outline shader and solid fill shader with some nice default terrain colors
-	SolidShader* outlineShader = NewSolidShader(0.2, 0.2, 0.2, 0.5);
+	SolidShader* outlineShader = NewSolidShader(0.2, 0.2, 0.2, 0.4);
 	SolidShader* fillShader = NewSolidShader(0.0, 1.0, 0.0, 1.0);
 
 	// Tell the new TerrainLayer to use the newly created shaders

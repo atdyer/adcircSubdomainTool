@@ -26,7 +26,8 @@ SOURCES += main.cpp\
     Layers/Quadtree.cpp \
     Layers/LayerManager.cpp \
     OpenGL/Shaders/GLShader.cpp \
-    OpenGL/Shaders/SolidShader.cpp
+    OpenGL/Shaders/SolidShader.cpp \
+    SubdomainTools/CircleTool.cpp
 
 HEADERS  += MainWindow.h \
     OpenGL/OpenGLPanel.h \
@@ -41,6 +42,7 @@ HEADERS  += MainWindow.h \
     Layers/Quadtree.h \
     Layers/LayerManager.h \
     OpenGL/Shaders/GLShader.h \
-    OpenGL/Shaders/SolidShader.h
+    OpenGL/Shaders/SolidShader.h \
+    SubdomainTools/CircleTool.h
 
 FORMS    += MainWindow.ui

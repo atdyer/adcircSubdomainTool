@@ -7,9 +7,12 @@
 #include <Layers/LayerManager.h>
 
 
-// Forward declaration of LayerManger class
-//class LayerManager;
-
+/**
+ * @brief The Mode enum contains the available states for the OpenGLPanel. The
+ * state defines what happens when the user interacts with the panel through
+ * clicks and key presses.
+ */
+enum Mode {DisplayMode, CircleSubdomainMode};
 
 /**
  * @brief This is a custom widget that is used specifically for drawing Layer objects
@@ -41,6 +44,7 @@ class OpenGLPanel : public QGLWidget
 
 	private:
 
+		enum	Mode viewMode;
 		int	oldx, oldy, newx, newy, dx, dy;
 		bool	mouseMoved;
 		enum	Qt::MouseButton pushedButton;
@@ -48,6 +52,8 @@ class OpenGLPanel : public QGLWidget
 	public slots:
 
 		void	updateCurrentCamera();
+		void	enterDisplayMode();
+		void	enterCircleSubdomainMode();
 
 	signals:
 

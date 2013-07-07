@@ -9,6 +9,8 @@ OpenGLPanel::OpenGLPanel(QWidget *parent) :
 
 	layerManager = 0;
 	currentCam = 0;
+
+	viewMode = DisplayMode;
 }
 
 
@@ -96,8 +98,11 @@ void OpenGLPanel::paintGL()
 
 void OpenGLPanel::wheelEvent(QWheelEvent *event)
 {
-	if (currentCam)
-		currentCam->Zoom(event->delta());
+	if (viewMode == DisplayMode)
+	{
+		if (currentCam)
+			currentCam->Zoom(event->delta());
+	}
 	updateGL();
 }
 
@@ -119,8 +124,11 @@ void OpenGLPanel::mouseMoveEvent(QMouseEvent *event)
 	dx = newx-oldx;
 	dy = newy-oldy;
 
-	if (currentCam)
-		currentCam->Pan(dx, dy);
+	if (viewMode == DisplayMode)
+	{
+		if (currentCam)
+			currentCam->Pan(dx, dy);
+	}
 
 	oldx = newx;
 	oldy = newy;
@@ -133,9 +141,12 @@ void OpenGLPanel::mouseReleaseEvent(QMouseEvent *event)
 {
 	if (!mouseMoved)
 	{
-		float x, y;
-		if (currentCam)
-			currentCam->GetUnprojectedPoint(event->x(), event->y(), &x, &y);
+		if (viewMode == DisplayMode)
+		{
+			float x, y;
+			if (currentCam)
+				currentCam->GetUnprojectedPoint(event->x(), event->y(), &x, &y);
+		}
 	}
 	mouseMoved = false;
 }
@@ -145,4 +156,16 @@ void OpenGLPanel::updateCurrentCamera()
 {
 	if (layerManager)
 		currentCam = layerManager->GetCurrentCamera();
+}
+
+
+void OpenGLPanel::enterDisplayMode()
+{
+
+}
+
+
+void OpenGLPanel::enterCircleSubdomainMode()
+{
+
 }
