@@ -69,14 +69,14 @@ void MainWindow::displayOutput(QString text)
 void MainWindow::showMouseX(float newX)
 {
 	if (mouseXLabel)
-		mouseXLabel->setText(QString("<b>X:</b> ").append(QString::number(newX)).append("   "));
+		mouseXLabel->setText(QString("<b>X:</b> ").append(QString::number(newX, 'f', 4)).append("   "));
 }
 
 
 void MainWindow::showMouseY(float newY)
 {
 	if (mouseYLabel)
-		mouseYLabel->setText(QString("<b>Y:</b> ").append(QString::number(newY)).append("   "));
+		mouseYLabel->setText(QString("<b>Y:</b> ").append(QString::number(newY, 'f', 4)).append("   "));
 }
 
 

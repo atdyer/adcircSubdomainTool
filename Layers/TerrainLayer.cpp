@@ -6,11 +6,14 @@ TerrainLayer::TerrainLayer()
 	numNodes = 0;
 	numElements = 0;
 	minX = 99999.0;
+	midX = 0.0;
 	maxX = -99999.0;
 	minY = 99999.0;
+	midY = 0.0;
 	maxY = -99999.0;
 	minZ = 99999.0;
 	maxZ = -99999.0;
+	max = 1.0;
 
 	flipZValue = true;
 	fileLoaded = false;
@@ -354,6 +357,40 @@ float TerrainLayer::GetMaxZ()
 
 
 /**
+ * @brief Given an x-coordinate in OpenGL space, this function returns the denormalized value
+ * of that coordinate.
+ *
+ * Drawing in OpenGL space is done around the origin. This is achieved by normalizing all
+ * coordinates defined in the fort.14 file. This function essentially does the opposite, by
+ * converting the coordinate back into the coordinate system from the fort.14 file.
+ *
+ * @param x The coordinate in OpenGL space
+ * @return The coordinate in the domain's coordinate system
+ */
+float TerrainLayer::GetUnprojectedX(float x)
+{
+	return x*max + midX;
+}
+
+
+/**
+ * @brief Given a y-coordinate in OpenGL space, this funtion returns the denormalized value
+ * of that coordinate.
+ *
+ * Drawing in OpenGL space is done around the origin. This is achieved by normalizing all
+ * coordinates defined in the fort.14 file. This function essentially does the opposite, by
+ * converting the coordinate back into the coordinate system from the fort.14 file.
+ *
+ * @param y The coordinate in OpenGL space
+ * @return The coordinate in the domain's coordinate system
+ */
+float TerrainLayer::GetUnprojectedY(float y)
+{
+	return y*max + midY;
+}
+
+
+/**
  * @brief Sets the location of the fort.14 file for this layer and checks its validity
  *
  * This function will store the given location of the fort.14 file and then attempt to
@@ -488,7 +525,6 @@ void TerrainLayer::readFort14()
 
 
 			// Calculate normalized coordinates
-			float midX, midY, max;
 			midX = minX + (maxX - minX) / 2.0;
 			midY = minY + (maxY - minY) / 2.0;
 			max = fmax(maxX-minX, maxY-minY);

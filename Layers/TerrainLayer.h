@@ -47,6 +47,8 @@ class TerrainLayer : public Layer
 		float		GetMaxY();
 		float		GetMinZ();
 		float		GetMaxZ();
+		float		GetUnprojectedX(float x);
+		float		GetUnprojectedY(float y);
 
 		// Setter Methods
 		void	SetFort14Location(std::string newLocation);
@@ -65,11 +67,14 @@ class TerrainLayer : public Layer
 		unsigned int		numNodes;	/**< The number of Nodes in the Layer as specified in fort.14 */
 		unsigned int		numElements;	/**< The number of Elements in the Layer as specified in fort.14 */
 		float			minX;		/**< The minimum x-value */
+		float			midX;		/**< The calculated center of the x-values */
 		float			maxX;		/**< The maximum x-value */
 		float			minY;		/**< The minimum y-value */
+		float			midY;		/**< the calculated center of the y-values */
 		float			maxY;		/**< The maximum y-value */
 		float			minZ;		/**< The minimum z-value */
 		float			maxZ;		/**< The maximum z-value */
+		float			max;		/**< The maximum of the width/height of the domain */
 
 		// Terrain Specific OpenGL Variables
 		GLuint		VAOId;			/**< The vertex array object ID in the OpenGL context */

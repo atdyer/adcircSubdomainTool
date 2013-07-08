@@ -71,7 +71,11 @@ class LayerManager : public QObject
 		LayerManager(QObject* parent=0);
 		~LayerManager();
 
-		// Camera functions
+		// Basic Getter Functions
+		float		GetMouseX(float x);
+		float		GetMouseY(float y);
+
+		// Camera Functions
 		GLCamera*	GetCurrentCamera();
 		void		SwitchToCamera(unsigned int camID);
 

@@ -68,6 +68,34 @@ LayerManager::~LayerManager()
 
 
 /**
+ * @brief Gets the x-coordinate in domain space from the first available TerrainLayer
+ * @param x The x-coordinate in OpenGL space
+ * @return The x-coordinate in domain space
+ */
+float LayerManager::GetMouseX(float x)
+{
+	if (terrainLayers.size() > 0)
+		return terrainLayers[0]->GetUnprojectedX(x);
+	else
+		return 0.0;
+}
+
+
+/**
+ * @brief Gets the y-coordinate in domain space from the first available TerrainLayer
+ * @param y The y-coordinate in OpenGL space
+ * @return The y-coordinate in domain space
+ */
+float LayerManager::GetMouseY(float y)
+{
+	if (terrainLayers.size() > 0)
+		return terrainLayers[0]->GetUnprojectedY(y);
+	else
+		return 0.0;
+}
+
+
+/**
  * @brief Returns the GLCamera currently being used by the shaders
  * @return Pointer to the current GLCamera
  */

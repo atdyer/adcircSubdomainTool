@@ -164,8 +164,17 @@ void OpenGLPanel::mouseMoveEvent(QMouseEvent *event)
 		updateGL();
 	}
 
-	emit mouseX(newx);
-	emit mouseY(newy);
+	if (layerManager && currentCam)
+	{
+		float x, y;
+		currentCam->GetUnprojectedPoint(newx, newy, &x,  &y);
+		emit mouseX(layerManager->GetMouseX(x));
+		emit mouseY(layerManager->GetMouseY(y));
+
+	} else {
+		emit mouseX(newx);
+		emit mouseY(newy);
+	}
 
 	oldx = newx;
 	oldy = newy;	

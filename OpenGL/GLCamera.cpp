@@ -164,9 +164,9 @@ void GLCamera::GetUnprojectedPoint(float x, float y, float *resultX, float *resu
 	GLdouble posZ = 0.0;
 	gluUnProject((GLdouble)x, (GLdouble)y, (GLdouble)0.0, modelview, projection, viewport, &posX, &posY, &posZ);
 
-	float aspectRatio = viewportX/viewportY;
+//	float aspectRatio = viewportX/viewportY;
 
-	*resultX = aspectRatio*posX/zoomLevel - panX;
+	*resultX = posX/zoomLevel - panX;
 	*resultY = posY/zoomLevel - panY;
 }
 
