@@ -48,6 +48,7 @@ class OpenGLPanel : public QGLWidget
 	private:
 
 		enum	Mode viewMode;
+		float	xDomain, yDomain;
 		int	oldx, oldy, newx, newy, dx, dy;
 		bool	clicking, mouseMoved;
 		enum	Qt::MouseButton pushedButton;
@@ -63,6 +64,8 @@ class OpenGLPanel : public QGLWidget
 		void	emitMessage(QString);
 		void	mouseX(float);
 		void	mouseY(float);
+		void	circleToolStatsSet(float, float, float);
+		void	circleToolStatsFinished();
 };
 
 #endif // OPENGLPANEL_H

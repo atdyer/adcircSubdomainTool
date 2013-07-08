@@ -8,10 +8,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	ui->setupUi(this);
 
-	// Create GLPanel status bar
+	// Create GLPanel status bar and all labels
 	glStatusBar = new QStatusBar();
+
 	mouseXLabel = new QLabel("<b>X:</b> - ");
 	mouseYLabel = new QLabel("<b>Y:</b> - ");
+
 	numNodesLabel = new QLabel("<b>Nodes:</b> -       ");
 	numElementsLabel = new QLabel("<b>Elements:</b> -       ");
 	numTSLabel = new QLabel("<b>Timesteps:</b> -");
@@ -41,13 +43,19 @@ MainWindow::MainWindow(QWidget *parent) :
 	// Connect all necessary components to the output box
 	connect(&layerManager, SIGNAL(emitMessage(QString)), this, SLOT(displayOutput(QString)));
 
-	// Connect everything needed to update the GL Panel and GL Panel status bar
+	//// Connect everything needed to update the GL Panel and GL Panel status bar
 	connect(&layerManager, SIGNAL(updateGL()), ui->GLPanel, SLOT(updateGL()));
 	connect(&layerManager, SIGNAL(numNodesChanged(int)), this, SLOT(showNumNodes(int)));
 	connect(&layerManager, SIGNAL(numElementsChanged(int)), this, SLOT(showNumElements(int)));
 	connect(&layerManager, SIGNAL(numTSChanged(int)), this, SLOT(showNumTS(int)));
+	// Mouse Movement
 	connect(ui->GLPanel, SIGNAL(mouseX(float)), this, SLOT(showMouseX(float)));
 	connect(ui->GLPanel, SIGNAL(mouseY(float)), this, SLOT(showMouseY(float)));
+	connect(ui->GLPanel, SIGNAL(circleToolStatsFinished()), glStatusBar, SLOT(clearMessage()));
+	// Circle Tool
+	connect(ui->GLPanel, SIGNAL(circleToolStatsSet(float,float,float)), this, SLOT(showCircleStats(float,float,float)));
+
+
 }
 
 MainWindow::~MainWindow()
@@ -113,6 +121,13 @@ void MainWindow::showNumTS(int numTS)
 }
 
 
+void MainWindow::showCircleStats(float x, float y, float rad)
+{
+	if (glStatusBar)
+		glStatusBar->showMessage(QString("Center: ").append(QString::number(x, 'f', 5)).append(", ").append(QString::number(y, 'f', 5)).append("   Radius: ").append(QString::number(rad, 'f', 5)));
+}
+
+
 /**
  * @brief Event Handler: Row is changed in the plotting tools list
  *
@@ -156,5 +171,12 @@ void MainWindow::on_openFileButton_clicked()
 
 void MainWindow::on_newProjectButton_clicked()
 {
-	ui->GLPanel->enterCircleSubdomainMode();
+	if (ui->GLPanel)
+		ui->GLPanel->enterCircleSubdomainMode();
+}
+
+void MainWindow::on_openProjectButton_clicked()
+{
+	if (ui->GLPanel)
+		ui->GLPanel->enterDisplayMode();
 }

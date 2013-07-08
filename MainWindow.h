@@ -32,6 +32,9 @@ class MainWindow : public QMainWindow
 		void	showNumElements(int numElements);
 		void	showNumTS(int numTS);
 
+		// Circle Tool Slots
+		void	showCircleStats(float x, float y, float rad);
+
 	private slots:
 
 		// User interface event handlers
@@ -39,6 +42,7 @@ class MainWindow : public QMainWindow
 		void on_minimizeMainTabButton_clicked();
 		void on_openFileButton_clicked();
 		void on_newProjectButton_clicked();
+		void on_openProjectButton_clicked();
 
 	private:
 

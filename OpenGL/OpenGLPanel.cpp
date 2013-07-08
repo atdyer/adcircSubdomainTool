@@ -11,6 +11,9 @@ OpenGLPanel::OpenGLPanel(QWidget *parent) :
 	layerManager = 0;
 	currentCam = 0;
 
+	xDomain = 0.0;
+	yDomain = 0.0;
+
 	clicking = false;
 
 	viewMode = DisplayMode;
@@ -133,7 +136,17 @@ void OpenGLPanel::mousePressEvent(QMouseEvent *event)
 	mouseMoved = false;
 
 	if (viewMode == CircleSubdomainMode)
+	{
 		circleTool.SetCenter(event->x(), event->y());
+		if (layerManager && currentCam)
+		{
+			currentCam->GetUnprojectedPoint(newx, newy, &xDomain,  &yDomain);
+			circleTool.SetDomainCenter(layerManager->GetMouseX(xDomain), layerManager->GetMouseY(yDomain));
+			emit circleToolStatsSet(circleTool.GetDomainX(), circleTool.GetDomainY(), 0.0);
+		} else {
+			emit circleToolStatsSet(circleTool.GetX(), circleTool.GetY(), 0.0);
+		}
+	}
 }
 
 
@@ -149,6 +162,17 @@ void OpenGLPanel::mouseMoveEvent(QMouseEvent *event)
 	dx = newx-oldx;
 	dy = newy-oldy;
 
+	if (layerManager && currentCam)
+	{
+		currentCam->GetUnprojectedPoint(newx, newy, &xDomain,  &yDomain);
+		emit mouseX(layerManager->GetMouseX(xDomain));
+		emit mouseY(layerManager->GetMouseY(yDomain));
+
+	} else {
+		emit mouseX(newx);
+		emit mouseY(newy);
+	}
+
 	if (clicking)
 	{
 		if (viewMode == DisplayMode)
@@ -159,22 +183,13 @@ void OpenGLPanel::mouseMoveEvent(QMouseEvent *event)
 		else if (viewMode == CircleSubdomainMode)
 		{
 			circleTool.SetRadius(sqrt(pow(circleTool.GetX() - event->x(), 2.0) + pow(circleTool.GetY() - event->y(), 2.0)));
+			emit circleToolStatsSet(circleTool.GetDomainX(), circleTool.GetDomainY(), circleTool.GetRadius());
 		}
 
 		updateGL();
 	}
 
-	if (layerManager && currentCam)
-	{
-		float x, y;
-		currentCam->GetUnprojectedPoint(newx, newy, &x,  &y);
-		emit mouseX(layerManager->GetMouseX(x));
-		emit mouseY(layerManager->GetMouseY(y));
 
-	} else {
-		emit mouseX(newx);
-		emit mouseY(newy);
-	}
 
 	oldx = newx;
 	oldy = newy;	
@@ -198,6 +213,12 @@ void OpenGLPanel::mouseReleaseEvent(QMouseEvent *event)
 				currentCam->GetUnprojectedPoint(event->x(), event->y(), &x, &y);
 		}
 	}
+
+	if (viewMode == CircleSubdomainMode)
+	{
+		emit circleToolStatsFinished();
+	}
+
 	mouseMoved = false;
 }
 
