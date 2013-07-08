@@ -10,6 +10,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	// Create GLPanel status bar
 	glStatusBar = new QStatusBar();
+	mouseXLabel = new QLabel("<b>X:</b> - ");
+	mouseYLabel = new QLabel("<b>Y:</b> - ");
 	numNodesLabel = new QLabel("<b>Nodes:</b> -       ");
 	numElementsLabel = new QLabel("<b>Elements:</b> -       ");
 	numTSLabel = new QLabel("<b>Timesteps:</b> -");
@@ -20,6 +22,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	// Add it all to the UI
 	ui->GLPanelStatusLayout->insertWidget(0, glStatusBar);
+	glStatusBar->insertPermanentWidget(0, mouseXLabel);
+	glStatusBar->insertPermanentWidget(1, mouseYLabel);
 	glStatusBar->insertWidget(0, numNodesLabel);
 	glStatusBar->insertWidget(1, numElementsLabel);
 	glStatusBar->insertWidget(2, numTSLabel);
@@ -42,7 +46,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(&layerManager, SIGNAL(numNodesChanged(int)), this, SLOT(showNumNodes(int)));
 	connect(&layerManager, SIGNAL(numElementsChanged(int)), this, SLOT(showNumElements(int)));
 	connect(&layerManager, SIGNAL(numTSChanged(int)), this, SLOT(showNumTS(int)));
-
+	connect(ui->GLPanel, SIGNAL(mouseX(float)), this, SLOT(showMouseX(float)));
+	connect(ui->GLPanel, SIGNAL(mouseY(float)), this, SLOT(showMouseY(float)));
 }
 
 MainWindow::~MainWindow()
@@ -58,6 +63,20 @@ MainWindow::~MainWindow()
 void MainWindow::displayOutput(QString text)
 {
 	ui->outputBox->append(text);
+}
+
+
+void MainWindow::showMouseX(float newX)
+{
+	if (mouseXLabel)
+		mouseXLabel->setText(QString("<b>X:</b> ").append(QString::number(newX)).append("   "));
+}
+
+
+void MainWindow::showMouseY(float newY)
+{
+	if (mouseYLabel)
+		mouseYLabel->setText(QString("<b>Y:</b> ").append(QString::number(newY)).append("   "));
 }
 
 

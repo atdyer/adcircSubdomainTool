@@ -6,9 +6,12 @@ OpenGLPanel::OpenGLPanel(QWidget *parent) :
 {
 	setFocus();
 	setFocusPolicy(Qt::ClickFocus);
+	setMouseTracking(true);
 
 	layerManager = 0;
 	currentCam = 0;
+
+	clicking = false;
 
 	viewMode = DisplayMode;
 }
@@ -122,7 +125,9 @@ void OpenGLPanel::wheelEvent(QWheelEvent *event)
  */
 void OpenGLPanel::mousePressEvent(QMouseEvent *event)
 {
+	clicking = true;
 	pushedButton = event->button();
+
 	oldx = event->x();
 	oldy = event->y();
 	mouseMoved = false;
@@ -144,20 +149,26 @@ void OpenGLPanel::mouseMoveEvent(QMouseEvent *event)
 	dx = newx-oldx;
 	dy = newy-oldy;
 
-	if (viewMode == DisplayMode)
+	if (clicking)
 	{
-		if (currentCam)
-			currentCam->Pan(dx, dy);
+		if (viewMode == DisplayMode)
+		{
+			if (currentCam)
+				currentCam->Pan(dx, dy);
+		}
+		else if (viewMode == CircleSubdomainMode)
+		{
+			circleTool.SetRadius(sqrt(pow(circleTool.GetX() - event->x(), 2.0) + pow(circleTool.GetY() - event->y(), 2.0)));
+		}
+
+		updateGL();
 	}
-	else if (viewMode == CircleSubdomainMode)
-	{
-		circleTool.SetRadius(sqrt(pow(circleTool.GetX() - event->x(), 2.0) + pow(circleTool.GetY() - event->y(), 2.0)));
-	}
+
+	emit mouseX(newx);
+	emit mouseY(newy);
 
 	oldx = newx;
-	oldy = newy;
-
-	updateGL();
+	oldy = newy;	
 }
 
 
@@ -167,6 +178,8 @@ void OpenGLPanel::mouseMoveEvent(QMouseEvent *event)
  */
 void OpenGLPanel::mouseReleaseEvent(QMouseEvent *event)
 {
+	clicking = false;
+
 	if (!mouseMoved)
 	{
 		if (viewMode == DisplayMode)

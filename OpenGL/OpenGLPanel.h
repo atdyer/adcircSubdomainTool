@@ -49,7 +49,7 @@ class OpenGLPanel : public QGLWidget
 
 		enum	Mode viewMode;
 		int	oldx, oldy, newx, newy, dx, dy;
-		bool	mouseMoved;
+		bool	clicking, mouseMoved;
 		enum	Qt::MouseButton pushedButton;
 
 	public slots:
@@ -61,6 +61,8 @@ class OpenGLPanel : public QGLWidget
 	signals:
 
 		void	emitMessage(QString);
+		void	mouseX(float);
+		void	mouseY(float);
 };
 
 #endif // OPENGLPANEL_H

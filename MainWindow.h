@@ -26,6 +26,8 @@ class MainWindow : public QMainWindow
 	public slots:
 
 		void	displayOutput(QString text);
+		void	showMouseX(float newX);
+		void	showMouseY(float newY);
 		void	showNumNodes(int numNodes);
 		void	showNumElements(int numElements);
 		void	showNumTS(int numTS);
@@ -45,7 +47,7 @@ class MainWindow : public QMainWindow
 
 		// The status bar specific to the GLPanel
 		QStatusBar	*glStatusBar;
-		QLabel		*numNodesLabel, *numElementsLabel, *numTSLabel;
+		QLabel		*mouseXLabel, *mouseYLabel, *numNodesLabel, *numElementsLabel, *numTSLabel;
 
 		// The LayerManager
 		LayerManager	layerManager;

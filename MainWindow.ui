@@ -393,7 +393,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <property name="tabsClosable">
        <bool>false</bool>
@@ -424,6 +424,267 @@
            <bool>true</bool>
           </property>
          </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="toolsTab">
+       <attribute name="title">
+        <string>Subdomain Tools</string>
+       </attribute>
+      </widget>
+      <widget class="QWidget" name="plotTab">
+       <attribute name="title">
+        <string>Plotting</string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <layout class="QHBoxLayout" name="plottingLayout">
+          <item>
+           <widget class="QListWidget" name="plottingList">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="alternatingRowColors">
+             <bool>false</bool>
+            </property>
+            <item>
+             <property name="text">
+              <string>Node Time-History</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Custom...</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item>
+           <widget class="QStackedWidget" name="plottingStack">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="currentIndex">
+             <number>0</number>
+            </property>
+            <widget class="QWidget" name="defaultPage">
+             <layout class="QHBoxLayout" name="horizontalLayout_7">
+              <item>
+               <spacer name="defaultPageLeftSpacer">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QLabel" name="defaultPageLabel">
+                <property name="text">
+                 <string>Choose A Plotting Tool</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="defaultPageRightSpacer">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="nodeTimeHistoryPage">
+             <layout class="QHBoxLayout" name="horizontalLayout_3">
+              <item>
+               <layout class="QVBoxLayout" name="nth_column1Layout">
+                <item>
+                 <layout class="QHBoxLayout" name="nth_nodeNumberLayout">
+                  <item>
+                   <widget class="QToolButton" name="nth_pickNodeButton">
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset theme="input-mouse">
+                      <normaloff/>
+                     </iconset>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLineEdit" name="nth_nodeNumber">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="nth_nodeNumberLabel">
+                    <property name="text">
+                     <string>Node Number</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <widget class="Line" name="nth_column1Line">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="nodeTimeHistory_Advanced">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="text">
+                   <string>Advanced...</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="nth_column1Spacer">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <widget class="Line" name="nth_line1">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QListWidget" name="nth_filesList">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Ignored">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="alternatingRowColors">
+                 <bool>false</bool>
+                </property>
+                <property name="selectionMode">
+                 <enum>QAbstractItemView::SingleSelection</enum>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Full Domain - fort.63</string>
+                 </property>
+                 <property name="checkState">
+                  <enum>Unchecked</enum>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Example 1 - fort.63</string>
+                 </property>
+                 <property name="checkState">
+                  <enum>Unchecked</enum>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Example 1 - fort.64</string>
+                 </property>
+                 <property name="checkState">
+                  <enum>Unchecked</enum>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item>
+               <widget class="Line" name="nth_line2">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="nth_column3Layout">
+                <item>
+                 <widget class="QRadioButton" name="nth_singlePlotRadio">
+                  <property name="text">
+                   <string>Single Plot</string>
+                  </property>
+                  <attribute name="buttonGroup">
+                   <string notr="true">nth_PlotTypeButtonGroup</string>
+                  </attribute>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QRadioButton" name="nth_separatePlotRadio">
+                  <property name="text">
+                   <string>Separate Plots</string>
+                  </property>
+                  <attribute name="buttonGroup">
+                   <string notr="true">nth_PlotTypeButtonGroup</string>
+                  </attribute>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="nth_plotTypeSpacer">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="nth_createPlotButton">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="text">
+                   <string>Create Plot</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </widget>
@@ -772,267 +1033,6 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="toolsTab">
-       <attribute name="title">
-        <string>Subdomain Tools</string>
-       </attribute>
-      </widget>
-      <widget class="QWidget" name="plotTab">
-       <attribute name="title">
-        <string>Plotting</string>
-       </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout_5">
-        <item>
-         <layout class="QHBoxLayout" name="plottingLayout">
-          <item>
-           <widget class="QListWidget" name="plottingList">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="alternatingRowColors">
-             <bool>false</bool>
-            </property>
-            <item>
-             <property name="text">
-              <string>Node Time-History</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Custom...</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item>
-           <widget class="QStackedWidget" name="plottingStack">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="currentIndex">
-             <number>0</number>
-            </property>
-            <widget class="QWidget" name="defaultPage">
-             <layout class="QHBoxLayout" name="horizontalLayout_7">
-              <item>
-               <spacer name="defaultPageLeftSpacer">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QLabel" name="defaultPageLabel">
-                <property name="text">
-                 <string>Choose A Plotting Tool</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="defaultPageRightSpacer">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
-            </widget>
-            <widget class="QWidget" name="nodeTimeHistoryPage">
-             <layout class="QHBoxLayout" name="horizontalLayout_3">
-              <item>
-               <layout class="QVBoxLayout" name="nth_column1Layout">
-                <item>
-                 <layout class="QHBoxLayout" name="nth_nodeNumberLayout">
-                  <item>
-                   <widget class="QToolButton" name="nth_pickNodeButton">
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="icon">
-                     <iconset theme="input-mouse">
-                      <normaloff/>
-                     </iconset>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLineEdit" name="nth_nodeNumber">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLabel" name="nth_nodeNumberLabel">
-                    <property name="text">
-                     <string>Node Number</string>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-                <item>
-                 <widget class="Line" name="nth_column1Line">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="nodeTimeHistory_Advanced">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                  <property name="text">
-                   <string>Advanced...</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <spacer name="nth_column1Spacer">
-                  <property name="orientation">
-                   <enum>Qt::Vertical</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>20</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-               </layout>
-              </item>
-              <item>
-               <widget class="Line" name="nth_line1">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QListWidget" name="nth_filesList">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Ignored">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="alternatingRowColors">
-                 <bool>false</bool>
-                </property>
-                <property name="selectionMode">
-                 <enum>QAbstractItemView::SingleSelection</enum>
-                </property>
-                <item>
-                 <property name="text">
-                  <string>Full Domain - fort.63</string>
-                 </property>
-                 <property name="checkState">
-                  <enum>Unchecked</enum>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Example 1 - fort.63</string>
-                 </property>
-                 <property name="checkState">
-                  <enum>Unchecked</enum>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Example 1 - fort.64</string>
-                 </property>
-                 <property name="checkState">
-                  <enum>Unchecked</enum>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item>
-               <widget class="Line" name="nth_line2">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <layout class="QVBoxLayout" name="nth_column3Layout">
-                <item>
-                 <widget class="QRadioButton" name="nth_singlePlotRadio">
-                  <property name="text">
-                   <string>Single Plot</string>
-                  </property>
-                  <attribute name="buttonGroup">
-                   <string notr="true">nth_PlotTypeButtonGroup</string>
-                  </attribute>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QRadioButton" name="nth_separatePlotRadio">
-                  <property name="text">
-                   <string>Separate Plots</string>
-                  </property>
-                  <attribute name="buttonGroup">
-                   <string notr="true">nth_PlotTypeButtonGroup</string>
-                  </attribute>
-                 </widget>
-                </item>
-                <item>
-                 <spacer name="nth_plotTypeSpacer">
-                  <property name="orientation">
-                   <enum>Qt::Vertical</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>20</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="nth_createPlotButton">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                  <property name="text">
-                   <string>Create Plot</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
      </widget>
     </item>
    </layout>
@@ -1085,7 +1085,7 @@
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="nth_PlotTypeButtonGroup"/>
   <buttongroup name="fillColorButtonGroup"/>
+  <buttongroup name="nth_PlotTypeButtonGroup"/>
  </buttongroups>
 </ui>
