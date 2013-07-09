@@ -33,7 +33,7 @@ class OpenGLPanel : public QGLWidget
 		LayerManager*	layerManager;	/**< The LayerManager that will do all of the drawing */
 		GLCamera*	currentCam;	/**< The GLCamera currently being used in the LayerManager */
 
-		CircleTool	circleTool;
+		CircleTool	circleTool;	/**< Tool for selecting nodes by drawing a circle */
 
 		void		initializeGL();
 		void		resizeGL(int w, int h);

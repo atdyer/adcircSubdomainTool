@@ -17,6 +17,8 @@ OpenGLPanel::OpenGLPanel(QWidget *parent) :
 	clicking = false;
 
 	viewMode = DisplayMode;
+
+	connect(&circleTool, SIGNAL(CircleStatsSet(float,float,float)), this, SIGNAL(circleToolStatsSet(float,float,float)));
 }
 
 
@@ -35,6 +37,7 @@ void OpenGLPanel::SetLayerManager(LayerManager *newManager)
 	{
 		layerManager = newManager;
 		updateCurrentCamera();
+		connect(layerManager, SIGNAL(activeTerrainLayer(TerrainLayer*)), &circleTool, SLOT(SetTerrainLayer(TerrainLayer*)));
 	}
 }
 
@@ -115,8 +118,11 @@ void OpenGLPanel::paintGL()
 void OpenGLPanel::wheelEvent(QWheelEvent *event)
 {
 
-	if (currentCam)
+	if (viewMode == DisplayMode && currentCam)
 		currentCam->Zoom(event->delta());
+
+//	if (viewMode == CircleSubdomainMode)
+//		circleTool.ScaleCircle(event->delta());
 
 	updateGL();
 }
@@ -137,14 +143,14 @@ void OpenGLPanel::mousePressEvent(QMouseEvent *event)
 
 	if (viewMode == CircleSubdomainMode)
 	{
-		circleTool.SetCenter(event->x(), event->y());
 		if (layerManager && currentCam)
 		{
-			currentCam->GetUnprojectedPoint(newx, newy, &xDomain,  &yDomain);
-			circleTool.SetDomainCenter(layerManager->GetMouseX(xDomain), layerManager->GetMouseY(yDomain));
-			emit circleToolStatsSet(circleTool.GetDomainX(), circleTool.GetDomainY(), 0.0);
+//			currentCam->GetUnprojectedPoint(oldx, oldy, &xDomain,  &yDomain);
+			circleTool.SetCenter(oldx, oldy);
+//			circleTool.SetDomainCenter(layerManager->GetMouseX(xDomain), layerManager->GetMouseY(yDomain));
+//			emit circleToolStatsSet(circleTool.GetDomainX(), circleTool.GetDomainY(), 0.0);
 		} else {
-			emit circleToolStatsSet(circleTool.GetX(), circleTool.GetY(), 0.0);
+//			emit circleToolStatsSet(circleTool.GetX(), circleTool.GetY(), 0.0);
 		}
 	}
 }
@@ -182,8 +188,8 @@ void OpenGLPanel::mouseMoveEvent(QMouseEvent *event)
 		}
 		else if (viewMode == CircleSubdomainMode)
 		{
-			circleTool.SetRadius(sqrt(pow(circleTool.GetX() - event->x(), 2.0) + pow(circleTool.GetY() - event->y(), 2.0)));
-			emit circleToolStatsSet(circleTool.GetDomainX(), circleTool.GetDomainY(), circleTool.GetRadius());
+			circleTool.SetRadiusPoint(event->x(), event->y());
+//			emit circleToolStatsSet(circleTool.GetDomainX(), circleTool.GetDomainY(), circleTool.GetRadius());
 		}
 
 		updateGL();
@@ -231,6 +237,7 @@ void OpenGLPanel::updateCurrentCamera()
 {
 	if (layerManager)
 		currentCam = layerManager->GetCurrentCamera();
+	circleTool.SetCamera(currentCam);
 }
 
 

@@ -172,6 +172,39 @@ void GLCamera::GetUnprojectedPoint(float x, float y, float *resultX, float *resu
 
 
 /**
+ * @brief Gets the x- and y-coordinates on the window given a point in model space
+ * @param x The x-coordinate in model space
+ * @param y The y-coordinate in model space
+ * @param resultX Pointer to the value that will store the x result
+ * @param resultY Pointer to the value that will store the y result
+ */
+void GLCamera::GetProjectedPoint(float x, float y, float *resultX, float *resultY)
+{
+	float xtemp = (x + panX) * zoomLevel;
+	float ytemp = (y + panY) * zoomLevel;
+
+	GLint viewport[4];
+	glGetIntegerv(GL_VIEWPORT, viewport);
+
+	GLdouble modelview[16];
+	glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
+
+	GLdouble projection[16];
+	glGetDoublev(GL_PROJECTION_MATRIX, projection);
+
+	GLdouble posX = 0.0;
+	GLdouble posY = 0.0;
+	GLdouble posZ = 0.0;
+
+	if (gluProject((GLdouble)xtemp, (GLdouble)ytemp, (GLdouble)0.0, modelview, projection, viewport, &posX, &posY, &posZ) == GLU_FALSE)
+		DEBUG("Nope");
+
+	*resultX = (float)posX;
+	*resultY = (float)posY;
+}
+
+
+/**
  * @brief Updates the Model Matrix, which is responsible for panning
  */
 void GLCamera::UpdateModel()

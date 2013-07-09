@@ -253,6 +253,7 @@ unsigned int LayerManager::CreateNewTerrainLayer(std::string fort14Location, QPr
 	solidOutlineShaders[newColumn] = outlineShader;
 	solidFillShaders[newColumn] = fillShader;
 
+	emit activeTerrainLayer(newLayer);
 
 	// Return the new TerrainLayer's ID
 	return newLayer->GetID();

@@ -139,6 +139,8 @@ class LayerManager : public QObject
 		void	updateGL();
 		void	beingDestroyed();
 
+		void	activeTerrainLayer(TerrainLayer*);
+
 	public slots:
 
 		void	LoadToGPU();

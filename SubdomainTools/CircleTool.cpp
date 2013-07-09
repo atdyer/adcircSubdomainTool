@@ -2,11 +2,19 @@
 
 CircleTool::CircleTool()
 {
-	x = 0.0;
-	domainX = 0.0;
-	y = 0.0;
-	domainY = 0.0;
-	rad = 0.0;
+	terrain = 0;
+	camera = 0;
+
+	xPixel = 0.0;
+	xNormal = 0.0;
+	xDomain = 0.0;
+	yPixel = 0.0;
+	yNormal = 0.0;
+	yDomain = 0.0;
+	radPixel = 0.0;
+	radNormal = 0.0;
+	radDomain = 0.0;
+	zoomScale = 1.1;
 
 	w = 800;
 	h = 600;
@@ -28,14 +36,35 @@ CircleTool::~CircleTool()
 }
 
 
+/**
+ * @brief Draws the circle
+ *
+ * This function draws the disk using the values of x, y, and rad.
+ *
+ */
 void CircleTool::Draw()
 {
 	glLoadIdentity();
 	gluOrtho2D(l, r, b, t);
-	glTranslatef(l+2*r*x/w, t+2*b*y/h, 0.0);
+	glTranslatef(l+2*r*xPixel/w, t+2*b*yPixel/h, 0.0);
 	glColor4f(0.0, 0.0, 0.0, 0.5);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	gluDisk(quad, rad, 5.0, 100, 2);
+	gluDisk(quad, 2*radPixel/h, 5.0, 100, 2);
+
+//	DEBUG("Translate to: " << xNormal << ", " << yNormal);
+//	DEBUG("Translate to: " << l+2*r*xPixel/w << ", " << t+2*b*yPixel/h);
+}
+
+
+void CircleTool::SetTerrainLayer(TerrainLayer *layer)
+{
+	terrain = layer;
+}
+
+
+void CircleTool::SetCamera(GLCamera *cam)
+{
+	camera = cam;
 }
 
 
@@ -54,51 +83,88 @@ void CircleTool::SetViewportSize(float w, float h)
 
 void CircleTool::SetCenter(int newX, int newY)
 {
-	x = newX;
-	y = newY;
+	xPixel = newX;
+	yPixel = newY;
 
-	emit CircleStatsSet(x, y, rad);
+	if (camera)
+	{
+		camera->GetUnprojectedPoint(xPixel, yPixel, &xNormal, &yNormal);
+	} else {
+		DEBUG("Circle Tool: No Camera");
+	}
+
+	if (terrain)
+	{
+		xDomain = terrain->GetUnprojectedX(xNormal);
+		yDomain = terrain->GetUnprojectedY(yNormal);
+	} else {
+		DEBUG("Circle Tool: No Terrain");
+	}
+
+//	DEBUG("x-pixel: " << xPixel << "\tx-normal: " << xNormal << "\tx-domain: " << xDomain);
+//	DEBUG("y-pixel: " << yPixel << "\ty-normal: " << yNormal << "\ty-domain: " << yDomain);
+
+	emit CircleStatsSet(xDomain, yDomain, radDomain);
 }
 
 
-void CircleTool::SetDomainCenter(float newX, float newY)
+void CircleTool::SetRadiusPoint(float x, float y)
 {
-	domainX = newX;
-	domainY = newY;
+	radPixel = sqrt(pow(xPixel - x, 2.0) + pow(yPixel - y, 2.0));
+//	radDomain = 2*radPixel/h;
+//	radNormal = radDomain;
+
+	DEBUG("rad-pixel: " << radPixel << "\trad-domain: " << radDomain);
+
+	emit CircleStatsSet(xDomain, yDomain, radDomain);
 }
 
 
-void CircleTool::SetRadius(float newRad)
+void CircleTool::ScaleCircle(float scale)
 {
-	rad = 2*newRad/h;
+	if (scale > 0)
+		radPixel *= zoomScale;
+	else
+		radPixel /= zoomScale;
+
+	if (camera)
+	{
+		float newX, newY;
+		camera->GetProjectedPoint(xNormal, yNormal, &newX, &newY);
+		DEBUG("x: " << xNormal << " -> " << newX<< "\ty: " << yNormal << " -> " << newY);
+		DEBUG("x-pixel: " << xPixel << "\ty-pixel: " << yPixel);
+
+//		xPixel = newX;
+//		yPixel = newY;
+	}
 }
 
 
 float CircleTool::GetX()
 {
-	return x;
+	return xPixel;
 }
 
 
 float CircleTool::GetDomainX()
 {
-	return domainX;
+	return xDomain;
 }
 
 
 float CircleTool::GetY()
 {
-	return y;
+	return yPixel;
 }
 
 
 float CircleTool::GetDomainY()
 {
-	return domainY;
+	return yDomain;
 }
 
 
 float CircleTool::GetRadius()
 {
-	return rad;
+	return radPixel;
 }
