@@ -3,7 +3,9 @@
 
 #include "adcData.h"
 #include "Layers/Layer.h"
-#include "OpenGL/Shaders/GLShader.h"
+#include "OpenGL/Shaders/SolidShader.h"
+
+#include <vector>
 
 
 /**
@@ -30,6 +32,7 @@ class SelectionLayer : public Layer
 		virtual void	LoadDataToGPU();
 
 		// Setter Methods
+		void	SetCamera(GLCamera *cam);
 		void	SelectNode(Node* node);
 		void	SelectNodes(std::vector<Node*> nodes);
 
@@ -43,9 +46,9 @@ class SelectionLayer : public Layer
 		GLuint		VAOId;		/**< The vertex array object ID in the OpenGL context */
 		GLuint		VBOId;		/**< The vertex buffer object ID in the OpenGL context */
 		GLuint		IBOId;		/**< The index buffer object ID in the OpenGL context */
-		GLShader*	pointShader;	/**< The shader used to draw Nodes */
-		GLShader*	outlineShader;	/**< The shader used to draw Element outlines */
-		GLShader*	fillShader;	/**< The shader used to draw Element fill */
+		SolidShader*	pointShader;	/**< The shader used to draw Nodes */
+		SolidShader*	outlineShader;	/**< The shader used to draw Element outlines */
+		SolidShader*	fillShader;	/**< The shader used to draw Element fill */
 
 		// Flags
 		bool	undoable;	/**< Flag that shows if an undo operation can be performed */
