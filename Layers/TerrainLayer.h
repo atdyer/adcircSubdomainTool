@@ -87,13 +87,10 @@ class TerrainLayer : public Layer
 		// Flags
 		bool	flipZValue;		/**< Flag that determines if the z-value is multiplied by -1 before being loaded to the GPU */
 		bool	fileLoaded;		/**< Flag that shows if data has been successfully read from the fort.14 file */
-		bool	glLoaded;		/**< Flat that shows if data has been successfully sent to the GPU */
+		bool	glLoaded;		/**< Flag that shows if data has been successfully sent to the GPU */
 
 		// Picking Variables
 		Quadtree*	quadtree;	/**< The quadtree used for Node picking */
-
-
-
 
 	public slots:
 
