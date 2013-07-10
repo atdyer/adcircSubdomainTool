@@ -54,7 +54,8 @@ class Quadtree
 		~Quadtree();
 
 		// Public Functions
-		Node*	FindNode(float x, float y);
+		Node*			FindNode(float x, float y);
+		std::vector<Node*>	FindNodesInCircle(float x, float y, float radius);
 
 	protected:
 
@@ -65,8 +66,16 @@ class Quadtree
 		std::vector<leaf*>	leafList;	/**< The list of all leaves in the Quadtree */
 		branch*			root;		/**< A pointer to the top of the Quadtree */
 
-		// Building functions
+		////// Recursive searching functions
 		Node*	FindNode(float x, float y, branch *currBranch);
+
+		// Finding Nodes within a circle
+		void	FindLeavesInCircle(float x, float y, float radius, branch *currBranch, std::vector<leaf*>* full, std::vector<leaf*>* partial);
+		void	AddAllLeaves(branch *currBranch, std::vector<leaf*>* full);
+		void	AddFullNodes(std::vector<leaf*>* full, std::vector<Node*>* nodes);
+		void	AddPartialNodes(float x, float y, float radius, std::vector<leaf*>* partial, std::vector<Node*>* nodes);
+
+		////// Building functions
 		leaf*	newLeaf(float l, float r, float b, float t);
 		branch*	newBranch(float l, float r, float b, float t);
 		branch*	leafToBranch(leaf *currLeaf);
@@ -75,10 +84,11 @@ class Quadtree
 		bool	nodeIsInside(Node *currNode, leaf *currLeaf);
 		bool	nodeIsInside(Node *currNode, branch *currBranch);
 
-		// Parsing functions
+		////// Helper functions
 		float	distance(Node *currNode, float x, float y);
 		bool	pointIsInside(leaf *currLeaf, float x, float y);
 		bool	pointIsInside(branch *currBranch, float x, float y);
+		bool	pointIsInsideCircle(float x, float y, float circleX, float circleY, float radius);
 };
 
 #endif // QUADTREE_H

@@ -232,6 +232,29 @@ Node* TerrainLayer::GetNode(float x, float y)
 
 
 /**
+ * @brief Returns a list of Nodes that fall within the given circle
+ *
+ * This function provides access to the Quadtree lookup function that finds all
+ * nodes within a defined circle.
+ *
+ * @param x The circle center x-coordinate
+ * @param y The circle center y-coordinate
+ * @param radius The circle radius
+ * @return A list of Nodes that fall within the circle
+ */
+std::vector<Node*> TerrainLayer::GetNodesFromCircle(float x, float y, float radius)
+{
+	if (quadtree)
+		return quadtree->FindNodesInCircle(x, y, radius);
+	else
+	{
+		std::vector<Node*> fail;
+		return fail;
+	}
+}
+
+
+/**
  * @brief Returns a pointer to the Element with the corresponding element number
  *
  * This function provides access to Elements in the element list through element
@@ -534,6 +557,13 @@ void TerrainLayer::readFort14()
 				nodes[i].normY = (nodes[i].y - midY)/max;
 				nodes[i].normZ = nodes[i].z / (maxZ-minZ);
 				emit progress(100*(++progressPoint)/progressPoints);
+			}
+
+
+			// Organize the data in a quadtree
+			if (!quadtree)
+			{
+				quadtree = new Quadtree(nodes, 50, minX, maxX, minY, maxY);
 			}
 
 

@@ -19,6 +19,7 @@ OpenGLPanel::OpenGLPanel(QWidget *parent) :
 	viewMode = DisplayMode;
 
 	connect(&circleTool, SIGNAL(CircleStatsSet(float,float,float)), this, SIGNAL(circleToolStatsSet(float,float,float)));
+	connect(this, SIGNAL(circleToolStatsFinished()), &circleTool, SLOT(CircleFinished()));
 }
 
 
@@ -118,7 +119,7 @@ void OpenGLPanel::paintGL()
 void OpenGLPanel::wheelEvent(QWheelEvent *event)
 {
 
-	if (viewMode == DisplayMode && currentCam)
+	if (clicking == false && currentCam)
 		currentCam->Zoom(event->delta());
 
 //	if (viewMode == CircleSubdomainMode)
@@ -145,12 +146,7 @@ void OpenGLPanel::mousePressEvent(QMouseEvent *event)
 	{
 		if (layerManager && currentCam)
 		{
-//			currentCam->GetUnprojectedPoint(oldx, oldy, &xDomain,  &yDomain);
 			circleTool.SetCenter(oldx, oldy);
-//			circleTool.SetDomainCenter(layerManager->GetMouseX(xDomain), layerManager->GetMouseY(yDomain));
-//			emit circleToolStatsSet(circleTool.GetDomainX(), circleTool.GetDomainY(), 0.0);
-		} else {
-//			emit circleToolStatsSet(circleTool.GetX(), circleTool.GetY(), 0.0);
 		}
 	}
 }
@@ -223,9 +219,12 @@ void OpenGLPanel::mouseReleaseEvent(QMouseEvent *event)
 	if (viewMode == CircleSubdomainMode)
 	{
 		emit circleToolStatsFinished();
+		viewMode = DisplayMode;
 	}
 
 	mouseMoved = false;
+
+	updateGL();
 }
 
 

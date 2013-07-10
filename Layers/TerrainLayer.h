@@ -34,21 +34,22 @@ class TerrainLayer : public Layer
 		virtual void	LoadDataToGPU();
 
 		// Getter Methods
-		std::string	GetFort14Location();
-		Node*		GetNode(unsigned int nodeNumber);
-		Node*		GetNode(float x, float y);
-		Element*	GetElement(unsigned int elementNumber);
-		Element*	GetElement(float x, float y);
-		unsigned int	GetNumNodes();
-		unsigned int	GetNumElements();
-		float		GetMinX();
-		float		GetMaxX();
-		float		GetMinY();
-		float		GetMaxY();
-		float		GetMinZ();
-		float		GetMaxZ();
-		float		GetUnprojectedX(float x);
-		float		GetUnprojectedY(float y);
+		std::string		GetFort14Location();
+		Node*			GetNode(unsigned int nodeNumber);
+		Node*			GetNode(float x, float y);
+		std::vector<Node*>	GetNodesFromCircle(float x, float y, float radius);
+		Element*		GetElement(unsigned int elementNumber);
+		Element*		GetElement(float x, float y);
+		unsigned int		GetNumNodes();
+		unsigned int		GetNumElements();
+		float			GetMinX();
+		float			GetMaxX();
+		float			GetMinY();
+		float			GetMaxY();
+		float			GetMinZ();
+		float			GetMaxZ();
+		float			GetUnprojectedX(float x);
+		float			GetUnprojectedY(float y);
 
 		// Setter Methods
 		void	SetFort14Location(std::string newLocation);

@@ -171,12 +171,18 @@ void MainWindow::on_openFileButton_clicked()
 
 void MainWindow::on_newProjectButton_clicked()
 {
-	if (ui->GLPanel)
-		ui->GLPanel->enterCircleSubdomainMode();
+//	if (ui->GLPanel)
+//		ui->GLPanel->enterCircleSubdomainMode();
 }
 
 void MainWindow::on_openProjectButton_clicked()
 {
+//	if (ui->GLPanel)
+//		ui->GLPanel->enterDisplayMode();
+}
+
+void MainWindow::on_subCirclePickingButton_clicked()
+{
 	if (ui->GLPanel)
-		ui->GLPanel->enterDisplayMode();
+		ui->GLPanel->enterCircleSubdomainMode();
 }

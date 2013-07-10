@@ -68,6 +68,7 @@ class CircleTool : public QObject
 	public slots:
 
 		void	SetTerrainLayer(TerrainLayer *layer);
+		void	CircleFinished();
 };
 
 #endif // CIRCLETOOL_H

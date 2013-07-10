@@ -44,12 +44,15 @@ CircleTool::~CircleTool()
  */
 void CircleTool::Draw()
 {
-	glLoadIdentity();
-	gluOrtho2D(l, r, b, t);
-	glTranslatef(l+2*r*xPixel/w, t+2*b*yPixel/h, 0.0);
-	glColor4f(0.0, 0.0, 0.0, 0.5);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	gluDisk(quad, 2*radPixel/h, 5.0, 100, 2);
+	if (radPixel > 0.0)
+	{
+		glLoadIdentity();
+		gluOrtho2D(l, r, b, t);
+		glTranslatef(l+2*r*xPixel/w, t+2*b*yPixel/h, 0.0);
+		glColor4f(0.0, 0.0, 0.0, 0.5);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		gluDisk(quad, 2*radPixel/h, 5.0, 100, 2);
+	}
 
 //	DEBUG("Translate to: " << xNormal << ", " << yNormal);
 //	DEBUG("Translate to: " << l+2*r*xPixel/w << ", " << t+2*b*yPixel/h);
@@ -114,9 +117,9 @@ void CircleTool::SetRadiusPoint(float x, float y)
 //	radDomain = 2*radPixel/h;
 //	radNormal = radDomain;
 
-	DEBUG("rad-pixel: " << radPixel << "\trad-domain: " << radDomain);
+//	DEBUG("rad-pixel: " << radPixel << "\trad-domain: " << radDomain);
 
-	emit CircleStatsSet(xDomain, yDomain, radDomain);
+	emit CircleStatsSet(xDomain, yDomain, 2*radPixel/h);
 }
 
 
@@ -131,8 +134,8 @@ void CircleTool::ScaleCircle(float scale)
 	{
 		float newX, newY;
 		camera->GetProjectedPoint(xNormal, yNormal, &newX, &newY);
-		DEBUG("x: " << xNormal << " -> " << newX<< "\ty: " << yNormal << " -> " << newY);
-		DEBUG("x-pixel: " << xPixel << "\ty-pixel: " << yPixel);
+//		DEBUG("x: " << xNormal << " -> " << newX<< "\ty: " << yNormal << " -> " << newY);
+//		DEBUG("x-pixel: " << xPixel << "\ty-pixel: " << yPixel);
 
 //		xPixel = newX;
 //		yPixel = newY;
@@ -167,4 +170,27 @@ float CircleTool::GetDomainY()
 float CircleTool::GetRadius()
 {
 	return radPixel;
+}
+
+
+void CircleTool::CircleFinished()
+{
+
+	if (terrain)
+	{
+		DEBUG("x: " << xDomain << "\ty: " << yDomain << "\trad: " << 2*radPixel/h);
+		std::vector<Node*> nodes = terrain->GetNodesFromCircle(-77.771, 34.001, 0.2);
+		DEBUG("Number of nodes found: " << nodes.size());
+	}
+
+
+	xPixel = 0.0;
+	xNormal = 0.0;
+	xDomain = 0.0;
+	yPixel = 0.0;
+	yNormal = 0.0;
+	yDomain = 0.0;
+	radPixel = 0.0;
+	radNormal = 0.0;
+	radDomain = 0.0;
 }

@@ -51,6 +51,44 @@ Node* Quadtree::FindNode(float x, float y)
 
 
 /**
+ * @brief This function is called by the user to find all Nodes that fall inside of the provided circle
+ *
+ * This function is called by the user to find all Nodes that fall inside of the provided circle
+ *
+ * @param x The x-coordinate of the circle center
+ * @param y The y-coordinate of the circle center
+ * @param radius The radius of the circle
+ * @return A vector of pointers to the Nodes that fall inside of the circle
+ */
+std::vector<Node*> Quadtree::FindNodesInCircle(float x, float y, float radius)
+{
+	// Make three lists:
+	// - List of Nodes that fall inside of the circle
+	// - List of leaves that fall completely inside of the circle
+	// - List of leaves that fall partially inside of the circle
+	//
+	// Add all Nodes that are in the leaves completely inside the circle list
+	// to the list of Nodes
+	//
+	// Search the list of leaves that fall partially inside of the circle
+	// for Nodes that fall inside of the circle and add them to the list of
+	// Nodes
+	//
+	// Return the list of Nodes
+
+	std::vector<Node*> circleNodes;
+	std::vector<leaf*> fullLeaves;
+	std::vector<leaf*> partialLeaves;
+
+	FindLeavesInCircle(x, y, radius, root, &fullLeaves, &partialLeaves);
+	AddFullNodes(&fullLeaves, &circleNodes);
+	AddPartialNodes(x, y, radius, &partialLeaves, &circleNodes);
+
+	return circleNodes;
+}
+
+
+/**
  * @brief The actual recursive function called when the user requests a Node
  *
  * This is the actual recursive function used to traverse the tree and find the Node closest
@@ -94,6 +132,102 @@ Node* Quadtree::FindNode(float x, float y, branch *currBranch)
 	// deepest level reached (possible improvements -- continue searching other
 	// leaves/branches if the parser reaches a leaf with no nodes
 	return 0;
+}
+
+
+/**
+ * @brief The recursive function that finds all of the leaves that fall within the circle
+ * @param x The circle center x-coordinate
+ * @param y The circle center y-coordinate
+ * @param radius The circle radius
+ * @param currBranch The branch to search
+ * @param full Pointer to the vector of leaves that fall full within the circle
+ * @param partial Pointer to the vector of leaves that fall partially within the circle
+ */
+void Quadtree::FindLeavesInCircle(float x, float y, float radius, branch *currBranch, std::vector<leaf *> *full, std::vector<leaf *> *partial)
+{
+	int cornersInsideCircle = 0;
+	float corners[8] = {currBranch->bounds[0], currBranch->bounds[3],
+			    currBranch->bounds[1], currBranch->bounds[3],
+			    currBranch->bounds[0], currBranch->bounds[2],
+			    currBranch->bounds[1], currBranch->bounds[2]};
+
+	for (int i=0; i<8; i+=2)
+		if (pointIsInsideCircle(corners[i], corners[i+1], x, y, radius))
+			cornersInsideCircle++;
+
+	if (cornersInsideCircle == 4)
+		AddAllLeaves(currBranch, full);
+	else if (cornersInsideCircle > 0)
+	{
+		for (int i=0; i<4; i++)
+		{
+			if (currBranch->branches[i] != 0)
+				FindLeavesInCircle(x, y, radius, currBranch->branches[i], full, partial);
+			if (currBranch->leaves[i] != 0)
+				partial->push_back(currBranch->leaves[i]);	// Possible optimization here -- check leaf bounds
+		}
+	}
+}
+
+
+/**
+ * @brief Adds all leaves that fall below the given branch to the given list
+ * @param currBranch The top branch containing all desired leaves
+ * @param full The list of leaves to be appended to
+ */
+void Quadtree::AddAllLeaves(branch *currBranch, std::vector<leaf *> *full)
+{
+	for (int i=0; i<4; i++)
+	{
+		if (currBranch->leaves[i] != 0)
+			full->push_back(currBranch->leaves[i]);
+		if (currBranch->branches[i] != 0)
+			AddAllLeaves(currBranch->branches[i], full);
+	}
+}
+
+
+/**
+ * @brief Adds all of the Nodes from the leaf list to the nodes list
+ * @param full The list of leaves to get Nodes from
+ * @param nodes The list of nodes to append Nodes to
+ */
+void Quadtree::AddFullNodes(std::vector<leaf *> *full, std::vector<Node *> *nodes)
+{
+	for (unsigned int i=0; i<full->size(); i++)
+	{
+		leaf *currLeaf = (*full)[i];
+		for (unsigned int j=0; j<currLeaf->nodes.size(); j++)
+		{
+			nodes->push_back(currLeaf->nodes[j]);
+		}
+	}
+}
+
+
+/**
+ * @brief Adds the Nodes that fall within the circle to the nodes list
+ * @param x The circle center x-coordinate
+ * @param y The circle center y-coordinate
+ * @param radius The circle radius
+ * @param partial The list of leaves that fall partially within the circle
+ * @param nodes The list of nodes to append Nodes to
+ */
+void Quadtree::AddPartialNodes(float x, float y, float radius, std::vector<leaf *> *partial, std::vector<Node *> *nodes)
+{
+	for (unsigned int i=0; i<partial->size(); i++)
+	{
+		leaf *currLeaf = (*partial)[i];
+		for (unsigned int j=0; j<currLeaf->nodes.size(); j++)
+		{
+			// Need to choose whether to use normalized or regular coordinates
+			if (pointIsInsideCircle(currLeaf->nodes[j]->x, currLeaf->nodes[j]->y, x, y, radius))
+			{
+				nodes->push_back(currLeaf->nodes[j]);
+			}
+		}
+	}
 }
 
 
@@ -372,4 +506,22 @@ bool Quadtree::pointIsInside(branch *currBranch, float x, float y)
 		if (y <= currBranch->bounds[3] && y >= currBranch->bounds[2])
 			return true;
 	return false;
+}
+
+
+/**
+ * @brief A helper function that determines if the point is inside of the circle
+ *
+ * A helper function that determines if the point is inside of the circle.
+ *
+ * @param x The point x-coordinate
+ * @param y The point y-coordinate
+ * @param circleX The circle center x-coordinate
+ * @param circleY The circle center y-coordinate
+ * @param radius The circle radius
+ * @return
+ */
+bool Quadtree::pointIsInsideCircle(float x, float y, float circleX, float circleY, float radius)
+{
+	return (pow(x - circleX, 2.0) + (pow(y - circleY, 2.0))) < pow(radius, 2.0);
 }
