@@ -20,18 +20,10 @@ class CircleTool : public QObject
 		~CircleTool();
 
 		void	Draw();
-//		void	SetTerrainLayer(TerrainLayer* layer);
 		void	SetCamera(GLCamera* cam);
 		void	SetViewportSize(float w, float h);
 		void	SetCenter(int newX, int newY);
-		void	SetRadiusPoint(float x, float y);
-		void	ScaleCircle(float scale);
-
-		float	GetX();
-		float	GetDomainX();
-		float	GetY();
-		float	GetDomainY();
-		float	GetRadius();
+		void	SetRadiusPoint(int newX, int newY);
 
 	protected:
 
@@ -45,6 +37,12 @@ class CircleTool : public QObject
 		float	yPixel;
 		float	yNormal;
 		float	yDomain;
+		float	edgeXPixel;
+		float	edgeYPixel;
+		float	edgeXNormal;
+		float	edgeYNormal;
+		float	edgeXDomain;
+		float	edgeYDomain;
 		float	radPixel;
 		float	radNormal;
 		float	radDomain;
@@ -60,6 +58,9 @@ class CircleTool : public QObject
 
 		// Use GLU to draw the circle for now
 		GLUquadricObj*	quad;	/**< The quadric object used to draw the disk */
+
+
+		float	distance(float x1, float y1, float x2, float y2);
 
 	signals:
 

@@ -31,6 +31,7 @@ class MainWindow : public QMainWindow
 		void	showNumNodes(int numNodes);
 		void	showNumElements(int numElements);
 		void	showNumTS(int numTS);
+		void	showNumSelectedNodes(int numNodes);
 
 		// Circle Tool Slots
 		void	showCircleStats(float x, float y, float rad);

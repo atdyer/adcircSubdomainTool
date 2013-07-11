@@ -180,8 +180,8 @@ void GLCamera::GetUnprojectedPoint(float x, float y, float *resultX, float *resu
  */
 void GLCamera::GetProjectedPoint(float x, float y, float *resultX, float *resultY)
 {
-	float xtemp = (x + panX) * zoomLevel;
-	float ytemp = (y + panY) * zoomLevel;
+//	float xtemp = (x + panX) * zoomLevel;
+//	float ytemp = (y + panY) * zoomLevel;
 
 	GLint viewport[4];
 	glGetIntegerv(GL_VIEWPORT, viewport);
@@ -196,8 +196,10 @@ void GLCamera::GetProjectedPoint(float x, float y, float *resultX, float *result
 	GLdouble posY = 0.0;
 	GLdouble posZ = 0.0;
 
-	if (gluProject((GLdouble)xtemp, (GLdouble)ytemp, (GLdouble)0.0, modelview, projection, viewport, &posX, &posY, &posZ) == GLU_FALSE)
+	if (gluProject((GLdouble)x, (GLdouble)y, (GLdouble)0.0, modelview, projection, viewport, &posX, &posY, &posZ) == GLU_FALSE)
 		DEBUG("Nope");
+
+//	posY = posY - (float)viewport[3];
 
 	*resultX = (float)posX;
 	*resultY = (float)posY;

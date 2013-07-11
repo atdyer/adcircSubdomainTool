@@ -57,10 +57,13 @@ class SelectionLayer : public Layer
 
 		void	UpdateDataOnGPU();
 
+
+
 	signals:
 
 		void	undoAvailable();
 		void	undoUnavailable();
+		void	numNodesSelected(int);
 
 	public slots:
 

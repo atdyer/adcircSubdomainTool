@@ -18,6 +18,14 @@ SelectionLayer::SelectionLayer()
 
 SelectionLayer::~SelectionLayer()
 {
+
+	if (selectedNodes.size() == 2)
+	{
+		delete selectedNodes[0];
+		delete selectedNodes[1];
+		selectedNodes.clear();
+	}
+
 	DEBUG("Deleting Selection Layer. Layer ID: " << GetID());
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -69,7 +77,6 @@ void SelectionLayer::Draw()
 
 		if (pointShader)
 		{
-			DEBUG("Drawing Points");
 			glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
 			if (pointShader->Use())
 				glDrawArrays(GL_POINTS, 0, selectedNodes.size());
@@ -218,12 +225,17 @@ void SelectionLayer::SelectNode(Node *node)
 
 void SelectionLayer::SelectNodes(std::vector<Node *> nodes)
 {
-	// Add the nodes to the list of selected nodes
-	for (unsigned int i=0; i<nodes.size(); i++)
-		selectedNodes.push_back(nodes[i]);
+	if (nodes.size() > 0)
+	{
+		// Add the nodes to the list of selected nodes
+		for (unsigned int i=0; i<nodes.size(); i++)
+			selectedNodes.push_back(nodes[i]);
 
-	// Update the GPU data
-	UpdateDataOnGPU();
+		emit numNodesSelected(nodes.size());
+
+		// Update the GPU data
+		UpdateDataOnGPU();
+	}
 }
 
 

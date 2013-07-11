@@ -222,7 +222,7 @@ void Quadtree::AddPartialNodes(float x, float y, float radius, std::vector<leaf 
 		for (unsigned int j=0; j<currLeaf->nodes.size(); j++)
 		{
 			// Need to choose whether to use normalized or regular coordinates
-			if (pointIsInsideCircle(currLeaf->nodes[j]->x, currLeaf->nodes[j]->y, x, y, radius))
+			if (pointIsInsideCircle(currLeaf->nodes[j]->normX, currLeaf->nodes[j]->normY, x, y, radius))
 			{
 				nodes->push_back(currLeaf->nodes[j]);
 			}
@@ -424,8 +424,8 @@ void Quadtree::addNode(Node *currNode, branch *currBranch)
  */
 bool Quadtree::nodeIsInside(Node *currNode, leaf *currLeaf)
 {
-	if (currNode->x <= currLeaf->bounds[1] && currNode->x >= currLeaf->bounds[0])
-		if (currNode->y <= currLeaf->bounds[3] && currNode->y >= currLeaf->bounds[2])
+	if (currNode->normX <= currLeaf->bounds[1] && currNode->normX >= currLeaf->bounds[0])
+		if (currNode->normY <= currLeaf->bounds[3] && currNode->normY >= currLeaf->bounds[2])
 			return true;
 	return false;
 }
@@ -443,8 +443,8 @@ bool Quadtree::nodeIsInside(Node *currNode, leaf *currLeaf)
  */
 bool Quadtree::nodeIsInside(Node *currNode, branch *currBranch)
 {
-	if (currNode->x <= currBranch->bounds[1] && currNode->x >= currBranch->bounds[0])
-		if (currNode->y <= currBranch->bounds[3] && currNode->y >= currBranch->bounds[2])
+	if (currNode->normX <= currBranch->bounds[1] && currNode->normX >= currBranch->bounds[0])
+		if (currNode->normY <= currBranch->bounds[3] && currNode->normY >= currBranch->bounds[2])
 			return true;
 	return false;
 }
@@ -463,7 +463,7 @@ bool Quadtree::nodeIsInside(Node *currNode, branch *currBranch)
  */
 float Quadtree::distance(Node *currNode, float x, float y)
 {
-	return sqrt(pow(y-currNode->y, 2)+pow(x-currNode->x, 2));
+	return sqrt(pow(y-currNode->normY, 2)+pow(x-currNode->normX, 2));
 }
 
 

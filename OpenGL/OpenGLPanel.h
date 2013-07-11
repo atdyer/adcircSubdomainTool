@@ -68,6 +68,7 @@ class OpenGLPanel : public QGLWidget
 		void	mouseY(float);
 		void	circleToolStatsSet(float, float, float);
 		void	circleToolStatsFinished();
+		void	numNodesSelected(int);
 };
 
 #endif // OPENGLPANEL_H

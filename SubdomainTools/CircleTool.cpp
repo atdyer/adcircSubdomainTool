@@ -11,6 +11,12 @@ CircleTool::CircleTool()
 	yPixel = 0.0;
 	yNormal = 0.0;
 	yDomain = 0.0;
+	edgeXPixel = 0.0;
+	edgeYPixel = 0.0;
+	edgeXNormal = 0.0;
+	edgeYNormal = 0.0;
+	edgeXDomain = 0.0;
+	edgeYDomain = 0.0;
 	radPixel = 0.0;
 	radNormal = 0.0;
 	radDomain = 0.0;
@@ -52,10 +58,8 @@ void CircleTool::Draw()
 		glColor4f(0.0, 0.0, 0.0, 0.5);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		gluDisk(quad, 2*radPixel/h, 5.0, 100, 2);
+		glTranslatef(-(l+2*r*xPixel/w), -(t+2*b*yPixel/h), 0.0);
 	}
-
-//	DEBUG("Translate to: " << xNormal << ", " << yNormal);
-//	DEBUG("Translate to: " << l+2*r*xPixel/w << ", " << t+2*b*yPixel/h);
 }
 
 
@@ -107,69 +111,30 @@ void CircleTool::SetCenter(int newX, int newY)
 //	DEBUG("x-pixel: " << xPixel << "\tx-normal: " << xNormal << "\tx-domain: " << xDomain);
 //	DEBUG("y-pixel: " << yPixel << "\ty-normal: " << yNormal << "\ty-domain: " << yDomain);
 
-	emit CircleStatsSet(xDomain, yDomain, radDomain);
+	emit CircleStatsSet(xNormal, yNormal, radNormal);
 }
 
 
-void CircleTool::SetRadiusPoint(float x, float y)
+void CircleTool::SetRadiusPoint(int newX, int newY)
 {
-	radPixel = sqrt(pow(xPixel - x, 2.0) + pow(yPixel - y, 2.0));
-//	radDomain = 2*radPixel/h;
-//	radNormal = radDomain;
-
-//	DEBUG("rad-pixel: " << radPixel << "\trad-domain: " << radDomain);
-
-	emit CircleStatsSet(xDomain, yDomain, 2*radPixel/h);
-}
-
-
-void CircleTool::ScaleCircle(float scale)
-{
-	if (scale > 0)
-		radPixel *= zoomScale;
-	else
-		radPixel /= zoomScale;
+	edgeXPixel = newX;
+	edgeYPixel = newY;
 
 	if (camera)
 	{
-		float newX, newY;
-		camera->GetProjectedPoint(xNormal, yNormal, &newX, &newY);
-//		DEBUG("x: " << xNormal << " -> " << newX<< "\ty: " << yNormal << " -> " << newY);
-//		DEBUG("x-pixel: " << xPixel << "\ty-pixel: " << yPixel);
-
-//		xPixel = newX;
-//		yPixel = newY;
+		camera->GetUnprojectedPoint(edgeXPixel, edgeYPixel, &edgeXNormal, &edgeYNormal);
 	}
-}
+	if (terrain)
+	{
+		edgeXDomain = terrain->GetUnprojectedX(edgeXNormal);
+		edgeYDomain = terrain->GetUnprojectedY(edgeYNormal);
+	}
 
+	radPixel = distance(xPixel, yPixel, edgeXPixel, edgeYPixel);
+	radNormal = distance(xNormal, yNormal, edgeXNormal, edgeYNormal);
+	radDomain = distance(xDomain, yDomain, edgeXDomain, edgeYDomain);
 
-float CircleTool::GetX()
-{
-	return xPixel;
-}
-
-
-float CircleTool::GetDomainX()
-{
-	return xDomain;
-}
-
-
-float CircleTool::GetY()
-{
-	return yPixel;
-}
-
-
-float CircleTool::GetDomainY()
-{
-	return yDomain;
-}
-
-
-float CircleTool::GetRadius()
-{
-	return radPixel;
+	emit CircleStatsSet(edgeXNormal, edgeYNormal, radNormal);
 }
 
 
@@ -178,8 +143,11 @@ void CircleTool::CircleFinished()
 
 	if (terrain)
 	{
-		DEBUG("x: " << xDomain << "\ty: " << yDomain << "\trad: " << 2*radPixel/h);
-		std::vector<Node*> nodes = terrain->GetNodesFromCircle(-77.771, 34.001, 0.1);
+		DEBUG("x: " << xNormal << "\ty: " << yNormal << "\trad: " << radNormal);
+//		DEBUG("CENTER\tx: " << xNormal << "\ty: " << yNormal);
+//		DEBUG("EDGE\tx:" << edgeXNormal << "\ty: " << edgeYNormal);
+//		std::vector<Node*> nodes = terrain->GetNodesFromCircle(-77.771, 34.001, 0.1);
+		std::vector<Node*> nodes = terrain->GetNodesFromCircle(xNormal, yNormal, radNormal);
 		emit NodesSelected(nodes);
 		DEBUG("Number of nodes found: " << nodes.size());
 	}
@@ -194,4 +162,10 @@ void CircleTool::CircleFinished()
 	radPixel = 0.0;
 	radNormal = 0.0;
 	radDomain = 0.0;
+}
+
+
+float CircleTool::distance(float x1, float y1, float x2, float y2)
+{
+	return sqrt(pow(x2-x1, 2.0)+pow(y2-y1, 2.0));
 }

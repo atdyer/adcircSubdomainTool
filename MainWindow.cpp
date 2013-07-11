@@ -44,7 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(&layerManager, SIGNAL(emitMessage(QString)), this, SLOT(displayOutput(QString)));
 	connect(ui->GLPanel, SIGNAL(emitMessage(QString)), this, SLOT(displayOutput(QString)));
 
-	//// Connect everything needed to update the GL Panel and GL Panel status bar
+	////// Connect everything needed to update the GL Panel and GL Panel status bar
 	connect(&layerManager, SIGNAL(updateGL()), ui->GLPanel, SLOT(updateGL()));
 	connect(&layerManager, SIGNAL(numNodesChanged(int)), this, SLOT(showNumNodes(int)));
 	connect(&layerManager, SIGNAL(numElementsChanged(int)), this, SLOT(showNumElements(int)));
@@ -53,6 +53,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->GLPanel, SIGNAL(mouseX(float)), this, SLOT(showMouseX(float)));
 	connect(ui->GLPanel, SIGNAL(mouseY(float)), this, SLOT(showMouseY(float)));
 	connect(ui->GLPanel, SIGNAL(circleToolStatsFinished()), glStatusBar, SLOT(clearMessage()));
+	//// Selection Tools
+	connect(ui->GLPanel, SIGNAL(numNodesSelected(int)), this, SLOT(showNumSelectedNodes(int)));
 	// Circle Tool
 	connect(ui->GLPanel, SIGNAL(circleToolStatsSet(float,float,float)), this, SLOT(showCircleStats(float,float,float)));
 
@@ -119,6 +121,11 @@ void MainWindow::showNumTS(int numTS)
 {
 	if (numTSLabel)
 		numTSLabel->setText(QString("<b>Timesteps:</b> ").append(QString::number(numTS)).append("   "));
+}
+
+
+void MainWindow::showNumSelectedNodes(int numNodes){
+	ui->subNodesCount->setText(QString::number(numNodes));
 }
 
 

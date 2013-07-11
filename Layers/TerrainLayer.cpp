@@ -563,7 +563,7 @@ void TerrainLayer::readFort14()
 			// Organize the data in a quadtree
 			if (!quadtree)
 			{
-				quadtree = new Quadtree(nodes, 50, minX, maxX, minY, maxY);
+				quadtree = new Quadtree(nodes, 50, (minX-midX)/max, (maxX-midX)/max, (minY-midY)/max, (maxY-midY)/max);
 			}
 
 
