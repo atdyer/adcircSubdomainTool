@@ -106,14 +106,17 @@ void SolidShader::UpdateUniforms()
 		if (errVal != GL_NO_ERROR)
 		{
 			const GLubyte *errString = gluErrorString(errVal);
-			DEBUG("OpenGL Error: " << errString);
+			DEBUG("SolidShader OpenGL Error: " << errString);
 			uniformsSet = false;
 		} else {
 			uniformsSet = true;
 		}
 
 	} else {
-		DEBUG("Uniforms not updated");
+		if (!loaded)
+			DEBUG("Uniforms not updated: Shader not loaded");
+		else
+			DEBUG("Uniforms not updated: Camera not set");
 		uniformsSet = false;
 	}
 }

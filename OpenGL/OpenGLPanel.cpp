@@ -20,6 +20,8 @@ OpenGLPanel::OpenGLPanel(QWidget *parent) :
 
 	connect(&circleTool, SIGNAL(CircleStatsSet(float,float,float)), this, SIGNAL(circleToolStatsSet(float,float,float)));
 	connect(this, SIGNAL(circleToolStatsFinished()), &circleTool, SLOT(CircleFinished()));
+	connect(&circleTool, SIGNAL(NodesSelected(std::vector<Node*>)), &selectionLayer, SLOT(SelectNodes(std::vector<Node*>)));
+	connect(&selectionLayer, SIGNAL(emitMessage(QString)), this, SIGNAL(emitMessage(QString)));
 }
 
 
@@ -75,8 +77,8 @@ void OpenGLPanel::initializeGL()
 //	glDepthFunc(GL_LESS);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//	glPointSize(10);
-//	glEnable(GL_POINT_SMOOTH);
+	glPointSize(5);
+	glEnable(GL_POINT_SMOOTH);
 	glEnable(GL_LINE_SMOOTH);
 }
 
@@ -109,6 +111,8 @@ void OpenGLPanel::paintGL()
 
 	if (viewMode == CircleSubdomainMode)
 		circleTool.Draw();
+
+	selectionLayer.Draw();
 }
 
 
@@ -237,6 +241,7 @@ void OpenGLPanel::updateCurrentCamera()
 	if (layerManager)
 		currentCam = layerManager->GetCurrentCamera();
 	circleTool.SetCamera(currentCam);
+	selectionLayer.SetCamera(currentCam);
 }
 
 

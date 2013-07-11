@@ -1,12 +1,13 @@
 #ifndef OPENGLPANEL_H
 #define OPENGLPANEL_H
 
-#include "glew.h"
+#include "OpenGL/glew.h"
 #include <QGLWidget>
 #include <QWheelEvent>
 
-#include <Layers/LayerManager.h>
-#include <SubdomainTools/CircleTool.h>
+#include "Layers/LayerManager.h"
+#include "Layers/SelectionLayer.h"
+#include "SubdomainTools/CircleTool.h"
 
 /**
  * @brief The Mode enum contains the available states for the OpenGLPanel. The
@@ -34,6 +35,7 @@ class OpenGLPanel : public QGLWidget
 		GLCamera*	currentCam;	/**< The GLCamera currently being used in the LayerManager */
 
 		CircleTool	circleTool;	/**< Tool for selecting nodes by drawing a circle */
+		SelectionLayer	selectionLayer;	/**< Layer for displaying the nodes/elements that are selected */
 
 		void		initializeGL();
 		void		resizeGL(int w, int h);

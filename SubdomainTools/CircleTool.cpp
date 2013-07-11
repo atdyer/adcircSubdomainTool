@@ -179,7 +179,8 @@ void CircleTool::CircleFinished()
 	if (terrain)
 	{
 		DEBUG("x: " << xDomain << "\ty: " << yDomain << "\trad: " << 2*radPixel/h);
-		std::vector<Node*> nodes = terrain->GetNodesFromCircle(-77.771, 34.001, 0.2);
+		std::vector<Node*> nodes = terrain->GetNodesFromCircle(-77.771, 34.001, 0.1);
+		emit NodesSelected(nodes);
 		DEBUG("Number of nodes found: " << nodes.size());
 	}
 

@@ -4,6 +4,7 @@
 #include "adcData.h"
 #include "Layers/Layer.h"
 #include "OpenGL/Shaders/SolidShader.h"
+#include "OpenGL/GLCamera.h"
 
 #include <vector>
 
@@ -33,8 +34,7 @@ class SelectionLayer : public Layer
 
 		// Setter Methods
 		void	SetCamera(GLCamera *cam);
-		void	SelectNode(Node* node);
-		void	SelectNodes(std::vector<Node*> nodes);
+
 
 	protected:
 
@@ -43,6 +43,7 @@ class SelectionLayer : public Layer
 		std::vector<Element*>	selectedElements;
 
 		// OpenGL Variables
+		GLCamera*	camera;		/**< The camera used to draw selections */
 		GLuint		VAOId;		/**< The vertex array object ID in the OpenGL context */
 		GLuint		VBOId;		/**< The vertex buffer object ID in the OpenGL context */
 		GLuint		IBOId;		/**< The index buffer object ID in the OpenGL context */
@@ -54,6 +55,8 @@ class SelectionLayer : public Layer
 		bool	undoable;	/**< Flag that shows if an undo operation can be performed */
 		bool	glLoaded;	/**< Flag that shows if data has been successfully sent to the GPU */
 
+		void	UpdateDataOnGPU();
+
 	signals:
 
 		void	undoAvailable();
@@ -61,7 +64,10 @@ class SelectionLayer : public Layer
 
 	public slots:
 
+		void	SelectNode(Node* node);
+		void	SelectNodes(std::vector<Node*> nodes);
 		void	undo();
+
 
 };
 

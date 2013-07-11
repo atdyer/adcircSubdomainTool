@@ -42,6 +42,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	// Connect all necessary components to the output box
 	connect(&layerManager, SIGNAL(emitMessage(QString)), this, SLOT(displayOutput(QString)));
+	connect(ui->GLPanel, SIGNAL(emitMessage(QString)), this, SLOT(displayOutput(QString)));
 
 	//// Connect everything needed to update the GL Panel and GL Panel status bar
 	connect(&layerManager, SIGNAL(updateGL()), ui->GLPanel, SLOT(updateGL()));

@@ -64,6 +64,8 @@ class CircleTool : public QObject
 	signals:
 
 		void	CircleStatsSet(float, float, float);
+		void	NodeSelected(Node*);
+		void	NodesSelected(std::vector<Node*>);
 
 	public slots:
 
