@@ -7,6 +7,7 @@
 #include "OpenGL/GLCamera.h"
 
 #include <vector>
+#include <map>
 
 
 /**
@@ -39,8 +40,10 @@ class SelectionLayer : public Layer
 	protected:
 
 		// Selected Nodes and Elements
-		std::vector<Node*>	selectedNodes;
-		std::vector<Element*>	selectedElements;
+		std::map<uint, Node*>		selectedNodes;
+		std::map<uint, Element*>	selectedElements;
+
+
 
 		// OpenGL Variables
 		GLCamera*	camera;		/**< The camera used to draw selections */
@@ -61,8 +64,7 @@ class SelectionLayer : public Layer
 
 	signals:
 
-		void	undoAvailable();
-		void	undoUnavailable();
+		void	undoAvailable(bool);
 		void	numNodesSelected(int);
 
 	public slots:

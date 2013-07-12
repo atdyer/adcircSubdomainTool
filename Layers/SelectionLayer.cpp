@@ -18,14 +18,6 @@ SelectionLayer::SelectionLayer()
 
 SelectionLayer::~SelectionLayer()
 {
-
-	if (selectedNodes.size() == 2)
-	{
-		delete selectedNodes[0];
-		delete selectedNodes[1];
-		selectedNodes.clear();
-	}
-
 	DEBUG("Deleting Selection Layer. Layer ID: " << GetID());
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -80,6 +72,7 @@ void SelectionLayer::Draw()
 			glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
 			if (pointShader->Use())
 				glDrawArrays(GL_POINTS, 0, selectedNodes.size());
+
 		}
 	}
 }
@@ -122,15 +115,20 @@ void SelectionLayer::LoadDataToGPU()
 		GLfloat* glNodeData = (GLfloat *)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
 		if (glNodeData)
 		{
-			for (unsigned int i=0; i<selectedNodes.size(); i++)
+			Node* currNode;
+			int i=0;
+			for (std::map<uint, Node*>::iterator it=selectedNodes.begin(); it != selectedNodes.end(); it++, i++)
 			{
-				glNodeData[4*i+0] = (GLfloat)selectedNodes[i]->normX;
-				glNodeData[4*i+1] = (GLfloat)selectedNodes[i]->normY;
-				glNodeData[4*i+2] = (GLfloat)selectedNodes[i]->normZ;
+				currNode = it->second;
+				glNodeData[4*i+0] = (GLfloat)currNode->normX;
+				glNodeData[4*i+1] = (GLfloat)currNode->normY;
+				glNodeData[4*i+2] = (GLfloat)currNode->normZ;
 				glNodeData[4*i+3] = (GLfloat)1.0;
+
 			}
 		} else {
 			glLoaded = false;
+			DEBUG("ERROR: Mapping vertex buffer for SelectionLayer " << GetID());
 			emit emitMessage("<p style:color='red'><strong>Error: Unable to load vertex data to GPU (Selection Layer)</strong>");
 			return;
 		}
@@ -151,14 +149,18 @@ void SelectionLayer::LoadDataToGPU()
 		GLuint* glElementData = (GLuint *)glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
 		if (glElementData)
 		{
-			for (unsigned int i=0; i<selectedElements.size(); i++)
+			Element* currElement;
+			int i=0;
+			for (std::map<uint, Element*>::iterator it=selectedElements.begin(); it != selectedElements.end(); it++, i++)
 			{
-				glElementData[3*i+0] = (GLuint)selectedElements[i]->n1-1;
-				glElementData[3*i+1] = (GLuint)selectedElements[i]->n2-1;
-				glElementData[3*i+2] = (GLuint)selectedElements[i]->n3-1;
+				currElement = it->second;
+				glElementData[3*i+0] = (GLuint)currElement->n1-1;
+				glElementData[3*i+1] = (GLuint)currElement->n2-1;
+				glElementData[3*i+2] = (GLuint)currElement->n3-1;
 			}
 		} else {
 			glLoaded = false;
+			DEBUG("ERROR: Mapping index buffer for SelectionLayer " << GetID());
 			emit emitMessage("<p style:color='red'><strong>Error: Unable to load index data to GPU (Selection Layer)</strong>");
 			return;
 		}
@@ -219,7 +221,7 @@ void SelectionLayer::SelectNode(Node *node)
 	// Add the node to list of selected nodes
 
 	// Update the GPU data
-	UpdateDataOnGPU();
+//	UpdateDataOnGPU();
 }
 
 
@@ -229,12 +231,16 @@ void SelectionLayer::SelectNodes(std::vector<Node *> nodes)
 	{
 		// Add the nodes to the list of selected nodes
 		for (unsigned int i=0; i<nodes.size(); i++)
-			selectedNodes.push_back(nodes[i]);
+		{
+			selectedNodes[nodes[i]->nodeNumber] = nodes[i];
+		}
 
 		emit numNodesSelected(nodes.size());
 
 		// Update the GPU data
 		UpdateDataOnGPU();
+
+		emit undoAvailable(true);
 	}
 }
 
@@ -244,5 +250,6 @@ void SelectionLayer::undo()
 	// Undo the last selection/deselection
 
 	// Update the GPU data
-	UpdateDataOnGPU();
+//	UpdateDataOnGPU();
+	DEBUG("Undid");
 }

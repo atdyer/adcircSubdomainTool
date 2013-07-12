@@ -21,8 +21,12 @@ OpenGLPanel::OpenGLPanel(QWidget *parent) :
 	connect(&circleTool, SIGNAL(CircleStatsSet(float,float,float)), this, SIGNAL(circleToolStatsSet(float,float,float)));
 	connect(this, SIGNAL(circleToolStatsFinished()), &circleTool, SLOT(CircleFinished()));
 	connect(&circleTool, SIGNAL(NodesSelected(std::vector<Node*>)), &selectionLayer, SLOT(SelectNodes(std::vector<Node*>)));
+
+	// Hook up all of the Selection Layer signals/slots
 	connect(&selectionLayer, SIGNAL(emitMessage(QString)), this, SIGNAL(emitMessage(QString)));
 	connect(&selectionLayer, SIGNAL(numNodesSelected(int)), this, SIGNAL(numNodesSelected(int)));
+	connect(&selectionLayer, SIGNAL(undoAvailable(bool)), this, SIGNAL(undoAvailable(bool)));
+	connect(this, SIGNAL(undo()), &selectionLayer, SLOT(undo()));
 }
 
 

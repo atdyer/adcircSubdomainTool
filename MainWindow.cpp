@@ -55,6 +55,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->GLPanel, SIGNAL(circleToolStatsFinished()), glStatusBar, SLOT(clearMessage()));
 	//// Selection Tools
 	connect(ui->GLPanel, SIGNAL(numNodesSelected(int)), this, SLOT(showNumSelectedNodes(int)));
+	connect(ui->GLPanel, SIGNAL(undoAvailable(bool)), ui->undoButton, SLOT(setEnabled(bool)));
+	connect(ui->undoButton, SIGNAL(clicked()), ui->GLPanel, SIGNAL(undo()));
 	// Circle Tool
 	connect(ui->GLPanel, SIGNAL(circleToolStatsSet(float,float,float)), this, SLOT(showCircleStats(float,float,float)));
 
