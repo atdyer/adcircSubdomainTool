@@ -146,26 +146,54 @@ Node* Quadtree::FindNode(float x, float y, branch *currBranch)
  */
 void Quadtree::FindLeavesInCircle(float x, float y, float radius, branch *currBranch, std::vector<leaf *> *full, std::vector<leaf *> *partial)
 {
+
+	// Make a list of the x-y coordinates of all four corners of the current branch
 	int cornersInsideCircle = 0;
 	float corners[8] = {currBranch->bounds[0], currBranch->bounds[3],
 			    currBranch->bounds[1], currBranch->bounds[3],
 			    currBranch->bounds[0], currBranch->bounds[2],
 			    currBranch->bounds[1], currBranch->bounds[2]};
 
+	// See how many of the corners of the branch are inside of the circle
 	for (int i=0; i<8; i+=2)
 		if (pointIsInsideCircle(corners[i], corners[i+1], x, y, radius))
 			cornersInsideCircle++;
 
+	// If all four are inside, just add all of the leaves below this branch
 	if (cornersInsideCircle == 4)
 		AddAllLeaves(currBranch, full);
+
+	// If some of them are inside, recurse
 	else if (cornersInsideCircle > 0)
 	{
 		for (int i=0; i<4; i++)
 		{
+			// Recurse on branches
 			if (currBranch->branches[i] != 0)
 				FindLeavesInCircle(x, y, radius, currBranch->branches[i], full, partial);
+			// Add leaves to the list of leaves that are partially inside of the circle
 			if (currBranch->leaves[i] != 0)
 				partial->push_back(currBranch->leaves[i]);	// Possible optimization here -- check leaf bounds
+		}
+	}
+
+	// Do one last check to see if the circle intersects with the branch but not any of its corners
+	else {
+		bool cRight = pointIsInside(currBranch, x+radius, y);
+		bool cLeft = pointIsInside(currBranch, x-radius, y);
+		bool cTop = pointIsInside(currBranch, x, y+radius);
+		bool cBottom = pointIsInside(currBranch, x, y-radius);
+
+		// First check to see if the entire circle is inside of branch
+		if (cRight || cLeft || cTop || cBottom)
+		{
+			for (int i=0; i<4; i++)
+			{
+				if (currBranch->branches[i] != 0)
+					FindLeavesInCircle(x, y, radius, currBranch->branches[i], full, partial);
+				if (currBranch->leaves[i] != 0)
+					partial->push_back(currBranch->leaves[i]);
+			}
 		}
 	}
 }
