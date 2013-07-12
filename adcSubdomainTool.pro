@@ -28,7 +28,10 @@ SOURCES += main.cpp\
     OpenGL/Shaders/GLShader.cpp \
     OpenGL/Shaders/SolidShader.cpp \
     SubdomainTools/CircleTool.cpp \
-    Layers/SelectionLayer.cpp
+    Layers/SelectionLayer.cpp \
+    Layers/Actions/Action.cpp \
+    Layers/Actions/NodeAction.cpp \
+    Layers/Actions/ElementAction.cpp
 
 HEADERS  += MainWindow.h \
     OpenGL/OpenGLPanel.h \
@@ -45,6 +48,9 @@ HEADERS  += MainWindow.h \
     OpenGL/Shaders/GLShader.h \
     OpenGL/Shaders/SolidShader.h \
     SubdomainTools/CircleTool.h \
-    Layers/SelectionLayer.h
+    Layers/SelectionLayer.h \
+    Layers/Actions/Action.h \
+    Layers/Actions/NodeAction.h \
+    Layers/Actions/ElementAction.h
 
 FORMS    += MainWindow.ui
