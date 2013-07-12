@@ -56,7 +56,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	//// Selection Tools
 	connect(ui->GLPanel, SIGNAL(numNodesSelected(int)), this, SLOT(showNumSelectedNodes(int)));
 	connect(ui->GLPanel, SIGNAL(undoAvailable(bool)), ui->undoButton, SLOT(setEnabled(bool)));
+	connect(ui->GLPanel, SIGNAL(redoAvailable(bool)), ui->redoButton, SLOT(setEnabled(bool)));
 	connect(ui->undoButton, SIGNAL(clicked()), ui->GLPanel, SIGNAL(undo()));
+	connect(ui->redoButton, SIGNAL(clicked()), ui->GLPanel, SIGNAL(redo()));
 	// Circle Tool
 	connect(ui->GLPanel, SIGNAL(circleToolStatsSet(float,float,float)), this, SLOT(showCircleStats(float,float,float)));
 

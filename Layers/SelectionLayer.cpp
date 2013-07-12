@@ -7,7 +7,6 @@ SelectionLayer::SelectionLayer()
 	VBOId = 0;
 	IBOId = 0;
 
-	undoable = false;
 	glLoaded = false;
 
 	pointShader = 0;
@@ -117,7 +116,7 @@ void SelectionLayer::LoadDataToGPU()
 		{
 			Node* currNode;
 			int i=0;
-			for (std::map<uint, Node*>::iterator it=selectedNodes.begin(); it != selectedNodes.end(); it++, i++)
+			for (std::map<unsigned int, Node*>::iterator it=selectedNodes.begin(); it != selectedNodes.end(); it++, i++)
 			{
 				currNode = it->second;
 				glNodeData[4*i+0] = (GLfloat)currNode->normX;
@@ -151,7 +150,7 @@ void SelectionLayer::LoadDataToGPU()
 		{
 			Element* currElement;
 			int i=0;
-			for (std::map<uint, Element*>::iterator it=selectedElements.begin(); it != selectedElements.end(); it++, i++)
+			for (std::map<unsigned int, Element*>::iterator it=selectedElements.begin(); it != selectedElements.end(); it++, i++)
 			{
 				currElement = it->second;
 				glElementData[3*i+0] = (GLuint)currElement->n1-1;
@@ -245,11 +244,56 @@ void SelectionLayer::SelectNodes(std::vector<Node *> nodes)
 }
 
 
+void SelectionLayer::SelectNodes(std::map<unsigned int, Node *> nodes)
+{
+	selectedNodes.insert(nodes.begin(), nodes.end());
+}
+
+
+void SelectionLayer::DeselectNodes(std::map<unsigned int, Node *> nodes)
+{
+	for (std::map<unsigned int, Node*>::iterator it=nodes.begin(); it != nodes.end(); it++)
+	{
+		selectedNodes.erase(it->first);
+	}
+}
+
+
 void SelectionLayer::undo()
 {
 	// Undo the last selection/deselection
+	if (undoStack.size() > 0)
+	{
+		Action *undoAction = undoStack.top();
+		undoStack.pop();
+		if (undoAction)
+		{
+			undoAction->UndoAction();
+			redoStack.push(undoAction);
+			emit redoAvailable(true);
+		}
+	}
 
-	// Update the GPU data
-//	UpdateDataOnGPU();
-	DEBUG("Undid");
+	if (undoStack.size() == 0)
+		emit undoAvailable(false);
+
+}
+
+
+void SelectionLayer::redo()
+{
+	if (redoStack.size() > 0)
+	{
+		Action *redoAction = redoStack.top();
+		redoStack.pop();
+		if (redoAction)
+		{
+			redoAction->RedoAction();
+			undoStack.push(redoAction);
+			emit undoAvailable(true);
+		}
+	}
+
+	if (redoStack.size() == 0)
+		emit redoAvailable(false);
 }

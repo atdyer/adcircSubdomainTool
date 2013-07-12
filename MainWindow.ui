@@ -363,7 +363,33 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset theme="edit-undo"/>
+             <iconset theme="edit-undo">
+              <normaloff/>
+             </iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="redoButton">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="toolTip">
+             <string>Redo</string>
+            </property>
+            <property name="statusTip">
+             <string>Redo</string>
+            </property>
+            <property name="whatsThis">
+             <string>Redo</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset theme="edit-redo">
+              <normaloff/>
+             </iconset>
             </property>
            </widget>
           </item>

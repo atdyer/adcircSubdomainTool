@@ -7,8 +7,9 @@
 #include "OpenGL/Shaders/SolidShader.h"
 #include "OpenGL/GLCamera.h"
 
-#include <vector>
 #include <map>
+#include <stack>
+#include <vector>
 
 
 /**
@@ -41,10 +42,12 @@ class SelectionLayer : public Layer
 	protected:
 
 		// Selected Nodes and Elements
-		std::map<uint, Node*>		selectedNodes;
-		std::map<uint, Element*>	selectedElements;
+		std::map<unsigned int, Node*>		selectedNodes;
+		std::map<unsigned int, Element*>	selectedElements;
 
-
+		// Undo and Redo stacks
+		std::stack<Action*, std::vector<Action*> >	undoStack;
+		std::stack<Action*, std::vector<Action*> >	redoStack;
 
 		// OpenGL Variables
 		GLCamera*	camera;		/**< The camera used to draw selections */
@@ -56,9 +59,9 @@ class SelectionLayer : public Layer
 		SolidShader*	fillShader;	/**< The shader used to draw Element fill */
 
 		// Flags
-		bool	undoable;	/**< Flag that shows if an undo operation can be performed */
 		bool	glLoaded;	/**< Flag that shows if data has been successfully sent to the GPU */
 
+		// Helper Functions
 		void	UpdateDataOnGPU();
 
 
@@ -66,13 +69,17 @@ class SelectionLayer : public Layer
 	signals:
 
 		void	undoAvailable(bool);
+		void	redoAvailable(bool);
 		void	numNodesSelected(int);
 
 	public slots:
 
 		void	SelectNode(Node* node);
 		void	SelectNodes(std::vector<Node*> nodes);
+		void	SelectNodes(std::map<unsigned int, Node*> nodes);
+		void	DeselectNodes(std::map<unsigned int, Node*> nodes);
 		void	undo();
+		void	redo();
 
 
 };

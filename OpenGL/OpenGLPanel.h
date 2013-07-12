@@ -72,6 +72,8 @@ class OpenGLPanel : public QGLWidget
 		void	numElementsSelected(int);
 		void	undoAvailable(bool);
 		void	undo();
+		void	redoAvailable(bool);
+		void	redo();
 };
 
 #endif // OPENGLPANEL_H
