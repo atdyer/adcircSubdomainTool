@@ -4,6 +4,8 @@
 #include "adcData.h"
 #include "Layers/Layer.h"
 #include "Layers/Actions/Action.h"
+#include "Layers/Actions/NodeAction.h"
+#include "Layers/Actions/ElementAction.h"
 #include "OpenGL/Shaders/SolidShader.h"
 #include "OpenGL/GLCamera.h"
 
@@ -62,7 +64,8 @@ class SelectionLayer : public Layer
 		bool	glLoaded;	/**< Flag that shows if data has been successfully sent to the GPU */
 
 		// Helper Functions
-		void	UpdateDataOnGPU();
+		void	InitializeGL();
+		void	UpdateVertexBuffer();
 
 
 
@@ -71,6 +74,7 @@ class SelectionLayer : public Layer
 		void	undoAvailable(bool);
 		void	redoAvailable(bool);
 		void	numNodesSelected(int);
+		void	refreshed();
 
 	public slots:
 

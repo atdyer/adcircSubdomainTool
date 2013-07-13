@@ -27,6 +27,7 @@ OpenGLPanel::OpenGLPanel(QWidget *parent) :
 	connect(&selectionLayer, SIGNAL(numNodesSelected(int)), this, SIGNAL(numNodesSelected(int)));
 	connect(&selectionLayer, SIGNAL(undoAvailable(bool)), this, SIGNAL(undoAvailable(bool)));
 	connect(&selectionLayer, SIGNAL(redoAvailable(bool)), this, SIGNAL(redoAvailable(bool)));
+	connect(&selectionLayer, SIGNAL(refreshed()), this, SLOT(updateGL()));
 	connect(this, SIGNAL(undo()), &selectionLayer, SLOT(undo()));
 	connect(this, SIGNAL(redo()), &selectionLayer, SLOT(redo()));
 }

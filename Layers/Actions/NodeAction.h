@@ -11,6 +11,7 @@ class NodeAction : public Action
 	public:
 
 		NodeAction();
+		NodeAction(std::map<unsigned int, Node*> cNodes);
 
 		std::map<unsigned int, Node*>	nodes;
 
