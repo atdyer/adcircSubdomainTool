@@ -328,6 +328,7 @@ void SelectionLayer::SelectNodes(std::map<unsigned int, Node *> nodes)
 {
 	selectedNodes.insert(nodes.begin(), nodes.end());
 	UpdateVertexBuffer();
+	emit numNodesSelected(selectedNodes.size());
 }
 
 
@@ -342,6 +343,7 @@ void SelectionLayer::DeselectNodes(std::map<unsigned int, Node *> nodes)
 		selectedNodes.erase(it->first);
 	}
 	UpdateVertexBuffer();
+	emit numNodesSelected(selectedNodes.size());
 }
 
 

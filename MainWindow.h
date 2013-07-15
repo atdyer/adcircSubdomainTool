@@ -49,7 +49,7 @@ class MainWindow : public QMainWindow
 	private:
 
 		// The Main Window
-		Ui::MainWindow *ui;
+		Ui::MainWindow	*ui;
 
 		// The status bar specific to the GLPanel
 		QStatusBar	*glStatusBar;
