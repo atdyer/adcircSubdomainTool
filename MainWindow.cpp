@@ -60,6 +60,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->undoButton, SIGNAL(clicked()), ui->GLPanel, SIGNAL(undo()));
 	connect(ui->redoButton, SIGNAL(clicked()), ui->GLPanel, SIGNAL(redo()));
 	// Circle Tool
+	connect(ui->selectNodesCircle, SIGNAL(clicked()), ui->GLPanel, SLOT(enterCircleSubdomainMode()));
 	connect(ui->GLPanel, SIGNAL(circleToolStatsSet(float,float,float)), this, SLOT(showCircleStats(float,float,float)));
 
 
@@ -192,10 +193,4 @@ void MainWindow::on_openProjectButton_clicked()
 {
 //	if (ui->GLPanel)
 //		ui->GLPanel->enterDisplayMode();
-}
-
-void MainWindow::on_subCirclePickingButton_clicked()
-{
-	if (ui->GLPanel)
-		ui->GLPanel->enterCircleSubdomainMode();
 }

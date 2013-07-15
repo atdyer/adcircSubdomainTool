@@ -44,7 +44,6 @@ class MainWindow : public QMainWindow
 		void on_openFileButton_clicked();
 		void on_newProjectButton_clicked();
 		void on_openProjectButton_clicked();
-		void on_subCirclePickingButton_clicked();
 
 	private:
 

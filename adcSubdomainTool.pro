@@ -54,3 +54,6 @@ HEADERS  += MainWindow.h \
     Layers/Actions/ElementAction.h
 
 FORMS    += MainWindow.ui
+
+RESOURCES += \
+    icons.qrc
