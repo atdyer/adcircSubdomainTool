@@ -1,5 +1,9 @@
 #include "CircleTool.h"
 
+
+/**
+ * @brief Constructor that initializes the tool with default values
+ */
 CircleTool::CircleTool()
 {
 	terrain = 0;
@@ -20,7 +24,6 @@ CircleTool::CircleTool()
 	radPixel = 0.0;
 	radNormal = 0.0;
 	radDomain = 0.0;
-	zoomScale = 1.1;
 
 	w = 800;
 	h = 600;
@@ -45,7 +48,7 @@ CircleTool::~CircleTool()
 /**
  * @brief Draws the circle
  *
- * This function draws the disk using the values of x, y, and rad.
+ * This function draws the circle using the gluDisk function.
  *
  */
 void CircleTool::Draw()
@@ -63,18 +66,39 @@ void CircleTool::Draw()
 }
 
 
+/**
+ * @brief Set the TerrainLayer that Nodes will come from when looking for
+ * Nodes inside of the circle
+ *
+ * @param layer Pointer to the desired TerrainLayer
+ */
 void CircleTool::SetTerrainLayer(TerrainLayer *layer)
 {
 	terrain = layer;
 }
 
 
+/**
+ * @brief Set the GLCamera that will be used to draw the circle.
+ *
+ * @param cam Pointer to the desired GLCamera
+ */
 void CircleTool::SetCamera(GLCamera *cam)
 {
 	camera = cam;
 }
 
 
+/**
+ * @brief Sets internal values of the viewport size that are used to draw
+ * the circle
+ *
+ * Sets the internal values of the viewport size that are used to draw the circle.
+ * This needs to be called every time the size of the OpenGL context changes size.
+ *
+ * @param w The viewport width in pixels
+ * @param h The viewport height in pixels
+ */
 void CircleTool::SetViewportSize(float w, float h)
 {
 	this->w = w;
@@ -88,6 +112,15 @@ void CircleTool::SetViewportSize(float w, float h)
 }
 
 
+/**
+ * @brief Set the center of the circle
+ *
+ * Sets the center of the circle. Typically called once when the user clicks to start
+ * drawing the circle.
+ *
+ * @param newX The x-coordinate of the circle center, in pixels
+ * @param newY The y-coordiante of the circle center, in pixels
+ */
 void CircleTool::SetCenter(int newX, int newY)
 {
 	xPixel = newX;
@@ -108,13 +141,20 @@ void CircleTool::SetCenter(int newX, int newY)
 		DEBUG("Circle Tool: No Terrain");
 	}
 
-//	DEBUG("x-pixel: " << xPixel << "\tx-normal: " << xNormal << "\tx-domain: " << xDomain);
-//	DEBUG("y-pixel: " << yPixel << "\ty-normal: " << yNormal << "\ty-domain: " << yDomain);
-
 	emit CircleStatsSet(xNormal, yNormal, radNormal);
 }
 
 
+/**
+ * @brief Set the the second point that defines the radius of the circle
+ *
+ * Sets the point that is used to define the radius of the circle. The distance
+ * between this point and the circle center define the radius, which is used
+ * to draw that circle around the center point.
+ *
+ * @param newX The x-coordinate of the circle edge, in pixels
+ * @param newY The y-coordinate of the circle edge, in pixels
+ */
 void CircleTool::SetRadiusPoint(int newX, int newY)
 {
 	edgeXPixel = newX;
@@ -138,15 +178,21 @@ void CircleTool::SetRadiusPoint(int newX, int newY)
 }
 
 
+/**
+ * @brief Tells the circle tool that the user has finished drawing the circle
+ *
+ * Tells the circle tool that the user has finished drawing the circle and that
+ * it is time to find all of the Nodes inside of the circle. Typically called
+ * after the user stops clicking to drop the circle.
+ *
+ * Resets all coordinate and radius values to zero to prepare to draw another circle.
+ *
+ */
 void CircleTool::CircleFinished()
 {
 
 	if (terrain)
 	{
-		DEBUG("x: " << xNormal << "\ty: " << yNormal << "\trad: " << radNormal);
-//		DEBUG("CENTER\tx: " << xNormal << "\ty: " << yNormal);
-//		DEBUG("EDGE\tx:" << edgeXNormal << "\ty: " << edgeYNormal);
-//		std::vector<Node*> nodes = terrain->GetNodesFromCircle(-77.771, 34.001, 0.1);
 		std::vector<Node*> nodes = terrain->GetNodesFromCircle(xNormal, yNormal, radNormal);
 		emit NodesSelected(nodes);
 		DEBUG("Number of nodes found: " << nodes.size());
@@ -165,6 +211,15 @@ void CircleTool::CircleFinished()
 }
 
 
+/**
+ * @brief Helper function that calculates the distance between two points
+ *
+ * @param x1 The x-coordinate of the first point
+ * @param y1 The y-coordinate of the first point
+ * @param x2 The x-coordinate of the second point
+ * @param y2 The y-coordinate of the second point
+ * @return The distance between the two points
+ */
 float CircleTool::distance(float x1, float y1, float x2, float y2)
 {
 	return sqrt(pow(x2-x1, 2.0)+pow(y2-y1, 2.0));

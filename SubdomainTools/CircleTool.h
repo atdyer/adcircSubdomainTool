@@ -9,8 +9,8 @@
 #include "Layers/TerrainLayer.h"
 
 /**
- * @brief This class provides functionality for cutting out a subdomain by
- * drawing a circle over the desired area of the current project
+ * @brief This class provides functionality for selecting Nodes and Elements by
+ * drawing a circle over the desired area of the current TerrainLayer
  */
 class CircleTool : public QObject
 {
@@ -31,22 +31,23 @@ class CircleTool : public QObject
 		GLCamera*	camera;		/**< The GLCamera that is being used to draw the TerrainLayer */
 
 		// Circle attributes
-		float	xPixel;
-		float	xNormal;
-		float	xDomain;
-		float	yPixel;
-		float	yNormal;
-		float	yDomain;
-		float	edgeXPixel;
-		float	edgeYPixel;
-		float	edgeXNormal;
-		float	edgeYNormal;
-		float	edgeXDomain;
-		float	edgeYDomain;
-		float	radPixel;
-		float	radNormal;
-		float	radDomain;
-		float	zoomScale;	/**< The scaling factor for zooming */
+		float	xPixel;		/**< The x-coordinate of the circle center, in pixels */
+		float	yPixel;		/**< The y-coordinate of the circle center, in pixels */
+		float	xNormal;	/**< The x-coordinate of the circle center, in normalized OpenGL space */
+		float	yNormal;	/**< The y-coordinate of the circle center, in normalized OpenGL space */
+		float	xDomain;	/**< The x-coordinate of the circle center, in the original coordinate system of the TerrainLayer */
+		float	yDomain;	/**< The y-coordinate of the circle center, in the original coordinate system of the TerrainLayer */
+
+		float	edgeXPixel;	/**< The x-coordinate of the circle edge, in pixels */
+		float	edgeYPixel;	/**< The y-coordinate of the circle edge, in pixels */
+		float	edgeXNormal;	/**< The x-coordinate of the circle edge, in normalized OpenGL space */
+		float	edgeYNormal;	/**< The y-coordinate of the circle edge, in normalized OpenGL space */
+		float	edgeXDomain;	/**< The x-coordinate of the circle edge, the original coordinate system of the TerrainLayer */
+		float	edgeYDomain;	/**< The y-coordinate of the circle edge, the original coordinate system of the TerrainLayer */
+
+		float	radPixel;	/**< The radius of the circle, in pixels */
+		float	radNormal;	/**< The radius of the circle, in normalized OpenGL space */
+		float	radDomain;	/**< The radius of the circle, in the original coordinate system of the TerrainLayer */
 
 		// Viewport attributes
 		float	w;	/**< The viewport width */
@@ -58,7 +59,6 @@ class CircleTool : public QObject
 
 		// Use GLU to draw the circle for now
 		GLUquadricObj*	quad;	/**< The quadric object used to draw the disk */
-
 
 		float	distance(float x1, float y1, float x2, float y2);
 
