@@ -3,6 +3,11 @@
 
 #include "Action.h"
 
+
+/**
+ * @brief A subclass of Action that represents the selection/deselection of
+ * Elements in the SelectionLayer
+ */
 class ElementAction : public Action
 {
 	public:

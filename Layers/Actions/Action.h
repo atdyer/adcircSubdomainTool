@@ -5,8 +5,18 @@
 class SelectionLayer;
 
 /**
- * @brief The Action class is an abstract class that allows us to implement
+ * @brief The Action class is a virtual class that allows us to implement
  * undo and redo stacks in the SelectionLayer.
+ *
+ * The Action class is a virtual class that allows us to implement undo and
+ * redo stacks in the SelectionLayer. A subclass of the Action class must
+ * override the RedoAction and UndoAction functions. The RedoAction function
+ * is called when the user clicks the redo button and the UndoAction function
+ * is called when the user clicks the undo button.
+ *
+ * The SelectionLayer that is drawing the selected Nodes/Elements needs to be set
+ * when an Action object is created. This is done by calling the SetSelectionLayer
+ * function.
  *
  */
 class Action
@@ -20,7 +30,7 @@ class Action
 
 	protected:
 
-		SelectionLayer*	selectionLayer;
+		SelectionLayer*	selectionLayer;	/**< Pointer to the SelectionLayer object used to draw selected Nodes/Elements */
 };
 
 #endif // ACTION_H

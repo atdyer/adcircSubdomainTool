@@ -6,6 +6,11 @@
 #include "Layers/SelectionLayer.h"
 #include <map>
 
+
+/**
+ * @brief A subclass of Action that represents the selection/deselection of Nodes in the
+ * SelectionLayer
+ */
 class NodeAction : public Action
 {
 	public:
@@ -13,7 +18,7 @@ class NodeAction : public Action
 		NodeAction();
 		NodeAction(std::map<unsigned int, Node*> cNodes);
 
-		std::map<unsigned int, Node*>	nodes;
+		std::map<unsigned int, Node*>	nodes;	/**< The map of all Nodes that are used in this Action */
 
 		virtual void	RedoAction();
 		virtual void	UndoAction();
