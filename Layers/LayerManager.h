@@ -13,6 +13,7 @@
 #include <OpenGL/GLCamera.h>
 #include "OpenGL/Shaders/GLShader.h"
 #include "OpenGL/Shaders/SolidShader.h"
+#include "OpenGL/Shaders/GradientShader.h"
 
 /**
  * @brief This class is meant to provide a layer of abstraction between the UI and the numerous
@@ -103,9 +104,10 @@ class LayerManager : public QObject
 		GLCamera*		currentCam;	/**< The camera to be used by all shaders */
 
 
-		std::vector<GLCamera*>		cameras;	/**< MEMORY MANAGEMENT - List of all GLCamera objects */
-		std::vector<TerrainLayer*>	terrainLayers;	/**< MEMORY MANAGEMENT - List of all TerrainLayer objects */
-		std::vector<SolidShader*>	solidShaders;	/**< MEMORY MANAGEMENT - List of all SolidShader objects*/
+		std::vector<GLCamera*>		cameras;		/**< MEMORY MANAGEMENT - List of all GLCamera objects */
+		std::vector<TerrainLayer*>	terrainLayers;		/**< MEMORY MANAGEMENT - List of all TerrainLayer objects */
+		std::vector<SolidShader*>	solidShaders;		/**< MEMORY MANAGEMENT - List of all SolidShader objects*/
+		std::vector<GradientShader*>	gradientShaders;	/**< MEMORY MANAGEMENT - List of all GradientShader objects */
 
 		std::vector<Layer*>		allLayers;	/**< MASS ACCESS - List of all Layer objects */
 		std::vector<GLShader*>		allShaders;	/**< MASS ACCESS - List of all GLShader objects*/
@@ -114,6 +116,8 @@ class LayerManager : public QObject
 		std::vector<Layer*>		hiddenLayers;		/**< REFERENCE TABLE - List of hidden Layers */
 		std::vector<SolidShader*>	solidOutlineShaders;	/**< REFERENCE TABLE - List of SolidShader objects used as outlines for each Layer */
 		std::vector<SolidShader*>	solidFillShaders;	/**< REFERENCE TABLE - List of SolidShdaer objects used as fill for each Layer */
+		std::vector<GradientShader*>	gradientOutlineShaders;	/**< REFERENCE TABLE - List of GradientShader objects used as outlines for each Layer */
+		std::vector<GradientShader*>	gradientFillShaders;	/**< REFERENCE TABLE - List of GradientShader objects used as fill for each Layer */
 
 		unsigned int	AddReferenceTableSlot();
 		int		GetReferenceTableColumn(unsigned int layerID);
@@ -124,6 +128,7 @@ class LayerManager : public QObject
 		void	UpdateShaderCameras();
 
 		SolidShader*	NewSolidShader(float r, float g, float b, float a);
+		GradientShader*	NewGradientShader(float lowColor[], float highColor[], float heightRange[]);
 
 	private:
 

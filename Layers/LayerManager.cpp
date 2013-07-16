@@ -238,8 +238,12 @@ unsigned int LayerManager::CreateNewTerrainLayer(std::string fort14Location, QPr
 	loadingLayer = newLayer;
 
 	// Create a solid outline shader and solid fill shader with some nice default terrain colors
-	SolidShader* outlineShader = NewSolidShader(0.2, 0.2, 0.2, 0.2);
-	SolidShader* fillShader = NewSolidShader(0.0, 1.0, 0.0, 1.0);
+	SolidShader* outlineShader = NewSolidShader(0.2, 0.2, 0.2, 0.1);
+//	SolidShader* fillShader = NewSolidShader(0.0, 1.0, 0.0, 1.0);
+	float lowColor[4] = {0.216, 0.529, 0.259, 1.0};
+	float highColor[4] = {0.396, 0.871, 0.463, 1.0};
+	float heightRange[2] = {0.0, 1.0};
+	GradientShader* fillShader = NewGradientShader(lowColor, highColor, heightRange);
 
 	// Tell the new TerrainLayer to use the newly created shaders
 	newLayer->SetOutlineShader(outlineShader);
@@ -251,7 +255,8 @@ unsigned int LayerManager::CreateNewTerrainLayer(std::string fort14Location, QPr
 	unsigned int newColumn = AddReferenceTableSlot();
 	visibleLayers[newColumn] = newLayer;
 	solidOutlineShaders[newColumn] = outlineShader;
-	solidFillShaders[newColumn] = fillShader;
+//	solidFillShaders[newColumn] = fillShader;
+	gradientOutlineShaders[newColumn] = fillShader;
 
 	emit activeTerrainLayer(newLayer);
 
@@ -383,6 +388,8 @@ unsigned int LayerManager::AddReferenceTableSlot()
 	hiddenLayers.push_back(0);
 	solidOutlineShaders.push_back(0);
 	solidFillShaders.push_back(0);
+	gradientOutlineShaders.push_back(0);
+	gradientFillShaders.push_back(0);
 
 	// Probably should do some checks here to make sure all vectors are the same size
 
@@ -468,6 +475,35 @@ SolidShader* LayerManager::NewSolidShader(float r, float g, float b, float a)
 	// Add to MASS ACCESS list
 	allShaders.push_back(newShader);
 
+	return newShader;
+}
+
+
+/**
+ * @brief Helper function that creates a new GradientShader with the desired colors and height range
+ *
+ * Creates a new GradientShader with the desired colors and height range. It is extremely important that
+ * the arrays passed in have the correct number of values.
+ *
+ * @param lowColor Array of 4 floating point values (r, g, b, a)
+ * @param highColor Array of 4 floating point values (r, g, b, a)
+ * @param heightRange Array of 2 foating point values (lowValue, highValue)
+ * @return Pointer to a new GradientShader object owned by the LayerManager
+ */
+GradientShader* LayerManager::NewGradientShader(float lowColor[], float highColor[], float heightRange[])
+{
+	GradientShader* newShader = new GradientShader();
+	newShader->SetLowColor(lowColor[0], lowColor[1], lowColor[2], lowColor[3]);
+	newShader->SetHighColor(highColor[0], highColor[1], highColor[2], highColor[3]);
+	newShader->SetLowValue(heightRange[0]);
+	newShader->SetHighValue(heightRange[1]);
+	newShader->SetCamera(currentCam);
+
+	// Add to MEMORY MANAGEMENT list
+	gradientShaders.push_back(newShader);
+
+	// Add to MASS ACCESS list
+	allShaders.push_back(newShader);
 
 	return newShader;
 }
