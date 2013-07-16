@@ -14,6 +14,10 @@
  * ensure the correct shaders are used when drawing different Layers by
  * using a LayerManager.
  *
+ * All memory management on the OpenGL context is taken care of by this
+ * virtual class. Subclasses only need to successfully compile the shader
+ * program and set the programID variable.
+ *
  */
 class GLShader
 {

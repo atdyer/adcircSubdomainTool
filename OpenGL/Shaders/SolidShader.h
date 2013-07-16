@@ -8,7 +8,7 @@
 /**
  * @brief A single color shader
  *
- * This shader draw everything the same solid color.
+ * This shader draws everything the same solid color.
  *
  */
 class SolidShader : public GLShader
