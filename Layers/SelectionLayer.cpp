@@ -66,6 +66,14 @@ SelectionLayer::~SelectionLayer()
 }
 
 
+/**
+ * @brief Draws the selected Nodes and Elements
+ *
+ * This function overrides the Layer::Draw virtual function. It will draw the currently selected
+ * Elements followed by the currently selected Nodes if the data has been loaded to the OpenGL
+ * context.
+ *
+ */
 void SelectionLayer::Draw()
 {
 	if (glLoaded)
@@ -97,6 +105,14 @@ void SelectionLayer::Draw()
 }
 
 
+/**
+ * @brief Initializes the Buffer Objects and GLShader objects necessary for drawing the
+ * selection layer.
+ *
+ * This function initializes the Buffer Objects in the OpenGL context as well as the
+ * GLShader objects necessary for drawing the selection layer.
+ *
+ */
 void SelectionLayer::InitializeGL()
 {
 	// Create new shaders
@@ -136,17 +152,25 @@ void SelectionLayer::InitializeGL()
 			glLoaded = true;
 		} else {
 			DEBUG("Selection Layer Data Not Loaded");
+			glLoaded = false;
 		}
 	} else {
 		const GLubyte *errString = gluErrorString(errorCheck);
 		DEBUG("SelectionLayer OpenGL Error: " << errString);
 		glLoaded = false;
 	}
-
-	glLoaded = true;
 }
 
 
+/**
+ * @brief This function updates the vertex data on the OpenGL context.
+ *
+ * Updates the vertex data on the OpenGL context. Calling the glBufferData function with
+ * NULL as the data pointer tells the OpenGL context that any data currently in the
+ * Vertex Buffer can be ignored and overwritten. This allows us to quickly replace all
+ * of the data in the Vertex Buffer with the updated data.
+ *
+ */
 void SelectionLayer::UpdateVertexBuffer()
 {
 	if (!glLoaded)
@@ -210,42 +234,16 @@ void SelectionLayer::UpdateVertexBuffer()
 void SelectionLayer::LoadDataToGPU()
 {
 
-//	const size_t IndexBufferSize = 4*sizeof(GLfloat)*selectedElements.size();
-
-//	// Send Index Data
-//	if (IndexBufferSize)
-//	{
-//		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBOId);
-//		glBufferData(GL_ELEMENT_ARRAY_BUFFER, IndexBufferSize, NULL, GL_STATIC_DRAW);
-//		GLuint* glElementData = (GLuint *)glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
-//		if (glElementData)
-//		{
-//			Element* currElement;
-//			int i=0;
-//			for (std::map<unsigned int, Element*>::iterator it=selectedElements.begin(); it != selectedElements.end(); it++, i++)
-//			{
-//				currElement = it->second;
-//				glElementData[3*i+0] = (GLuint)currElement->n1-1;
-//				glElementData[3*i+1] = (GLuint)currElement->n2-1;
-//				glElementData[3*i+2] = (GLuint)currElement->n3-1;
-//			}
-//		} else {
-//			glLoaded = false;
-//			DEBUG("ERROR: Mapping index buffer for SelectionLayer " << GetID());
-//			emit emitMessage("<p style:color='red'><strong>Error: Unable to load index data to GPU (Selection Layer)</strong>");
-//			return;
-//		}
-
-//		if (glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER) == GL_FALSE)
-//		{
-//			glLoaded = false;
-//			DEBUG("ERROR: Unmapping index buffer for SelectionLayer " << GetID());
-//			return;
-//		}
-//	}
 }
 
 
+/**
+ * @brief Sets the camera used during drawing operations
+ *
+ * Sets the camera being used during drawing operations
+ *
+ * @param cam Pointer to the GLCamera object
+ */
 void SelectionLayer::SetCamera(GLCamera *cam)
 {
 	camera = cam;
@@ -258,6 +256,14 @@ void SelectionLayer::SetCamera(GLCamera *cam)
 }
 
 
+/**
+ * @brief Selects/Deselects a single Node
+ *
+ * Selects a single Node if that Node is not already selected. If it is
+ * already selected, the Node is deselected
+ *
+ * @param node Pointer to the Node to select/deselect
+ */
 void SelectionLayer::SelectNode(Node *node)
 {
 	// Add the node to list of selected nodes
@@ -267,6 +273,13 @@ void SelectionLayer::SelectNode(Node *node)
 }
 
 
+/**
+ * @brief Selects all Nodes in the provided list of Nodes
+ *
+ * Selects every Node in the provided list that is not already selected
+ *
+ * @param nodes The list of nodes to select. Can include Nodes that are already selected.
+ */
 void SelectionLayer::SelectNodes(std::vector<Node *> nodes)
 {
 	if (nodes.size() > 0)
@@ -321,8 +334,15 @@ void SelectionLayer::SelectNodes(std::vector<Node *> nodes)
 
 
 /**
- * @brief Function used by actions to perform selection of a large number of Nodes
- * @param nodes
+ * @brief Function used by Action objects to perform selection of a large number of Nodes
+ *
+ * Special function that should only be used by Action objects to select a large number
+ * of Node objects. Actions are created with only the Nodes that are actually selected
+ * (ie. duplicates are not included), so a unique set of Nodes is guaranteed in each
+ * Action. This function is very fast because it does not check for duplicates and uses
+ * the std::map insert function.
+ *
+ * @param nodes The map of Nodes to select
  */
 void SelectionLayer::SelectNodes(std::map<unsigned int, Node *> nodes)
 {
@@ -333,8 +353,15 @@ void SelectionLayer::SelectNodes(std::map<unsigned int, Node *> nodes)
 
 
 /**
- * @brief Function used by actions to perform deselection of a large number of nodes
- * @param nodes
+ * @brief Function used by Action objects to perform deselection of a large number of nodes
+ *
+ * Special function that should only be used by Action objects to deselect a large number
+ * of Node objects. Action are created with only the Nodes that are actually selected
+ * (ie. duplicates are not included), so a unique set of Nodes is guaranteed in each
+ * Action. This function is very fast because it does not check for duplicates and uses
+ * the std::map insert function.
+ *
+ * @param nodes The map of Nodes to deselect
  */
 void SelectionLayer::DeselectNodes(std::map<unsigned int, Node *> nodes)
 {
@@ -347,6 +374,13 @@ void SelectionLayer::DeselectNodes(std::map<unsigned int, Node *> nodes)
 }
 
 
+/**
+ * @brief Undo the previous action
+ *
+ * Undoes the previous Action by popping the undo stack, performing the popped Action's
+ * undo function, and pushing that Action onto the redo stack.
+ *
+ */
 void SelectionLayer::undo()
 {
 	// Undo the last selection/deselection
@@ -368,6 +402,13 @@ void SelectionLayer::undo()
 }
 
 
+/**
+ * @brief Redo the previous undo
+ *
+ * Redoes the last undone Action by popping the redo stack, performing the popped Action's
+ * redo function, and pushing that Action onto the undo stack.
+ *
+ */
 void SelectionLayer::redo()
 {
 	if (redoStack.size() > 0)

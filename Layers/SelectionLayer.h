@@ -23,11 +23,24 @@
  * It is unique from other Layer objects in that it is responsible for allocating/deallocating
  * memory for its own GLShader objects.
  *
+ * The lists of selected Node and Element objects are implemented as std::map for performance
+ * reasons. These lists need to have unique entries, and std::map will not add duplicates.
+ *
+ * Undo/Redo capabilities are implemented using two action stacks. When the user performs an action
+ * such as selected a Node or Element, a subclass of the Action class, such as NodeAction or
+ * ElementAction is created and pushed onto the undo stack. When the user clicks the undo button,
+ * the top Action is popped off of the undo stack, its Action::UndoAction() function is called,
+ * and it is pushed onto the redo stack. Similarly for the redo stack, the top Action is popped off,
+ * its Action::RedoAction() function is called, and it is pushed onto the undo stack.
+ *
  */
 class SelectionLayer : public Layer
 {
 		Q_OBJECT
 	public:
+
+		friend class NodeAction;
+		friend class ElementAction;
 
 		// Constructor/Destructor
 		SelectionLayer();
@@ -44,12 +57,12 @@ class SelectionLayer : public Layer
 	protected:
 
 		// Selected Nodes and Elements
-		std::map<unsigned int, Node*>		selectedNodes;
-		std::map<unsigned int, Element*>	selectedElements;
+		std::map<unsigned int, Node*>		selectedNodes;		/**< The map of all selected Nodes - <Node #, Pointer to Node> */
+		std::map<unsigned int, Element*>	selectedElements;	/**< The map of all selected Elements - <Element #, Pointer to Element> */
 
 		// Undo and Redo stacks
-		std::stack<Action*, std::vector<Action*> >	undoStack;
-		std::stack<Action*, std::vector<Action*> >	redoStack;
+		std::stack<Action*, std::vector<Action*> >	undoStack;	/**< The stack of all undo actions */
+		std::stack<Action*, std::vector<Action*> >	redoStack;	/**< The stack of all redo actions */
 
 		// OpenGL Variables
 		GLCamera*	camera;		/**< The camera used to draw selections */
@@ -61,27 +74,30 @@ class SelectionLayer : public Layer
 		SolidShader*	fillShader;	/**< The shader used to draw Element fill */
 
 		// Flags
-		bool	glLoaded;	/**< Flag that shows if data has been successfully sent to the GPU */
+		bool	glLoaded;	/**< Flag that shows if the VAO/VBO/IBO have been created */
 
 		// Helper Functions
 		void	InitializeGL();
 		void	UpdateVertexBuffer();
 
+		// Selection Functions used by Actions
+		void	SelectNodes(std::map<unsigned int, Node*> nodes);
+		void	DeselectNodes(std::map<unsigned int, Node*> nodes);
+
 
 
 	signals:
 
-		void	undoAvailable(bool);
-		void	redoAvailable(bool);
-		void	numNodesSelected(int);
-		void	refreshed();
+		void	undoAvailable(bool);		/**< Triggered after the user performs an undoable action */
+		void	redoAvailable(bool);		/**< Triggered after the user performs an undo operation that can be redone */
+		void	numNodesSelected(int);		/**< Triggered when the number of selected Nodes changes */
+		void	numElementsSelected(int);	/**< Triggered when the number of selected Elements changes */
+		void	refreshed();			/**< Triggered when data has been loaded to the OpenGL context and is ready to be drawn */
 
 	public slots:
 
 		void	SelectNode(Node* node);
 		void	SelectNodes(std::vector<Node*> nodes);
-		void	SelectNodes(std::map<unsigned int, Node*> nodes);
-		void	DeselectNodes(std::map<unsigned int, Node*> nodes);
 		void	undo();
 		void	redo();
 
