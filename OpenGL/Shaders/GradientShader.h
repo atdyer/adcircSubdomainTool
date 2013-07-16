@@ -4,6 +4,17 @@
 #include <string>
 #include "GLShader.h"
 
+
+/**
+ * @brief A two color gradient shader
+ *
+ * This shader draws using a gradient. The user sets low and high height values
+ * as well as the colors corresponding to those values, and colors are interpolated
+ * linearly within that height range. Height values below the low value are drawn
+ * using the low color and height values above the high value are drawn using the
+ * high value.
+ *
+ */
 class GradientShader : public GLShader
 {
 	public:

@@ -1,5 +1,9 @@
 #include "GradientShader.h"
 
+
+/**
+ * @brief Constructor that defines the shader source code and default color and height values
+ */
 GradientShader::GradientShader()
 {
 	vertexSource =	"#version 330"
@@ -53,6 +57,17 @@ GradientShader::GradientShader()
 }
 
 
+/**
+ * @brief Set the color corresponding to the low height value
+ *
+ * Sets the color that corresponds to the low height value. Color values
+ * are defined in the range [0.0 - 1.0].
+ *
+ * @param r Red value
+ * @param g Green value
+ * @param b Blue value
+ * @param a Alpha value
+ */
 void GradientShader::SetLowColor(float r, float g, float b, float a)
 {
 	if (r >= 0.0)
@@ -66,6 +81,17 @@ void GradientShader::SetLowColor(float r, float g, float b, float a)
 }
 
 
+/**
+ * @brief Set the color corresponding to the high height value
+ *
+ * Sets the color that corresponds to the high height value. Color values
+ * are defined in the range [0.0 - 1.0]
+ *
+ * @param r Red value
+ * @param g Green value
+ * @param b Blue value
+ * @param a Alpha value
+ */
 void GradientShader::SetHighColor(float r, float g, float b, float a)
 {
 	if (r >= 0.0)
@@ -79,18 +105,35 @@ void GradientShader::SetHighColor(float r, float g, float b, float a)
 }
 
 
+/**
+ * @brief Set the low height value
+ *
+ * Sets the low height value that is used to define the bottom of the color gradient
+ *
+ * @param newLow The new value
+ */
 void GradientShader::SetLowValue(float newLow)
 {
 	heightRange[0] = newLow;
 }
 
 
+/**
+ * @brief Set the high height value
+ *
+ * Sets the high height value that is used to define the top of the color gradient
+ *
+ * @param newHigh The new value
+ */
 void GradientShader::SetHighValue(float newHigh)
 {
 	heightRange[1] = newHigh;
 }
 
 
+/**
+ * @brief Compiles the shader parts and assembles them into a usable shader on the OpenGL context
+ */
 void GradientShader::CompileShader()
 {
 	const char* fullVertSource = vertexSource.data();
@@ -112,6 +155,13 @@ void GradientShader::CompileShader()
 }
 
 
+/**
+ * @brief Updates values used for drawing
+ *
+ * This function updates the MVP matrix as well as color and height range values used in
+ * drawing operations.
+ *
+ */
 void GradientShader::UpdateUniforms()
 {
 	if (loaded && camSet)
