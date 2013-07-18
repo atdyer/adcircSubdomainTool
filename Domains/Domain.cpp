@@ -4,7 +4,13 @@ Domain::Domain()
 {
 	camera = new GLCamera();
 
+	selectionLayer = new SelectionLayer();
+	selectionLayer->SetCamera(camera);
+
 	terrainLayer = 0;
+
+	circleTool = new CircleTool();
+	circleTool->SetCamera(camera);
 
 	layerThread = new QThread();
 	if (layerThread)
@@ -21,8 +27,13 @@ Domain::Domain()
 
 Domain::~Domain()
 {
+	if (selectionLayer)
+		delete selectionLayer;
 	if (terrainLayer)
 		delete terrainLayer;
+
+	if (circleTool)
+		delete circleTool;
 }
 
 
@@ -30,6 +41,10 @@ void Domain::Draw()
 {
 	if (terrainLayer)
 		terrainLayer->Draw();
+	if (selectionLayer)
+		selectionLayer->Draw();
+	if (circleTool)
+		circleTool->Draw();
 }
 
 
@@ -47,12 +62,34 @@ void Domain::Pan(float dx, float dy)
 }
 
 
-void Domain::SetWindowSize(float l, float r, float b, float t, float n, float f)
+void Domain::SetWindowSize(float w, float h)
 {
 	if (camera)
-		camera->SetWindowSize(l, r, b, t, n, f);
+		camera->SetWindowSize(-1.0*w/h, 1.0*w/h, -1.0, 1.0, -1000.0, 1000.0);
 
-	// Set circle tool viewport size
+	if (circleTool)
+		circleTool->SetViewportSize(w, h);
+}
+
+
+void Domain::SetCircleToolCenter(int x, int y)
+{
+	if (circleTool)
+		circleTool->SetCenter(x, y);
+}
+
+
+void Domain::SetCircleToolRadius(int x, int y)
+{
+	if (circleTool)
+		circleTool->SetRadiusPoint(x, y);
+}
+
+
+void Domain::SetCircleToolFinished()
+{
+	if (circleTool)
+		circleTool->CircleFinished();
 }
 
 
@@ -78,6 +115,9 @@ void Domain::SetFort14Location(std::string newLoc)
 		terrainLayer->SetCamera(camera);
 		terrainLayer->UseSolidOutlineShader(0.2, 0.2, 0.2, 0.1);
 		terrainLayer->UseSolidFillShader(0.1, 0.8, 0.1, 1.0);
+
+		if (circleTool)
+			circleTool->SetTerrainLayer(terrainLayer);
 	}
 	terrainLayer->SetFort14Location(newLoc);
 }

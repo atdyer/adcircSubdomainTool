@@ -107,7 +107,7 @@ void OpenGLPanel::resizeGL(int w, int h)
 	viewportHeight = h;
 
 	if (activeDomain)
-		activeDomain->SetWindowSize(-1.0*w/h, 1.0*w/h, -1.0, 1.0, -1000.0, 1000.0);
+		activeDomain->SetWindowSize(w, h);
 //	if (currentCam)
 //		currentCam->SetWindowSize(-1.0*w/h, 1.0*w/h, -1.0, 1.0, -1000.0, 1000.0);
 
@@ -172,6 +172,8 @@ void OpenGLPanel::mousePressEvent(QMouseEvent *event)
 
 	if (viewMode == CircleSubdomainMode)
 	{
+		if (activeDomain)
+			activeDomain->SetCircleToolCenter(oldx, oldy);
 //		if (layerManager && currentCam)
 //		{
 //			circleTool.SetCenter(oldx, oldy);
@@ -214,6 +216,8 @@ void OpenGLPanel::mouseMoveEvent(QMouseEvent *event)
 		}
 		else if (viewMode == CircleSubdomainMode)
 		{
+			if (activeDomain)
+				activeDomain->SetCircleToolRadius(newx, newy);
 //			circleTool.SetRadiusPoint(event->x(), event->y());
 ////			emit circleToolStatsSet(circleTool.GetDomainX(), circleTool.GetDomainY(), circleTool.GetRadius());
 		}
@@ -248,6 +252,8 @@ void OpenGLPanel::mouseReleaseEvent(QMouseEvent *event)
 
 	if (viewMode == CircleSubdomainMode)
 	{
+		if (activeDomain)
+			activeDomain->SetCircleToolFinished();
 //		emit circleToolStatsFinished();
 		viewMode = DisplayMode;
 	}
@@ -263,7 +269,7 @@ void OpenGLPanel::SetActiveDomain(Domain *newDomain)
 	if (activeDomain)
 		disconnect(activeDomain, SIGNAL(updateGL()), this, SLOT(updateGL()));
 	activeDomain = newDomain;
-	activeDomain->SetWindowSize(-1.0*viewportWidth/viewportHeight, 1.0*viewportWidth/viewportHeight, -1.0, 1.0, -1000.0, 1000.0);
+	activeDomain->SetWindowSize(viewportWidth, viewportHeight);
 	connect(activeDomain, SIGNAL(updateGL()), this, SLOT(updateGL()));
 }
 

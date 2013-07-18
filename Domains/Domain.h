@@ -12,6 +12,8 @@
 #include "Layers/TerrainLayer.h"
 #include "Layers/SelectionLayer.h"
 
+#include "SubdomainTools/CircleTool.h"
+
 #include "OpenGL/GLCamera.h"
 #include "OpenGL/Shaders/GLShader.h"
 #include "OpenGL/Shaders/SolidShader.h"
@@ -54,7 +56,10 @@ class Domain : public QObject
 		void	Draw();
 		void	Zoom(float zoomAmount);
 		void	Pan(float dx, float dy);
-		void	SetWindowSize(float l, float r, float b, float t, float n, float f);
+		void	SetWindowSize(float w, float h);
+		void	SetCircleToolCenter(int x, int y);
+		void	SetCircleToolRadius(int x, int y);
+		void	SetCircleToolFinished();
 
 		// Modification functions used to set the state of the Domain based on GUI interaction
 		void	SetFort14Location(std::string newLoc);
@@ -85,10 +90,11 @@ class Domain : public QObject
 		SelectionLayer*	selectionLayer;
 		TerrainLayer*	terrainLayer;
 
-		// Threading
-		QThread*	layerThread;
+		// Tools
+		CircleTool*	circleTool;
 
 		// Loading Operations
+		QThread*	layerThread;
 		QProgressBar*	progressBar;
 		Layer*		loadingLayer;
 
