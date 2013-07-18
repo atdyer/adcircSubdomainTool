@@ -188,6 +188,9 @@ void MainWindow::on_openFileButton_clicked()
 	testDomain->SetProgressBar(ui->progressBar);
 	ui->GLPanel->SetActiveDomain(testDomain);
 	testDomain->SetFort14Location("/home/tristan/Desktop/adcSwan/sub/fort.14");
+
+	connect(testDomain, SIGNAL(mouseX(float)), this, SLOT(showMouseX(float)));
+	connect(testDomain, SIGNAL(mouseY(float)), this, SLOT(showMouseY(float)));
 }
 
 

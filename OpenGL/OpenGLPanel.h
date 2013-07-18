@@ -29,16 +29,10 @@ class OpenGLPanel : public QGLWidget
 	public:
 		explicit	OpenGLPanel(QWidget *parent = 0);
 		void		SetActiveDomain(Domain* newDomain);
-//		void		SetLayerManager(LayerManager* newManager);
 
 	protected:
 
-//		LayerManager*	layerManager;	/**< The LayerManager that will do all of the drawing */
-//		GLCamera*	currentCam;	/**< The GLCamera currently being used in the LayerManager */
 		Domain*		activeDomain;	/**< The Domain currently being displayed */
-
-//		CircleTool	circleTool;	/**< Tool for selecting nodes by drawing a circle */
-//		SelectionLayer	selectionLayer;	/**< Layer for displaying the nodes/elements that are selected */
 
 		void		initializeGL();
 		void		resizeGL(int w, int h);
@@ -61,15 +55,13 @@ class OpenGLPanel : public QGLWidget
 
 	public slots:
 
-//		void	updateCurrentCamera();
 		void	enterDisplayMode();
 		void	enterCircleSubdomainMode();
 
 	signals:
 
 		void	emitMessage(QString);
-		void	mouseX(float);
-		void	mouseY(float);
+		void	mouseCoordinates(float, float);
 		void	circleToolStatsSet(float, float, float);
 		void	circleToolStatsFinished();
 		void	numNodesSelected(int);

@@ -108,10 +108,6 @@ void OpenGLPanel::resizeGL(int w, int h)
 
 	if (activeDomain)
 		activeDomain->SetWindowSize(w, h);
-//	if (currentCam)
-//		currentCam->SetWindowSize(-1.0*w/h, 1.0*w/h, -1.0, 1.0, -1000.0, 1000.0);
-
-//	circleTool.SetViewportSize(w, h);
 }
 
 
@@ -124,16 +120,6 @@ void OpenGLPanel::paintGL()
 
 	if (activeDomain)
 		activeDomain->Draw();
-
-//	if (layerManager)
-//		layerManager->DrawVisibleLayers();
-//	else
-//		DEBUG("No Layer Manager Assigned");
-
-//	if (viewMode == CircleSubdomainMode)
-//		circleTool.Draw();
-
-//	selectionLayer.Draw();
 }
 
 
@@ -146,12 +132,6 @@ void OpenGLPanel::wheelEvent(QWheelEvent *event)
 
 	if (clicking == false && activeDomain)
 		activeDomain->Zoom(event->delta());
-
-//	if (clicking == false && currentCam)
-//		currentCam->Zoom(event->delta());
-
-//	if (viewMode == CircleSubdomainMode)
-//		circleTool.ScaleCircle(event->delta());
 
 	updateGL();
 }
@@ -174,10 +154,6 @@ void OpenGLPanel::mousePressEvent(QMouseEvent *event)
 	{
 		if (activeDomain)
 			activeDomain->SetCircleToolCenter(oldx, oldy);
-//		if (layerManager && currentCam)
-//		{
-//			circleTool.SetCenter(oldx, oldy);
-//		}
 	}
 }
 
@@ -194,16 +170,7 @@ void OpenGLPanel::mouseMoveEvent(QMouseEvent *event)
 	dx = newx-oldx;
 	dy = newy-oldy;
 
-//	if (layerManager && currentCam)
-//	{
-//		currentCam->GetUnprojectedPoint(newx, newy, &xDomain,  &yDomain);
-//		emit mouseX(layerManager->GetMouseX(xDomain));
-//		emit mouseY(layerManager->GetMouseY(yDomain));
-
-//	} else {
-//		emit mouseX(newx);
-//		emit mouseY(newy);
-//	}
+	emit mouseCoordinates(newx, newy);
 
 	if (clicking)
 	{
@@ -254,7 +221,6 @@ void OpenGLPanel::mouseReleaseEvent(QMouseEvent *event)
 	{
 		if (activeDomain)
 			activeDomain->SetCircleToolFinished();
-//		emit circleToolStatsFinished();
 		viewMode = DisplayMode;
 	}
 
@@ -271,6 +237,7 @@ void OpenGLPanel::SetActiveDomain(Domain *newDomain)
 	activeDomain = newDomain;
 	activeDomain->SetWindowSize(viewportWidth, viewportHeight);
 	connect(activeDomain, SIGNAL(updateGL()), this, SLOT(updateGL()));
+	connect(this, SIGNAL(mouseCoordinates(float,float)), activeDomain, SLOT(setMouseCoordinates(float,float)));
 }
 
 

@@ -101,10 +101,17 @@ class Domain : public QObject
 
 	signals:
 
+		void	mouseX(float);
+		void	mouseY(float);
+
 		void	beingDestroyed();
 		void	emitMessage(QString);
 		void	updateGL();
 		void	domainRefreshed();
+
+	public slots:
+
+		void	setMouseCoordinates(float x, float y);
 
 	protected slots:
 

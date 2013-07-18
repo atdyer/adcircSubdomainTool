@@ -205,6 +205,26 @@ GradientShaderProperties Domain::GetTerrainGradientFill()
 }
 
 
+void Domain::setMouseCoordinates(float x, float y)
+{
+	if (camera)
+	{
+		float glX, glY, domX, domY;
+		camera->GetUnprojectedPoint(x, y, &glX, &glY);
+		if (terrainLayer)
+		{
+			domX = terrainLayer->GetUnprojectedX(glX);
+			domY = terrainLayer->GetUnprojectedY(glY);
+			emit mouseX(domX);
+			emit mouseY(domY);
+		} else {
+			emit mouseX(glX);
+			emit mouseY(glY);
+		}
+	}
+}
+
+
 void Domain::LoadLayerToGPU()
 {
 	if (loadingLayer)

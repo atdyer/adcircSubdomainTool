@@ -33,6 +33,9 @@ TerrainLayer::TerrainLayer()
 
 TerrainLayer::~TerrainLayer()
 {
+
+	DEBUG("Deleting Terrain Layer. Layer ID: " << GetID());
+
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
