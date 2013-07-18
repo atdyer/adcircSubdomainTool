@@ -7,7 +7,7 @@
 #include <QLabel>
 //#include <qwt_plot.h>
 
-#include "Layers/LayerManager.h"
+#include "Domains/Domain.h"
 
 namespace Ui {
 	class MainWindow;
@@ -55,7 +55,9 @@ class MainWindow : public QMainWindow
 		QLabel		*mouseXLabel, *mouseYLabel, *numNodesLabel, *numElementsLabel, *numTSLabel;
 
 		// The LayerManager
-		LayerManager	layerManager;
+//		LayerManager	layerManager;
+		Domain*		testDomain;
+
 
 };
 

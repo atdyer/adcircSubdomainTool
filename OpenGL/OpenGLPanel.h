@@ -8,6 +8,7 @@
 #include "Layers/LayerManager.h"
 #include "Layers/SelectionLayer.h"
 #include "SubdomainTools/CircleTool.h"
+#include "Domains/Domain.h"
 
 /**
  * @brief The Mode enum contains the available states for the OpenGLPanel. The
@@ -27,15 +28,17 @@ class OpenGLPanel : public QGLWidget
 		Q_OBJECT
 	public:
 		explicit	OpenGLPanel(QWidget *parent = 0);
-		void		SetLayerManager(LayerManager* newManager);
+		void		SetActiveDomain(Domain* newDomain);
+//		void		SetLayerManager(LayerManager* newManager);
 
 	protected:
 
-		LayerManager*	layerManager;	/**< The LayerManager that will do all of the drawing */
-		GLCamera*	currentCam;	/**< The GLCamera currently being used in the LayerManager */
+//		LayerManager*	layerManager;	/**< The LayerManager that will do all of the drawing */
+//		GLCamera*	currentCam;	/**< The GLCamera currently being used in the LayerManager */
+		Domain*		activeDomain;	/**< The Domain currently being displayed */
 
-		CircleTool	circleTool;	/**< Tool for selecting nodes by drawing a circle */
-		SelectionLayer	selectionLayer;	/**< Layer for displaying the nodes/elements that are selected */
+//		CircleTool	circleTool;	/**< Tool for selecting nodes by drawing a circle */
+//		SelectionLayer	selectionLayer;	/**< Layer for displaying the nodes/elements that are selected */
 
 		void		initializeGL();
 		void		resizeGL(int w, int h);
@@ -49,6 +52,7 @@ class OpenGLPanel : public QGLWidget
 
 	private:
 
+		int	viewportWidth, viewportHeight;
 		enum	Mode viewMode;
 		float	xDomain, yDomain;
 		int	oldx, oldy, newx, newy, dx, dy;
@@ -57,7 +61,7 @@ class OpenGLPanel : public QGLWidget
 
 	public slots:
 
-		void	updateCurrentCamera();
+//		void	updateCurrentCamera();
 		void	enterDisplayMode();
 		void	enterCircleSubdomainMode();
 

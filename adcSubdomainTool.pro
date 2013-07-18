@@ -32,7 +32,8 @@ SOURCES += main.cpp\
     Layers/Actions/Action.cpp \
     Layers/Actions/NodeAction.cpp \
     Layers/Actions/ElementAction.cpp \
-    OpenGL/Shaders/GradientShader.cpp
+    OpenGL/Shaders/GradientShader.cpp \
+    Domains/Domain.cpp
 
 HEADERS  += MainWindow.h \
     OpenGL/OpenGLPanel.h \
@@ -53,7 +54,8 @@ HEADERS  += MainWindow.h \
     Layers/Actions/Action.h \
     Layers/Actions/NodeAction.h \
     Layers/Actions/ElementAction.h \
-    OpenGL/Shaders/GradientShader.h
+    OpenGL/Shaders/GradientShader.h \
+    Domains/Domain.h
 
 FORMS    += MainWindow.ui
 

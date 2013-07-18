@@ -6,6 +6,32 @@
 
 
 /**
+ * @brief A container used to hold all of the basic properties
+ * of the GradientShader class
+ */
+struct GradientShaderProperties
+{
+		GLfloat lowColor[4];
+		GLfloat highColor[4];
+		GLfloat heightRange[2];
+
+		GradientShaderProperties()
+		{
+			lowColor[0] = 0.0;
+			lowColor[1] = 0.0;
+			lowColor[2] = 0.0;
+			lowColor[3] = 1.0;
+			highColor[0] = 1.0;
+			highColor[1] = 1.0;
+			highColor[2] = 1.0;
+			highColor[3] = 1.0;
+			heightRange[0] = 0.0;
+			heightRange[1] = 1.0;
+		}
+};
+
+
+/**
  * @brief A two color gradient shader
  *
  * This shader draws using a gradient. The user sets low and high height values
@@ -28,18 +54,17 @@ class GradientShader : public GLShader
 		void	SetLowValue(float newLow);
 		void	SetHighValue(float newHigh);
 
+		// Query Functions
+		GradientShaderProperties	GetShaderProperties();
+
 	protected:
 
 		// Source code
 		std::string	vertexSource;
 		std::string	fragSource;
 
-		// Color variables
-		GLfloat	lowColor[4];
-		GLfloat	highColor[4];
-
-		// Data variables
-		GLfloat	heightRange[2];
+		// Shader Properties
+		GradientShaderProperties	properties;
 
 		// Override virtual functions
 		void	CompileShader();

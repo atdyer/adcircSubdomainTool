@@ -53,8 +53,8 @@ class TerrainLayer : public Layer
 
 		// Setter Methods
 		void	SetFort14Location(std::string newLocation);
-		void	SetOutlineShader(GLShader *newShader);
-		void	SetFillShader(GLShader *newShader);
+//		void	SetOutlineShader(GLShader *newShader);
+//		void	SetFillShader(GLShader *newShader);
 
 
 
@@ -81,8 +81,8 @@ class TerrainLayer : public Layer
 		GLuint		VAOId;			/**< The vertex array object ID in the OpenGL context */
 		GLuint		VBOId;			/**< The vertex buffer object ID in the OpenGL context */
 		GLuint		IBOId;			/**< The index buffer object ID in the OpenGL context */
-		GLShader*	outlineShader;		/**< The shader used to draw outlines */
-		GLShader*	fillShader;		/**< The shader used to draw fill */
+//		GLShader*	outlineShader;		/**< The shader used to draw outlines */
+//		GLShader*	fillShader;		/**< The shader used to draw fill */
 
 		// Flags
 		bool	flipZValue;		/**< Flag that determines if the z-value is multiplied by -1 before being loaded to the GPU */
@@ -101,11 +101,11 @@ class TerrainLayer : public Layer
 
 		// Signals used during threaded reading of fort.14
 		void	fort14Valid();
-		void	startedReadingFort14();
+//		void	startedReadingFort14();
 		void	foundNumNodes(int);
 		void	foundNumElements(int);
-		void	progress(int percentage);
-		void	finishedReadingFort14();
+//		void	progress(int percentage);
+//		void	finishedReadingFort14();
 		void	finishedLoadingToGPU();
 		void	error(QString err);
 };

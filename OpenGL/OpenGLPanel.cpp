@@ -8,8 +8,11 @@ OpenGLPanel::OpenGLPanel(QWidget *parent) :
 	setFocusPolicy(Qt::ClickFocus);
 	setMouseTracking(true);
 
-	layerManager = 0;
-	currentCam = 0;
+//	layerManager = 0;
+//	currentCam = 0;
+
+	viewportWidth = 0.0;
+	viewportHeight = 0.0;
 
 	xDomain = 0.0;
 	yDomain = 0.0;
@@ -18,18 +21,18 @@ OpenGLPanel::OpenGLPanel(QWidget *parent) :
 
 	viewMode = DisplayMode;
 
-	connect(&circleTool, SIGNAL(CircleStatsSet(float,float,float)), this, SIGNAL(circleToolStatsSet(float,float,float)));
-	connect(this, SIGNAL(circleToolStatsFinished()), &circleTool, SLOT(CircleFinished()));
-	connect(&circleTool, SIGNAL(NodesSelected(std::vector<Node*>)), &selectionLayer, SLOT(SelectNodes(std::vector<Node*>)));
+//	connect(&circleTool, SIGNAL(CircleStatsSet(float,float,float)), this, SIGNAL(circleToolStatsSet(float,float,float)));
+//	connect(this, SIGNAL(circleToolStatsFinished()), &circleTool, SLOT(CircleFinished()));
+//	connect(&circleTool, SIGNAL(NodesSelected(std::vector<Node*>)), &selectionLayer, SLOT(SelectNodes(std::vector<Node*>)));
 
 	// Hook up all of the Selection Layer signals/slots
-	connect(&selectionLayer, SIGNAL(emitMessage(QString)), this, SIGNAL(emitMessage(QString)));
-	connect(&selectionLayer, SIGNAL(numNodesSelected(int)), this, SIGNAL(numNodesSelected(int)));
-	connect(&selectionLayer, SIGNAL(undoAvailable(bool)), this, SIGNAL(undoAvailable(bool)));
-	connect(&selectionLayer, SIGNAL(redoAvailable(bool)), this, SIGNAL(redoAvailable(bool)));
-	connect(&selectionLayer, SIGNAL(refreshed()), this, SLOT(updateGL()));
-	connect(this, SIGNAL(undo()), &selectionLayer, SLOT(undo()));
-	connect(this, SIGNAL(redo()), &selectionLayer, SLOT(redo()));
+//	connect(&selectionLayer, SIGNAL(emitMessage(QString)), this, SIGNAL(emitMessage(QString)));
+//	connect(&selectionLayer, SIGNAL(numNodesSelected(int)), this, SIGNAL(numNodesSelected(int)));
+//	connect(&selectionLayer, SIGNAL(undoAvailable(bool)), this, SIGNAL(undoAvailable(bool)));
+//	connect(&selectionLayer, SIGNAL(redoAvailable(bool)), this, SIGNAL(redoAvailable(bool)));
+//	connect(&selectionLayer, SIGNAL(refreshed()), this, SLOT(updateGL()));
+//	connect(this, SIGNAL(undo()), &selectionLayer, SLOT(undo()));
+//	connect(this, SIGNAL(redo()), &selectionLayer, SLOT(redo()));
 }
 
 
@@ -42,15 +45,15 @@ OpenGLPanel::OpenGLPanel(QWidget *parent) :
  *
  * @param newManager The new LayerManager
  */
-void OpenGLPanel::SetLayerManager(LayerManager *newManager)
-{
-	if (newManager)
-	{
-		layerManager = newManager;
-		updateCurrentCamera();
-		connect(layerManager, SIGNAL(activeTerrainLayer(TerrainLayer*)), &circleTool, SLOT(SetTerrainLayer(TerrainLayer*)));
-	}
-}
+//void OpenGLPanel::SetLayerManager(LayerManager *newManager)
+//{
+//	if (newManager)
+//	{
+//		layerManager = newManager;
+//		updateCurrentCamera();
+//		connect(layerManager, SIGNAL(activeTerrainLayer(TerrainLayer*)), &circleTool, SLOT(SetTerrainLayer(TerrainLayer*)));
+//	}
+//}
 
 
 /**
@@ -99,10 +102,16 @@ void OpenGLPanel::initializeGL()
 void OpenGLPanel::resizeGL(int w, int h)
 {
 	glViewport(0, 0, w, h);
-	if (currentCam)
-		currentCam->SetWindowSize(-1.0*w/h, 1.0*w/h, -1.0, 1.0, -1000.0, 1000.0);
 
-	circleTool.SetViewportSize(w, h);
+	viewportWidth = w;
+	viewportHeight = h;
+
+	if (activeDomain)
+		activeDomain->SetWindowSize(-1.0*w/h, 1.0*w/h, -1.0, 1.0, -1000.0, 1000.0);
+//	if (currentCam)
+//		currentCam->SetWindowSize(-1.0*w/h, 1.0*w/h, -1.0, 1.0, -1000.0, 1000.0);
+
+//	circleTool.SetViewportSize(w, h);
 }
 
 
@@ -112,15 +121,19 @@ void OpenGLPanel::resizeGL(int w, int h)
 void OpenGLPanel::paintGL()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	if (layerManager)
-		layerManager->DrawVisibleLayers();
-	else
-		DEBUG("No Layer Manager Assigned");
 
-	if (viewMode == CircleSubdomainMode)
-		circleTool.Draw();
+	if (activeDomain)
+		activeDomain->Draw();
 
-	selectionLayer.Draw();
+//	if (layerManager)
+//		layerManager->DrawVisibleLayers();
+//	else
+//		DEBUG("No Layer Manager Assigned");
+
+//	if (viewMode == CircleSubdomainMode)
+//		circleTool.Draw();
+
+//	selectionLayer.Draw();
 }
 
 
@@ -131,8 +144,11 @@ void OpenGLPanel::paintGL()
 void OpenGLPanel::wheelEvent(QWheelEvent *event)
 {
 
-	if (clicking == false && currentCam)
-		currentCam->Zoom(event->delta());
+	if (clicking == false && activeDomain)
+		activeDomain->Zoom(event->delta());
+
+//	if (clicking == false && currentCam)
+//		currentCam->Zoom(event->delta());
 
 //	if (viewMode == CircleSubdomainMode)
 //		circleTool.ScaleCircle(event->delta());
@@ -156,16 +172,16 @@ void OpenGLPanel::mousePressEvent(QMouseEvent *event)
 
 	if (viewMode == CircleSubdomainMode)
 	{
-		if (layerManager && currentCam)
-		{
-			circleTool.SetCenter(oldx, oldy);
-		}
+//		if (layerManager && currentCam)
+//		{
+//			circleTool.SetCenter(oldx, oldy);
+//		}
 	}
 }
 
 
 /**
- * @brief Event fired when the mouse is moved while a mouse button is being held down
+ * @brief Event fired when the mouse is moved over the panel
  * @param event
  */
 void OpenGLPanel::mouseMoveEvent(QMouseEvent *event)
@@ -176,28 +192,30 @@ void OpenGLPanel::mouseMoveEvent(QMouseEvent *event)
 	dx = newx-oldx;
 	dy = newy-oldy;
 
-	if (layerManager && currentCam)
-	{
-		currentCam->GetUnprojectedPoint(newx, newy, &xDomain,  &yDomain);
-		emit mouseX(layerManager->GetMouseX(xDomain));
-		emit mouseY(layerManager->GetMouseY(yDomain));
+//	if (layerManager && currentCam)
+//	{
+//		currentCam->GetUnprojectedPoint(newx, newy, &xDomain,  &yDomain);
+//		emit mouseX(layerManager->GetMouseX(xDomain));
+//		emit mouseY(layerManager->GetMouseY(yDomain));
 
-	} else {
-		emit mouseX(newx);
-		emit mouseY(newy);
-	}
+//	} else {
+//		emit mouseX(newx);
+//		emit mouseY(newy);
+//	}
 
 	if (clicking)
 	{
 		if (viewMode == DisplayMode)
 		{
-			if (currentCam)
-				currentCam->Pan(dx, dy);
+			if (activeDomain)
+				activeDomain->Pan(dx, dy);
+//			if (currentCam)
+//				currentCam->Pan(dx, dy);
 		}
 		else if (viewMode == CircleSubdomainMode)
 		{
-			circleTool.SetRadiusPoint(event->x(), event->y());
-//			emit circleToolStatsSet(circleTool.GetDomainX(), circleTool.GetDomainY(), circleTool.GetRadius());
+//			circleTool.SetRadiusPoint(event->x(), event->y());
+////			emit circleToolStatsSet(circleTool.GetDomainX(), circleTool.GetDomainY(), circleTool.GetRadius());
 		}
 
 		updateGL();
@@ -222,15 +240,15 @@ void OpenGLPanel::mouseReleaseEvent(QMouseEvent *event)
 	{
 		if (viewMode == DisplayMode)
 		{
-			float x, y;
-			if (currentCam)
-				currentCam->GetUnprojectedPoint(event->x(), event->y(), &x, &y);
+//			float x, y;
+//			if (currentCam)
+//				currentCam->GetUnprojectedPoint(event->x(), event->y(), &x, &y);
 		}
 	}
 
 	if (viewMode == CircleSubdomainMode)
 	{
-		emit circleToolStatsFinished();
+//		emit circleToolStatsFinished();
 		viewMode = DisplayMode;
 	}
 
@@ -240,17 +258,27 @@ void OpenGLPanel::mouseReleaseEvent(QMouseEvent *event)
 }
 
 
+void OpenGLPanel::SetActiveDomain(Domain *newDomain)
+{
+	if (activeDomain)
+		disconnect(activeDomain, SIGNAL(updateGL()), this, SLOT(updateGL()));
+	activeDomain = newDomain;
+	activeDomain->SetWindowSize(-1.0*viewportWidth/viewportHeight, 1.0*viewportWidth/viewportHeight, -1.0, 1.0, -1000.0, 1000.0);
+	connect(activeDomain, SIGNAL(updateGL()), this, SLOT(updateGL()));
+}
+
+
 /**
  * @brief Retrieves the pointer to the camera currently being used by the Layer Manager
  * and uses it for drawing.
  */
-void OpenGLPanel::updateCurrentCamera()
-{
-	if (layerManager)
-		currentCam = layerManager->GetCurrentCamera();
-	circleTool.SetCamera(currentCam);
-	selectionLayer.SetCamera(currentCam);
-}
+//void OpenGLPanel::updateCurrentCamera()
+//{
+//	if (layerManager)
+//		currentCam = layerManager->GetCurrentCamera();
+//	circleTool.SetCamera(currentCam);
+//	selectionLayer.SetCamera(currentCam);
+//}
 
 
 /**

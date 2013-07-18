@@ -443,11 +443,11 @@ void TerrainLayer::SetFort14Location(std::string newLocation)
  *
  * @param newShader The GLShader to be used for drawing outlines
  */
-void TerrainLayer::SetOutlineShader(GLShader *newShader)
-{
-	std::cout << "Outline Shader Set" << std::endl;
-	outlineShader = newShader;
-}
+//void TerrainLayer::SetOutlineShader(GLShader *newShader)
+//{
+//	std::cout << "Outline Shader Set" << std::endl;
+//	outlineShader = newShader;
+//}
 
 
 /**
@@ -458,11 +458,11 @@ void TerrainLayer::SetOutlineShader(GLShader *newShader)
  *
  * @param newShader The GLShader to be used for drawing outlines
  */
-void TerrainLayer::SetFillShader(GLShader *newShader)
-{
-	std::cout << "Fill Shader Set" << std::endl;
-	fillShader = newShader;
-}
+//void TerrainLayer::SetFillShader(GLShader *newShader)
+//{
+//	std::cout << "Fill Shader Set" << std::endl;
+//	fillShader = newShader;
+//}
 
 
 /**
@@ -483,7 +483,7 @@ void TerrainLayer::readFort14()
 
 	if (fort14.is_open())
 	{
-		emit startedReadingFort14();
+		emit startedReadingData();
 
 		std::string line;
 		std::getline(fort14, infoLine);
@@ -567,7 +567,7 @@ void TerrainLayer::readFort14()
 			}
 
 
-			emit finishedReadingFort14();
+			emit finishedReadingData();
 			emit emitMessage(QString("Terrain layer created: <strong>").append(infoLine.data()).append("</strong>"));
 
 			DEBUG("x-range:\t" << minX << "\t" << maxX);

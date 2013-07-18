@@ -6,6 +6,24 @@
 
 
 /**
+ * @brief A container used to hold all of the basic properties
+ * of the SolidShader class
+ */
+struct SolidShaderProperties
+{
+		GLfloat color[4];
+
+		SolidShaderProperties()
+		{
+			color[0] = 0.0;
+			color[1] = 0.0;
+			color[2] = 0.0;
+			color[3] = 1.0;
+		}
+};
+
+
+/**
  * @brief A single color shader
  *
  * This shader draws everything the same solid color.
@@ -21,14 +39,17 @@ class SolidShader : public GLShader
 		// Modification Functions
 		void	SetColor(float r, float g, float b, float a);
 
+		// Query Functions
+		SolidShaderProperties	GetShaderProperties();
+
 	protected:
 
 		// Source code
 		std::string	vertexSource;
 		std::string	fragSource;
 
-		// Color variables
-		GLfloat	rgba[4];
+		// Shader Properties
+		SolidShaderProperties	properties;
 
 		// Override virtual functions
 		void	CompileShader();

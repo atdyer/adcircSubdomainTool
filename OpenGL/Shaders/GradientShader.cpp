@@ -39,18 +39,18 @@ GradientShader::GradientShader()
 			"	out_Color = ex_Color;"
 			"}";
 
-	lowColor[0] = 1.0;
-	lowColor[1] = 1.0;
-	lowColor[2] = 1.0;
-	lowColor[3] = 1.0;
+	properties.lowColor[0] = 1.0;
+	properties.lowColor[1] = 1.0;
+	properties.lowColor[2] = 1.0;
+	properties.lowColor[3] = 1.0;
 
-	highColor[0] = 1.0;
-	highColor[1] = 1.0;
-	highColor[2] = 1.0;
-	highColor[3] = 1.0;
+	properties.highColor[0] = 1.0;
+	properties.highColor[1] = 1.0;
+	properties.highColor[2] = 1.0;
+	properties.highColor[3] = 1.0;
 
-	heightRange[0] = 0.0;
-	heightRange[1] = 1.0;
+	properties.heightRange[0] = 0.0;
+	properties.heightRange[1] = 1.0;
 
 	CompileShader();
 	UpdateUniforms();
@@ -71,13 +71,13 @@ GradientShader::GradientShader()
 void GradientShader::SetLowColor(float r, float g, float b, float a)
 {
 	if (r >= 0.0)
-		lowColor[0] = r;
+		properties.lowColor[0] = r;
 	if (g >= 0.0)
-		lowColor[1] = g;
+		properties.lowColor[1] = g;
 	if (b >= 0.0)
-		lowColor[2] = b;
+		properties.lowColor[2] = b;
 	if (a >= 0.0)
-		lowColor[3] = a;
+		properties.lowColor[3] = a;
 }
 
 
@@ -95,13 +95,13 @@ void GradientShader::SetLowColor(float r, float g, float b, float a)
 void GradientShader::SetHighColor(float r, float g, float b, float a)
 {
 	if (r >= 0.0)
-		highColor[0] = r;
+		properties.highColor[0] = r;
 	if (g >= 0.0)
-		highColor[1] = g;
+		properties.highColor[1] = g;
 	if (b >= 0.0)
-		highColor[2] = b;
+		properties.highColor[2] = b;
 	if (a >= 0.0)
-		highColor[3] = a;
+		properties.highColor[3] = a;
 }
 
 
@@ -114,7 +114,7 @@ void GradientShader::SetHighColor(float r, float g, float b, float a)
  */
 void GradientShader::SetLowValue(float newLow)
 {
-	heightRange[0] = newLow;
+	properties.heightRange[0] = newLow;
 }
 
 
@@ -127,7 +127,20 @@ void GradientShader::SetLowValue(float newLow)
  */
 void GradientShader::SetHighValue(float newHigh)
 {
-	heightRange[1] = newHigh;
+	properties.heightRange[1] = newHigh;
+}
+
+
+/**
+ * @brief Retrieves the shader's properties
+ *
+ * Retrieves the shader's properties, which include color and data range.
+ *
+ * @return The shader's properties
+ */
+GradientShaderProperties GradientShader::GetShaderProperties()
+{
+	return properties;
 }
 
 
@@ -174,9 +187,9 @@ void GradientShader::UpdateUniforms()
 		GLint HeightUniform = glGetUniformLocation(programID, "HeightRange");
 
 		glUniformMatrix4fv(MVPUniform, 1, GL_FALSE, camera->MVPMatrix.m);
-		glUniform4fv(LowUniform, 1, lowColor);
-		glUniform4fv(HighUniform, 1, highColor);
-		glUniform2fv(HeightUniform, 1, heightRange);
+		glUniform4fv(LowUniform, 1, properties.lowColor);
+		glUniform4fv(HighUniform, 1, properties.highColor);
+		glUniform2fv(HeightUniform, 1, properties.heightRange);
 
 		GLenum errVal = glGetError();
 		if (errVal != GL_NO_ERROR)

@@ -8,6 +8,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	ui->setupUi(this);
 
+	testDomain = 0;
+
 	// Create GLPanel status bar and all labels
 	glStatusBar = new QStatusBar();
 
@@ -37,18 +39,18 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->projectTree->expandAll();
 
 	// Set up communication between the LayerManager and the GLPanel
-	connect(&layerManager, SIGNAL(cameraChanged()), ui->GLPanel, SLOT(updateCurrentCamera()));
-	ui->GLPanel->SetLayerManager(&layerManager);
+//	connect(&layerManager, SIGNAL(cameraChanged()), ui->GLPanel, SLOT(updateCurrentCamera()));
+//	ui->GLPanel->SetLayerManager(&layerManager);
 
 	// Connect all necessary components to the output box
-	connect(&layerManager, SIGNAL(emitMessage(QString)), this, SLOT(displayOutput(QString)));
+//	connect(&layerManager, SIGNAL(emitMessage(QString)), this, SLOT(displayOutput(QString)));
 	connect(ui->GLPanel, SIGNAL(emitMessage(QString)), this, SLOT(displayOutput(QString)));
 
 	////// Connect everything needed to update the GL Panel and GL Panel status bar
-	connect(&layerManager, SIGNAL(updateGL()), ui->GLPanel, SLOT(updateGL()));
-	connect(&layerManager, SIGNAL(numNodesChanged(int)), this, SLOT(showNumNodes(int)));
-	connect(&layerManager, SIGNAL(numElementsChanged(int)), this, SLOT(showNumElements(int)));
-	connect(&layerManager, SIGNAL(numTSChanged(int)), this, SLOT(showNumTS(int)));
+//	connect(&layerManager, SIGNAL(updateGL()), ui->GLPanel, SLOT(updateGL()));
+//	connect(&layerManager, SIGNAL(numNodesChanged(int)), this, SLOT(showNumNodes(int)));
+//	connect(&layerManager, SIGNAL(numElementsChanged(int)), this, SLOT(showNumElements(int)));
+//	connect(&layerManager, SIGNAL(numTSChanged(int)), this, SLOT(showNumTS(int)));
 	// Mouse Movement
 	connect(ui->GLPanel, SIGNAL(mouseX(float)), this, SLOT(showMouseX(float)));
 	connect(ui->GLPanel, SIGNAL(mouseY(float)), this, SLOT(showMouseY(float)));
@@ -68,6 +70,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+	if (testDomain)
+		delete testDomain;
 	delete ui;
 }
 
@@ -178,8 +182,12 @@ void MainWindow::on_minimizeMainTabButton_clicked()
 void MainWindow::on_openFileButton_clicked()
 {
 	// Testing the Layer Manager by adding a terrain layer
-	layerManager.CreateNewTerrainLayer("/home/tristan/Desktop/adcSwan/sub/fort.14", ui->progressBar);
+//	layerManager.CreateNewTerrainLayer("/home/tristan/Desktop/adcSwan/sub/fort.14", ui->progressBar);
 //	layerManager.CreateNewTerrainLayer("/home/tristan/Desktop/fort.14", ui->progressBar);
+	testDomain = new Domain();
+	testDomain->SetProgressBar(ui->progressBar);
+	ui->GLPanel->SetActiveDomain(testDomain);
+	testDomain->SetFort14Location("/home/tristan/Desktop/adcSwan/sub/fort.14");
 }
 
 

@@ -72,83 +72,83 @@ class LayerManager : public QObject
 		LayerManager(QObject* parent=0);
 		~LayerManager();
 
-		// Basic Getter Functions
-		float		GetMouseX(float x);
-		float		GetMouseY(float y);
+//		// Basic Getter Functions
+//		float		GetMouseX(float x);
+//		float		GetMouseY(float y);
 
-		// Camera Functions
-		GLCamera*	GetCurrentCamera();
-		void		SwitchToCamera(unsigned int camID);
+//		// Camera Functions
+//		GLCamera*	GetCurrentCamera();
+//		void		SwitchToCamera(unsigned int camID);
 
-		// Drawing Functions
-		void	DrawVisibleLayers();
+//		// Drawing Functions
+//		void	DrawVisibleLayers();
 
-		// Layer Displaying Functions
-		void	ShowLayer(unsigned int layerID);
-		void	ShowOnlyLayer(unsigned int layerID);
-		void	HideLayer(unsigned int layerID);
+//		// Layer Displaying Functions
+//		void	ShowLayer(unsigned int layerID);
+//		void	ShowOnlyLayer(unsigned int layerID);
+//		void	HideLayer(unsigned int layerID);
 
-		// Layer Creation Functions
-		unsigned int	CreateNewTerrainLayer(std::string fort14Location, QProgressBar* progressBar = 0);
+//		// Layer Creation Functions
+//		unsigned int	CreateNewTerrainLayer(std::string fort14Location, QProgressBar* progressBar = 0);
 
-		// Shader Functions
-		void	UseSolidOutlineShader(unsigned int layerID);
-		void	UseSolidFillShader(unsigned int layerID);
-		SolidShader*	GetSolidOutlineShader(unsigned int layerID);
-		SolidShader*	GetSolidFillShader(unsigned int layerID);
-
-
-	protected:
-
-		QThread*		layerThread;	/**< The thread that all Layer slots will operate on */
-		GLCamera*		currentCam;	/**< The camera to be used by all shaders */
+//		// Shader Functions
+//		void	UseSolidOutlineShader(unsigned int layerID);
+//		void	UseSolidFillShader(unsigned int layerID);
+//		SolidShader*	GetSolidOutlineShader(unsigned int layerID);
+//		SolidShader*	GetSolidFillShader(unsigned int layerID);
 
 
-		std::vector<GLCamera*>		cameras;		/**< MEMORY MANAGEMENT - List of all GLCamera objects */
-		std::vector<TerrainLayer*>	terrainLayers;		/**< MEMORY MANAGEMENT - List of all TerrainLayer objects */
-		std::vector<SolidShader*>	solidShaders;		/**< MEMORY MANAGEMENT - List of all SolidShader objects*/
-		std::vector<GradientShader*>	gradientShaders;	/**< MEMORY MANAGEMENT - List of all GradientShader objects */
+//	protected:
 
-		std::vector<Layer*>		allLayers;	/**< MASS ACCESS - List of all Layer objects */
-		std::vector<GLShader*>		allShaders;	/**< MASS ACCESS - List of all GLShader objects*/
+//		QThread*		layerThread;	/**< The thread that all Layer slots will operate on */
+//		GLCamera*		currentCam;	/**< The camera to be used by all shaders */
 
-		std::vector<Layer*>		visibleLayers;		/**< REFERENCE TABLE - List of visible Layers */
-		std::vector<Layer*>		hiddenLayers;		/**< REFERENCE TABLE - List of hidden Layers */
-		std::vector<SolidShader*>	solidOutlineShaders;	/**< REFERENCE TABLE - List of SolidShader objects used as outlines for each Layer */
-		std::vector<SolidShader*>	solidFillShaders;	/**< REFERENCE TABLE - List of SolidShdaer objects used as fill for each Layer */
-		std::vector<GradientShader*>	gradientOutlineShaders;	/**< REFERENCE TABLE - List of GradientShader objects used as outlines for each Layer */
-		std::vector<GradientShader*>	gradientFillShaders;	/**< REFERENCE TABLE - List of GradientShader objects used as fill for each Layer */
 
-		unsigned int	AddReferenceTableSlot();
-		int		GetReferenceTableColumn(unsigned int layerID);
+//		std::vector<GLCamera*>		cameras;		/**< MEMORY MANAGEMENT - List of all GLCamera objects */
+//		std::vector<TerrainLayer*>	terrainLayers;		/**< MEMORY MANAGEMENT - List of all TerrainLayer objects */
+//		std::vector<SolidShader*>	solidShaders;		/**< MEMORY MANAGEMENT - List of all SolidShader objects*/
+//		std::vector<GradientShader*>	gradientShaders;	/**< MEMORY MANAGEMENT - List of all GradientShader objects */
 
-		Layer*		GetLayerByID(unsigned int layerID);
-		GLShader*	GetShaderByID(unsigned int shaderID);
+//		std::vector<Layer*>		allLayers;	/**< MASS ACCESS - List of all Layer objects */
+//		std::vector<GLShader*>		allShaders;	/**< MASS ACCESS - List of all GLShader objects*/
 
-		void	UpdateShaderCameras();
+//		std::vector<Layer*>		visibleLayers;		/**< REFERENCE TABLE - List of visible Layers */
+//		std::vector<Layer*>		hiddenLayers;		/**< REFERENCE TABLE - List of hidden Layers */
+//		std::vector<SolidShader*>	solidOutlineShaders;	/**< REFERENCE TABLE - List of SolidShader objects used as outlines for each Layer */
+//		std::vector<SolidShader*>	solidFillShaders;	/**< REFERENCE TABLE - List of SolidShdaer objects used as fill for each Layer */
+//		std::vector<GradientShader*>	gradientOutlineShaders;	/**< REFERENCE TABLE - List of GradientShader objects used as outlines for each Layer */
+//		std::vector<GradientShader*>	gradientFillShaders;	/**< REFERENCE TABLE - List of GradientShader objects used as fill for each Layer */
 
-		SolidShader*	NewSolidShader(float r, float g, float b, float a);
-		GradientShader*	NewGradientShader(float lowColor[], float highColor[], float heightRange[]);
+//		unsigned int	AddReferenceTableSlot();
+//		int		GetReferenceTableColumn(unsigned int layerID);
 
-	private:
+//		Layer*		GetLayerByID(unsigned int layerID);
+//		GLShader*	GetShaderByID(unsigned int shaderID);
 
-		Layer*	loadingLayer;
+//		void	UpdateShaderCameras();
 
-	signals:
+//		SolidShader*	NewSolidShader(float r, float g, float b, float a);
+//		GradientShader*	NewGradientShader(float lowColor[], float highColor[], float heightRange[]);
 
-		void	emitMessage(QString);
-		void	numNodesChanged(int);
-		void	numElementsChanged(int);
-		void	numTSChanged(int);
-		void	cameraChanged();
-		void	updateGL();
-		void	beingDestroyed();
+//	private:
 
-		void	activeTerrainLayer(TerrainLayer*);
+//		Layer*	loadingLayer;
 
-	public slots:
+//	signals:
 
-		void	LoadToGPU();
+//		void	emitMessage(QString);
+//		void	numNodesChanged(int);
+//		void	numElementsChanged(int);
+//		void	numTSChanged(int);
+//		void	cameraChanged();
+//		void	updateGL();
+//		void	beingDestroyed();
+
+//		void	activeTerrainLayer(TerrainLayer*);
+
+//	public slots:
+
+//		void	LoadToGPU();
 };
 
 #endif // LAYERMANAGER_H

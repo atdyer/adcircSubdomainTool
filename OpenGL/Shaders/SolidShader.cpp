@@ -27,10 +27,10 @@ SolidShader::SolidShader()
 			"	out_Color = ex_Color;"
 			"}";
 
-	rgba[0] = 1.0;
-	rgba[1] = 1.0;
-	rgba[2] = 1.0;
-	rgba[3] = 1.0;
+	properties.color[0] = 1.0;
+	properties.color[1] = 1.0;
+	properties.color[2] = 1.0;
+	properties.color[3] = 1.0;
 
 	CompileShader();
 	UpdateUniforms();
@@ -50,13 +50,26 @@ SolidShader::SolidShader()
 void SolidShader::SetColor(float r, float g, float b, float a)
 {
 	if (r >= 0.0)
-		rgba[0] = r;
+		properties.color[0] = r;
 	if (g >= 0.0)
-		rgba[1] = g;
+		properties.color[1] = g;
 	if (b >= 0.0)
-		rgba[2] = b;
+		properties.color[2] = b;
 	if (a >= 0.0)
-		rgba[3] = a;
+		properties.color[3] = a;
+}
+
+
+/**
+ * @brief Retrieves the shader's properties
+ *
+ * Retrieves the shader's properties (ie. color).
+ *
+ * @return The shader's properties
+ */
+SolidShaderProperties SolidShader::GetShaderProperties()
+{
+	return properties;
 }
 
 
@@ -100,7 +113,7 @@ void SolidShader::UpdateUniforms()
 		GLint ColorUniform = glGetUniformLocation(programID, "ColorVector");
 
 		glUniformMatrix4fv(MVPUniform, 1, GL_FALSE, camera->MVPMatrix.m);
-		glUniform4fv(ColorUniform, 1, rgba);
+		glUniform4fv(ColorUniform, 1, properties.color);
 
 		GLenum errVal = glGetError();
 		if (errVal != GL_NO_ERROR)
