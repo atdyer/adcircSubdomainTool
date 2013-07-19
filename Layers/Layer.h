@@ -49,41 +49,20 @@ class Layer : public QObject
 		// Getter Methods
 		unsigned int	GetID();
 		unsigned int	GetNumLayers();
-		SolidShaderProperties		GetSolidOutline();
-		SolidShaderProperties		GetSolidFill();
-		GradientShaderProperties	GetGradientOutline();
-		GradientShaderProperties	GetGradientFill();
+
 
 		// Setter Methods
-		void		SetCamera(GLCamera* newCamera);
-
+		virtual void	SetCamera(GLCamera* newCamera) = 0;
 
 	protected:
 
-		GLShader*	outlineShader;		/**< Pointer to the GLShader object that should be used to draw the outline */
-		GLShader*	fillShader;		/**< Pointer to the GLShader object that should be used to draw the fill */
+		GLCamera*	camera;			/**< The camera used for drawing in all of this Layer's shaders */
 
 	private:
-
-		GLCamera*	camera;			/**< The camera used for drawing in all of this Layer's shaders */
-		SolidShader*	solidOutline;		/**< Shader used to draw a solid outline */
-		SolidShader*	solidFill;		/**< Shader used to draw a solid fill */
-		GradientShader*	gradientOutline;	/**< Shader used to draw a gradient outline */
-		GradientShader*	gradientFill;		/**< Shader used to draw a gradient fill */
 
 		static unsigned int	layerCount;	/**< A running count of the number of Layer objects */
 		static unsigned int	nextID;		/**< The next available layerID */
 		unsigned int		layerID;	/**< A unique unsigned integer that identifies this Layer */
-
-	public slots:
-
-		// Solid Shader Methods
-		void	UseSolidOutlineShader(float r, float g, float b, float a);
-		void	UseSolidFillShader(float r, float g, float b, float a);
-
-		// Gradient Shader Methods
-		void	UseGradientOutlineShader(float lowColor[], float highColor[], float lowVal, float highVal);
-		void	UseGradientFillShader(float lowColor[], float highColor[], float lowVal, float highVal);
 
 	signals:
 

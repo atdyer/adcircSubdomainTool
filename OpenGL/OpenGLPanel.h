@@ -5,7 +5,6 @@
 #include <QGLWidget>
 #include <QWheelEvent>
 
-#include "Layers/LayerManager.h"
 #include "Layers/SelectionLayer.h"
 #include "SubdomainTools/CircleTool.h"
 #include "Domains/Domain.h"

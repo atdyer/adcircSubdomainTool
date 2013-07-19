@@ -262,8 +262,10 @@ void Domain::SetFort14Location(std::string newLoc)
 
 
 		terrainLayer->SetCamera(camera);
-		terrainLayer->UseSolidOutlineShader(0.2, 0.2, 0.2, 0.1);
-		terrainLayer->UseSolidFillShader(0.1, 0.8, 0.1, 1.0);
+		terrainLayer->SetSolidOutline(SolidShaderProperties(0.2, 0.2, 0.2, 0.1));
+		terrainLayer->SetSolidFill(SolidShaderProperties(0.1, 0.8, 0.1, 1.0));
+//		terrainLayer->SetGradientOutline(GradientShaderProperties(0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0));
+//		terrainLayer->SetGradientFill(GradientShaderProperties(0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0));
 
 		if (circleTool)
 			circleTool->SetTerrainLayer(terrainLayer);
@@ -321,6 +323,8 @@ void Domain::SetFort64Location(std::string newLoc)
  */
 void Domain::SetTerrainSolidOutline(SolidShaderProperties newProperties)
 {
+	if (terrainLayer)
+		terrainLayer->SetSolidOutline(newProperties);
 
 }
 
@@ -335,7 +339,8 @@ void Domain::SetTerrainSolidOutline(SolidShaderProperties newProperties)
  */
 void Domain::SetTerrainSolidFill(SolidShaderProperties newProperties)
 {
-
+	if (terrainLayer)
+		terrainLayer->SetSolidFill(newProperties);
 }
 
 
@@ -349,7 +354,8 @@ void Domain::SetTerrainSolidFill(SolidShaderProperties newProperties)
  */
 void Domain::SetTerrainGradientOutline(GradientShaderProperties newProperties)
 {
-
+	if (terrainLayer)
+		terrainLayer->SetGradientOutline(newProperties);
 }
 
 
@@ -363,7 +369,8 @@ void Domain::SetTerrainGradientOutline(GradientShaderProperties newProperties)
  */
 void Domain::SetTerrainGradientFill(GradientShaderProperties newProperties)
 {
-
+	if (terrainLayer)
+		terrainLayer->SetGradientFill(newProperties);
 }
 
 

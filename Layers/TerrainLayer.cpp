@@ -27,6 +27,11 @@ TerrainLayer::TerrainLayer()
 
 	quadtree = 0;
 
+	solidOutline = 0;
+	solidFill = 0;
+	gradientOutline = 0;
+	gradientFill = 0;
+
 	connect(this, SIGNAL(fort14Valid()), this, SLOT(readFort14()));
 }
 
@@ -38,6 +43,15 @@ TerrainLayer::~TerrainLayer()
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	if (solidOutline)
+		delete solidOutline;
+	if (solidFill)
+		delete solidFill;
+	if (gradientOutline)
+		delete gradientOutline;
+	if (gradientFill)
+		delete gradientFill;
 
 	if (VBOId)
 		glDeleteBuffers(1, &VBOId);
@@ -66,7 +80,6 @@ void TerrainLayer::Draw()
 		if (fillShader)
 		{
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-//			glPolygonOffset(10, 10);
 			if (fillShader->Use())
 				glDrawElements(GL_TRIANGLES, numElements*3, GL_UNSIGNED_INT, (GLvoid*)0);
 		}
@@ -74,7 +87,6 @@ void TerrainLayer::Draw()
 		if (outlineShader)
 		{
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-//			glPolygonOffset(0, 0);
 			if (outlineShader->Use())
 				glDrawElements(GL_TRIANGLES, numElements*3, GL_UNSIGNED_INT, (GLvoid*)0);
 		}
@@ -416,6 +428,60 @@ float TerrainLayer::GetUnprojectedY(float y)
 }
 
 
+SolidShaderProperties TerrainLayer::GetSolidOutline()
+{
+	if (solidOutline)
+		return solidOutline->GetShaderProperties();
+	return SolidShaderProperties();
+}
+
+
+SolidShaderProperties TerrainLayer::GetSolidFill()
+{
+	if (solidFill)
+		return solidFill->GetShaderProperties();
+	return SolidShaderProperties();
+}
+
+
+GradientShaderProperties TerrainLayer::GetGradientOutline()
+{
+	if (gradientOutline)
+		return gradientOutline->GetShaderProperties();
+	return GradientShaderProperties();
+}
+
+
+GradientShaderProperties TerrainLayer::GetGradientFill()
+{
+	if (gradientFill)
+		return gradientFill->GetShaderProperties();
+	return GradientShaderProperties();
+}
+
+
+/**
+ * @brief Sets the GLCamera object to be used when drawing this Layer
+ *
+ * Sets the GLCamera object to be used when drawing this Layer. The Layer does
+ * not take ownership of the GLCamera object.
+ *
+ * @param newCamera Pointer to the GLCamera object
+ */
+void TerrainLayer::SetCamera(GLCamera *newCamera)
+{
+	camera = newCamera;
+	if (solidOutline)
+		solidOutline->SetCamera(camera);
+	if (solidFill)
+		solidFill->SetCamera(camera);
+	if (gradientOutline)
+		gradientOutline->SetCamera(camera);
+	if (gradientFill)
+		gradientFill->SetCamera(camera);
+}
+
+
 /**
  * @brief Sets the location of the fort.14 file for this layer and checks its validity
  *
@@ -439,33 +505,110 @@ void TerrainLayer::SetFort14Location(std::string newLocation)
 
 
 /**
- * @brief Sets the GLShader that will be used when drawing the outlines of this layer
+ * @brief Sets the solid color used for drawing this Layer's outline
  *
- * Set the GLShader to be used when drawing the outlines of this layer. Note that the
- * layer does not take ownership of the shader.
+ * Sets the solid color used for drawing this Layer's outline. The shader
+ * is owned by the TerrainLayer.
  *
- * @param newShader The GLShader to be used for drawing outlines
+ * @param newProperties The new shader properties
  */
-//void TerrainLayer::SetOutlineShader(GLShader *newShader)
-//{
-//	std::cout << "Outline Shader Set" << std::endl;
-//	outlineShader = newShader;
-//}
+void TerrainLayer::SetSolidOutline(SolidShaderProperties newProperties)
+{
+	if (!solidOutline)
+	{
+		solidOutline = new SolidShader();
+		solidOutline->SetCamera(camera);
+	}
+	solidOutline->SetColor(	newProperties.color[0],
+				newProperties.color[1],
+				newProperties.color[2],
+				newProperties.color[3]);
+	outlineShader = solidOutline;
+}
 
 
 /**
- * @brief Sets the GLShader that will be used when drawing the fill for this layer
+ * @brief Sets the solid color used for drawing this Layer's fill
  *
- * Set the GLShader to be used when drawing the fill for this layer. Note that the
- * layer does not take ownership of the shader.
+ * Sets the solid color used for drawing this Layer's fill. The shader
+ * is owned by the TerrainLayer.
  *
- * @param newShader The GLShader to be used for drawing outlines
+ * @param newProperties The new shader properties
  */
-//void TerrainLayer::SetFillShader(GLShader *newShader)
-//{
-//	std::cout << "Fill Shader Set" << std::endl;
-//	fillShader = newShader;
-//}
+void TerrainLayer::SetSolidFill(SolidShaderProperties newProperties)
+{
+	if (!solidFill)
+		solidFill = new SolidShader();
+
+	solidFill->SetCamera(camera);
+	solidFill->SetColor(	newProperties.color[0],
+				newProperties.color[1],
+				newProperties.color[2],
+				newProperties.color[3]);
+	fillShader = solidFill;
+}
+
+
+/**
+ * @brief Sets the gradient used for drawing this Layer's outline
+ *
+ * Sets the gradient used for drawing the Layer's outline. The shader
+ * is owned by the TerrainLayer.
+ *
+ * @param newProperties The new shader properties
+ */
+void TerrainLayer::SetGradientOutline(GradientShaderProperties newProperties)
+{
+	if (!gradientOutline)
+		gradientOutline = new GradientShader();
+
+	gradientOutline->SetCamera(camera);
+	gradientOutline->SetLowColor(	newProperties.lowColor[0],
+					newProperties.lowColor[1],
+					newProperties.lowColor[2],
+					newProperties.lowColor[3]);
+
+	gradientOutline->SetHighColor(	newProperties.highColor[0],
+					newProperties.highColor[1],
+					newProperties.highColor[2],
+					newProperties.highColor[3]);
+
+	gradientOutline->SetLowValue(newProperties.heightRange[0]);
+	gradientOutline->SetHighValue(newProperties.heightRange[1]);
+
+	outlineShader = gradientOutline;
+}
+
+
+/**
+ * @brief Sets the gradient used for drawing this Layer's fill
+ *
+ * Sets the gradient used for drawing this Layer's fill. The shader
+ * is owned by the TerrainLayer.
+ *
+ * @param newProperties The new shader properties
+ */
+void TerrainLayer::SetGradientFill(GradientShaderProperties newProperties)
+{
+	if (!gradientFill)
+		gradientFill = new GradientShader();
+
+	gradientFill->SetCamera(camera);
+	gradientFill->SetLowColor(	newProperties.lowColor[0],
+					newProperties.lowColor[1],
+					newProperties.lowColor[2],
+					newProperties.lowColor[3]);
+
+	gradientFill->SetHighColor(	newProperties.highColor[0],
+					newProperties.highColor[1],
+					newProperties.highColor[2],
+					newProperties.highColor[3]);
+
+	gradientFill->SetLowValue(newProperties.heightRange[0]);
+	gradientFill->SetHighValue(newProperties.heightRange[1]);
+
+	fillShader = gradientFill;
+}
 
 
 /**

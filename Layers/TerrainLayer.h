@@ -50,11 +50,18 @@ class TerrainLayer : public Layer
 		float			GetMaxZ();
 		float			GetUnprojectedX(float x);
 		float			GetUnprojectedY(float y);
+		SolidShaderProperties		GetSolidOutline();
+		SolidShaderProperties		GetSolidFill();
+		GradientShaderProperties	GetGradientOutline();
+		GradientShaderProperties	GetGradientFill();
 
 		// Setter Methods
-		void	SetFort14Location(std::string newLocation);
-//		void	SetOutlineShader(GLShader *newShader);
-//		void	SetFillShader(GLShader *newShader);
+		virtual void	SetCamera(GLCamera *newCamera);
+		void		SetFort14Location(std::string newLocation);
+		void		SetSolidOutline(SolidShaderProperties newProperties);
+		void		SetSolidFill(SolidShaderProperties newProperties);
+		void		SetGradientOutline(GradientShaderProperties newProperties);
+		void		SetGradientFill(GradientShaderProperties newProperties);
 
 
 
@@ -77,12 +84,14 @@ class TerrainLayer : public Layer
 		float			maxZ;		/**< The maximum z-value */
 		float			max;		/**< The maximum of the width/height of the domain */
 
+		/* All shaders needed to draw a terrain layer */
+		GLShader*	outlineShader;		/**< Pointer to the GLShader object that should be used to draw the outline */
+		GLShader*	fillShader;		/**< Pointer to the GLShader object that should be used to draw the fill */
+
 		// Terrain Specific OpenGL Variables
 		GLuint		VAOId;			/**< The vertex array object ID in the OpenGL context */
 		GLuint		VBOId;			/**< The vertex buffer object ID in the OpenGL context */
 		GLuint		IBOId;			/**< The index buffer object ID in the OpenGL context */
-//		GLShader*	outlineShader;		/**< The shader used to draw outlines */
-//		GLShader*	fillShader;		/**< The shader used to draw fill */
 
 		// Flags
 		bool	flipZValue;		/**< Flag that determines if the z-value is multiplied by -1 before being loaded to the GPU */
@@ -91,6 +100,13 @@ class TerrainLayer : public Layer
 
 		// Picking Variables
 		Quadtree*	quadtree;	/**< The quadtree used for Node picking */
+
+	private:
+
+		SolidShader*	solidOutline;		/**< Shader used to draw a solid outline */
+		SolidShader*	solidFill;		/**< Shader used to draw a solid fill */
+		GradientShader*	gradientOutline;	/**< Shader used to draw a gradient outline */
+		GradientShader*	gradientFill;		/**< Shader used to draw a gradient fill */
 
 	public slots:
 
@@ -101,11 +117,8 @@ class TerrainLayer : public Layer
 
 		// Signals used during threaded reading of fort.14
 		void	fort14Valid();
-//		void	startedReadingFort14();
 		void	foundNumNodes(int);
 		void	foundNumElements(int);
-//		void	progress(int percentage);
-//		void	finishedReadingFort14();
 		void	finishedLoadingToGPU();
 		void	error(QString err);
 };

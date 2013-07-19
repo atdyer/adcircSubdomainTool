@@ -28,6 +28,22 @@ struct GradientShaderProperties
 			heightRange[0] = 0.0;
 			heightRange[1] = 1.0;
 		}
+
+		GradientShaderProperties(float rL, float gL, float bL, float aL,
+					 float rH, float gH, float bH, float aH,
+					 float lowVal, float highVal)
+		{
+			lowColor[0] = rL;
+			lowColor[1] = gL;
+			lowColor[2] = bL;
+			lowColor[3] = aL;
+			highColor[0] = rH;
+			highColor[1] = gH;
+			highColor[2] = bH;
+			highColor[3] = aH;
+			heightRange[0] = lowVal;
+			heightRange[1] = highVal;
+		}
 };
 
 

@@ -25,14 +25,14 @@
  * @brief This class is used to represent an ADCIRC domain (either a full or subdomain).
  *
  * This class is used to represent an ADCIRC domain (either a full or subdomain). An instance
- * of this class contains everything needed to hold all of the data associated with a single
- * ADCIRC run.
+ * of this class contains everything needed to load and interact with all of the data associated
+ * with a single ADCIRC run.
  *
  * It is a very high level class, acting as a sort of umbrella used to oversee all functionality
  * and organization of the large amount of data it contains. As such, it provides an excellent
  * bridge between the GUI and the underlying data.
  *
- * <H2>Domain Independence</H2>
+ * <H2>Independence</H2>
  *
  * One of the goals of the Subdomain Modeling Tool is to give the user the ability to easily
  * manipulate many subdomains independently of one another in a single GUI. Therefore,
@@ -43,6 +43,15 @@
  *   independently, but also provides an Undo/Redo stack for each Domain. This means that a user
  *   can make changes in one domain and switch to a different domain and undo changes that had
  *   previously occurred in that domain
+ *
+ * <H2>Qt Signal/Slot Functionality</H2>
+ *
+ * This class has been developed with the idea that it be used in the context of a Qt signal/slot
+ * mechanism. However, all basic functionality has been written using basic functions so that
+ * upon removal from the Qt environment, the class will still perform as expected.
+ *
+ * All of the signals and slots used by this class are only used to communicate state to GUI. Any
+ * function that modifies the state of the class is implemented as a normal function.
  *
  */
 class Domain : public QObject
