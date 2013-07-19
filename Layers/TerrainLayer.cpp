@@ -94,14 +94,14 @@ void TerrainLayer::Draw()
 				glDrawElements(GL_TRIANGLES, numElements*3, GL_UNSIGNED_INT, (GLvoid*)0);
 		}
 
-		if (boundaryShader)
-		{
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			glLineWidth(3.0);
-			if (boundaryShader->Use())
-				glDrawElements(GL_LINE_STRIP, boundaryNodes.size(), GL_UNSIGNED_INT, (GLvoid*)(0 + sizeof(GLuint)*numElements*3));
-			glLineWidth(1.0);
-		}
+//		if (boundaryShader)
+//		{
+//			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+//			glLineWidth(3.0);
+//			if (boundaryShader->Use())
+//				glDrawElements(GL_LINE_STRIP, boundaryNodes.size(), GL_UNSIGNED_INT, (GLvoid*)(0 + sizeof(GLuint)*numElements*3));
+//			glLineWidth(1.0);
+//		}
 
 		glBindVertexArray(0);
 		glUseProgram(0);
