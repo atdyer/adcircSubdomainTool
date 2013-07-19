@@ -22,6 +22,21 @@ Domain::Domain()
 
 	progressBar = 0;
 	loadingLayer = 0;
+
+
+	/* Connect all selection tools to the selection layer */
+	connect(circleTool, SIGNAL(NodesSelected(std::vector<Node*>)), selectionLayer, SLOT(SelectNodes(std::vector<Node*>)));
+	connect(circleTool, SIGNAL(NodeSelected(Node*)), selectionLayer, SLOT(SelectNode(Node*)));
+
+	/* Pass signals up from the selection layer */
+	connect(selectionLayer, SIGNAL(emitMessage(QString)), this, SIGNAL(emitMessage(QString)));
+	connect(selectionLayer, SIGNAL(numNodesSelected(int)), this, SIGNAL(numNodesSelected(int)));
+	connect(selectionLayer, SIGNAL(numElementsSelected(int)), this, SIGNAL(numElementsSelected(int)));
+
+	/* Pass signals up from all selection tools */
+	connect(circleTool, SIGNAL(CircleStatsSet(float,float,float)), this, SIGNAL(circleToolStatsSet(float,float,float)));
+	connect(circleTool, SIGNAL(CircleStatsFinished()), this, SIGNAL(circleToolStatsFinished()));
+
 }
 
 
@@ -93,6 +108,12 @@ void Domain::SetCircleToolFinished()
 }
 
 
+void Domain::SetProgressBar(QProgressBar *newBar)
+{
+	progressBar = newBar;
+}
+
+
 void Domain::SetFort14Location(std::string newLoc)
 {
 	if (!terrainLayer)
@@ -111,6 +132,8 @@ void Domain::SetFort14Location(std::string newLoc)
 		connect(terrainLayer, SIGNAL(emitMessage(QString)), this, SIGNAL(emitMessage(QString)));
 		connect(terrainLayer, SIGNAL(finishedReadingData()), this, SLOT(LoadLayerToGPU()));
 		connect(terrainLayer, SIGNAL(finishedLoadingToGPU()), this, SIGNAL(updateGL()));
+		connect(terrainLayer, SIGNAL(foundNumNodes(int)), this, SIGNAL(numNodesDomain(int)));
+		connect(terrainLayer, SIGNAL(foundNumElements(int)), this, SIGNAL(numElementsDomain(int)));
 
 		terrainLayer->SetCamera(camera);
 		terrainLayer->UseSolidOutlineShader(0.2, 0.2, 0.2, 0.1);
@@ -141,9 +164,27 @@ void Domain::SetFort64Location(std::string newLoc)
 }
 
 
-void Domain::SetProgressBar(QProgressBar *newBar)
+void Domain::SetTerrainSolidOutline(SolidShaderProperties newProperties)
 {
-	progressBar = newBar;
+
+}
+
+
+void Domain::SetTerrainSolidFill(SolidShaderProperties newProperties)
+{
+
+}
+
+
+void Domain::SetTerrainGradientOutline(GradientShaderProperties newProperties)
+{
+
+}
+
+
+void Domain::SetTerrainGradientFill(GradientShaderProperties newProperties)
+{
+
 }
 
 
@@ -202,6 +243,38 @@ GradientShaderProperties Domain::GetTerrainGradientFill()
 	if (terrainLayer)
 		return terrainLayer->GetGradientFill();
 	return GradientShaderProperties();
+}
+
+
+unsigned int Domain::GetNumNodesDomain()
+{
+	if (terrainLayer)
+		return terrainLayer->GetNumNodes();
+	return 0;
+}
+
+
+unsigned int Domain::GetNumElementsDomain()
+{
+	if (terrainLayer)
+		return terrainLayer->GetNumElements();
+	return 0;
+}
+
+
+unsigned int Domain::GetNumNodesSelected()
+{
+	if (selectionLayer)
+		return selectionLayer->GetNumNodesSelected();
+	return 0;
+}
+
+
+unsigned int Domain::GetNumElementsSelected()
+{
+	if (selectionLayer)
+		return selectionLayer->GetNumElementsSelected();
+	return 0;
 }
 
 

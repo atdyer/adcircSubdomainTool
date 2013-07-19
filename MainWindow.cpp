@@ -52,8 +52,8 @@ MainWindow::MainWindow(QWidget *parent) :
 //	connect(&layerManager, SIGNAL(numElementsChanged(int)), this, SLOT(showNumElements(int)));
 //	connect(&layerManager, SIGNAL(numTSChanged(int)), this, SLOT(showNumTS(int)));
 	// Mouse Movement
-	connect(ui->GLPanel, SIGNAL(mouseX(float)), this, SLOT(showMouseX(float)));
-	connect(ui->GLPanel, SIGNAL(mouseY(float)), this, SLOT(showMouseY(float)));
+//	connect(ui->GLPanel, SIGNAL(mouseX(float)), this, SLOT(showMouseX(float)));
+//	connect(ui->GLPanel, SIGNAL(mouseY(float)), this, SLOT(showMouseY(float)));
 	connect(ui->GLPanel, SIGNAL(circleToolStatsFinished()), glStatusBar, SLOT(clearMessage()));
 	//// Selection Tools
 	connect(ui->GLPanel, SIGNAL(numNodesSelected(int)), this, SLOT(showNumSelectedNodes(int)));
@@ -191,6 +191,11 @@ void MainWindow::on_openFileButton_clicked()
 
 	connect(testDomain, SIGNAL(mouseX(float)), this, SLOT(showMouseX(float)));
 	connect(testDomain, SIGNAL(mouseY(float)), this, SLOT(showMouseY(float)));
+	connect(testDomain, SIGNAL(circleToolStatsSet(float,float,float)), this, SLOT(showCircleStats(float,float,float)));
+	connect(testDomain, SIGNAL(numNodesDomain(int)), this, SLOT(showNumNodes(int)));
+	connect(testDomain, SIGNAL(numElementsDomain(int)), this, SLOT(showNumElements(int)));
+	connect(testDomain, SIGNAL(numNodesSelected(int)), this, SLOT(showNumSelectedNodes(int)));
+	connect(testDomain, SIGNAL(circleToolStatsFinished()), glStatusBar, SLOT(clearMessage()));
 }
 
 

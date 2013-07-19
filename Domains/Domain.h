@@ -62,11 +62,15 @@ class Domain : public QObject
 		void	SetCircleToolFinished();
 
 		// Modification functions used to set the state of the Domain based on GUI interaction
+		void	SetProgressBar(QProgressBar* newBar);
 		void	SetFort14Location(std::string newLoc);
 		void	SetFort15Location(std::string newLoc);
 		void	SetFort63Location(std::string newLoc);
 		void	SetFort64Location(std::string newLoc);
-		void	SetProgressBar(QProgressBar* newBar);
+		void	SetTerrainSolidOutline(SolidShaderProperties newProperties);
+		void	SetTerrainSolidFill(SolidShaderProperties newProperties);
+		void	SetTerrainGradientOutline(GradientShaderProperties newProperties);
+		void	SetTerrainGradientFill(GradientShaderProperties newProperties);
 
 
 		// Query functions used to access data used to populate the GUI
@@ -79,6 +83,10 @@ class Domain : public QObject
 		SolidShaderProperties		GetTerrainSolidFill();
 		GradientShaderProperties	GetTerrainGradientOutline();
 		GradientShaderProperties	GetTerrainGradientFill();
+		unsigned int	GetNumNodesDomain();
+		unsigned int	GetNumElementsDomain();
+		unsigned int	GetNumNodesSelected();
+		unsigned int	GetNumElementsSelected();
 
 
 	protected:
@@ -103,6 +111,15 @@ class Domain : public QObject
 
 		void	mouseX(float);
 		void	mouseY(float);
+
+		void	numNodesDomain(int);
+		void	numElementsDomain(int);
+		void	numNodesSelected(int);
+		void	numElementsSelected(int);
+
+		// Selection Tool Pass-through Signals
+		void	circleToolStatsSet(float, float, float);
+		void	circleToolStatsFinished();
 
 		void	beingDestroyed();
 		void	emitMessage(QString);

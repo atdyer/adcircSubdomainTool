@@ -53,6 +53,10 @@ class SelectionLayer : public Layer
 		// Setter Methods
 		void	SetCamera(GLCamera *cam);
 
+		// Getter Methods
+		unsigned int	GetNumNodesSelected();
+		unsigned int	GetNumElementsSelected();
+
 
 	protected:
 

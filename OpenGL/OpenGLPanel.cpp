@@ -178,8 +178,6 @@ void OpenGLPanel::mouseMoveEvent(QMouseEvent *event)
 		{
 			if (activeDomain)
 				activeDomain->Pan(dx, dy);
-//			if (currentCam)
-//				currentCam->Pan(dx, dy);
 		}
 		else if (viewMode == CircleSubdomainMode)
 		{

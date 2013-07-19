@@ -55,6 +55,7 @@ void CircleTool::Draw()
 {
 	if (radPixel > 0.0)
 	{
+		glUseProgram(0); // Turn off any shaders that were previously being used
 		glLoadIdentity();
 		gluOrtho2D(l, r, b, t);
 		glTranslatef(l+2*r*xPixel/w, t+2*b*yPixel/h, 0.0);
@@ -141,7 +142,7 @@ void CircleTool::SetCenter(int newX, int newY)
 		DEBUG("Circle Tool: No Terrain");
 	}
 
-	emit CircleStatsSet(xNormal, yNormal, radNormal);
+	emit CircleStatsSet(xDomain, yDomain, radDomain);
 }
 
 
@@ -174,7 +175,7 @@ void CircleTool::SetRadiusPoint(int newX, int newY)
 	radNormal = distance(xNormal, yNormal, edgeXNormal, edgeYNormal);
 	radDomain = distance(xDomain, yDomain, edgeXDomain, edgeYDomain);
 
-	emit CircleStatsSet(edgeXNormal, edgeYNormal, radNormal);
+	emit CircleStatsSet(xDomain, yDomain, radDomain);
 }
 
 
@@ -191,13 +192,14 @@ void CircleTool::SetRadiusPoint(int newX, int newY)
 void CircleTool::CircleFinished()
 {
 
+	emit CircleStatsFinished();
+
 	if (terrain)
 	{
 		std::vector<Node*> nodes = terrain->GetNodesFromCircle(xNormal, yNormal, radNormal);
 		emit NodesSelected(nodes);
-		DEBUG("Number of nodes found: " << nodes.size());
+//		DEBUG("Number of nodes found: " << nodes.size());
 	}
-
 
 	xPixel = 0.0;
 	xNormal = 0.0;

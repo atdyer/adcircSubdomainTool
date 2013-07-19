@@ -101,7 +101,34 @@ void SelectionLayer::Draw()
 				glDrawArrays(GL_POINTS, 0, selectedNodes.size());
 
 		}
+
 	}
+}
+
+
+/**
+ * @brief Returns the number of Nodes that are currently selected
+ *
+ * Returns the number of Nodes that are currently selected
+ *
+ * @return The number of Nodes that are currently selected
+ */
+unsigned int SelectionLayer::GetNumNodesSelected()
+{
+	return selectedNodes.size();
+}
+
+
+/**
+ * @brief Returns the number of Elements that are currently selected
+ *
+ * Returns the number of Elements that are currently selected
+ *
+ * @return The number of Elements that are currently selected
+ */
+unsigned int SelectionLayer::GetNumElementsSelected()
+{
+	return selectedElements.size();
 }
 
 
