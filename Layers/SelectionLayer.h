@@ -20,8 +20,6 @@
  *
  * The SelectionLayer class keeps track of and draws Nodes and Elements that have been
  * selected by the user. It keeps track of and has the ability to undo previous actions.
- * It is unique from other Layer objects in that it is responsible for allocating/deallocating
- * memory for its own GLShader objects.
  *
  * The lists of selected Node and Element objects are implemented as std::map for performance
  * reasons. These lists need to have unique entries, and std::map will not add duplicates.
@@ -51,7 +49,7 @@ class SelectionLayer : public Layer
 		virtual void	LoadDataToGPU();
 
 		// Setter Methods
-		void	SetCamera(GLCamera *cam);
+		virtual void	SetCamera(GLCamera *cam);
 
 		// Getter Methods
 		unsigned int	GetNumNodesSelected();

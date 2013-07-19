@@ -107,6 +107,34 @@ void SelectionLayer::Draw()
 
 
 /**
+ * @brief Dummy function. Never actually called on the SelectionLayer
+ */
+void SelectionLayer::LoadDataToGPU()
+{
+
+}
+
+
+/**
+ * @brief Sets the camera used during drawing operations
+ *
+ * Sets the camera being used during drawing operations
+ *
+ * @param cam Pointer to the GLCamera object
+ */
+void SelectionLayer::SetCamera(GLCamera *cam)
+{
+	camera = cam;
+	if (pointShader)
+		pointShader->SetCamera(cam);
+	if (outlineShader)
+		outlineShader->SetCamera(cam);
+	if (fillShader)
+		fillShader->SetCamera(cam);
+}
+
+
+/**
  * @brief Returns the number of Nodes that are currently selected
  *
  * Returns the number of Nodes that are currently selected
@@ -258,28 +286,44 @@ void SelectionLayer::UpdateVertexBuffer()
 }
 
 
-void SelectionLayer::LoadDataToGPU()
+/**
+ * @brief Function used by Action objects to perform selection of a large number of Nodes
+ *
+ * Special function that should only be used by Action objects to select a large number
+ * of Node objects. Actions are created with only the Nodes that are actually selected
+ * (ie. duplicates are not included), so a unique set of Nodes is guaranteed in each
+ * Action. This function is very fast because it does not check for duplicates and uses
+ * the std::map insert function.
+ *
+ * @param nodes The map of Nodes to select
+ */
+void SelectionLayer::SelectNodes(std::map<unsigned int, Node *> nodes)
 {
-
+	selectedNodes.insert(nodes.begin(), nodes.end());
+	UpdateVertexBuffer();
+	emit numNodesSelected(selectedNodes.size());
 }
 
 
 /**
- * @brief Sets the camera used during drawing operations
+ * @brief Function used by Action objects to perform deselection of a large number of nodes
  *
- * Sets the camera being used during drawing operations
+ * Special function that should only be used by Action objects to deselect a large number
+ * of Node objects. Action are created with only the Nodes that are actually selected
+ * (ie. duplicates are not included), so a unique set of Nodes is guaranteed in each
+ * Action. This function is very fast because it does not check for duplicates and uses
+ * the std::map insert function.
  *
- * @param cam Pointer to the GLCamera object
+ * @param nodes The map of Nodes to deselect
  */
-void SelectionLayer::SetCamera(GLCamera *cam)
+void SelectionLayer::DeselectNodes(std::map<unsigned int, Node *> nodes)
 {
-	camera = cam;
-	if (pointShader)
-		pointShader->SetCamera(cam);
-	if (outlineShader)
-		outlineShader->SetCamera(cam);
-	if (fillShader)
-		fillShader->SetCamera(cam);
+	for (std::map<unsigned int, Node*>::iterator it=nodes.begin(); it != nodes.end(); it++)
+	{
+		selectedNodes.erase(it->first);
+	}
+	UpdateVertexBuffer();
+	emit numNodesSelected(selectedNodes.size());
 }
 
 
@@ -357,47 +401,6 @@ void SelectionLayer::SelectNodes(std::vector<Node *> nodes)
 		emit numNodesSelected(selectedNodes.size());
 		UpdateVertexBuffer();
 	}
-}
-
-
-/**
- * @brief Function used by Action objects to perform selection of a large number of Nodes
- *
- * Special function that should only be used by Action objects to select a large number
- * of Node objects. Actions are created with only the Nodes that are actually selected
- * (ie. duplicates are not included), so a unique set of Nodes is guaranteed in each
- * Action. This function is very fast because it does not check for duplicates and uses
- * the std::map insert function.
- *
- * @param nodes The map of Nodes to select
- */
-void SelectionLayer::SelectNodes(std::map<unsigned int, Node *> nodes)
-{
-	selectedNodes.insert(nodes.begin(), nodes.end());
-	UpdateVertexBuffer();
-	emit numNodesSelected(selectedNodes.size());
-}
-
-
-/**
- * @brief Function used by Action objects to perform deselection of a large number of nodes
- *
- * Special function that should only be used by Action objects to deselect a large number
- * of Node objects. Action are created with only the Nodes that are actually selected
- * (ie. duplicates are not included), so a unique set of Nodes is guaranteed in each
- * Action. This function is very fast because it does not check for duplicates and uses
- * the std::map insert function.
- *
- * @param nodes The map of Nodes to deselect
- */
-void SelectionLayer::DeselectNodes(std::map<unsigned int, Node *> nodes)
-{
-	for (std::map<unsigned int, Node*>::iterator it=nodes.begin(); it != nodes.end(); it++)
-	{
-		selectedNodes.erase(it->first);
-	}
-	UpdateVertexBuffer();
-	emit numNodesSelected(selectedNodes.size());
 }
 
 

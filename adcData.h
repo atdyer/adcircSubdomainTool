@@ -39,7 +39,8 @@
  * accessing node [nodeNumber-1].
  *
  */
-typedef struct {
+struct Node
+{
 		unsigned int nodeNumber;	/**< The node number as defined in fort.14 file */
 		float x;	/**< First location coordinate defined in fort.14 file (typically longitude) */
 		float y;	/**< Second location coordinate defined in fort.14 file (typically latitude) */
@@ -47,7 +48,7 @@ typedef struct {
 		float normX;	/**< The normalized first location coordinate used for drawing operations */
 		float normY;	/**< The normalized second location coordinate used for drawing operations */
 		float normZ;	/**< The normalized third location coordinate used for drawing operations */
-} Node;
+};
 
 
 /**
@@ -59,12 +60,13 @@ typedef struct {
  * as accessing element [elementNumber-1].
  *
  */
-typedef struct {
+struct Element
+{
 		unsigned int elementNumber;	/**< The element number as defined in fort.14 file */
 		unsigned int n1;	/**< nodeNumber of the first Node specified in the fort.14 file */
 		unsigned int n2;	/**< nodeNumber of the second Node specified in the fort.14 file */
 		unsigned int n3;	/**< nodeNumber of the third Node specified in the fort.14 file */
-} Element;
+};
 
 
 #endif // ADCDATA_H

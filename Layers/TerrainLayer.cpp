@@ -24,13 +24,16 @@ TerrainLayer::TerrainLayer()
 	IBOId = 0;
 	outlineShader = 0;
 	fillShader = 0;
+	boundaryShader = 0;
 
 	quadtree = 0;
 
 	solidOutline = 0;
 	solidFill = 0;
+	solidBoundary = 0;
 	gradientOutline = 0;
 	gradientFill = 0;
+	gradientBoundary = 0;
 
 	connect(this, SIGNAL(fort14Valid()), this, SLOT(readFort14()));
 }
@@ -91,6 +94,15 @@ void TerrainLayer::Draw()
 				glDrawElements(GL_TRIANGLES, numElements*3, GL_UNSIGNED_INT, (GLvoid*)0);
 		}
 
+		if (boundaryShader)
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			glLineWidth(3.0);
+			if (boundaryShader->Use())
+				glDrawElements(GL_LINE_STRIP, boundaryNodes.size(), GL_UNSIGNED_INT, (GLvoid*)(0 + sizeof(GLuint)*numElements*3));
+			glLineWidth(1.0);
+		}
+
 		glBindVertexArray(0);
 		glUseProgram(0);
 	}
@@ -111,7 +123,7 @@ void TerrainLayer::LoadDataToGPU()
 	if (fileLoaded)
 	{
 		const size_t VertexBufferSize = 4*sizeof(GLfloat)*numNodes;
-		const size_t IndexBufferSize = 3*sizeof(GLuint)*numElements;
+		const size_t IndexBufferSize = 3*sizeof(GLuint)*numElements + sizeof(GLuint)*boundaryNodes.size();
 
 		glGenVertexArrays(1, &VAOId);
 		glGenBuffers(1, &VBOId);
@@ -158,6 +170,11 @@ void TerrainLayer::LoadDataToGPU()
 				glElementData[3*i+0] = (GLuint)elements[i].n1-1;
 				glElementData[3*i+1] = (GLuint)elements[i].n2-1;
 				glElementData[3*i+2] = (GLuint)elements[i].n3-1;
+			}
+
+			for (unsigned int i=0; i<boundaryNodes.size(); i++)
+			{
+				glElementData[3*numElements+i] = boundaryNodes[i]-1;
 			}
 		} else {
 			glLoaded = false;
@@ -428,6 +445,13 @@ float TerrainLayer::GetUnprojectedY(float y)
 }
 
 
+/**
+ * @brief Returns the properties being used to draw a solid outline
+ *
+ * Returns the properties being used to draw a solid outline
+ *
+ * @return The properties being used to draw a solid outline
+ */
 SolidShaderProperties TerrainLayer::GetSolidOutline()
 {
 	if (solidOutline)
@@ -436,6 +460,13 @@ SolidShaderProperties TerrainLayer::GetSolidOutline()
 }
 
 
+/**
+ * @brief Returns the properties being used to draw a solid fill
+ *
+ * Returns the properties being used to draw a solid fill
+ *
+ * @return The properties being used to draw a solid fill
+ */
 SolidShaderProperties TerrainLayer::GetSolidFill()
 {
 	if (solidFill)
@@ -444,6 +475,28 @@ SolidShaderProperties TerrainLayer::GetSolidFill()
 }
 
 
+/**
+ * @brief Returns the properties being used to draw a solid boundary segment
+ *
+ * Returns the properties being used to draw a solid boundary segment
+ *
+ * @return The properties being used to draw a solid boundary segment
+ */
+SolidShaderProperties TerrainLayer::GetSolidBoundary()
+{
+	if (solidBoundary)
+		return solidBoundary->GetShaderProperties();
+	return SolidShaderProperties();
+}
+
+
+/**
+ * @brief Returns the properties being used to draw a gradient outline
+ *
+ * Returns the properties being used to draw a gradient outline
+ *
+ * @return The properties being used to draw a gradient outline
+ */
 GradientShaderProperties TerrainLayer::GetGradientOutline()
 {
 	if (gradientOutline)
@@ -452,10 +505,32 @@ GradientShaderProperties TerrainLayer::GetGradientOutline()
 }
 
 
+/**
+ * @brief Returns the properties being used to draw a gradient fill
+ *
+ * Returns the properties being used to draw a gradient fill
+ *
+ * @return The properties being used to draw a gradient fill
+ */
 GradientShaderProperties TerrainLayer::GetGradientFill()
 {
 	if (gradientFill)
 		return gradientFill->GetShaderProperties();
+	return GradientShaderProperties();
+}
+
+
+/**
+ * @brief Returns the properties being used to draw a gradient boundary segment
+ *
+ * Returns the properties being used to draw a gradient boundary segment
+ *
+ * @return The properties being used to draw a gradient boundary segment
+ */
+GradientShaderProperties TerrainLayer::GetGradientBoundary()
+{
+	if (gradientBoundary)
+		return gradientBoundary->GetShaderProperties();
 	return GradientShaderProperties();
 }
 
@@ -550,6 +625,28 @@ void TerrainLayer::SetSolidFill(SolidShaderProperties newProperties)
 
 
 /**
+ * @brief Sets the solid color used for drawing this Layer's boundary segment
+ *
+ * Sets the solid color used for drawing this Layer's boundary segment. The shader
+ * is owned by the TerrainLayer.
+ *
+ * @param newProperties The new shader properties
+ */
+void TerrainLayer::SetSolidBoundary(SolidShaderProperties newProperties)
+{
+	if (!solidBoundary)
+		solidBoundary = new SolidShader();
+
+	solidBoundary->SetCamera(camera);
+	solidBoundary->SetColor(newProperties.color[0],
+				newProperties.color[1],
+				newProperties.color[2],
+				newProperties.color[3]);
+	boundaryShader = solidBoundary;
+}
+
+
+/**
  * @brief Sets the gradient used for drawing this Layer's outline
  *
  * Sets the gradient used for drawing the Layer's outline. The shader
@@ -612,6 +709,37 @@ void TerrainLayer::SetGradientFill(GradientShaderProperties newProperties)
 
 
 /**
+ * @brief Sets the gradient used for drawing this Layer's boundary segment
+ *
+ * Sets the gradient used for drawing this Layer's boundary segment. The shader
+ * is owned by the TerrainLayer.
+ *
+ * @param newProperties The new shader properties
+ */
+void TerrainLayer::SetGradientBoundary(GradientShaderProperties newProperties)
+{
+	if (!gradientBoundary)
+		gradientBoundary = new GradientShader();
+
+	gradientBoundary->SetCamera(camera);
+	gradientBoundary->SetLowColor(	newProperties.lowColor[0],
+					newProperties.lowColor[1],
+					newProperties.lowColor[2],
+					newProperties.lowColor[3]);
+
+	gradientBoundary->SetHighColor(	newProperties.highColor[0],
+					newProperties.highColor[1],
+					newProperties.highColor[2],
+					newProperties.highColor[3]);
+
+	gradientBoundary->SetLowValue(newProperties.heightRange[0]);
+	gradientBoundary->SetHighValue(newProperties.heightRange[1]);
+
+	boundaryShader = gradientBoundary;
+}
+
+
+/**
  * @brief Reads the fort.14 file data
  *
  * This function is used to read data from the fort.14 file. It is implemented as
@@ -648,6 +776,8 @@ void TerrainLayer::readFort14()
 			nodes.reserve(numNodes);
 			elements.reserve(numElements);
 
+			/* Read all of the nodal data */
+
 			Node currNode;
 			for (unsigned int i=0; i<numNodes; i++)
 			{
@@ -675,6 +805,9 @@ void TerrainLayer::readFort14()
 				emit progress(100*(++progressPoint)/progressPoints);
 			}
 
+
+			/* Read all of the element data */
+
 			Element currElement;
 			int trash;
 			for (unsigned int i=0; i<numElements; i++)
@@ -686,6 +819,25 @@ void TerrainLayer::readFort14()
 				fort14 >> currElement.n3;
 				elements.push_back(currElement);
 				emit progress(100*(++progressPoint)/progressPoints);
+			}
+
+
+			/* Read all of the boundary data if this is a subdomain */
+			int numSegments, numBoundaryNodes;
+			std::getline(fort14, line);
+			std::getline(fort14, line);
+			std::stringstream(line) >> numSegments;
+			std::getline(fort14, line);
+			std::stringstream(line) >> numBoundaryNodes;
+			if (numSegments == 1)
+			{
+				int numNextBoundaryNodes, nextNodeNumber;
+				fort14 >> numNextBoundaryNodes;
+				for (int i=0; i<numNextBoundaryNodes; i++)
+				{
+					fort14 >> nextNodeNumber;
+					boundaryNodes.push_back(nextNodeNumber);
+				}
 			}
 
 			fort14.close();

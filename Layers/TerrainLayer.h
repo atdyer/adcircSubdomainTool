@@ -52,28 +52,35 @@ class TerrainLayer : public Layer
 		float			GetUnprojectedY(float y);
 		SolidShaderProperties		GetSolidOutline();
 		SolidShaderProperties		GetSolidFill();
+		SolidShaderProperties		GetSolidBoundary();
 		GradientShaderProperties	GetGradientOutline();
 		GradientShaderProperties	GetGradientFill();
+		GradientShaderProperties	GetGradientBoundary();
 
 		// Setter Methods
 		virtual void	SetCamera(GLCamera *newCamera);
 		void		SetFort14Location(std::string newLocation);
 		void		SetSolidOutline(SolidShaderProperties newProperties);
 		void		SetSolidFill(SolidShaderProperties newProperties);
+		void		SetSolidBoundary(SolidShaderProperties newProperties);
 		void		SetGradientOutline(GradientShaderProperties newProperties);
 		void		SetGradientFill(GradientShaderProperties newProperties);
+		void		SetGradientBoundary(GradientShaderProperties newProperties);
 
 
 
 	protected:
 
-		// Terrain Specific Variables
-		std::string		fort14Location; /**< The absolute path of the fort.14 file */
-		std::vector<Node>	nodes;		/**< List of all Nodes in the Layer */
-		std::vector<Element>	elements;	/**< List of all Elements in the Layer */
-		std::string		infoLine;	/**< The info line in the fort.14 file */
-		unsigned int		numNodes;	/**< The number of Nodes in the Layer as specified in fort.14 */
-		unsigned int		numElements;	/**< The number of Elements in the Layer as specified in fort.14 */
+		/* Raw data from fort.14 */
+		std::string			fort14Location;	/**< The absolute path of the fort.14 file */
+		std::vector<Node>		nodes;		/**< List of all Nodes in the Layer */
+		std::vector<Element>		elements;	/**< List of all Elements in the Layer */
+		std::vector<unsigned int>	boundaryNodes;	/**< List of boundary node numbers if this is a subdomain */
+		std::string			infoLine;	/**< The info line in the fort.14 file */
+		unsigned int			numNodes;	/**< The number of Nodes in the domain as specified in fort.14 */
+		unsigned int			numElements;	/**< The number of Elements in the domain as specified in fort.14 */
+
+		/* Coordinate Properties */
 		float			minX;		/**< The minimum x-value */
 		float			midX;		/**< The calculated center of the x-values */
 		float			maxX;		/**< The maximum x-value */
@@ -85,8 +92,9 @@ class TerrainLayer : public Layer
 		float			max;		/**< The maximum of the width/height of the domain */
 
 		/* All shaders needed to draw a terrain layer */
-		GLShader*	outlineShader;		/**< Pointer to the GLShader object that should be used to draw the outline */
-		GLShader*	fillShader;		/**< Pointer to the GLShader object that should be used to draw the fill */
+		GLShader*	outlineShader;		/**< Pointer to the GLShader object that will be used to draw the outline */
+		GLShader*	fillShader;		/**< Pointer to the GLShader object that will be used to draw the fill */
+		GLShader*	boundaryShader;		/**< Pointer to the GLShader object that will be used to draw the boundaries of a subdomain */
 
 		// Terrain Specific OpenGL Variables
 		GLuint		VAOId;			/**< The vertex array object ID in the OpenGL context */
@@ -105,8 +113,10 @@ class TerrainLayer : public Layer
 
 		SolidShader*	solidOutline;		/**< Shader used to draw a solid outline */
 		SolidShader*	solidFill;		/**< Shader used to draw a solid fill */
+		SolidShader*	solidBoundary;		/**< Shader used to draw a solid boundary */
 		GradientShader*	gradientOutline;	/**< Shader used to draw a gradient outline */
 		GradientShader*	gradientFill;		/**< Shader used to draw a gradient fill */
+		GradientShader*	gradientBoundary;	/**< Shader used to draw a gradient boundary */
 
 	public slots:
 
