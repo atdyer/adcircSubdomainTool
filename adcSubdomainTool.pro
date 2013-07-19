@@ -24,7 +24,6 @@ SOURCES += main.cpp\
     Layers/Layer.cpp \
     Layers/TerrainLayer.cpp \
     Layers/Quadtree.cpp \
-    Layers/LayerManager.cpp \
     OpenGL/Shaders/GLShader.cpp \
     OpenGL/Shaders/SolidShader.cpp \
     SubdomainTools/CircleTool.cpp \
@@ -46,7 +45,6 @@ HEADERS  += MainWindow.h \
     Layers/Layer.h \
     Layers/TerrainLayer.h \
     Layers/Quadtree.h \
-    Layers/LayerManager.h \
     OpenGL/Shaders/GLShader.h \
     OpenGL/Shaders/SolidShader.h \
     SubdomainTools/CircleTool.h \

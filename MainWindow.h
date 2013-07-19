@@ -44,6 +44,8 @@ class MainWindow : public QMainWindow
 		void on_openFileButton_clicked();
 		void on_newProjectButton_clicked();
 		void on_openProjectButton_clicked();
+		void on_undoButton_clicked();
+		void on_redoButton_clicked();
 
 	private:
 

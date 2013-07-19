@@ -52,7 +52,7 @@ class Domain : public QObject
 		Domain();
 		~Domain();
 
-		// OpenGL Panel Drawing and Interaction Functions
+		// OpenGL Panel Drawing and Selection Interaction Functions
 		void	Draw();
 		void	Zoom(float zoomAmount);
 		void	Pan(float dx, float dy);
@@ -60,6 +60,8 @@ class Domain : public QObject
 		void	SetCircleToolCenter(int x, int y);
 		void	SetCircleToolRadius(int x, int y);
 		void	SetCircleToolFinished();
+		void	Undo();
+		void	Redo();
 
 		// Modification functions used to set the state of the Domain based on GUI interaction
 		void	SetProgressBar(QProgressBar* newBar);
@@ -72,9 +74,7 @@ class Domain : public QObject
 		void	SetTerrainGradientOutline(GradientShaderProperties newProperties);
 		void	SetTerrainGradientFill(GradientShaderProperties newProperties);
 
-
 		// Query functions used to access data used to populate the GUI
-		GLCamera*	GetCamera();
 		std::string	GetFort14Location();
 		std::string	GetFort15Location();
 		std::string	GetFort63Location();
@@ -92,39 +92,40 @@ class Domain : public QObject
 	protected:
 
 		// Camera
-		GLCamera*	camera;
+		GLCamera*	camera;		/**< The camera used for all drawing operations (except the selection layer)*/
 
 		// Layers
-		SelectionLayer*	selectionLayer;
-		TerrainLayer*	terrainLayer;
+		SelectionLayer*	selectionLayer;	/**< The selection layer used for drawing selected nodes/elements */
+		TerrainLayer*	terrainLayer;	/**< The terrain layer */
 
 		// Tools
-		CircleTool*	circleTool;
+		CircleTool*	circleTool;	/**< The circle tool used to select nodes/elements inside of a user-drawn circle */
 
 		// Loading Operations
-		QThread*	layerThread;
-		QProgressBar*	progressBar;
-		Layer*		loadingLayer;
+		QThread*	layerThread;	/**< The thread on which file reading operations will execute */
+		QProgressBar*	progressBar;	/**< The progress bar that will show file reading progress */
+		Layer*		loadingLayer;	/**< Sort of a queue for the next layer that will send data to the GPU */
 
 
 	signals:
 
-		void	mouseX(float);
-		void	mouseY(float);
+		void	mouseX(float);		/**< Emits the mouse x-coordinate in domain space as the mouse is moved */
+		void	mouseY(float);		/**< Emits the mouse y-coordinate in domain space as the mosue is moved */
+		void	undoAvailable(bool);	/**< Emitted when an undo action becomes available or unavailable */
+		void	redoAvailable(bool);	/**< Emitted when a redo action becomes available or unavailable */
 
-		void	numNodesDomain(int);
-		void	numElementsDomain(int);
-		void	numNodesSelected(int);
-		void	numElementsSelected(int);
+		void	numNodesDomain(int);		/**< Emitted when the number of nodes in the domain changes */
+		void	numElementsDomain(int);		/**< Emitted when the number of elements in the domain changes */
+		void	numNodesSelected(int);		/**< Emitted when the number of currently selected nodes changes */
+		void	numElementsSelected(int);	/**< Emitted when the number of currently selected elements changes */
 
-		// Selection Tool Pass-through Signals
-		void	circleToolStatsSet(float, float, float);
-		void	circleToolStatsFinished();
+		/* Selection Tool Pass-through Signals */
+		void	circleToolStatsSet(float, float, float);	/**< Emitted when the circle tool circle changes size */
+		void	circleToolStatsFinished();			/**< Emitted when the circle tool has stopped drawing the circle */
 
-		void	beingDestroyed();
-		void	emitMessage(QString);
-		void	updateGL();
-		void	domainRefreshed();
+		void	beingDestroyed();	/**< Emitted when the destructor is first called */
+		void	emitMessage(QString);	/**< Emitted any time a text message needs to be passed to the GUI */
+		void	updateGL();		/**< Emitted any time the OpenGL context needs to be redrawn */
 
 	public slots:
 

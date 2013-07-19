@@ -38,32 +38,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	// Expand the project tree
 	ui->projectTree->expandAll();
 
-	// Set up communication between the LayerManager and the GLPanel
-//	connect(&layerManager, SIGNAL(cameraChanged()), ui->GLPanel, SLOT(updateCurrentCamera()));
-//	ui->GLPanel->SetLayerManager(&layerManager);
-
-	// Connect all necessary components to the output box
-//	connect(&layerManager, SIGNAL(emitMessage(QString)), this, SLOT(displayOutput(QString)));
-	connect(ui->GLPanel, SIGNAL(emitMessage(QString)), this, SLOT(displayOutput(QString)));
-
-	////// Connect everything needed to update the GL Panel and GL Panel status bar
-//	connect(&layerManager, SIGNAL(updateGL()), ui->GLPanel, SLOT(updateGL()));
-//	connect(&layerManager, SIGNAL(numNodesChanged(int)), this, SLOT(showNumNodes(int)));
-//	connect(&layerManager, SIGNAL(numElementsChanged(int)), this, SLOT(showNumElements(int)));
-//	connect(&layerManager, SIGNAL(numTSChanged(int)), this, SLOT(showNumTS(int)));
-	// Mouse Movement
-//	connect(ui->GLPanel, SIGNAL(mouseX(float)), this, SLOT(showMouseX(float)));
-//	connect(ui->GLPanel, SIGNAL(mouseY(float)), this, SLOT(showMouseY(float)));
-	connect(ui->GLPanel, SIGNAL(circleToolStatsFinished()), glStatusBar, SLOT(clearMessage()));
-	//// Selection Tools
-	connect(ui->GLPanel, SIGNAL(numNodesSelected(int)), this, SLOT(showNumSelectedNodes(int)));
-	connect(ui->GLPanel, SIGNAL(undoAvailable(bool)), ui->undoButton, SLOT(setEnabled(bool)));
-	connect(ui->GLPanel, SIGNAL(redoAvailable(bool)), ui->redoButton, SLOT(setEnabled(bool)));
-	connect(ui->undoButton, SIGNAL(clicked()), ui->GLPanel, SIGNAL(undo()));
-	connect(ui->redoButton, SIGNAL(clicked()), ui->GLPanel, SIGNAL(redo()));
-	// Circle Tool
+	/* Connect selection tool buttons to the OpenGLPanel */
 	connect(ui->selectNodesCircle, SIGNAL(clicked()), ui->GLPanel, SLOT(enterCircleSubdomainMode()));
-	connect(ui->GLPanel, SIGNAL(circleToolStatsSet(float,float,float)), this, SLOT(showCircleStats(float,float,float)));
+
 
 
 }
@@ -196,6 +173,11 @@ void MainWindow::on_openFileButton_clicked()
 	connect(testDomain, SIGNAL(numElementsDomain(int)), this, SLOT(showNumElements(int)));
 	connect(testDomain, SIGNAL(numNodesSelected(int)), this, SLOT(showNumSelectedNodes(int)));
 	connect(testDomain, SIGNAL(circleToolStatsFinished()), glStatusBar, SLOT(clearMessage()));
+	connect(testDomain, SIGNAL(emitMessage(QString)), this, SLOT(displayOutput(QString)));
+
+	/* Hook up undo/redo buttons */
+	connect(testDomain, SIGNAL(undoAvailable(bool)), ui->undoButton, SLOT(setEnabled(bool)));
+	connect(testDomain, SIGNAL(redoAvailable(bool)), ui->redoButton, SLOT(setEnabled(bool)));
 }
 
 
@@ -209,4 +191,16 @@ void MainWindow::on_openProjectButton_clicked()
 {
 //	if (ui->GLPanel)
 //		ui->GLPanel->enterDisplayMode();
+}
+
+void MainWindow::on_undoButton_clicked()
+{
+	if (testDomain)
+		testDomain->Undo();
+}
+
+void MainWindow::on_redoButton_clicked()
+{
+	if (testDomain)
+		testDomain->Redo();
 }
