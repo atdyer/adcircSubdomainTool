@@ -3,6 +3,9 @@
 
 /**
  * @brief Constructor that defines the source code and default color values
+ *
+ * Constructor that defines the source code and default color values
+ *
  */
 SolidShader::SolidShader()
 {
@@ -75,6 +78,9 @@ SolidShaderProperties SolidShader::GetShaderProperties()
 
 /**
  * @brief Compiles the shader parts and assembles them into a usable shader on the OpenGL context
+ *
+ * Compiles the shader parts and assembles them into a usable shader on the OpenGL context
+ *
  */
 void SolidShader::CompileShader()
 {

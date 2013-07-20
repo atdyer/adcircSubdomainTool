@@ -85,6 +85,8 @@ class SelectionLayer : public Layer
 		// Selection Functions used by Actions
 		void	SelectNodes(std::map<unsigned int, Node*> nodes);
 		void	DeselectNodes(std::map<unsigned int, Node*> nodes);
+		void	SelectElements(std::map<unsigned int, Element*> elements);
+		void	DeselectElements(std::map<unsigned int, Element*> elements);
 
 
 

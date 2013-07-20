@@ -1,7 +1,10 @@
 #ifndef ELEMENTACTION_H
 #define ELEMENTACTION_H
 
+#include "adcData.h"
 #include "Action.h"
+#include "Layers/SelectionLayer.h"
+#include <map>
 
 
 /**
@@ -12,9 +15,14 @@ class ElementAction : public Action
 {
 	public:
 		ElementAction();
+		ElementAction(std::map<unsigned int, Element*> cElements);
 
 		virtual void	RedoAction();
 		virtual void	UndoAction();
+
+	protected:
+
+		std::map<unsigned int, Element*>	elements;	/**< The map of all Elements that are used in this Action */
 };
 
 #endif // ELEMENTACTION_H

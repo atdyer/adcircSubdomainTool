@@ -3,6 +3,9 @@
 
 /**
  * @brief Constructor that defines the source code and default color values
+ *
+ * Constructor that defines the source code and default color values
+ *
  */
 CulledSolidShader::CulledSolidShader()
 {
@@ -61,6 +64,9 @@ CulledSolidShader::CulledSolidShader()
 
 /**
  * @brief Compiles the shader parts and assembles them into a usable shader on the OpenGL context
+ *
+ * Compiles the shader parts and assembles them into a usable shader on the OpenGL context
+ *
  */
 void CulledSolidShader::CompileShader()
 {

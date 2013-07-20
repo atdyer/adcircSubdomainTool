@@ -18,10 +18,13 @@ class NodeAction : public Action
 		NodeAction();
 		NodeAction(std::map<unsigned int, Node*> cNodes);
 
-		std::map<unsigned int, Node*>	nodes;	/**< The map of all Nodes that are used in this Action */
-
 		virtual void	RedoAction();
 		virtual void	UndoAction();
+
+	protected:
+
+		std::map<unsigned int, Node*>	nodes;	/**< The map of all Nodes that are used in this Action */
+
 };
 
 #endif // NODEACTION_H
