@@ -81,6 +81,7 @@ class SelectionLayer : public Layer
 		// Helper Functions
 		void	InitializeGL();
 		void	UpdateVertexBuffer();
+		void	UpdateIndexBuffer();
 
 		// Selection Functions used by Actions
 		void	SelectNodes(std::map<unsigned int, Node*> nodes);
@@ -102,6 +103,7 @@ class SelectionLayer : public Layer
 
 		void	SelectNode(Node* node);
 		void	SelectNodes(std::vector<Node*> nodes);
+		void	SelectElements(std::vector<Element*> elements);
 		void	undo();
 		void	redo();
 

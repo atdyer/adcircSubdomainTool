@@ -286,6 +286,64 @@ void SelectionLayer::UpdateVertexBuffer()
 }
 
 
+void SelectionLayer::UpdateIndexBuffer()
+{
+	if (!glLoaded)
+		InitializeGL();
+
+	const size_t IndexBufferSize = 3*sizeof(GLuint)*selectedElements.size();
+	if (IndexBufferSize && VAOId && IBOId)
+	{
+		glBindVertexArray(VAOId);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBOId);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, IndexBufferSize, NULL, GL_STATIC_DRAW);
+		GLuint* glElementData = (GLuint*)glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
+		if (glElementData)
+		{
+			Element* currElement;
+			int i=0;
+			for (std::map<unsigned int, Element*>::iterator it=selectedElements.begin(); it != selectedElements.end(); it++, i++)
+			{
+				currElement = it->second;
+				glElementData[3*i+0] = (GLuint)currElement->n1-1;
+				glElementData[3*i+1] = (GLuint)currElement->n2-1;
+				glElementData[3*i+2] = (GLuint)currElement->n3-1;
+			}
+		} else {
+			glLoaded = false;
+			DEBUG("ERROR: Mapping index buffer for SelectionLayer " << GetID());
+			emit emitMessage("<p style:color='red'><strong>Error: Unable to load index data to GPU (Selection Layer)</strong>");
+			return;
+		}
+
+		if (glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER) == GL_FALSE)
+		{
+			glLoaded = false;
+			DEBUG("ERROR: Unmapping index buffer for SelectionLayer " << GetID());
+			return;
+		}
+	}
+
+	GLenum errorCheck = glGetError();
+	if (errorCheck == GL_NO_ERROR)
+	{
+		if (VAOId && VBOId && IBOId)
+		{
+			DEBUG("Selection Layer Data Loaded");
+			glLoaded = true;
+		} else {
+			DEBUG("Selection Layer Data Not Loaded");
+		}
+	} else {
+		const GLubyte *errString = gluErrorString(errorCheck);
+		DEBUG("SelectionLayer OpenGL Error: " << errString);
+		glLoaded = false;
+	}
+
+	emit refreshed();
+}
+
+
 /**
  * @brief Function used by Action objects to perform selection of a large number of Nodes
  *
@@ -324,6 +382,25 @@ void SelectionLayer::DeselectNodes(std::map<unsigned int, Node *> nodes)
 	}
 	UpdateVertexBuffer();
 	emit numNodesSelected(selectedNodes.size());
+}
+
+
+void SelectionLayer::SelectElements(std::map<unsigned int, Element *> elements)
+{
+	selectedElements.insert(elements.begin(), elements.end());
+	UpdateIndexBuffer();
+	emit numElementsSelected(selectedElements.size());
+}
+
+
+void SelectionLayer::DeselectElements(std::map<unsigned int, Element *> elements)
+{
+	for (std::map<unsigned int, Element*>::iterator it=elements.begin(); it != elements.end(); it++)
+	{
+		selectedElements.erase(it->first);
+	}
+	UpdateIndexBuffer();
+	emit numElementsSelected(selectedElements.size());
 }
 
 
@@ -400,6 +477,75 @@ void SelectionLayer::SelectNodes(std::vector<Node *> nodes)
 
 		emit numNodesSelected(selectedNodes.size());
 		UpdateVertexBuffer();
+	}
+}
+
+
+void SelectionLayer::SelectElements(std::vector<Element *> elements)
+{
+	if (elements.size() > 0)
+	{
+		// First, check for duplicate elements
+		std::vector<Element*> actualSelection;
+		if (selectedElements.size() == 0)
+		{
+			actualSelection = elements;
+		} else {
+			for (unsigned int i=0; i<elements.size(); i++)
+			{
+				if (selectedElements.count(elements[i]->elementNumber) == 0)
+				{
+					actualSelection.push_back(elements[i]);
+				}
+			}
+		}
+
+		if (actualSelection.size() > 0)
+		{
+			// Now that we've got the unique list of elements, let's add them to the selectedElements list
+			std::map<unsigned int, Node*> additionalNodes;
+			std::map<unsigned int, Element*> additionalElements;
+			for (unsigned int i=0; i<actualSelection.size(); i++)
+			{
+				// Add all of the elements, checking for additionally needed nodes along the way
+				selectedElements[actualSelection[i]->elementNumber] = actualSelection[i];
+				additionalElements[actualSelection[i]->elementNumber] = actualSelection[i];
+
+				////////////////////////////////////////////////////////////////
+				////////////////////////////////////////////////////////////////
+				// TODO: Elements only contain node numbers...need to get Node pointers somehow
+				// Possibly require list of elements and nodes when calling this function. Could
+				// be part of implementation that needs to be written into the quadtree anyway.
+				if (selectedNodes.count(actualSelection[i]->n1) == 0)
+					additionalNodes[actualSelection[i]->n1->nodeNumber] = actualSelection[i]->n1;
+				if (selectedNodes.count(actualSelection[i]->n2) == 0)
+					additionalNodes[actualSelection[i]->n2->nodeNumber] = actualSelection[i]->n2;
+				if (selectedNodes.count(actualSelection[i]->n3) == 0)
+					additionalNodes[actualSelection[i]->n3->nodeNumber] = actualSelection[i]->n3;
+				////////////////////////////////////////////////////////////////
+				////////////////////////////////////////////////////////////////
+			}
+
+			// If we found additional Nodes that need to be selected, add them first
+			if (additionalNodes.size() > 0)
+			{
+				NodeAction *newAction = new NodeAction(additionalNodes);
+				newAction->SetSelectionLayer(this);
+				undoStack.push(newAction);
+				emit undoAvailable(true);
+				UpdateVertexBuffer();
+			}
+
+			// Now add the new Elements
+			if (additionalElements.size() > 0)
+			{
+				ElementAction *newAction = new ElementAction(additionalElements);
+				newAction->SetSelectionLayer(this);
+				undoStack.push(newAction);
+				emit undoAvailable(true);
+				UpdateIndexBuffer();
+			}
+		}
 	}
 }
 
