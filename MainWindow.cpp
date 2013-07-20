@@ -158,9 +158,6 @@ void MainWindow::on_minimizeMainTabButton_clicked()
   */
 void MainWindow::on_openFileButton_clicked()
 {
-	// Testing the Layer Manager by adding a terrain layer
-//	layerManager.CreateNewTerrainLayer("/home/tristan/Desktop/adcSwan/sub/fort.14", ui->progressBar);
-//	layerManager.CreateNewTerrainLayer("/home/tristan/Desktop/fort.14", ui->progressBar);
 	testDomain = new Domain();
 	testDomain->SetProgressBar(ui->progressBar);
 	ui->GLPanel->SetActiveDomain(testDomain);

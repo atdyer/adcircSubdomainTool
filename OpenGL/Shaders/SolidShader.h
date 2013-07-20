@@ -55,14 +55,13 @@ class SolidShader : public GLShader
 		// Source code
 		std::string	vertexSource;
 		std::string	fragSource;
-		std::string	geoSource;
 
 		// Shader Properties
 		SolidShaderProperties	properties;
 
 		// Override virtual functions
-		void	CompileShader();
-		void	UpdateUniforms();
+		virtual void	CompileShader();
+		virtual void	UpdateUniforms();
 };
 
 #endif // SOLIDSHADER_H

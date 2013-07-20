@@ -28,6 +28,7 @@ TerrainLayer::TerrainLayer()
 
 	quadtree = 0;
 
+	useCulledShaders = false;
 	solidOutline = 0;
 	solidFill = 0;
 	solidBoundary = 0;
@@ -94,14 +95,14 @@ void TerrainLayer::Draw()
 				glDrawElements(GL_TRIANGLES, numElements*3, GL_UNSIGNED_INT, (GLvoid*)0);
 		}
 
-//		if (boundaryShader)
-//		{
-//			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-//			glLineWidth(3.0);
-//			if (boundaryShader->Use())
-//				glDrawElements(GL_LINE_STRIP, boundaryNodes.size(), GL_UNSIGNED_INT, (GLvoid*)(0 + sizeof(GLuint)*numElements*3));
-//			glLineWidth(1.0);
-//		}
+		if (boundaryShader)
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			glLineWidth(3.0);
+			if (boundaryShader->Use())
+				glDrawElements(GL_LINE_STRIP, boundaryNodes.size(), GL_UNSIGNED_INT, (GLvoid*)(0 + sizeof(GLuint)*numElements*3));
+			glLineWidth(1.0);
+		}
 
 		glBindVertexArray(0);
 		glUseProgram(0);
@@ -122,6 +123,12 @@ void TerrainLayer::LoadDataToGPU()
 {
 	if (fileLoaded)
 	{
+
+		/* First check if we should be using culled shaders */
+		if (numElements > 1000000)
+			SwitchToCulledShaders();
+
+		/* Send the data to the GPU */
 		const size_t VertexBufferSize = 4*sizeof(GLfloat)*numNodes;
 		const size_t IndexBufferSize = 3*sizeof(GLuint)*numElements + sizeof(GLuint)*boundaryNodes.size();
 
@@ -582,8 +589,10 @@ void TerrainLayer::SetFort14Location(std::string newLocation)
 /**
  * @brief Sets the solid color used for drawing this Layer's outline
  *
- * Sets the solid color used for drawing this Layer's outline. The shader
- * is owned by the TerrainLayer.
+ * Sets the solid color used for drawing this Layer's outline. If the
+ * terrain has over 1,000,000 elements, we choose to use a culled
+ * solid shader to increase responsiveness. The shader is owned by
+ * the TerrainLayer.
  *
  * @param newProperties The new shader properties
  */
@@ -591,9 +600,13 @@ void TerrainLayer::SetSolidOutline(SolidShaderProperties newProperties)
 {
 	if (!solidOutline)
 	{
-		solidOutline = new SolidShader();
+		if (useCulledShaders)
+			solidOutline = new CulledSolidShader();
+		else
+			solidOutline = new SolidShader();
 		solidOutline->SetCamera(camera);
 	}
+
 	solidOutline->SetColor(	newProperties.color[0],
 				newProperties.color[1],
 				newProperties.color[2],
@@ -613,9 +626,14 @@ void TerrainLayer::SetSolidOutline(SolidShaderProperties newProperties)
 void TerrainLayer::SetSolidFill(SolidShaderProperties newProperties)
 {
 	if (!solidFill)
-		solidFill = new SolidShader();
+	{
+		if (useCulledShaders)
+			solidFill = new CulledSolidShader();
+		else
+			solidFill = new SolidShader();
+		solidFill->SetCamera(camera);
+	}
 
-	solidFill->SetCamera(camera);
 	solidFill->SetColor(	newProperties.color[0],
 				newProperties.color[1],
 				newProperties.color[2],
@@ -736,6 +754,40 @@ void TerrainLayer::SetGradientBoundary(GradientShaderProperties newProperties)
 	gradientBoundary->SetHighValue(newProperties.heightRange[1]);
 
 	boundaryShader = gradientBoundary;
+}
+
+
+/**
+ * @brief Function used internally to make the switch over to culled shaders in the
+ * event that the number of elements exceeds a certain limit.
+ *
+ * Function used internally to make the switch over to culled shaders in the
+ * event that the number of elements exceeds a certain limit. It will only
+ * replace shaders that have already been created with their culled equivalents.
+ *
+ */
+void TerrainLayer::SwitchToCulledShaders()
+{
+	useCulledShaders = true;
+
+	if (solidOutline)
+	{
+		SolidShaderProperties currentProperties = solidOutline->GetShaderProperties();
+		delete solidOutline;
+		solidOutline = 0;
+		SetSolidOutline(currentProperties);
+	}
+
+	if (solidFill)
+	{
+		SolidShaderProperties currentProperties = solidFill->GetShaderProperties();
+		delete solidFill;
+		solidFill = 0;
+		SetSolidFill(currentProperties);
+	}
+
+	DEBUG("Terrain Layer: Switched to culled shaders");
+
 }
 
 

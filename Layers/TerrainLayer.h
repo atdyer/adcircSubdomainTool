@@ -4,6 +4,9 @@
 #include "Quadtree.h"
 #include "Layer.h"
 #include "OpenGL/Shaders/GLShader.h"
+#include "OpenGL/Shaders/SolidShader.h"
+#include "OpenGL/Shaders/GradientShader.h"
+#include "OpenGL/Shaders/CulledSolidShader.h"
 
 #include <string>
 #include <vector>
@@ -111,12 +114,15 @@ class TerrainLayer : public Layer
 
 	private:
 
+		bool		useCulledShaders;	/**< Flag that tells us if we need to use culled shaders */
 		SolidShader*	solidOutline;		/**< Shader used to draw a solid outline */
 		SolidShader*	solidFill;		/**< Shader used to draw a solid fill */
 		SolidShader*	solidBoundary;		/**< Shader used to draw a solid boundary */
 		GradientShader*	gradientOutline;	/**< Shader used to draw a gradient outline */
 		GradientShader*	gradientFill;		/**< Shader used to draw a gradient fill */
 		GradientShader*	gradientBoundary;	/**< Shader used to draw a gradient boundary */
+
+		void		SwitchToCulledShaders();
 
 	public slots:
 
