@@ -61,6 +61,7 @@ class SelectionLayer : public Layer
 		// Selected Nodes and Elements
 		std::map<unsigned int, Node*>		selectedNodes;		/**< The map of all selected Nodes - <Node #, Pointer to Node> */
 		std::map<unsigned int, Element*>	selectedElements;	/**< The map of all selected Elements - <Element #, Pointer to Element> */
+		std::map<unsigned int, unsigned int>	indexingMap;		/**< The map used for getting Node indexing within the selection - <Node #, Index of Node in Selected List> */
 
 		// Undo and Redo stacks
 		std::stack<Action*, std::vector<Action*> >	undoStack;	/**< The stack of all undo actions */
@@ -82,6 +83,7 @@ class SelectionLayer : public Layer
 		void	InitializeGL();
 		void	UpdateVertexBuffer();
 		void	UpdateIndexBuffer();
+		void	UpdateConnectivity();
 
 		// Selection Functions used by Actions
 		void	SelectNodes(std::map<unsigned int, Node*> nodes);

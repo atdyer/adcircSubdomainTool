@@ -305,9 +305,13 @@ void SelectionLayer::UpdateIndexBuffer()
 			for (std::map<unsigned int, Element*>::iterator it=selectedElements.begin(); it != selectedElements.end(); it++, i++)
 			{
 				currElement = it->second;
-				glElementData[3*i+0] = (GLuint)currElement->n1->nodeNumber-1;
-				glElementData[3*i+1] = (GLuint)currElement->n2->nodeNumber-1;
-				glElementData[3*i+2] = (GLuint)currElement->n3->nodeNumber-1;
+				glElementData[3*i+0] = (GLuint)indexingMap[currElement->n1->nodeNumber];
+				glElementData[3*i+1] = (GLuint)indexingMap[currElement->n2->nodeNumber];
+				glElementData[3*i+2] = (GLuint)indexingMap[currElement->n3->nodeNumber];
+//				DEBUG(indexingMap[currElement->n1->nodeNumber] << " " << indexingMap[currElement->n2->nodeNumber] << " " << indexingMap[currElement->n3->nodeNumber]);
+//				glElementData[3*i+0] = (GLuint)currElement->n1->nodeNumber-1;
+//				glElementData[3*i+1] = (GLuint)currElement->n2->nodeNumber-1;
+//				glElementData[3*i+2] = (GLuint)currElement->n3->nodeNumber-1;
 			}
 		} else {
 			glLoaded = false;
@@ -341,6 +345,20 @@ void SelectionLayer::UpdateIndexBuffer()
 	}
 
 	emit refreshed();
+}
+
+
+void SelectionLayer::UpdateConnectivity()
+{
+	indexingMap.clear();
+
+	Node* currNode;
+	int i=0;
+	for (std::map<unsigned int, Node*>::iterator it=selectedNodes.begin(); it != selectedNodes.end(); it++, i++)
+	{
+		currNode = it->second;
+		indexingMap[currNode->nodeNumber] = i;
+	}
 }
 
 
@@ -524,6 +542,7 @@ void SelectionLayer::SelectElements(std::vector<Element *> elements)
 			{
 				NodeAction *newAction = new NodeAction(additionalNodes);
 				newAction->SetSelectionLayer(this);
+				newAction->RedoAction();
 				undoStack.push(newAction);
 				emit undoAvailable(true);
 				UpdateVertexBuffer();
@@ -534,8 +553,10 @@ void SelectionLayer::SelectElements(std::vector<Element *> elements)
 			{
 				ElementAction *newAction = new ElementAction(additionalElements);
 				newAction->SetSelectionLayer(this);
+				newAction->RedoAction();
 				undoStack.push(newAction);
 				emit undoAvailable(true);
+				UpdateConnectivity();
 				UpdateIndexBuffer();
 			}
 		}
