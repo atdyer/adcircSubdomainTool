@@ -5,6 +5,10 @@
 #include <vector>
 #include <math.h>
 
+
+/**
+ * @brief Defines a leaf used for grouping Nodes in the Quadtree data structure
+ */
 struct leaf
 {
 		float			bounds[4];	/**< Defines the x-y boundaries of the rectangular leaf */
@@ -12,10 +16,13 @@ struct leaf
 };
 
 
+/**
+ * @brief Defines a branch used for grouping Nodes in the Quadtree data structure
+ */
 typedef struct branch {
 		float		bounds[4];	/**< Defines the x-y boundaries of the rectangular branch */
-		leaf		*leaves[4];	/**< A holder for the four possible leaves in the branch */
-		struct branch	*branches[4];	/**< A holder for the four possible branches in the branch */
+		leaf		*leaves[4];	/**< A placeholder for the four possible leaves in the branch */
+		struct branch	*branches[4];	/**< A placeholder for the four possible branches in the branch */
 } branch;
 
 

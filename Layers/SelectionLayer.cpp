@@ -305,9 +305,9 @@ void SelectionLayer::UpdateIndexBuffer()
 			for (std::map<unsigned int, Element*>::iterator it=selectedElements.begin(); it != selectedElements.end(); it++, i++)
 			{
 				currElement = it->second;
-				glElementData[3*i+0] = (GLuint)currElement->n1-1;
-				glElementData[3*i+1] = (GLuint)currElement->n2-1;
-				glElementData[3*i+2] = (GLuint)currElement->n3-1;
+				glElementData[3*i+0] = (GLuint)currElement->n1->nodeNumber-1;
+				glElementData[3*i+1] = (GLuint)currElement->n2->nodeNumber-1;
+				glElementData[3*i+2] = (GLuint)currElement->n3->nodeNumber-1;
 			}
 		} else {
 			glLoaded = false;
@@ -511,19 +511,12 @@ void SelectionLayer::SelectElements(std::vector<Element *> elements)
 				selectedElements[actualSelection[i]->elementNumber] = actualSelection[i];
 				additionalElements[actualSelection[i]->elementNumber] = actualSelection[i];
 
-				////////////////////////////////////////////////////////////////
-				////////////////////////////////////////////////////////////////
-				// TODO: Elements only contain node numbers...need to get Node pointers somehow
-				// Possibly require list of elements and nodes when calling this function. Could
-				// be part of implementation that needs to be written into the quadtree anyway.
-				if (selectedNodes.count(actualSelection[i]->n1) == 0)
+				if (selectedNodes.count(actualSelection[i]->n1->nodeNumber) == 0)
 					additionalNodes[actualSelection[i]->n1->nodeNumber] = actualSelection[i]->n1;
-				if (selectedNodes.count(actualSelection[i]->n2) == 0)
+				if (selectedNodes.count(actualSelection[i]->n2->nodeNumber) == 0)
 					additionalNodes[actualSelection[i]->n2->nodeNumber] = actualSelection[i]->n2;
-				if (selectedNodes.count(actualSelection[i]->n3) == 0)
+				if (selectedNodes.count(actualSelection[i]->n3->nodeNumber) == 0)
 					additionalNodes[actualSelection[i]->n3->nodeNumber] = actualSelection[i]->n3;
-				////////////////////////////////////////////////////////////////
-				////////////////////////////////////////////////////////////////
 			}
 
 			// If we found additional Nodes that need to be selected, add them first

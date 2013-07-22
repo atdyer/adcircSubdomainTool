@@ -8,8 +8,7 @@ OpenGLPanel::OpenGLPanel(QWidget *parent) :
 	setFocusPolicy(Qt::ClickFocus);
 	setMouseTracking(true);
 
-//	layerManager = 0;
-//	currentCam = 0;
+	activeDomain = 0;
 
 	viewportWidth = 0.0;
 	viewportHeight = 0.0;

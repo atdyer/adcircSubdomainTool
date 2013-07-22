@@ -9,6 +9,8 @@ CircleTool::CircleTool()
 	terrain = 0;
 	camera = 0;
 
+	selectionMode = nodeSelection;
+
 	xPixel = 0.0;
 	xNormal = 0.0;
 	xDomain = 0.0;
@@ -180,6 +182,20 @@ void CircleTool::SetRadiusPoint(int newX, int newY)
 
 
 /**
+ * @brief Sets the selection mode currently being used by the circle tool
+ *
+ * Sets the selection mode currently being used by the circle tool. The mode
+ * determines what is selected when the user draws a circle using the tool.
+ *
+ * @param newMode The new mode
+ */
+void CircleTool::SetSelectionMode(SelectionType newMode)
+{
+	selectionMode = newMode;
+}
+
+
+/**
  * @brief Tells the circle tool that the user has finished drawing the circle
  *
  * Tells the circle tool that the user has finished drawing the circle and that
@@ -197,8 +213,18 @@ void CircleTool::CircleFinished()
 	if (terrain)
 	{
 		std::vector<Node*> nodes = terrain->GetNodesFromCircle(xNormal, yNormal, radNormal);
-		emit NodesSelected(nodes);
-//		DEBUG("Number of nodes found: " << nodes.size());
+		if (selectionMode == nodeSelection)
+		{
+			emit NodesSelected(nodes);
+		}
+		else if (selectionMode == elementSelection)
+		{
+//			std::map<unsigned int, Node*> nodeMap;
+//			for (unsigned int i=0; i<nodes.size(); i++)
+//			{
+//				nodeMap[nodes[i]->nodeNumber] = nodes[i];
+//			}
+		}
 	}
 
 	xPixel = 0.0;

@@ -8,6 +8,14 @@
 #include "OpenGL/GLCamera.h"
 #include "Layers/TerrainLayer.h"
 
+
+/**
+ * @brief The SelectionType enum contains the available selection states for the CircleTool. The
+ * state defines what is selected when the user draws a circle.
+ */
+enum SelectionType {nodeSelection, elementSelection};
+
+
 /**
  * @brief This class provides functionality for selecting Nodes and Elements by
  * drawing a circle over the desired area of the current TerrainLayer
@@ -29,6 +37,9 @@ class CircleTool : public QObject
 
 		TerrainLayer*	terrain;	/**< The TerrainLayer that nodes/elements will be selected from */
 		GLCamera*	camera;		/**< The GLCamera that is being used to draw the TerrainLayer */
+
+		// Selection Mode
+		SelectionType	selectionMode;	/**< The current selection mode of the circle tool */
 
 		// Circle attributes
 		float	xPixel;		/**< The x-coordinate of the circle center, in pixels */
@@ -72,6 +83,7 @@ class CircleTool : public QObject
 	public slots:
 
 		void	SetTerrainLayer(TerrainLayer *layer);
+		void	SetSelectionMode(SelectionType newMode);
 		void	CircleFinished();
 };
 

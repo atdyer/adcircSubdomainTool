@@ -174,9 +174,9 @@ void TerrainLayer::LoadDataToGPU()
 		{
 			for (unsigned int i=0; i<numElements; i++)
 			{
-				glElementData[3*i+0] = (GLuint)elements[i].n1-1;
-				glElementData[3*i+1] = (GLuint)elements[i].n2-1;
-				glElementData[3*i+2] = (GLuint)elements[i].n3-1;
+				glElementData[3*i+0] = (GLuint)elements[i].n1->nodeNumber-1;
+				glElementData[3*i+1] = (GLuint)elements[i].n2->nodeNumber-1;
+				glElementData[3*i+2] = (GLuint)elements[i].n3->nodeNumber-1;
 			}
 
 			for (unsigned int i=0; i<boundaryNodes.size(); i++)
@@ -861,14 +861,17 @@ void TerrainLayer::readFort14()
 			/* Read all of the element data */
 
 			Element currElement;
-			int trash;
+			int trash, currNodeNumber;
 			for (unsigned int i=0; i<numElements; i++)
 			{
 				fort14 >> currElement.elementNumber;
 				fort14 >> trash;
-				fort14 >> currElement.n1;
-				fort14 >> currElement.n2;
-				fort14 >> currElement.n3;
+				fort14 >> currNodeNumber;
+				currElement.n1 = GetNode(currNodeNumber);
+				fort14 >> currNodeNumber;
+				currElement.n2 = GetNode(currNodeNumber);
+				fort14 >> currNodeNumber;
+				currElement.n3 = GetNode(currNodeNumber);
 				elements.push_back(currElement);
 				emit progress(100*(++progressPoint)/progressPoints);
 			}

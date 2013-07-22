@@ -63,9 +63,9 @@ struct Node
 struct Element
 {
 		unsigned int elementNumber;	/**< The element number as defined in fort.14 file */
-		unsigned int n1;	/**< nodeNumber of the first Node specified in the fort.14 file */
-		unsigned int n2;	/**< nodeNumber of the second Node specified in the fort.14 file */
-		unsigned int n3;	/**< nodeNumber of the third Node specified in the fort.14 file */
+		Node*	n1;	/**< Pointer to the first Node that makes up the Element */
+		Node*	n2;	/**< Pointer to the second Node that makes up the Element */
+		Node*	n3;	/**< Pointer to the third Node that makes up the Element */
 };
 
 
