@@ -83,7 +83,7 @@ class SelectionLayer : public Layer
 		void	InitializeGL();
 		void	UpdateVertexBuffer();
 		void	UpdateIndexBuffer();
-		void	UpdateConnectivity();
+		void	UpdateNodeIndexing();
 
 		// Selection Functions used by Actions
 		void	SelectNodes(std::map<unsigned int, Node*> nodes);

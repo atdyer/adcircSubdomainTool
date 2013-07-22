@@ -348,7 +348,7 @@ void SelectionLayer::UpdateIndexBuffer()
 }
 
 
-void SelectionLayer::UpdateConnectivity()
+void SelectionLayer::UpdateNodeIndexing()
 {
 	indexingMap.clear();
 
@@ -359,6 +359,7 @@ void SelectionLayer::UpdateConnectivity()
 		currNode = it->second;
 		indexingMap[currNode->nodeNumber] = i;
 	}
+	UpdateIndexBuffer();
 }
 
 
@@ -377,6 +378,7 @@ void SelectionLayer::SelectNodes(std::map<unsigned int, Node *> nodes)
 {
 	selectedNodes.insert(nodes.begin(), nodes.end());
 	UpdateVertexBuffer();
+	UpdateNodeIndexing();
 	emit numNodesSelected(selectedNodes.size());
 }
 
@@ -399,6 +401,7 @@ void SelectionLayer::DeselectNodes(std::map<unsigned int, Node *> nodes)
 		selectedNodes.erase(it->first);
 	}
 	UpdateVertexBuffer();
+	UpdateNodeIndexing();
 	emit numNodesSelected(selectedNodes.size());
 }
 
@@ -556,7 +559,6 @@ void SelectionLayer::SelectElements(std::vector<Element *> elements)
 				newAction->RedoAction();
 				undoStack.push(newAction);
 				emit undoAvailable(true);
-				UpdateConnectivity();
 				UpdateIndexBuffer();
 			}
 		}

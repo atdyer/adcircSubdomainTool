@@ -115,6 +115,12 @@ void MainWindow::showNumSelectedNodes(int numNodes){
 }
 
 
+void MainWindow::showNumSelectedElements(int numElements)
+{
+	ui->subElementsCount->setText(QString::number(numElements));
+}
+
+
 void MainWindow::showCircleStats(float x, float y, float rad)
 {
 	if (glStatusBar)
@@ -170,6 +176,7 @@ void MainWindow::on_openFileButton_clicked()
 	connect(testDomain, SIGNAL(numNodesDomain(int)), this, SLOT(showNumNodes(int)));
 	connect(testDomain, SIGNAL(numElementsDomain(int)), this, SLOT(showNumElements(int)));
 	connect(testDomain, SIGNAL(numNodesSelected(int)), this, SLOT(showNumSelectedNodes(int)));
+	connect(testDomain, SIGNAL(numElementsSelected(int)), this, SLOT(showNumSelectedElements(int)));
 	connect(testDomain, SIGNAL(circleToolStatsFinished()), glStatusBar, SLOT(clearMessage()));
 	connect(testDomain, SIGNAL(emitMessage(QString)), this, SLOT(displayOutput(QString)));
 

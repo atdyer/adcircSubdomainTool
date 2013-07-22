@@ -346,8 +346,8 @@ void Quadtree::AddPartialElements(float x, float y, float radius, std::vector<le
 		leaf *currLeaf = (*partial)[i];
 		for (unsigned int j=0; j<currLeaf->elements.size(); j++)
 		{
-			if (pointIsInsideCircle(currLeaf->elements[j]->n1->normX, currLeaf->elements[j]->n1->normY, x, y, radius) &&
-			    pointIsInsideCircle(currLeaf->elements[j]->n2->normX, currLeaf->elements[j]->n2->normY, x, y, radius) &&
+			if (pointIsInsideCircle(currLeaf->elements[j]->n1->normX, currLeaf->elements[j]->n1->normY, x, y, radius) ||
+			    pointIsInsideCircle(currLeaf->elements[j]->n2->normX, currLeaf->elements[j]->n2->normY, x, y, radius) ||
 			    pointIsInsideCircle(currLeaf->elements[j]->n3->normX, currLeaf->elements[j]->n3->normY, x, y, radius))
 				elements->push_back(currLeaf->elements[j]);
 
