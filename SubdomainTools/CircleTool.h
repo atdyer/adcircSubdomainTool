@@ -79,6 +79,7 @@ class CircleTool : public QObject
 		void	CircleStatsFinished();
 		void	NodeSelected(Node*);
 		void	NodesSelected(std::vector<Node*>);
+		void	ElementsSelected(std::vector<Element*>);
 
 	public slots:
 

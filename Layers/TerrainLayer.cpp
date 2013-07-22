@@ -338,6 +338,18 @@ Element* TerrainLayer::GetElement(float x, float y)
 }
 
 
+std::vector<Element*> TerrainLayer::GetElementsFromCircle(float x, float y, float radius)
+{
+	if (quadtree)
+		return quadtree->FindElementsInCircle(x, y, radius);
+	else
+	{
+		std::vector<Element*> fail;
+		return fail;
+	}
+}
+
+
 /**
  * @brief Get the number of nodes
  * @return The number of nodes
@@ -916,7 +928,7 @@ void TerrainLayer::readFort14()
 			// Organize the data in a quadtree
 			if (!quadtree)
 			{
-				quadtree = new Quadtree(nodes, 50, (minX-midX)/max, (maxX-midX)/max, (minY-midY)/max, (maxY-midY)/max);
+				quadtree = new Quadtree(nodes, elements, 50, (minX-midX)/max, (maxX-midX)/max, (minY-midY)/max, (maxY-midY)/max);
 			}
 
 

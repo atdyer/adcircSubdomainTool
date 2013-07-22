@@ -1,7 +1,7 @@
 #include "Quadtree.h"
 
 /**
- * @brief This constructor builds the Quadtree data structure
+ * @brief This constructor builds the Quadtree data structure from a list of Nodes
  * @param nodes A list of Node objects to be included in the Quadtree
  * @param size The maximum number of Node objects allowed in each leaf
  * @param minX The lower bound x-value
@@ -20,6 +20,42 @@ Quadtree::Quadtree(std::vector<Node> nodes, int size, float minX, float maxX, fl
 	if (binSize > 0)
 		for (unsigned int i=0; i<nodeList.size(); i++)
 			addNode(&nodeList[i], root);
+
+	hasElements = false;
+}
+
+
+/**
+ * @brief This constructor builds the Quadtree data structure from a list of Nodes and
+ * a list Elements
+ * @param nodes
+ * @param elements
+ * @param size
+ * @param minX
+ * @param maxX
+ * @param minY
+ * @param maxY
+ */
+Quadtree::Quadtree(std::vector<Node> nodes, std::vector<Element> elements, int size, float minX, float maxX, float minY, float maxY)
+{
+	nodeList = nodes;
+	elementList = elements;
+	binSize = size;
+
+	// Create the root branch
+	root = newBranch(minX, maxX, minY, maxY);
+
+	if (binSize > 0)
+	{
+		for (unsigned int i=0; i<nodeList.size(); i++)
+			addNode(&nodeList[i], root);
+
+		for (unsigned int i=0; i<elementList.size(); i++)
+			addElement(&elementList[i], root);
+	}
+
+	hasElements = true;
+
 }
 
 
@@ -85,6 +121,38 @@ std::vector<Node*> Quadtree::FindNodesInCircle(float x, float y, float radius)
 	AddPartialNodes(x, y, radius, &partialLeaves, &circleNodes);
 
 	return circleNodes;
+}
+
+
+std::vector<Element*> Quadtree::FindElementsInCircle(float x, float y, float radius)
+{
+	// Make three lists:
+	// - List of Elements that fall inside of the circle
+	// - List of leaves that fall completely inside of the circle
+	// - List of leaves that fall partially inside of the circle
+	//
+	// Add all Elements that are in the leaves completely inside the circle list
+	// to the list of Elements
+	//
+	// Search the list of leaves that fall partially inside of the circle
+	// for Elements that fall inside of the circle and add them to the list of
+	// Elements
+	//
+	// Return the list of Elements
+
+	std::vector<Element*> circleElements;
+
+	if (!hasElements)
+		return circleElements;
+
+	std::vector<leaf*> fullLeaves;
+	std::vector<leaf*> partialLeaves;
+
+	FindLeavesInCircle(x, y, radius, root, &fullLeaves, &partialLeaves);
+	AddFullElements(&fullLeaves, &circleElements);
+	AddPartialElements(x, y, radius, &partialLeaves, &circleElements);
+
+	return circleElements;
 }
 
 
@@ -249,11 +317,40 @@ void Quadtree::AddPartialNodes(float x, float y, float radius, std::vector<leaf 
 		leaf *currLeaf = (*partial)[i];
 		for (unsigned int j=0; j<currLeaf->nodes.size(); j++)
 		{
-			// Need to choose whether to use normalized or regular coordinates
 			if (pointIsInsideCircle(currLeaf->nodes[j]->normX, currLeaf->nodes[j]->normY, x, y, radius))
 			{
 				nodes->push_back(currLeaf->nodes[j]);
 			}
+		}
+	}
+}
+
+
+void Quadtree::AddFullElements(std::vector<leaf *> *full, std::vector<Element *> *elements)
+{
+	for (unsigned int i=0; i<full->size(); i++)
+	{
+		leaf *currLeaf = (*full)[i];
+		for (unsigned int j=0; j<currLeaf->elements.size(); j++)
+		{
+			elements->push_back(currLeaf->elements[j]);
+		}
+	}
+}
+
+
+void Quadtree::AddPartialElements(float x, float y, float radius, std::vector<leaf *> *partial, std::vector<Element *> *elements)
+{
+	for (unsigned int i=0; i<partial->size(); i++)
+	{
+		leaf *currLeaf = (*partial)[i];
+		for (unsigned int j=0; j<currLeaf->elements.size(); j++)
+		{
+			if (pointIsInsideCircle(currLeaf->elements[j]->n1->normX, currLeaf->elements[j]->n1->normY, x, y, radius) &&
+			    pointIsInsideCircle(currLeaf->elements[j]->n2->normX, currLeaf->elements[j]->n2->normY, x, y, radius) &&
+			    pointIsInsideCircle(currLeaf->elements[j]->n3->normX, currLeaf->elements[j]->n3->normY, x, y, radius))
+				elements->push_back(currLeaf->elements[j]);
+
 		}
 	}
 }
@@ -437,6 +534,36 @@ void Quadtree::addNode(Node *currNode, branch *currBranch)
 
 	// This node doesn't fit anywhere, let the user know
 	DEBUG("Error adding Node to Quadtree, node picking will not work for node number " << currNode->nodeNumber);
+}
+
+
+void Quadtree::addElement(Element *currElement, branch *currBranch)
+{
+	// See if any of the Nodes fall into any of the branches
+	for (int i=0; i<4; i++)
+	{
+		if (currBranch->branches[i] != 0)
+		{
+			if (nodeIsInside(currElement->n1, currBranch->branches[i]))
+				addElement(currElement, currBranch->branches[i]);
+			else if (nodeIsInside(currElement->n2, currBranch->branches[i]))
+				addElement(currElement, currBranch->branches[i]);
+			else if (nodeIsInside(currElement->n3, currBranch->branches[i]))
+				addElement(currElement, currBranch->branches[i]);
+		}
+	}
+
+	// See if any of the Nodes fall into any of the leaves
+	for (int i=0; i<4; i++)
+	{
+		if (currBranch->leaves[i] != 0)
+		{
+			if (nodeIsInside(currElement->n1, currBranch->leaves[i]) || nodeIsInside(currElement->n2, currBranch->leaves[i]) || nodeIsInside(currElement->n3, currBranch->leaves[i]))
+			{
+				currBranch->leaves[i]->elements.push_back(currElement);
+			}
+		}
+	}
 }
 
 

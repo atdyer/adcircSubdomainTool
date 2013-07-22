@@ -38,6 +38,7 @@ Domain::Domain()
 
 	/* Connect all selection tools to the selection layer */
 	connect(circleTool, SIGNAL(NodesSelected(std::vector<Node*>)), selectionLayer, SLOT(SelectNodes(std::vector<Node*>)));
+	connect(circleTool, SIGNAL(ElementsSelected(std::vector<Element*>)), selectionLayer, SLOT(SelectElements(std::vector<Element*>)));
 	connect(circleTool, SIGNAL(NodeSelected(Node*)), selectionLayer, SLOT(SelectNode(Node*)));
 
 	/* Pass signals up from the selection layer */

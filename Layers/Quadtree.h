@@ -7,12 +7,13 @@
 
 
 /**
- * @brief Defines a leaf used for grouping Nodes in the Quadtree data structure
+ * @brief Defines a leaf used for grouping Nodes and Elements in the Quadtree data structure
  */
 struct leaf
 {
 		float			bounds[4];	/**< Defines the x-y boundaries of the rectangular leaf */
 		std::vector<Node*>	nodes;		/**< A list of pointers to the Nodes in the leaf */
+		std::vector<Element*>	elements;	/**< A list of pointers to the Elements in the leaf */
 };
 
 
@@ -58,29 +59,37 @@ class Quadtree
 
 		// Constructor/Destructor
 		Quadtree(std::vector<Node> nodes, int size, float minX, float maxX, float minY, float maxY);
+		Quadtree(std::vector<Node> nodes, std::vector<Element> elements, int size, float minX, float maxX, float minY, float maxY);
 		~Quadtree();
 
 		// Public Functions
 		Node*			FindNode(float x, float y);
 		std::vector<Node*>	FindNodesInCircle(float x, float y, float radius);
+		std::vector<Element*>	FindElementsInCircle(float x, float y, float radius);
 
 	protected:
 
 		// Data Variables
 		int			binSize;	/**< The maximum number of Nodes allowed in a leaf */
 		std::vector<Node>	nodeList;	/**< The list of all Nodes in the domain */
+		std::vector<Element>	elementList;	/**< The list of all Elements in the domain */
 		std::vector<branch*>	branchList;	/**< The list of all branches in the Quadtree */
 		std::vector<leaf*>	leafList;	/**< The list of all leaves in the Quadtree */
 		branch*			root;		/**< A pointer to the top of the Quadtree */
+		bool			hasElements;	/**< Flag that shows if the Quadtree contains Element data */
 
 		////// Recursive searching functions
 		Node*	FindNode(float x, float y, branch *currBranch);
-
-		// Finding Nodes within a circle
 		void	FindLeavesInCircle(float x, float y, float radius, branch *currBranch, std::vector<leaf*>* full, std::vector<leaf*>* partial);
 		void	AddAllLeaves(branch *currBranch, std::vector<leaf*>* full);
+
+		// Finding Nodes within a circle
 		void	AddFullNodes(std::vector<leaf*>* full, std::vector<Node*>* nodes);
 		void	AddPartialNodes(float x, float y, float radius, std::vector<leaf*>* partial, std::vector<Node*>* nodes);
+
+		// Finding Elements within a circle
+		void	AddFullElements(std::vector<leaf*>* full, std::vector<Element*>* elements);
+		void	AddPartialElements(float x, float y, float radius, std::vector<leaf*>* partial, std::vector<Element*>* elements);
 
 		////// Building functions
 		leaf*	newLeaf(float l, float r, float b, float t);
@@ -88,6 +97,7 @@ class Quadtree
 		branch*	leafToBranch(leaf *currLeaf);
 		branch*	addNode(Node *currNode, leaf *currLeaf);
 		void	addNode(Node *currNode, branch *currBranch);
+		void	addElement(Element *currElement, branch *currBranch);
 		bool	nodeIsInside(Node *currNode, leaf *currLeaf);
 		bool	nodeIsInside(Node *currNode, branch *currBranch);
 

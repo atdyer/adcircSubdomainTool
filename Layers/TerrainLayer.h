@@ -43,6 +43,7 @@ class TerrainLayer : public Layer
 		std::vector<Node*>	GetNodesFromCircle(float x, float y, float radius);
 		Element*		GetElement(unsigned int elementNumber);
 		Element*		GetElement(float x, float y);
+		std::vector<Element*>	GetElementsFromCircle(float x, float y, float radius);
 		unsigned int		GetNumNodes();
 		unsigned int		GetNumElements();
 		float			GetMinX();
