@@ -13,6 +13,14 @@ CreationSelectionLayer::CreationSelectionLayer()
 }
 
 
+/**
+ * @brief Deconstructor that cleans up data on the GPU and any allocated data
+ *
+ * Cleans up any data that has been created by this class. Marks data for
+ * deletion on the GPU. Note that we are not responsible for cleaning up
+ * the VBO.
+ *
+ */
 CreationSelectionLayer::~CreationSelectionLayer()
 {
 	if (outlineShader)
@@ -21,15 +29,59 @@ CreationSelectionLayer::~CreationSelectionLayer()
 		delete fillShader;
 	if (boundaryShader)
 		delete boundaryShader;
+
+	// Clean up the OpenGL stuff
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	/* Note that we aren't responsible for cleaning up the VBO */
+
+	if (VAOId)
+		glDeleteBuffers(1, &VAOId);
+	if (IBOId)
+		glDeleteBuffers(1, &IBOId);
 }
 
 
+/**
+ * @brief Draws the selected Elements
+ *
+ * Draws the currently selected Elements (fill and then outline), as well as boundary
+ * segments if they are defined.
+ *
+ */
 void CreationSelectionLayer::Draw()
 {
+	if (glLoaded)
+	{
+		glBindVertexArray(VAOId);
 
+		if (fillShader)
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			if (fillShader->Use())
+				glDrawElements(GL_TRIANGLES, selectedElements.size()*3, GL_UNSIGNED_INT, (GLvoid*)0);
+		}
+
+		if (outlineShader)
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			if (outlineShader->Use())
+				glDrawElements(GL_TRIANGLES, selectedElements.size()*3, GL_UNSIGNED_INT, (GLvoid*)0);
+		}
+
+		// Draw boundaries here
+	}
 }
 
 
+/**
+ * @brief Loads the currently selected Element data to the GPU
+ *
+ * Loads the currently selected Element data to the GPU, getting rid of any element
+ * data that is already there.
+ *
+ */
 void CreationSelectionLayer::LoadDataToGPU()
 {
 	/* Make sure we've got all of the necessary Buffer Objects created */
@@ -143,9 +195,20 @@ void CreationSelectionLayer::SetTerrainLayer(TerrainLayer *newLayer)
 }
 
 
+/**
+ * @brief Select the Selection Tool to be used for the next interaction
+ *
+ * Select the Selection Tool to be used for the next interaction:
+ * - 0 - Stop using tools
+ * - 1 - CircleTool - Select Elements inside of a circle
+ *
+ * @param toolID The tool to be used for the next interaction
+ */
 void CreationSelectionLayer::UseTool(int toolID)
 {
-
+	/* Make sure we're trying to select an ID that we've got */
+	if (toolID >= 0 && toolID <= 1)
+		activeTool = toolID;
 }
 
 

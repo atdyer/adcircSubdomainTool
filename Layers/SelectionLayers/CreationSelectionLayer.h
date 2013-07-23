@@ -28,10 +28,14 @@
  * - LineTool - select elements underneath a line
  *
  *
- * I decided to use std::vector to keep track of selected elements and nodes. The
- * typical size of a subdomain didn't warrant the use of std::set to keep track
- * of unique nodes/elements, so I instead use the std::unique algorithm to
- * eliminate duplicate selections.
+ * I decided to use the Vertex Buffer Object from the TerrainLayer for drawing
+ * selected elements. This gives us a number of benefits over storing selected
+ * nodes locally:
+ * - Don't have to recalculate indices in local node list after every action
+ * - Less local data means undo/redo stack can save state at each interaction
+ *   without having to worry about memory. This means we don't have to worry
+ *   about selecting only unique elements at each interaction.
+ * - Space is saved on the GPU
  *
  * For the undo/redo stack, because the typical subdomain size is relatively
  * small (compared to memory available), we keep track of the complete state
