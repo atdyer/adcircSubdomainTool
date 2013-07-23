@@ -94,13 +94,13 @@ void SelectionLayer::Draw()
 				glDrawElements(GL_TRIANGLES, selectedElements.size()*3, GL_UNSIGNED_INT, (GLvoid*)0);
 		}
 
-		if (pointShader)
-		{
-			glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
-			if (pointShader->Use())
-				glDrawArrays(GL_POINTS, 0, selectedNodes.size());
+//		if (pointShader)
+//		{
+//			glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+//			if (pointShader->Use())
+//				glDrawArrays(GL_POINTS, 0, selectedNodes.size());
 
-		}
+//		}
 
 	}
 }
@@ -178,7 +178,7 @@ void SelectionLayer::InitializeGL()
 	// Set shader properties
 	pointShader->SetColor(0.0, 0.0, 0.0, 0.7);
 	outlineShader->SetColor(0.2, 0.2, 0.2, 0.2);
-	fillShader->SetColor(0.4, 0.4, 0.4, 0.2);
+	fillShader->SetColor(0.4, 0.4, 0.4, 0.4);
 	if (camera)
 	{
 		pointShader->SetCamera(camera);
@@ -504,6 +504,8 @@ void SelectionLayer::SelectNodes(std::vector<Node *> nodes)
 
 void SelectionLayer::SelectElements(std::vector<Element *> elements)
 {
+	time_t startTime;
+	startTime = clock();
 	if (elements.size() > 0)
 	{
 		// First, check for duplicate elements
@@ -540,29 +542,20 @@ void SelectionLayer::SelectElements(std::vector<Element *> elements)
 					additionalNodes[actualSelection[i]->n3->nodeNumber] = actualSelection[i]->n3;
 			}
 
-			// If we found additional Nodes that need to be selected, add them first
-			if (additionalNodes.size() > 0)
+			// Now add the new Elements
+			if (additionalElements.size() > 0)
 			{
-				NodeAction *newAction = new NodeAction(additionalNodes);
+				ElementAction *newAction = new ElementAction(additionalNodes, additionalElements);
 				newAction->SetSelectionLayer(this);
 				newAction->RedoAction();
 				undoStack.push(newAction);
 				emit undoAvailable(true);
 				UpdateVertexBuffer();
-			}
-
-			// Now add the new Elements
-			if (additionalElements.size() > 0)
-			{
-				ElementAction *newAction = new ElementAction(additionalElements);
-				newAction->SetSelectionLayer(this);
-				newAction->RedoAction();
-				undoStack.push(newAction);
-				emit undoAvailable(true);
 				UpdateIndexBuffer();
 			}
 		}
 	}
+	DEBUG("SelectionLayer time: " << clock()-startTime);
 }
 
 

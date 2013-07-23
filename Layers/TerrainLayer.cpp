@@ -555,6 +555,21 @@ GradientShaderProperties TerrainLayer::GetGradientBoundary()
 
 
 /**
+ * @brief Returns the ID of the Vertex Buffer that contains Nodal data
+ *
+ * Returns the ID of the Vertex Buffer that contains Nodals data. This ID is
+ * to be used only for the drawing of subsets of the data. Modifying the
+ * data in this buffer will result in undefined behavior from the GPU.
+ *
+ * @return The Vertex Buffer ID
+ */
+GLuint TerrainLayer::GetVBOId()
+{
+	return VBOId;
+}
+
+
+/**
  * @brief Sets the GLCamera object to be used when drawing this Layer
  *
  * Sets the GLCamera object to be used when drawing this Layer. The Layer does

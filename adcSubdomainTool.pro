@@ -33,7 +33,8 @@ SOURCES += main.cpp\
     Layers/Actions/ElementAction.cpp \
     OpenGL/Shaders/GradientShader.cpp \
     Domains/Domain.cpp \
-    OpenGL/Shaders/CulledSolidShader.cpp
+    OpenGL/Shaders/CulledSolidShader.cpp \
+    Layers/SelectionLayers/CreationSelectionLayer.cpp
 
 HEADERS  += MainWindow.h \
     OpenGL/OpenGLPanel.h \
@@ -55,7 +56,8 @@ HEADERS  += MainWindow.h \
     Layers/Actions/ElementAction.h \
     OpenGL/Shaders/GradientShader.h \
     Domains/Domain.h \
-    OpenGL/Shaders/CulledSolidShader.h
+    OpenGL/Shaders/CulledSolidShader.h \
+    Layers/SelectionLayers/CreationSelectionLayer.h
 
 FORMS    += MainWindow.ui
 

@@ -14,8 +14,9 @@ ElementAction::ElementAction()
  *
  * @param cElements The map of Elements used to perform actions
  */
-ElementAction::ElementAction(std::map<unsigned int, Element *> cElements)
+ElementAction::ElementAction(std::map<unsigned int, Node *> cNodes, std::map<unsigned int, Element *> cElements)
 {
+	nodes = cNodes;
 	elements = cElements;
 }
 
@@ -32,6 +33,8 @@ void ElementAction::RedoAction()
 {
 	if (selectionLayer && elements.size() > 0)
 	{
+		if (nodes.size() > 0)
+			selectionLayer->SelectNodes(nodes);
 		selectionLayer->SelectElements(elements);
 	}
 }
@@ -50,5 +53,7 @@ void ElementAction::UndoAction()
 	if (selectionLayer && elements.size() > 0)
 	{
 		selectionLayer->DeselectElements(elements);
+		if (nodes.size() > 0)
+			selectionLayer->DeselectNodes(nodes);
 	}
 }

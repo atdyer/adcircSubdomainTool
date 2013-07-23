@@ -60,6 +60,7 @@ class TerrainLayer : public Layer
 		GradientShaderProperties	GetGradientOutline();
 		GradientShaderProperties	GetGradientFill();
 		GradientShaderProperties	GetGradientBoundary();
+		GLuint				GetVBOId();
 
 		// Setter Methods
 		virtual void	SetCamera(GLCamera *newCamera);
