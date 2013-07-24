@@ -80,6 +80,7 @@ void OpenGLPanel::initializeGL()
 //              cout << "OpenGL Renderer: " << glGetString(GL_RENDERER) << endl;
 	}
 
+//	glClearColor(1.0, 1.0, 1.0, 1.0);
 	glClearColor(0.1, 0.2, 0.3, 1.0);
 	glDisable(GL_DEPTH_TEST);
 //	glEnable(GL_POLYGON_OFFSET_FILL);

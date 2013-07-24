@@ -436,6 +436,7 @@ void CreationSelectionLayer::CircleToolFinishedSearching()
 	{
 		std::vector<Element*> *newList = new std::vector<Element*>(circleTool->GetSelectedElements());
 		DEBUG("Found " << newList->size() << " elements");
+
 		if (newList->size() > 0)
 		{
 			if (selectedElements->size() > 0)
@@ -448,9 +449,9 @@ void CreationSelectionLayer::CircleToolFinishedSearching()
 				undoStack.push(selectedElements);
 
 				/* Get rid of any duplicates in the newly created list */
-				std::vector<Element*>::iterator it;
-				it = std::unique(newList->begin(), newList->end());
-				newList->resize(std::distance(newList->begin(), it));
+//				std::vector<Element*>::iterator it;
+//				it = std::unique(newList->begin(), newList->end());
+//				newList->resize(std::distance(newList->begin(), it));
 
 				/* Make the currently selected list the newly created list */
 				selectedElements = newList;
@@ -459,6 +460,13 @@ void CreationSelectionLayer::CircleToolFinishedSearching()
 				 * make the newly created list the currently selected list. Push back
 				 * the empty list so that the empty state is saved in the undo stack */
 				undoStack.push(selectedElements);
+
+				/* Get rid of any duplicates in the newly created list */
+//				std::vector<Element*>::iterator it;
+//				it = std::unique(newList->begin(), newList->end());
+//				newList->resize(std::distance(newList->begin(), it));
+
+				/* Make the currently selected list the newly created list */
 				selectedElements = newList;
 			}
 

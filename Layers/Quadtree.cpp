@@ -55,7 +55,7 @@ Quadtree::Quadtree(std::vector<Node> nodes, std::vector<Element> elements, int s
 	}
 
 	hasElements = true;
-
+	DEBUG(elements.size() << " elements added to quadtree");
 }
 
 
@@ -537,6 +537,16 @@ void Quadtree::addNode(Node *currNode, branch *currBranch)
 }
 
 
+/**
+ * @brief Adds an Element to the quadtree
+ *
+ * Adds an Element to the quadtree. An element is considered to be inside of a branch
+ * or leaf if its node n1 is inside of the branch or leaf. Adding the Element is done
+ * by recursively going down the tree based on n1 location.
+ *
+ * @param currElement The Element being added
+ * @param currBranch The current branch we'd like to add the Element to
+ */
 void Quadtree::addElement(Element *currElement, branch *currBranch)
 {
 	// See if any of the Nodes fall into any of the branches
@@ -545,11 +555,10 @@ void Quadtree::addElement(Element *currElement, branch *currBranch)
 		if (currBranch->branches[i] != 0)
 		{
 			if (nodeIsInside(currElement->n1, currBranch->branches[i]))
+			{
 				addElement(currElement, currBranch->branches[i]);
-			else if (nodeIsInside(currElement->n2, currBranch->branches[i]))
-				addElement(currElement, currBranch->branches[i]);
-			else if (nodeIsInside(currElement->n3, currBranch->branches[i]))
-				addElement(currElement, currBranch->branches[i]);
+				return;
+			}
 		}
 	}
 
@@ -558,9 +567,12 @@ void Quadtree::addElement(Element *currElement, branch *currBranch)
 	{
 		if (currBranch->leaves[i] != 0)
 		{
-			if (nodeIsInside(currElement->n1, currBranch->leaves[i]) || nodeIsInside(currElement->n2, currBranch->leaves[i]) || nodeIsInside(currElement->n3, currBranch->leaves[i]))
+			if (nodeIsInside(currElement->n1, currBranch->leaves[i]))
 			{
+				if (currElement->elementNumber == 92167)
+					std::cout << i << "|" << std::endl;
 				currBranch->leaves[i]->elements.push_back(currElement);
+				return;
 			}
 		}
 	}
