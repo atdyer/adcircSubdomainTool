@@ -181,6 +181,12 @@ void CircleTool::SetRadiusPoint(int newX, int newY)
 }
 
 
+std::vector<Element*> CircleTool::GetSelectedElements()
+{
+	return selectedElements;
+}
+
+
 /**
  * @brief Sets the selection mode currently being used by the circle tool
  *

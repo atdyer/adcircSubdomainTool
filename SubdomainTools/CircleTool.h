@@ -33,6 +33,8 @@ class CircleTool : public QObject
 		void	SetCenter(int newX, int newY);
 		void	SetRadiusPoint(int newX, int newY);
 
+		std::vector<Element*>	GetSelectedElements();
+
 	protected:
 
 		TerrainLayer*	terrain;	/**< The TerrainLayer that nodes/elements will be selected from */
@@ -40,6 +42,10 @@ class CircleTool : public QObject
 
 		// Selection Mode
 		SelectionType	selectionMode;	/**< The current selection mode of the circle tool */
+
+		// Selected Nodes/Elements
+		std::vector<Node*>	selectedNodes;
+		std::vector<Element*>	selectedElements;
 
 		// Circle attributes
 		float	xPixel;		/**< The x-coordinate of the circle center, in pixels */
@@ -80,6 +86,7 @@ class CircleTool : public QObject
 		void	NodeSelected(Node*);
 		void	NodesSelected(std::vector<Node*>);
 		void	ElementsSelected(std::vector<Element*>);
+		void	FinishedSearching();
 
 	public slots:
 

@@ -2,6 +2,8 @@
 #define CREATIONSELECTIONLAYER_H
 
 #include <vector>
+#include <stack>
+#include <algorithm>
 
 #include "Layers/Layer.h"
 #include "Layers/TerrainLayer.h"
@@ -12,6 +14,10 @@
 #include "SubdomainTools/CircleTool.h"
 
 #include <QObject>
+
+#define AVAILABLETOOLS 1
+#define CIRCLETOOLINDEX 1
+
 
 /**
  * @brief A Layer class used for the creation of subdomains. Specializes in selecting
@@ -39,7 +45,10 @@
  *
  * For the undo/redo stack, because the typical subdomain size is relatively
  * small (compared to memory available), we keep track of the complete state
- * of selected nodes/elements after each interaction.
+ * of selected elements after each interaction. Also, because only one type
+ * of action is possible (selecting/deselecting elements), we don't need
+ * to use the Action class. We can just use two stacks that contain previous
+ * and future selection states.
  *
  */
 class CreationSelectionLayer : public Layer
@@ -59,7 +68,7 @@ class CreationSelectionLayer : public Layer
 		void	UseTool(int toolID);
 
 		void	MouseClick(int x, int y);
-		void	MouseMove(int dx, int dy);
+		void	MouseMove(int x, int y);
 		void	MouseRelease(int x, int y);
 
 		void	Undo();
@@ -74,12 +83,12 @@ class CreationSelectionLayer : public Layer
 		int		activeTool;	/**< Integer used to determine which tool mouse actions are sent to */
 		CircleTool*	circleTool;	/**< Tool for selecting elements inside of a circle */
 
-
 		/* Selected Elements */
-		std::vector<Element*>			selectedElements;	/**< The list of currently selected Elements */
+		std::vector<Element*>*		selectedElements;	/**< The list of currently selected Elements */
 
 		/* Undo and Redo Stacks */
-
+		std::stack<std::vector<Element*>*, std::vector<std::vector<Element*>*> >	undoStack;
+		std::stack<std::vector<Element*>*, std::vector<std::vector<Element*>*> >	redoStack;
 
 		/* OpenGL Variables */
 		bool		glLoaded;	/**< Flag that shows if the VAO/VBO/IBO have been created */
@@ -91,14 +100,25 @@ class CreationSelectionLayer : public Layer
 		SolidShader*	fillShader;	/**< The shader used to draw Element fill */
 		SolidShader*	boundaryShader;	/**< The shader used to draw the Subdomain boundary */
 
+		/* Flags */
+		bool	mousePressed;
+
 		/* OpenGL Functions */
 		void	InitializeGL();
 
+		/* Tool Initialization Functions */
+		void	CreateCircleTool();
+
 	signals:
 
-		void	UndoAvailable(bool);	/**< Triggered when an undo action becomes available/unavailable */
-		void	RedoAvailable(bool);	/**< Triggered when a redo action becomes available/unavailable */
-		void	Refreshed();		/**< Triggered when new data has been loaded to the OpenGL context */
+		void	UndoAvailable(bool);		/**< Triggered when an undo action becomes available/unavailable */
+		void	RedoAvailable(bool);		/**< Triggered when a redo action becomes available/unavailable */
+		void	Refreshed();			/**< Triggered when new data has been loaded to the OpenGL context */
+		void	NumElementsSelected(int);	/**< Triggered when the number of selected elements changes */
+
+	protected slots:
+
+		void	CircleToolFinishedSearching();
 };
 
 #endif // CREATIONSELECTIONLAYER_H
