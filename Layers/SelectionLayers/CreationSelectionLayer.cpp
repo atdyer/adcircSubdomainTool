@@ -2,18 +2,22 @@
 
 CreationSelectionLayer::CreationSelectionLayer()
 {
-	activeTool = 0;
+	activeTool = 1;
 	circleTool = 0;
 
 	selectedElements = 0;
 
 	glLoaded = false;
 	camera = 0;
+	VAOId = 0;
+	VBOId = 0;
+	IBOId = 0;
 	outlineShader = 0;
 	fillShader = 0;
 	boundaryShader = 0;
 
 	mousePressed = false;
+	CreateCircleTool();
 }
 
 
@@ -27,6 +31,8 @@ CreationSelectionLayer::CreationSelectionLayer()
  */
 CreationSelectionLayer::~CreationSelectionLayer()
 {
+	DEBUG("Deleting Creation Selection Layer. Layer ID: " << GetID());
+
 	/* Clean up shaders */
 	if (outlineShader)
 		delete outlineShader;
@@ -77,6 +83,8 @@ void CreationSelectionLayer::Draw()
 	if (glLoaded && selectedElements)
 	{
 		glBindVertexArray(VAOId);
+
+		DEBUG("Selection: " << VBOId << " " << IBOId << " " << VAOId);
 
 		if (fillShader)
 		{
@@ -218,7 +226,7 @@ void CreationSelectionLayer::SetTerrainLayer(TerrainLayer *newLayer)
 {
 	terrainLayer = newLayer;
 
-	VBOId = terrainLayer->GetVBOId();
+	connect(terrainLayer, SIGNAL(finishedLoadingToGPU()), this, SLOT(TerrainDataLoaded()));
 
 	if (circleTool)
 		circleTool->SetTerrainLayer(newLayer);
@@ -294,6 +302,13 @@ void CreationSelectionLayer::MouseRelease(int x, int y)
 
 	if (activeTool == CIRCLETOOLINDEX && circleTool)
 		circleTool->CircleFinished();
+}
+
+
+void CreationSelectionLayer::WindowSizeChanged(float w, float h)
+{
+	if (circleTool)
+		circleTool->SetViewportSize(w, h);
 }
 
 
@@ -393,6 +408,12 @@ void CreationSelectionLayer::CreateCircleTool()
 }
 
 
+void CreationSelectionLayer::TerrainDataLoaded()
+{
+	VBOId = terrainLayer->GetVBOId();
+}
+
+
 /**
  * @brief Queries the circle tool for currently selected elements
  *
@@ -411,6 +432,7 @@ void CreationSelectionLayer::CircleToolFinishedSearching()
 	if (circleTool)
 	{
 		std::vector<Element*> *newList = new std::vector<Element*>(circleTool->GetSelectedElements());
+		DEBUG("Found " << newList->size() << " elements");
 		if (newList->size() > 0)
 		{
 			if (selectedElements->size() > 0)

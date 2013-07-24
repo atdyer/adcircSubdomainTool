@@ -152,7 +152,8 @@ void OpenGLPanel::mousePressEvent(QMouseEvent *event)
 	if (viewMode == CircleSubdomainMode)
 	{
 		if (activeDomain)
-			activeDomain->SetCircleToolCenter(oldx, oldy);
+//			activeDomain->SetCircleToolCenter(oldx, oldy);
+			activeDomain->MouseClick(oldx, oldy);
 	}
 }
 
@@ -181,7 +182,9 @@ void OpenGLPanel::mouseMoveEvent(QMouseEvent *event)
 		else if (viewMode == CircleSubdomainMode)
 		{
 			if (activeDomain)
-				activeDomain->SetCircleToolRadius(newx, newy);
+				activeDomain->MouseMove(newx, newy);
+//			if (activeDomain)
+//				activeDomain->SetCircleToolRadius(newx, newy);
 //			circleTool.SetRadiusPoint(event->x(), event->y());
 ////			emit circleToolStatsSet(circleTool.GetDomainX(), circleTool.GetDomainY(), circleTool.GetRadius());
 		}
@@ -217,7 +220,8 @@ void OpenGLPanel::mouseReleaseEvent(QMouseEvent *event)
 	if (viewMode == CircleSubdomainMode)
 	{
 		if (activeDomain)
-			activeDomain->SetCircleToolFinished();
+			activeDomain->MouseRelease(event->x(), event->y());
+//			activeDomain->SetCircleToolFinished();
 		viewMode = DisplayMode;
 	}
 

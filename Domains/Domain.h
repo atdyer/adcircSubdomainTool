@@ -10,9 +10,10 @@
 
 #include "Layers/Layer.h"
 #include "Layers/TerrainLayer.h"
-#include "Layers/SelectionLayer.h"
+#include "Layers/SelectionLayers/CreationSelectionLayer.h"
+//#include "Layers/SelectionLayer.h"
 
-#include "SubdomainTools/CircleTool.h"
+//#include "SubdomainTools/CircleTool.h"
 
 #include "OpenGL/GLCamera.h"
 #include "OpenGL/Shaders/GLShader.h"
@@ -65,6 +66,9 @@ class Domain : public QObject
 		void	Draw();
 		void	Zoom(float zoomAmount);
 		void	Pan(float dx, float dy);
+		void	MouseClick(int x, int y);
+		void	MouseMove(int x, int y);
+		void	MouseRelease(int x, int y);
 		void	SetWindowSize(float w, float h);
 		void	SetCircleToolCenter(int x, int y);
 		void	SetCircleToolRadius(int x, int y);
@@ -104,11 +108,12 @@ class Domain : public QObject
 		GLCamera*	camera;		/**< The camera used for all drawing operations (except the selection layer)*/
 
 		// Layers
-		SelectionLayer*	selectionLayer;	/**< The selection layer used for drawing selected nodes/elements */
-		TerrainLayer*	terrainLayer;	/**< The terrain layer */
+//		SelectionLayer*	selectionLayer;	/**< The selection layer used for drawing selected nodes/elements */
+		TerrainLayer*		terrainLayer;	/**< The terrain layer */
+		CreationSelectionLayer*	selectionLayer;	/**< The selection layer */
 
 		// Tools
-		CircleTool*	circleTool;	/**< The circle tool used to select nodes/elements inside of a user-drawn circle */
+//		CircleTool*	circleTool;	/**< The circle tool used to select nodes/elements inside of a user-drawn circle */
 
 		// Loading Operations
 		QThread*	layerThread;	/**< The thread on which file reading operations will execute */

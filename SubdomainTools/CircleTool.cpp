@@ -225,8 +225,8 @@ void CircleTool::CircleFinished()
 		}
 		else if (selectionMode == elementSelection)
 		{
-			std::vector<Element*> elements = terrain->GetElementsFromCircle(xNormal, yNormal, radNormal);
-			emit ElementsSelected(elements);
+			selectedElements = terrain->GetElementsFromCircle(xNormal, yNormal, radNormal);
+			emit FinishedSearching();
 		}
 	}
 

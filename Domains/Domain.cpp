@@ -16,13 +16,15 @@ Domain::Domain()
 {
 	camera = new GLCamera();
 
-	selectionLayer = new SelectionLayer();
+//	selectionLayer = new SelectionLayer();
+//	selectionLayer->SetCamera(camera);
+	selectionLayer = new CreationSelectionLayer();
 	selectionLayer->SetCamera(camera);
 
 	terrainLayer = 0;
 
-	circleTool = new CircleTool();
-	circleTool->SetCamera(camera);
+//	circleTool = new CircleTool();
+//	circleTool->SetCamera(camera);
 
 	layerThread = new QThread();
 	if (layerThread)
@@ -37,20 +39,24 @@ Domain::Domain()
 
 
 	/* Connect all selection tools to the selection layer */
-	connect(circleTool, SIGNAL(NodesSelected(std::vector<Node*>)), selectionLayer, SLOT(SelectNodes(std::vector<Node*>)));
-	connect(circleTool, SIGNAL(ElementsSelected(std::vector<Element*>)), selectionLayer, SLOT(SelectElements(std::vector<Element*>)));
-	connect(circleTool, SIGNAL(NodeSelected(Node*)), selectionLayer, SLOT(SelectNode(Node*)));
+//	connect(circleTool, SIGNAL(NodesSelected(std::vector<Node*>)), selectionLayer, SLOT(SelectNodes(std::vector<Node*>)));
+//	connect(circleTool, SIGNAL(ElementsSelected(std::vector<Element*>)), selectionLayer, SLOT(SelectElements(std::vector<Element*>)));
+//	connect(circleTool, SIGNAL(NodeSelected(Node*)), selectionLayer, SLOT(SelectNode(Node*)));
 
 	/* Pass signals up from the selection layer */
-	connect(selectionLayer, SIGNAL(undoAvailable(bool)), this, SIGNAL(undoAvailable(bool)));
-	connect(selectionLayer, SIGNAL(redoAvailable(bool)), this, SIGNAL(redoAvailable(bool)));
-	connect(selectionLayer, SIGNAL(emitMessage(QString)), this, SIGNAL(emitMessage(QString)));
-	connect(selectionLayer, SIGNAL(numNodesSelected(int)), this, SIGNAL(numNodesSelected(int)));
-	connect(selectionLayer, SIGNAL(numElementsSelected(int)), this, SIGNAL(numElementsSelected(int)));
+	connect(selectionLayer, SIGNAL(UndoAvailable(bool)), this, SIGNAL(undoAvailable(bool)));
+	connect(selectionLayer, SIGNAL(RedoAvailable(bool)), this, SIGNAL(redoAvailable(bool)));
+	connect(selectionLayer, SIGNAL(Refreshed()), this, SIGNAL(updateGL()));
+	connect(selectionLayer, SIGNAL(NumElementsSelected(int)), this, SIGNAL(numElementsSelected(int)));
+//	connect(selectionLayer, SIGNAL(undoAvailable(bool)), this, SIGNAL(undoAvailable(bool)));
+//	connect(selectionLayer, SIGNAL(redoAvailable(bool)), this, SIGNAL(redoAvailable(bool)));
+//	connect(selectionLayer, SIGNAL(emitMessage(QString)), this, SIGNAL(emitMessage(QString)));
+//	connect(selectionLayer, SIGNAL(numNodesSelected(int)), this, SIGNAL(numNodesSelected(int)));
+//	connect(selectionLayer, SIGNAL(numElementsSelected(int)), this, SIGNAL(numElementsSelected(int)));
 
 	/* Pass signals up from all selection tools */
-	connect(circleTool, SIGNAL(CircleStatsSet(float,float,float)), this, SIGNAL(circleToolStatsSet(float,float,float)));
-	connect(circleTool, SIGNAL(CircleStatsFinished()), this, SIGNAL(circleToolStatsFinished()));
+//	connect(circleTool, SIGNAL(CircleStatsSet(float,float,float)), this, SIGNAL(circleToolStatsSet(float,float,float)));
+//	connect(circleTool, SIGNAL(CircleStatsFinished()), this, SIGNAL(circleToolStatsFinished()));
 
 }
 
@@ -69,8 +75,8 @@ Domain::~Domain()
 	if (terrainLayer)
 		delete terrainLayer;
 
-	if (circleTool)
-		delete circleTool;
+//	if (circleTool)
+//		delete circleTool;
 }
 
 
@@ -87,8 +93,8 @@ void Domain::Draw()
 		terrainLayer->Draw();
 	if (selectionLayer)
 		selectionLayer->Draw();
-	if (circleTool)
-		circleTool->Draw();
+//	if (circleTool)
+//		circleTool->Draw();
 }
 
 
@@ -121,6 +127,27 @@ void Domain::Pan(float dx, float dy)
 }
 
 
+void Domain::MouseClick(int x, int y)
+{
+	if (selectionLayer)
+		selectionLayer->MouseClick(x, y);
+}
+
+
+void Domain::MouseMove(int x, int y)
+{
+	if (selectionLayer)
+		selectionLayer->MouseMove(x, y);
+}
+
+
+void Domain::MouseRelease(int x, int y)
+{
+	if (selectionLayer)
+		selectionLayer->MouseRelease(x, y);
+}
+
+
 /**
  * @brief Sets the window size used by the camera and all tools
  *
@@ -134,8 +161,8 @@ void Domain::SetWindowSize(float w, float h)
 	if (camera)
 		camera->SetWindowSize(-1.0*w/h, 1.0*w/h, -1.0, 1.0, -1000.0, 1000.0);
 
-	if (circleTool)
-		circleTool->SetViewportSize(w, h);
+//	if (circleTool)
+//		circleTool->SetViewportSize(w, h);
 }
 
 
@@ -149,8 +176,8 @@ void Domain::SetWindowSize(float w, float h)
  */
 void Domain::SetCircleToolCenter(int x, int y)
 {
-	if (circleTool)
-		circleTool->SetCenter(x, y);
+//	if (circleTool)
+//		circleTool->SetCenter(x, y);
 }
 
 
@@ -166,8 +193,8 @@ void Domain::SetCircleToolCenter(int x, int y)
  */
 void Domain::SetCircleToolRadius(int x, int y)
 {
-	if (circleTool)
-		circleTool->SetRadiusPoint(x, y);
+//	if (circleTool)
+//		circleTool->SetRadiusPoint(x, y);
 }
 
 
@@ -180,8 +207,8 @@ void Domain::SetCircleToolRadius(int x, int y)
  */
 void Domain::SetCircleToolFinished()
 {
-	if (circleTool)
-		circleTool->CircleFinished();
+//	if (circleTool)
+//		circleTool->CircleFinished();
 }
 
 
@@ -194,7 +221,7 @@ void Domain::SetCircleToolFinished()
 void Domain::Undo()
 {
 	if (selectionLayer)
-		selectionLayer->undo();
+		selectionLayer->Undo();
 	emit updateGL();
 }
 
@@ -208,7 +235,7 @@ void Domain::Undo()
 void Domain::Redo()
 {
 	if (selectionLayer)
-		selectionLayer->redo();
+		selectionLayer->Redo();
 	emit updateGL();
 }
 
@@ -269,8 +296,10 @@ void Domain::SetFort14Location(std::string newLoc)
 //		terrainLayer->SetGradientOutline(GradientShaderProperties(0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0));
 //		terrainLayer->SetGradientFill(GradientShaderProperties(0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0));
 
-		if (circleTool)
-			circleTool->SetTerrainLayer(terrainLayer);
+//		if (circleTool)
+//			circleTool->SetTerrainLayer(terrainLayer);
+		if (selectionLayer)
+			selectionLayer->SetTerrainLayer(terrainLayer);
 	}
 	terrainLayer->SetFort14Location(newLoc);
 }
@@ -542,8 +571,8 @@ unsigned int Domain::GetNumElementsDomain()
  */
 unsigned int Domain::GetNumNodesSelected()
 {
-	if (selectionLayer)
-		return selectionLayer->GetNumNodesSelected();
+//	if (selectionLayer)
+//		return selectionLayer->GetNumNodesSelected();
 	return 0;
 }
 

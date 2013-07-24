@@ -70,6 +70,7 @@ class CreationSelectionLayer : public Layer
 		void	MouseClick(int x, int y);
 		void	MouseMove(int x, int y);
 		void	MouseRelease(int x, int y);
+		void	WindowSizeChanged(float w, float h);
 
 		void	Undo();
 		void	Redo();
@@ -118,6 +119,7 @@ class CreationSelectionLayer : public Layer
 
 	protected slots:
 
+		void	TerrainDataLoaded();
 		void	CircleToolFinishedSearching();
 };
 
