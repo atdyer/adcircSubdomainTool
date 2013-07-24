@@ -84,8 +84,6 @@ void CreationSelectionLayer::Draw()
 	{
 		glBindVertexArray(VAOId);
 
-		DEBUG("Selection: " << VBOId << " " << IBOId << " " << VAOId);
-
 		if (fillShader)
 		{
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -102,6 +100,9 @@ void CreationSelectionLayer::Draw()
 
 		// Draw boundaries here
 	}
+
+	if (activeTool == CIRCLETOOLINDEX && circleTool)
+		circleTool->Draw();
 }
 
 
@@ -363,6 +364,8 @@ void CreationSelectionLayer::InitializeGL()
 		/* Bind the VBO and IBO to the VAO */
 		glBindVertexArray(VAOId);
 		glBindBuffer(GL_ARRAY_BUFFER, VBOId);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4*sizeof(GLfloat), 0);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBOId);
 		glBindVertexArray(0);
 

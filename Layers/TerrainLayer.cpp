@@ -81,8 +81,6 @@ void TerrainLayer::Draw()
 	{
 		glBindVertexArray(VAOId);
 
-		DEBUG("Terrain: " << VBOId << " " << IBOId << " " << VAOId);
-
 		if (fillShader)
 		{
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
