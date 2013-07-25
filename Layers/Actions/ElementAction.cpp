@@ -31,12 +31,12 @@ ElementAction::ElementAction(std::map<unsigned int, Node *> cNodes, std::map<uns
  */
 void ElementAction::RedoAction()
 {
-	if (selectionLayer && elements.size() > 0)
-	{
-		if (nodes.size() > 0)
-			selectionLayer->SelectNodes(nodes);
-		selectionLayer->SelectElements(elements);
-	}
+//	if (selectionLayer && elements.size() > 0)
+//	{
+//		if (nodes.size() > 0)
+////			selectionLayer->SelectNodes(nodes);
+////		selectionLayer->SelectElements(elements);
+//	}
 }
 
 
@@ -50,10 +50,10 @@ void ElementAction::RedoAction()
  */
 void ElementAction::UndoAction()
 {
-	if (selectionLayer && elements.size() > 0)
-	{
-		selectionLayer->DeselectElements(elements);
-		if (nodes.size() > 0)
-			selectionLayer->DeselectNodes(nodes);
-	}
+//	if (selectionLayer && elements.size() > 0)
+//	{
+//		selectionLayer->DeselectElements(elements);
+//		if (nodes.size() > 0)
+//			selectionLayer->DeselectNodes(nodes);
+//	}
 }

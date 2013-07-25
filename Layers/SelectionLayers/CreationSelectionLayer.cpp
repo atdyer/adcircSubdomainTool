@@ -158,6 +158,7 @@ void CreationSelectionLayer::LoadDataToGPU()
 		}
 
 		emit Refreshed();
+		emit NumElementsSelected(selectedElements->size());
 	}
 }
 

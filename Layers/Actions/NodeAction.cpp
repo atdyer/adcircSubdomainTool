@@ -30,10 +30,10 @@ NodeAction::NodeAction(std::map<unsigned int, Node *> cNodes)
  */
 void NodeAction::RedoAction()
 {
-	if (selectionLayer && nodes.size() > 0)
-	{
-		selectionLayer->SelectNodes(nodes);
-	}
+//	if (selectionLayer && nodes.size() > 0)
+//	{
+////		selectionLayer->SelectNodes(nodes);
+//	}
 }
 
 
@@ -47,8 +47,8 @@ void NodeAction::RedoAction()
  */
 void NodeAction::UndoAction()
 {
-	if (selectionLayer && nodes.size() > 0)
-	{
-		selectionLayer->DeselectNodes(nodes);
-	}
+//	if (selectionLayer && nodes.size() > 0)
+//	{
+////		selectionLayer->DeselectNodes(nodes);
+//	}
 }
