@@ -53,21 +53,8 @@ CreationSelectionLayer::~CreationSelectionLayer()
 		glDeleteBuffers(1, &IBOId);
 
 	/* Clean up the undo/redo stacks */
-	while(!undoStack.empty())
-	{
-		std::vector<Element*>* curr = undoStack.top();
-		undoStack.pop();
-		if (curr)
-			delete curr;
-	}
-
-	while(!redoStack.empty())
-	{
-		std::vector<Element*>* curr = redoStack.top();
-		redoStack.pop();
-		if (curr)
-			delete curr;
-	}
+	ClearUndoStack();
+	ClearRedoStack();
 }
 
 
@@ -315,13 +302,31 @@ void CreationSelectionLayer::WindowSizeChanged(float w, float h)
 
 void CreationSelectionLayer::Undo()
 {
-
+	if (!undoStack.empty() && selectedElements)
+	{
+		redoStack.push(selectedElements);
+		selectedElements = undoStack.top();
+		undoStack.pop();
+		emit RedoAvailable(true);
+		if (undoStack.empty())
+			emit UndoAvailable(false);
+		LoadDataToGPU();
+	}
 }
 
 
 void CreationSelectionLayer::Redo()
 {
-
+	if (!redoStack.empty() && selectedElements)
+	{
+		undoStack.push(selectedElements);
+		selectedElements = redoStack.top();
+		redoStack.pop();
+		emit UndoAvailable(true);
+		if (redoStack.empty())
+			emit RedoAvailable(false);
+		LoadDataToGPU();
+	}
 }
 
 
@@ -411,6 +416,32 @@ void CreationSelectionLayer::CreateCircleTool()
 }
 
 
+void CreationSelectionLayer::ClearUndoStack()
+{
+	while(!undoStack.empty())
+	{
+		std::vector<Element*>* curr = undoStack.top();
+		undoStack.pop();
+		if (curr)
+			delete curr;
+	}
+	emit UndoAvailable(false);
+}
+
+
+void CreationSelectionLayer::ClearRedoStack()
+{
+	while(!redoStack.empty())
+	{
+		std::vector<Element*>* curr = redoStack.top();
+		redoStack.pop();
+		if (curr)
+			delete curr;
+	}
+	emit RedoAvailable(false);
+}
+
+
 void CreationSelectionLayer::TerrainDataLoaded()
 {
 	VBOId = terrainLayer->GetVBOId();
@@ -470,6 +501,12 @@ void CreationSelectionLayer::CircleToolFinishedSearching()
 
 			/* Update the data being displayed */
 			LoadDataToGPU();
+
+			/* Clear the Redo stack */
+			ClearRedoStack();
+
+			/* Let everyone know we can undo this action */
+			emit UndoAvailable(true);
 		} else {
 			/* No elements were selected, so just go ahead and delete the new list */
 			delete newList;

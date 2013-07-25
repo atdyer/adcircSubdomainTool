@@ -110,6 +110,10 @@ class CreationSelectionLayer : public Layer
 		/* Tool Initialization Functions */
 		void	CreateCircleTool();
 
+		/* Helper Functions */
+		void	ClearUndoStack();
+		void	ClearRedoStack();
+
 	signals:
 
 		void	UndoAvailable(bool);		/**< Triggered when an undo action becomes available/unavailable */
