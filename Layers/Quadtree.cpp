@@ -569,8 +569,6 @@ void Quadtree::addElement(Element *currElement, branch *currBranch)
 		{
 			if (nodeIsInside(currElement->n1, currBranch->leaves[i]))
 			{
-				if (currElement->elementNumber == 92167)
-					std::cout << i << "|" << std::endl;
 				currBranch->leaves[i]->elements.push_back(currElement);
 				return;
 			}

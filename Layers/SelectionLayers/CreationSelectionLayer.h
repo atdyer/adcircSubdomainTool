@@ -6,7 +6,9 @@
 #include <algorithm>
 
 #include "Layers/Layer.h"
+#include "Layers/SelectionLayer.h"
 #include "Layers/TerrainLayer.h"
+#include "Layers/Actions/ElementState.h"
 
 #include "OpenGL/GLCamera.h"
 #include "OpenGL/Shaders/SolidShader.h"
@@ -45,13 +47,10 @@
  *
  * For the undo/redo stack, because the typical subdomain size is relatively
  * small (compared to memory available), we keep track of the complete state
- * of selected elements after each interaction. Also, because only one type
- * of action is possible (selecting/deselecting elements), we don't need
- * to use the Action class. We can just use two stacks that contain previous
- * and future selection states.
+ * of selected elements after each interaction.
  *
  */
-class CreationSelectionLayer : public Layer
+class CreationSelectionLayer : public SelectionLayer
 {
 		Q_OBJECT
 	public:
@@ -60,49 +59,38 @@ class CreationSelectionLayer : public Layer
 
 		virtual void	Draw();
 		virtual void	LoadDataToGPU();
+
+		virtual unsigned int	GetNumElementsSelected();
+
 		virtual void	SetCamera(GLCamera *newCamera);
-
-		unsigned int	GetNumElementsSelected();
-
-		void	SetTerrainLayer(TerrainLayer* newLayer);
-		void	UseTool(int toolID);
+		virtual void	SetTerrainLayer(TerrainLayer* newLayer);
+		virtual void	UseTool(int toolID);
 
 		void	MouseClick(int x, int y);
 		void	MouseMove(int x, int y);
 		void	MouseRelease(int x, int y);
 		void	WindowSizeChanged(float w, float h);
 
-		void	Undo();
-		void	Redo();
+		virtual void	Undo();
+		virtual void	Redo();
 
 	protected:
-
-		/* Layers */
-		TerrainLayer*	terrainLayer;	/**< The Terrain Layer that we'll get the subdomain from */
 
 		/* Selection Tools */
 		int		activeTool;	/**< Integer used to determine which tool mouse actions are sent to */
 		CircleTool*	circleTool;	/**< Tool for selecting elements inside of a circle */
 
 		/* Selected Elements */
-		std::vector<Element*>*		selectedElements;	/**< The list of currently selected Elements */
+		ElementState*		selectedState;	/**< The current state of selected Elements */
 
 		/* Undo and Redo Stacks */
-		std::stack<std::vector<Element*>*, std::vector<std::vector<Element*>*> >	undoStack;
-		std::stack<std::vector<Element*>*, std::vector<std::vector<Element*>*> >	redoStack;
+		std::stack<ElementState*, std::vector<ElementState*> >	undoStack;	/**< The undo stack */
+		std::stack<ElementState*, std::vector<ElementState*> >	redoStack;	/**< The redo stack */
 
-		/* OpenGL Variables */
-		bool		glLoaded;	/**< Flag that shows if the VAO/VBO/IBO have been created */
-		GLCamera*	camera;		/**< The camera used to draw selections */
-		GLuint		VAOId;		/**< The vertex array object ID in the OpenGL context */
-		GLuint		VBOId;		/**< The vertex buffer object ID in the OpenGL context */
-		GLuint		IBOId;		/**< The index buffer object ID in the OpenGL context */
+		/* Shaders */
 		SolidShader*	outlineShader;	/**< The shader used to draw Element outlines */
 		SolidShader*	fillShader;	/**< The shader used to draw Element fill */
 		SolidShader*	boundaryShader;	/**< The shader used to draw the Subdomain boundary */
-
-		/* Flags */
-		bool	mousePressed;
 
 		/* OpenGL Functions */
 		void	InitializeGL();
@@ -114,15 +102,9 @@ class CreationSelectionLayer : public Layer
 		void	ClearUndoStack();
 		void	ClearRedoStack();
 
-	signals:
-
-		void	UndoAvailable(bool);		/**< Triggered when an undo action becomes available/unavailable */
-		void	RedoAvailable(bool);		/**< Triggered when a redo action becomes available/unavailable */
-		void	Refreshed();			/**< Triggered when new data has been loaded to the OpenGL context */
-		void	NumElementsSelected(int);	/**< Triggered when the number of selected elements changes */
-
 	protected slots:
 
+		/* Helper Slots */
 		void	TerrainDataLoaded();
 		void	CircleToolFinishedSearching();
 };

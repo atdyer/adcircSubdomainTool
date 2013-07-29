@@ -1,11 +1,18 @@
 #include "CreationSelectionLayer.h"
 
+/**
+ * @brief Constructor initializes all variables to default values
+ *
+ * Constructor initializes all variables to default values and pointers
+ * to zero.
+ *
+ */
 CreationSelectionLayer::CreationSelectionLayer()
 {
 	activeTool = 1;
 	circleTool = 0;
 
-	selectedElements = 0;
+	selectedState = 0;
 
 	glLoaded = false;
 	camera = 0;
@@ -52,7 +59,9 @@ CreationSelectionLayer::~CreationSelectionLayer()
 	if (IBOId)
 		glDeleteBuffers(1, &IBOId);
 
-	/* Clean up the undo/redo stacks */
+	/* Delete all states */
+	if (selectedState)
+		delete selectedState;
 	ClearUndoStack();
 	ClearRedoStack();
 }
@@ -62,12 +71,12 @@ CreationSelectionLayer::~CreationSelectionLayer()
  * @brief Draws the selected Elements
  *
  * Draws the currently selected Elements (fill and then outline), as well as boundary
- * segments if they are defined.
+ * segments if they are defined. Also draws any tool that is currently in use.
  *
  */
 void CreationSelectionLayer::Draw()
 {
-	if (glLoaded && selectedElements)
+	if (glLoaded && selectedState)
 	{
 		glBindVertexArray(VAOId);
 
@@ -75,14 +84,14 @@ void CreationSelectionLayer::Draw()
 		{
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			if (fillShader->Use())
-				glDrawElements(GL_TRIANGLES, selectedElements->size()*3, GL_UNSIGNED_INT, (GLvoid*)0);
+				glDrawElements(GL_TRIANGLES, selectedState->GetState()->size()*3, GL_UNSIGNED_INT, (GLvoid*)0);
 		}
 
 		if (outlineShader)
 		{
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			if (outlineShader->Use())
-				glDrawElements(GL_TRIANGLES, selectedElements->size()*3, GL_UNSIGNED_INT, (GLvoid*)0);
+				glDrawElements(GL_TRIANGLES, selectedState->GetState()->size()*3, GL_UNSIGNED_INT, (GLvoid*)0);
 		}
 
 		// Draw boundaries here
@@ -107,10 +116,11 @@ void CreationSelectionLayer::LoadDataToGPU()
 		InitializeGL();
 
 	/* Make sure initialization succeeded */
-	if (glLoaded && selectedElements)
+	if (glLoaded && selectedState)
 	{
 		/* Load the connectivity data (elements) to the GPU, getting rid of any data that's already there */
-		const size_t IndexBufferSize = 3*sizeof(GLuint)*selectedElements->size();
+		std::vector<Element*> *currSelection = selectedState->GetState();
+		const size_t IndexBufferSize = 3*sizeof(GLuint)*currSelection->size();
 		if (IndexBufferSize && VAOId && IBOId)
 		{
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBOId);
@@ -120,7 +130,7 @@ void CreationSelectionLayer::LoadDataToGPU()
 			{
 				Element* currElement;
 				int i=0;
-				for (std::vector<Element*>::iterator it=selectedElements->begin(); it != selectedElements->end(); ++it, i++)
+				for (std::vector<Element*>::iterator it=currSelection->begin(); it != currSelection->end(); ++it, i++)
 				{
 					currElement = *it;
 					glElementData[3*i+0] = (GLuint)currElement->n1->nodeNumber-1;
@@ -158,7 +168,7 @@ void CreationSelectionLayer::LoadDataToGPU()
 		}
 
 		emit Refreshed();
-		emit NumElementsSelected(selectedElements->size());
+		emit NumElementsSelected(currSelection->size());
 	}
 }
 
@@ -197,8 +207,8 @@ void CreationSelectionLayer::SetCamera(GLCamera *newCamera)
  */
 unsigned int CreationSelectionLayer::GetNumElementsSelected()
 {
-	if (selectedElements)
-		return selectedElements->size();
+	if (selectedState)
+		return selectedState->GetState()->size();
 	return 0;
 }
 
@@ -294,6 +304,14 @@ void CreationSelectionLayer::MouseRelease(int x, int y)
 }
 
 
+/**
+ * @brief Tells all of the tools that the size of the OpenGL context has changed
+ *
+ * Tells all of the tools that the size of the OpenGL context has changed
+ *
+ * @param w The new OpenGL context width
+ * @param h The new OpenGL context height
+ */
 void CreationSelectionLayer::WindowSizeChanged(float w, float h)
 {
 	if (circleTool)
@@ -301,12 +319,19 @@ void CreationSelectionLayer::WindowSizeChanged(float w, float h)
 }
 
 
+/**
+ * @brief Undoes the previously performed selection or deselection
+ *
+ * Undoes the previously performed selection or deselection by reverting
+ * to the previous state (the last one pushed onto the undo stack).
+ *
+ */
 void CreationSelectionLayer::Undo()
 {
-	if (!undoStack.empty() && selectedElements)
+	if (!undoStack.empty() && selectedState)
 	{
-		redoStack.push(selectedElements);
-		selectedElements = undoStack.top();
+		redoStack.push(selectedState);
+		selectedState = undoStack.top();
 		undoStack.pop();
 		emit RedoAvailable(true);
 		if (undoStack.empty())
@@ -316,12 +341,19 @@ void CreationSelectionLayer::Undo()
 }
 
 
+/**
+ * @brief Redoes the last undone selection or deselection
+ *
+ * Redoes the last undone selection or deselection by reverting
+ * to the next state on the redo stack.
+ *
+ */
 void CreationSelectionLayer::Redo()
 {
-	if (!redoStack.empty() && selectedElements)
+	if (!redoStack.empty() && selectedState)
 	{
-		undoStack.push(selectedElements);
-		selectedElements = redoStack.top();
+		undoStack.push(selectedState);
+		selectedState = redoStack.top();
 		redoStack.pop();
 		emit UndoAvailable(true);
 		if (redoStack.empty())
@@ -417,11 +449,17 @@ void CreationSelectionLayer::CreateCircleTool()
 }
 
 
+/**
+ * @brief Clears the undo stack
+ *
+ * Clears the undo stack by deleting all objects it contains
+ *
+ */
 void CreationSelectionLayer::ClearUndoStack()
 {
 	while(!undoStack.empty())
 	{
-		std::vector<Element*>* curr = undoStack.top();
+		ElementState *curr = undoStack.top();
 		undoStack.pop();
 		if (curr)
 			delete curr;
@@ -430,11 +468,17 @@ void CreationSelectionLayer::ClearUndoStack()
 }
 
 
+/**
+ * @brief Clears the redo stack
+ *
+ * Clears the redo stack by deleting all objects it contains
+ *
+ */
 void CreationSelectionLayer::ClearRedoStack()
 {
 	while(!redoStack.empty())
 	{
-		std::vector<Element*>* curr = redoStack.top();
+		ElementState *curr = redoStack.top();
 		redoStack.pop();
 		if (curr)
 			delete curr;
@@ -443,6 +487,15 @@ void CreationSelectionLayer::ClearRedoStack()
 }
 
 
+/**
+ * @brief Slot that contains all action that need to be performed after the
+ * terrain data has been loaded to the GPU
+ *
+ * Slot that contains all action that need to be performed after the
+ * terrain data has been loaded to the GPU. Queries the terrain layer
+ * for its vertex buffer object ID.
+ *
+ */
 void CreationSelectionLayer::TerrainDataLoaded()
 {
 	VBOId = terrainLayer->GetVBOId();
@@ -462,23 +515,29 @@ void CreationSelectionLayer::TerrainDataLoaded()
  */
 void CreationSelectionLayer::CircleToolFinishedSearching()
 {
-	if (!selectedElements)
-		selectedElements = new std::vector<Element*>();
+	if (!selectedState)
+		selectedState = new ElementState();
 	if (circleTool)
 	{
-		std::vector<Element*> *newList = new std::vector<Element*>(circleTool->GetSelectedElements());
+		/* Create the new state object */
+		ElementState *newState = new ElementState(circleTool->GetSelectedElements());
+
+		/* Get pointers to new list of selected elements and current list of selected elements */
+		std::vector<Element*> *newList = newState->GetState();
+		std::vector<Element*> *currList = selectedState->GetState();
+
 		DEBUG("Found " << newList->size() << " elements");
 
 		if (newList->size() > 0)
 		{
-			if (selectedElements->size() > 0)
+			if (currList->size() > 0)
 			{
 				/* There are currently selected elements, so combine the lists */
-				newList->reserve(newList->size() + selectedElements->size());
-				newList->insert(newList->end(), selectedElements->begin(), selectedElements->end());
+				newList->reserve(newList->size() + currList->size());
+				newList->insert(newList->end(), currList->begin(), currList->end());
 
 				/* Push the old list onto the undo stack */
-				undoStack.push(selectedElements);
+				undoStack.push(selectedState);
 
 				/* Sort the new list */
 				std::sort(newList->begin(), newList->end());
@@ -488,16 +547,16 @@ void CreationSelectionLayer::CircleToolFinishedSearching()
 				it = std::unique(newList->begin(), newList->end());
 				newList->resize(std::distance(newList->begin(), it));
 
-				/* Make the currently selected list the newly created list */
-				selectedElements = newList;
+				/* Set the new state as the current state */
+				selectedState = newState;
 			} else {
 				/* There aren't any currently selected elements, so just go ahead and
-				 * make the newly created list the currently selected list. Push back
-				 * the empty list so that the empty state is saved in the undo stack */
-				undoStack.push(selectedElements);
+				 * make the current state the new state. Push back
+				 * the empty state so that the it is saved in the undo stack */
+				undoStack.push(selectedState);
 
-				/* Make the currently selected list the newly created list */
-				selectedElements = newList;
+				/* Set the new state as the current state */
+				selectedState = newState;
 			}
 
 			/* Update the data being displayed */
@@ -510,7 +569,7 @@ void CreationSelectionLayer::CircleToolFinishedSearching()
 			emit UndoAvailable(true);
 		} else {
 			/* No elements were selected, so just go ahead and delete the new list */
-			delete newList;
+			delete newState;
 		}
 	}
 }
