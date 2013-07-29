@@ -5,6 +5,7 @@
 #include <vector>
 #include <math.h>
 
+#include <time.h>
 
 /**
  * @brief Defines a leaf used for grouping Nodes and Elements in the Quadtree data structure
@@ -66,6 +67,7 @@ class Quadtree
 		Node*			FindNode(float x, float y);
 		std::vector<Node*>	FindNodesInCircle(float x, float y, float radius);
 		std::vector<Element*>	FindElementsInCircle(float x, float y, float radius);
+		std::vector<std::vector<Element*> *> GetElementsThroughDepth(int depth);
 
 	protected:
 
@@ -90,6 +92,9 @@ class Quadtree
 		// Finding Elements within a circle
 		void	AddFullElements(std::vector<leaf*>* full, std::vector<Element*>* elements);
 		void	AddPartialElements(float x, float y, float radius, std::vector<leaf*>* partial, std::vector<Element*>* elements);
+
+		// Retrieving Elements recursively
+		void	RetrieveElements(branch* currBranch, int depth, std::vector<std::vector<Element *> *> *list);
 
 		////// Building functions
 		leaf*	newLeaf(float l, float r, float b, float t);

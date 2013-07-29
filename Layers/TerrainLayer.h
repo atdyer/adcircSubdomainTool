@@ -110,9 +110,12 @@ class TerrainLayer : public Layer
 		bool	flipZValue;		/**< Flag that determines if the z-value is multiplied by -1 before being loaded to the GPU */
 		bool	fileLoaded;		/**< Flag that shows if data has been successfully read from the fort.14 file */
 		bool	glLoaded;		/**< Flag that shows if data has been successfully sent to the GPU */
+		bool	largeDomain;		/**< Flag that shows if the domain is extremely large (probably a full domain) */
 
-		// Picking Variables
+		/* Quadtree and Large Domain Variables */
 		Quadtree*	quadtree;	/**< The quadtree used for Node picking */
+		std::vector<std::vector<Element*>*>	visibleElementLists;	/**< The list of lists elements that are currently visible */
+		int					numVisibleElements;	/**< The total number of elements that are currently visible */
 
 	private:
 
@@ -124,7 +127,9 @@ class TerrainLayer : public Layer
 		GradientShader*	gradientFill;		/**< Shader used to draw a gradient fill */
 		GradientShader*	gradientBoundary;	/**< Shader used to draw a gradient boundary */
 
-		void		SwitchToCulledShaders();
+		void	SwitchToCulledShaders();
+		void	CheckForLargeDomain();
+		void	UpdateVisibleElements();
 
 	public slots:
 

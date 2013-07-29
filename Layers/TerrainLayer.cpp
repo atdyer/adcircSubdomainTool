@@ -15,10 +15,6 @@ TerrainLayer::TerrainLayer()
 	maxZ = -99999.0;
 	max = 1.0;
 
-	flipZValue = true;
-	fileLoaded = false;
-	glLoaded = false;
-
 	VAOId = 0;
 	VBOId = 0;
 	IBOId = 0;
@@ -26,7 +22,13 @@ TerrainLayer::TerrainLayer()
 	fillShader = 0;
 	boundaryShader = 0;
 
+	flipZValue = true;
+	fileLoaded = false;
+	glLoaded = false;
+	largeDomain = false;
+
 	quadtree = 0;
+	numVisibleElements = 0;
 
 	useCulledShaders = false;
 	solidOutline = 0;
@@ -85,17 +87,23 @@ void TerrainLayer::Draw()
 		{
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			if (fillShader->Use())
-				glDrawElements(GL_TRIANGLES, numElements*3, GL_UNSIGNED_INT, (GLvoid*)0);
+				if (largeDomain)
+					glDrawElements(GL_TRIANGLES, numVisibleElements*3, GL_UNSIGNED_INT, (GLvoid*)0);
+				else
+					glDrawElements(GL_TRIANGLES, numElements*3, GL_UNSIGNED_INT, (GLvoid*)0);
 		}
 
 		if (outlineShader)
 		{
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			if (outlineShader->Use())
-				glDrawElements(GL_TRIANGLES, numElements*3, GL_UNSIGNED_INT, (GLvoid*)0);
+				if (largeDomain)
+					glDrawElements(GL_TRIANGLES, numVisibleElements*3, GL_UNSIGNED_INT, (GLvoid*)0);
+				else
+					glDrawElements(GL_TRIANGLES, numElements*3, GL_UNSIGNED_INT, (GLvoid*)0);
 		}
 
-		if (boundaryShader)
+		if (!largeDomain && boundaryShader)
 		{
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			glLineWidth(3.0);
@@ -125,12 +133,11 @@ void TerrainLayer::LoadDataToGPU()
 	{
 
 		/* First check if we should be using culled shaders */
-		if (numElements > 1000000)
-			SwitchToCulledShaders();
+//		if (numElements > 1000000)
+//			SwitchToCulledShaders();
 
 		/* Send the data to the GPU */
 		const size_t VertexBufferSize = 4*sizeof(GLfloat)*numNodes;
-		const size_t IndexBufferSize = 3*sizeof(GLuint)*numElements + sizeof(GLuint)*boundaryNodes.size();
 
 		glGenVertexArrays(1, &VAOId);
 		glGenBuffers(1, &VBOId);
@@ -168,35 +175,40 @@ void TerrainLayer::LoadDataToGPU()
 
 		// Send Index Data
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBOId);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, IndexBufferSize, NULL, GL_STATIC_DRAW);
-		GLuint* glElementData = (GLuint *)glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
-		if (glElementData)
+		if (largeDomain)
 		{
-			for (unsigned int i=0; i<numElements; i++)
-			{
-				glElementData[3*i+0] = (GLuint)elements[i].n1->nodeNumber-1;
-				glElementData[3*i+1] = (GLuint)elements[i].n2->nodeNumber-1;
-				glElementData[3*i+2] = (GLuint)elements[i].n3->nodeNumber-1;
-			}
-
-			for (unsigned int i=0; i<boundaryNodes.size(); i++)
-			{
-				glElementData[3*numElements+i] = boundaryNodes[i]-1;
-			}
+			UpdateVisibleElements();
 		} else {
-			glLoaded = false;
-			emit emitMessage("<p style:color='red'><strong>Error: Unable to load index data to GPU</strong>");
-			return;
-		}
+			const size_t IndexBufferSize = 3*sizeof(GLuint)*numElements + sizeof(GLuint)*boundaryNodes.size();
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, IndexBufferSize, NULL, GL_STATIC_DRAW);
+			GLuint* glElementData = (GLuint *)glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
+			if (glElementData)
+			{
+				for (unsigned int i=0; i<numElements; i++)
+				{
+					glElementData[3*i+0] = (GLuint)elements[i].n1->nodeNumber-1;
+					glElementData[3*i+1] = (GLuint)elements[i].n2->nodeNumber-1;
+					glElementData[3*i+2] = (GLuint)elements[i].n3->nodeNumber-1;
+				}
+				for (unsigned int i=0; i<boundaryNodes.size(); i++)
+				{
+					glElementData[3*numElements+i] = boundaryNodes[i]-1;
+				}
+			} else {
+				glLoaded = false;
+				emit emitMessage("<p style:color='red'><strong>Error: Unable to load index data to GPU</strong>");
+				return;
+			}
 
-		if (glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER) == GL_FALSE)
-		{
-			glLoaded = false;
-			DEBUG("ERROR: Unmapping index buffer for TerrainLayer " << GetID());
-			return;
-		}
+			if (glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER) == GL_FALSE)
+			{
+				glLoaded = false;
+				DEBUG("ERROR: Unmapping index buffer for TerrainLayer " << GetID());
+				return;
+			}
 
-		glBindVertexArray(0);
+			glBindVertexArray(0);
+		}
 
 		GLenum errorCheck = glGetError();
 		if (errorCheck == GL_NO_ERROR)
@@ -819,6 +831,66 @@ void TerrainLayer::SwitchToCulledShaders()
 
 
 /**
+ * @brief Function that determines if the domain is large enough to warrant extra GPU optimizations
+ *
+ * Function that determines if the domain is large enough to warrant extra GPU optimizations. If it
+ * is large enough (possibly based on function that takes into account CPU speed, GPU speed, etc),
+ * we'll use the Quadtree to do some special culling/drawing.
+ *
+ */
+void TerrainLayer::CheckForLargeDomain()
+{
+	if (numElements > 500000)
+		largeDomain = true;
+}
+
+
+void TerrainLayer::UpdateVisibleElements()
+{
+	if (fileLoaded && quadtree)
+	{
+		visibleElementLists = quadtree->GetElementsThroughDepth(5);
+
+		numVisibleElements = 0;
+		for (unsigned int i=0; i<visibleElementLists.size(); i++)
+			numVisibleElements += visibleElementLists[i]->size();
+		const size_t IndexBufferSize = 3*sizeof(GLuint)*numVisibleElements;
+
+		glBindVertexArray(VAOId);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBOId);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, IndexBufferSize, NULL, GL_STATIC_DRAW);
+		GLuint* glElementData = (GLuint *)glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
+		if (glElementData)
+		{
+			int count = 0;
+			for (unsigned int i=0; i<visibleElementLists.size(); i++)
+			{
+				for (unsigned int j=0; j<visibleElementLists[i]->size(); j++)
+				{
+					glElementData[count++] = (GLuint)(*visibleElementLists[i])[j]->n1->nodeNumber-1;
+					glElementData[count++] = (GLuint)(*visibleElementLists[i])[j]->n2->nodeNumber-1;
+					glElementData[count++] = (GLuint)(*visibleElementLists[i])[j]->n3->nodeNumber-1;
+				}
+			}
+		} else {
+			glLoaded = false;
+			emit emitMessage("<p style:color='red'><strong>Error: Unable to load index data to GPU</strong>");
+			return;
+		}
+
+		if (glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER) == GL_FALSE)
+		{
+			glLoaded = false;
+			DEBUG("ERROR: Unmapping index buffer for TerrainLayer " << GetID());
+			return;
+		}
+
+		glBindVertexArray(0);
+	}
+}
+
+
+/**
  * @brief Reads the fort.14 file data
  *
  * This function is used to read data from the fort.14 file. It is implemented as
@@ -943,9 +1015,10 @@ void TerrainLayer::readFort14()
 			// Organize the data in a quadtree
 			if (!quadtree)
 			{
-				quadtree = new Quadtree(nodes, elements, 50, (minX-midX)/max, (maxX-midX)/max, (minY-midY)/max, (maxY-midY)/max);
+				quadtree = new Quadtree(nodes, elements, 5000, (minX-midX)/max, (maxX-midX)/max, (minY-midY)/max, (maxY-midY)/max);
 			}
 
+			CheckForLargeDomain();
 
 			emit finishedReadingData();
 			emit emitMessage(QString("Terrain layer created: <strong>").append(infoLine.data()).append("</strong>"));

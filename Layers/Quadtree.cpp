@@ -156,6 +156,19 @@ std::vector<Element*> Quadtree::FindElementsInCircle(float x, float y, float rad
 }
 
 
+std::vector<std::vector<Element*>*> Quadtree::GetElementsThroughDepth(int depth)
+{
+	std::vector< std::vector<Element*> *> elements;
+	if (hasElements && depth >= 0)
+	{
+		clock_t ts = clock();
+		RetrieveElements(root, depth, &elements);
+		DEBUG(clock() - ts);
+	}
+	return elements;
+}
+
+
 /**
  * @brief The actual recursive function called when the user requests a Node
  *
@@ -351,6 +364,34 @@ void Quadtree::AddPartialElements(float x, float y, float radius, std::vector<le
 			    pointIsInsideCircle(currLeaf->elements[j]->n3->normX, currLeaf->elements[j]->n3->normY, x, y, radius))
 				elements->push_back(currLeaf->elements[j]);
 
+		}
+	}
+}
+
+
+void Quadtree::RetrieveElements(branch *currBranch, int depth, std::vector< std::vector<Element*>* >*list)
+{
+	for (int i=0; i<4; i++)
+	{
+		if (currBranch->leaves[i] != 0)
+		{
+			list->push_back(&currBranch->leaves[i]->elements);
+//			list->reserve(list->size()+ currBranch->leaves[i]->elements.size());
+//			list->insert(list->end(), currBranch->leaves[i]->elements.begin(), currBranch->leaves[i]->elements.end());
+		}
+	}
+
+	if (depth <= 0)
+	{
+		return;
+	} else {
+		depth--;
+		for (int i=0; i<4; i++)
+		{
+			if (currBranch->branches[i] != 0)
+			{
+				RetrieveElements(currBranch->branches[i], depth, list);
+			}
 		}
 	}
 }
