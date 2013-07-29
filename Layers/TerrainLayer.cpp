@@ -29,6 +29,7 @@ TerrainLayer::TerrainLayer()
 
 	quadtree = 0;
 	numVisibleElements = 0;
+	viewingDepth = 3;
 
 	useCulledShaders = false;
 	solidOutline = 0;
@@ -566,6 +567,36 @@ GradientShaderProperties TerrainLayer::GetGradientBoundary()
 }
 
 
+void TerrainLayer::UpdateZoomLevel(float zoomAmount)
+{
+	if (largeDomain && camera && quadtree)
+	{
+		DEBUG("zoom amount: " << zoomAmount);
+		/* Get the bounds of the viewport in domain space */
+		float xTopLeft, yTopLeft, xBotRight, yBotRight;
+		camera->GetUnprojectedPoint(0, 0, &xTopLeft, &yTopLeft);
+		camera->GetUnprojectedPoint(camera->GetViewportWidth(), camera->GetViewportHeight(), &xBotRight, &yBotRight);
+//		xTopLeft = GetUnprojectedX(xTopLeft);
+//		yTopLeft = GetUnprojectedY(yTopLeft);
+//		xBotRight = GetUnprojectedX(xBotRight);
+//		yBotRight = GetUnprojectedY(yBotRight);
+
+		DEBUG(xTopLeft << " " << yTopLeft << " " << xBotRight << " " <<yBotRight);
+
+		if (zoomAmount > 0)
+			viewingDepth++;
+		else if (zoomAmount < 0 && viewingDepth != 0)
+			viewingDepth--;
+
+		/* Get the visible elements from the quadtree */
+		visibleElementLists = quadtree->GetElementsThroughDepth(int(0.5*camera->zoomLevel), xTopLeft, yTopLeft, xBotRight, yBotRight);
+
+		/* Update the elements on the OpenGL context */
+		UpdateVisibleElements();
+	}
+}
+
+
 /**
  * @brief Returns the ID of the Vertex Buffer that contains Nodal data
  *
@@ -849,16 +880,17 @@ void TerrainLayer::UpdateVisibleElements()
 {
 	if (fileLoaded && quadtree)
 	{
-		visibleElementLists = quadtree->GetElementsThroughDepth(5);
+//		visibleElementLists = quadtree->GetElementsThroughDepth(5);
 
 		numVisibleElements = 0;
 		for (unsigned int i=0; i<visibleElementLists.size(); i++)
 			numVisibleElements += visibleElementLists[i]->size();
+		DEBUG("Number of visible elements: " << numVisibleElements);
 		const size_t IndexBufferSize = 3*sizeof(GLuint)*numVisibleElements;
 
 		glBindVertexArray(VAOId);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBOId);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, IndexBufferSize, NULL, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, IndexBufferSize, NULL, GL_DYNAMIC_DRAW);
 		GLuint* glElementData = (GLuint *)glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
 		if (glElementData)
 		{
@@ -875,6 +907,7 @@ void TerrainLayer::UpdateVisibleElements()
 		} else {
 			glLoaded = false;
 			emit emitMessage("<p style:color='red'><strong>Error: Unable to load index data to GPU</strong>");
+			DEBUG("Error mapping to terrain element list");
 			return;
 		}
 
@@ -883,6 +916,20 @@ void TerrainLayer::UpdateVisibleElements()
 			glLoaded = false;
 			DEBUG("ERROR: Unmapping index buffer for TerrainLayer " << GetID());
 			return;
+		}
+
+		GLenum errorCheck = glGetError();
+		if (errorCheck == GL_NO_ERROR)
+		{
+			if (VAOId && VBOId && IBOId)
+			{
+				glLoaded = true;
+				emit finishedLoadingToGPU();
+			}
+		} else {
+			const GLubyte *errString = gluErrorString(errorCheck);
+			DEBUG("OpenGL Error: " << errString);
+			glLoaded = false;
 		}
 
 		glBindVertexArray(0);
@@ -1019,6 +1066,9 @@ void TerrainLayer::readFort14()
 			}
 
 			CheckForLargeDomain();
+
+			if (largeDomain)
+				visibleElementLists = quadtree->GetElementsThroughDepth(viewingDepth);
 
 			emit finishedReadingData();
 			emit emitMessage(QString("Terrain layer created: <strong>").append(infoLine.data()).append("</strong>"));

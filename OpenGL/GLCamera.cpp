@@ -206,6 +206,18 @@ void GLCamera::GetProjectedPoint(float x, float y, float *resultX, float *result
 }
 
 
+float GLCamera::GetViewportWidth()
+{
+	return viewportX;
+}
+
+
+float GLCamera::GetViewportHeight()
+{
+	return viewportY;
+}
+
+
 /**
  * @brief Updates the Model Matrix, which is responsible for panning
  */

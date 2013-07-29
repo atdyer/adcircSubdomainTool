@@ -109,6 +109,8 @@ void Domain::Zoom(float zoomAmount)
 {
 	if (camera)
 		camera->Zoom(zoomAmount);
+	if (terrainLayer)
+		terrainLayer->UpdateZoomLevel(zoomAmount);
 }
 
 
@@ -163,9 +165,6 @@ void Domain::SetWindowSize(float w, float h)
 
 	if (selectionLayer)
 		selectionLayer->WindowSizeChanged(w, h);
-
-//	if (circleTool)
-//		circleTool->SetViewportSize(w, h);
 }
 
 

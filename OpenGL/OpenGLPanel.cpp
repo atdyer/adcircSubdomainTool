@@ -153,7 +153,6 @@ void OpenGLPanel::mousePressEvent(QMouseEvent *event)
 	if (viewMode == CircleSubdomainMode)
 	{
 		if (activeDomain)
-//			activeDomain->SetCircleToolCenter(oldx, oldy);
 			activeDomain->MouseClick(oldx, oldy);
 	}
 }
@@ -184,16 +183,10 @@ void OpenGLPanel::mouseMoveEvent(QMouseEvent *event)
 		{
 			if (activeDomain)
 				activeDomain->MouseMove(newx, newy);
-//			if (activeDomain)
-//				activeDomain->SetCircleToolRadius(newx, newy);
-//			circleTool.SetRadiusPoint(event->x(), event->y());
-////			emit circleToolStatsSet(circleTool.GetDomainX(), circleTool.GetDomainY(), circleTool.GetRadius());
 		}
 
 		updateGL();
 	}
-
-
 
 	oldx = newx;
 	oldy = newy;	

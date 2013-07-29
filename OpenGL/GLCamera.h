@@ -53,6 +53,8 @@ class GLCamera
 		void	ResetView();
 		void	GetUnprojectedPoint(float x, float y, float *resultX, float *resultY);
 		void	GetProjectedPoint(float x, float y, float *resultX, float *resultY);
+		float	GetViewportWidth();
+		float	GetViewportHeight();
 
 		unsigned int	GetID();
 		unsigned int	GetNumCameras();

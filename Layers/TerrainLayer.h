@@ -72,6 +72,9 @@ class TerrainLayer : public Layer
 		void		SetGradientFill(GradientShaderProperties newProperties);
 		void		SetGradientBoundary(GradientShaderProperties newProperties);
 
+		// Large Domain Functions
+		void	UpdateZoomLevel(float zoomAmount);
+
 
 
 	protected:
@@ -116,6 +119,7 @@ class TerrainLayer : public Layer
 		Quadtree*	quadtree;	/**< The quadtree used for Node picking */
 		std::vector<std::vector<Element*>*>	visibleElementLists;	/**< The list of lists elements that are currently visible */
 		int					numVisibleElements;	/**< The total number of elements that are currently visible */
+		int					viewingDepth;
 
 	private:
 
