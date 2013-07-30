@@ -29,7 +29,7 @@ TerrainLayer::TerrainLayer()
 
 	quadtree = 0;
 	numVisibleElements = 0;
-	viewingDepth = 7;
+	viewingDepth = 15;
 
 	useCulledShaders = false;
 	solidOutline = 0;
@@ -580,7 +580,7 @@ void TerrainLayer::UpdateZoomLevel(float zoomAmount)
 //		xBotRight = GetUnprojectedX(xBotRight);
 //		yBotRight = GetUnprojectedY(yBotRight);
 
-		DEBUG(xTopLeft << " " << yTopLeft << " " << xBotRight << " " <<yBotRight);
+//		DEBUG(xTopLeft << " " << yTopLeft << " " << xBotRight << " " <<yBotRight);
 
 //		if (zoomAmount > 0)
 //			viewingDepth++;

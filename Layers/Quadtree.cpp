@@ -385,8 +385,6 @@ void Quadtree::RetrieveElements(branch *currBranch, int depth, std::vector< std:
 		if (currBranch->leaves[i] != 0)
 		{
 			list->push_back(&currBranch->leaves[i]->elements);
-//			list->reserve(list->size()+ currBranch->leaves[i]->elements.size());
-//			list->insert(list->end(), currBranch->leaves[i]->elements.begin(), currBranch->leaves[i]->elements.end());
 		}
 	}
 
@@ -418,11 +416,7 @@ void Quadtree::RetrieveElements(branch *currBranch, int depth, std::vector<std::
 			if (rectangleIntersection(currBranch->leaves[i], l, r, b, t))
 			{
 				list->push_back(&currBranch->leaves[i]->elements);
-			} else {
-				DEBUG("No leaf intersection");
 			}
-		} else {
-			DEBUG("No leaf");
 		}
 	}
 
@@ -437,12 +431,8 @@ void Quadtree::RetrieveElements(branch *currBranch, int depth, std::vector<std::
 			{
 				if (rectangleIntersection(currBranch->branches[i], l, r, b, t))
 				{
-					RetrieveElements(currBranch->branches[i], depth, list);
-				} else {
-					DEBUG("No branch intersection");
+					RetrieveElements(currBranch->branches[i], depth, list, l, r, b, t);
 				}
-			} else {
-				DEBUG("No branch");
 			}
 		}
 	}
