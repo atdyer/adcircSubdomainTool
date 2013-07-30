@@ -110,8 +110,10 @@ class Quadtree
 		float	distance(Node *currNode, float x, float y);
 		bool	pointIsInside(leaf *currLeaf, float x, float y);
 		bool	pointIsInside(branch *currBranch, float x, float y);
+		bool	pointIsInside(float l, float r, float b, float t, float x, float y);
 		bool	pointIsInsideCircle(float x, float y, float circleX, float circleY, float radius);
-		bool	pointIsInsideRectangle(float x, float y, float l, float r, float b, float t);
+		bool	rectangleIntersection(leaf *currLeaf, float l, float r, float b, float t);
+		bool	rectangleIntersection(branch *currBranch, float l, float r, float b, float t);
 };
 
 #endif // QUADTREE_H

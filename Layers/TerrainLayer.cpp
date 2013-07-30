@@ -29,7 +29,7 @@ TerrainLayer::TerrainLayer()
 
 	quadtree = 0;
 	numVisibleElements = 0;
-	viewingDepth = 3;
+	viewingDepth = 7;
 
 	useCulledShaders = false;
 	solidOutline = 0;
@@ -571,7 +571,6 @@ void TerrainLayer::UpdateZoomLevel(float zoomAmount)
 {
 	if (largeDomain && camera && quadtree)
 	{
-		DEBUG("zoom amount: " << zoomAmount);
 		/* Get the bounds of the viewport in domain space */
 		float xTopLeft, yTopLeft, xBotRight, yBotRight;
 		camera->GetUnprojectedPoint(0, 0, &xTopLeft, &yTopLeft);
@@ -583,13 +582,13 @@ void TerrainLayer::UpdateZoomLevel(float zoomAmount)
 
 		DEBUG(xTopLeft << " " << yTopLeft << " " << xBotRight << " " <<yBotRight);
 
-		if (zoomAmount > 0)
-			viewingDepth++;
-		else if (zoomAmount < 0 && viewingDepth != 0)
-			viewingDepth--;
+//		if (zoomAmount > 0)
+//			viewingDepth++;
+//		else if (zoomAmount < 0 && viewingDepth != 0)
+//			viewingDepth--;
 
 		/* Get the visible elements from the quadtree */
-		visibleElementLists = quadtree->GetElementsThroughDepth(int(0.5*camera->zoomLevel), xTopLeft, yTopLeft, xBotRight, yBotRight);
+		visibleElementLists = quadtree->GetElementsThroughDepth(viewingDepth, xTopLeft, xBotRight, yBotRight, yTopLeft);
 
 		/* Update the elements on the OpenGL context */
 		UpdateVisibleElements();
