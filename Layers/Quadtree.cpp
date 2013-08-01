@@ -413,7 +413,9 @@ void Quadtree::RetrieveElements(branch *currBranch, int depth, std::vector<std::
 	{
 		if (currBranch->leaves[i] != 0)
 		{
-			if (rectangleIntersection(currBranch->leaves[i], l, r, b, t))
+			if (rectangleIntersection(currBranch->leaves[i], l, r, b, t) ||
+			    leafIsInside(currBranch->leaves[i], l, r, b, t) ||
+			    rectangleIsInside(l, r, b, t, currBranch->leaves[i]))
 			{
 				list->push_back(&currBranch->leaves[i]->elements);
 			}
@@ -424,12 +426,17 @@ void Quadtree::RetrieveElements(branch *currBranch, int depth, std::vector<std::
 	{
 		return;
 	} else {
-		depth--;
+//		depth--;
 		for (int i=0; i<4; i++)
 		{
 			if (currBranch->branches[i] != 0)
 			{
-				if (rectangleIntersection(currBranch->branches[i], l, r, b, t))
+				if (branchIsInside(currBranch->branches[i], l, r, b, t))
+				{
+					RetrieveElements(currBranch->branches[i], depth, list);
+				}
+				else if (rectangleIntersection(currBranch->branches[i], l, r, b, t) ||
+					 rectangleIsInside(l, r, b, t, currBranch->branches[i]))
 				{
 					RetrieveElements(currBranch->branches[i], depth, list, l, r, b, t);
 				}
@@ -786,29 +793,53 @@ bool Quadtree::pointIsInsideCircle(float x, float y, float circleX, float circle
 
 bool Quadtree::rectangleIntersection(leaf *currLeaf, float l, float r, float b, float t)
 {
-	if (pointIsInside(currLeaf, l, t) ||
-	    pointIsInside(currLeaf, r, t) ||
-	    pointIsInside(currLeaf, l, b) ||
-	    pointIsInside(currLeaf, r, b) ||
-	    pointIsInside(l, r, b, t, currLeaf->bounds[0], currLeaf->bounds[3]) ||
-	    pointIsInside(l, r, b, t, currLeaf->bounds[0], currLeaf->bounds[2]) ||
-	    pointIsInside(l, r, b, t, currLeaf->bounds[1], currLeaf->bounds[3]) ||
-	    pointIsInside(l, r, b, t, currLeaf->bounds[1], currLeaf->bounds[2]))
-		return true;
-	return false;
+	return		!(l >= currLeaf->bounds[1] ||
+			  r <= currLeaf->bounds[0] ||
+			  b >= currLeaf->bounds[3] ||
+			  t <= currLeaf->bounds[2]);
 }
 
 
 bool Quadtree::rectangleIntersection(branch *currBranch, float l, float r, float b, float t)
 {
-	if (pointIsInside(currBranch, l, t) ||
-	    pointIsInside(currBranch, r, t) ||
-	    pointIsInside(currBranch, l, b) ||
-	    pointIsInside(currBranch, r, b) ||
-	    pointIsInside(l, r, b, t, currBranch->bounds[0], currBranch->bounds[3]) ||
-	    pointIsInside(l, r, b, t, currBranch->bounds[0], currBranch->bounds[2]) ||
-	    pointIsInside(l, r, b, t, currBranch->bounds[1], currBranch->bounds[3]) ||
-	    pointIsInside(l, r, b, t, currBranch->bounds[1], currBranch->bounds[2]))
-		return true;
-	return false;
+	return		!(l >= currBranch->bounds[1] ||
+			  r <= currBranch->bounds[0] ||
+			  b >= currBranch->bounds[3] ||
+			  t <= currBranch->bounds[2]);
+}
+
+
+bool Quadtree::branchIsInside(branch *currBranch, float l, float r, float b, float t)
+{
+	return		currBranch->bounds[0] >= l &&
+			currBranch->bounds[1] <= r &&
+			currBranch->bounds[2] >= b &&
+			currBranch->bounds[3] <= t;
+}
+
+
+bool Quadtree::leafIsInside(leaf *currLeaf, float l, float r, float b, float t)
+{
+	return		currLeaf->bounds[0] >= l &&
+			currLeaf->bounds[1] <= r &&
+			currLeaf->bounds[2] >= b &&
+			currLeaf->bounds[3] <= t;
+}
+
+
+bool Quadtree::rectangleIsInside(float l, float r, float b, float t, branch *currBranch)
+{
+	return		l >= currBranch->bounds[0] &&
+			r <= currBranch->bounds[1] &&
+			b >= currBranch->bounds[2] &&
+			t <= currBranch->bounds[3];
+}
+
+
+bool Quadtree::rectangleIsInside(float l, float r, float b, float t, leaf *currLeaf)
+{
+	return		l >= currLeaf->bounds[0] &&
+			r <= currLeaf->bounds[1] &&
+			b >= currLeaf->bounds[2] &&
+			t <= currLeaf->bounds[3];
 }

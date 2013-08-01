@@ -29,7 +29,7 @@ TerrainLayer::TerrainLayer()
 
 	quadtree = 0;
 	numVisibleElements = 0;
-	viewingDepth = 15;
+	viewingDepth = 3;
 
 	useCulledShaders = false;
 	solidOutline = 0;
@@ -1061,7 +1061,7 @@ void TerrainLayer::readFort14()
 			// Organize the data in a quadtree
 			if (!quadtree)
 			{
-				quadtree = new Quadtree(nodes, elements, 5000, (minX-midX)/max, (maxX-midX)/max, (minY-midY)/max, (maxY-midY)/max);
+				quadtree = new Quadtree(nodes, elements, 500, (minX-midX)/max, (maxX-midX)/max, (minY-midY)/max, (maxY-midY)/max);
 			}
 
 			CheckForLargeDomain();
