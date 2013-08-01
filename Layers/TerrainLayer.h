@@ -135,6 +135,12 @@ class TerrainLayer : public Layer
 		void	CheckForLargeDomain();
 		void	UpdateVisibleElements();
 
+		/* File Reading Methods */
+		unsigned int	ReadNodalData(unsigned int nodeCount, std::ifstream* fileStream);
+		unsigned int	ReadNodalData(unsigned int nodeCount, std::ifstream *fileStream, unsigned int currProgress, unsigned int totalProgress);
+		unsigned int	ReadElementData(unsigned int elementCount, std::ifstream* fileStream);
+		unsigned int	ReadElementData(unsigned int elementCount, std::ifstream *fileStream, unsigned int currProgress, unsigned int totalProgress);
+
 	public slots:
 
 		// Slots used for work that needs to be performed on a worker thread

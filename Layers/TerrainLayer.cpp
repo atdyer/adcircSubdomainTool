@@ -974,52 +974,27 @@ void TerrainLayer::readFort14()
 			elements.reserve(numElements);
 
 			/* Read all of the nodal data */
-
-			Node currNode;
-			for (unsigned int i=0; i<numNodes; i++)
-			{
-				fort14 >> currNode.nodeNumber;
-				fort14 >> currNode.x;
-				fort14 >> currNode.y;
-				fort14 >> currNode.z;
-
-				// Check against min/max values and flip the z-value if needed
-				if (currNode.x < minX)
-					minX = currNode.x;
-				else if (currNode.x > maxX)
-					maxX = currNode.x;
-				if (currNode.y < minY)
-					minY = currNode.y;
-				else if (currNode.y > maxY)
-					maxY = currNode.y;
-				if (flipZValue)
-					currNode.z *= -1.0;
-				if (currNode.z < minZ)
-					minZ = currNode.z;
-				else if (currNode.z > maxZ)
-					maxZ = currNode.z;
-				nodes.push_back(currNode);
-				emit progress(100*(++progressPoint)/progressPoints);
-			}
+			progressPoint = ReadNodalData(numNodes, &fort14, progressPoint, progressPoints);
 
 
 			/* Read all of the element data */
+			progressPoint = ReadElementData(numElements, &fort14, progressPoint, progressPoints);
 
-			Element currElement;
-			int trash, currNodeNumber;
-			for (unsigned int i=0; i<numElements; i++)
-			{
-				fort14 >> currElement.elementNumber;
-				fort14 >> trash;
-				fort14 >> currNodeNumber;
-				currElement.n1 = GetNode(currNodeNumber);
-				fort14 >> currNodeNumber;
-				currElement.n2 = GetNode(currNodeNumber);
-				fort14 >> currNodeNumber;
-				currElement.n3 = GetNode(currNodeNumber);
-				elements.push_back(currElement);
-				emit progress(100*(++progressPoint)/progressPoints);
-			}
+//			Element currElement;
+//			int trash, currNodeNumber;
+//			for (unsigned int i=0; i<numElements; i++)
+//			{
+//				fort14 >> currElement.elementNumber;
+//				fort14 >> trash;
+//				fort14 >> currNodeNumber;
+//				currElement.n1 = GetNode(currNodeNumber);
+//				fort14 >> currNodeNumber;
+//				currElement.n2 = GetNode(currNodeNumber);
+//				fort14 >> currNodeNumber;
+//				currElement.n3 = GetNode(currNodeNumber);
+//				elements.push_back(currElement);
+//				emit progress(100*(++progressPoint)/progressPoints);
+//			}
 
 
 			/* Read all of the boundary data if this is a subdomain */
@@ -1083,5 +1058,99 @@ void TerrainLayer::readFort14()
 		fileLoaded = false;
 		emit emitMessage("Error opening fort.14 file");
 	}
+}
+
+
+/**
+ * @brief Helper function that reads all Nodal data from a fort.14 file
+ *
+ * Helper function that reads all Nodal data from a fort.14 file. Compares Nodal coordinates
+ * against current min/max values and modifies those values accordingly.
+ *
+ * File stream object must already be at the beginning of the nodal list in the fort.14 file.
+ *
+ * @param nodeCount The number of Nodes to read
+ * @param fileStream File stream located at the beginning of the node list in fort.14
+ */
+unsigned int TerrainLayer::ReadNodalData(unsigned int nodeCount, std::ifstream *fileStream)
+{
+	return ReadNodalData(nodeCount, fileStream, 0, 0);
+}
+
+
+/**
+ * @brief Helper function that reads all Nodal data from a fort.14 file
+ *
+ * Helper function that reads all Nodal data from a fort.14 file. Compares Nodal coordinates
+ * against current min/max values and modifies those values accordingly.
+ *
+ * File stream object must already be at the beginning of the nodal list in the fort.14 file.
+ *
+ * Emits the current fort.14 processing progress.
+ *
+ * @param nodeCount The number of Nodes to read
+ * @param fileStream File stream located at the beginning of the node list in fort.14
+ * @param currProgress The current progress in processing the fort.14 file
+ * @param totalProgress The value that indicates all of the fort.14 file has processed
+ * @return The progress in processing the fort.14 file after the nodal data has been read
+ */
+unsigned int TerrainLayer::ReadNodalData(unsigned int nodeCount, std::ifstream *fileStream, unsigned int currProgress, unsigned int totalProgress)
+{
+	Node currNode;
+	for (unsigned int i=0; i<nodeCount; i++)
+	{
+		*fileStream >> currNode.nodeNumber;
+		*fileStream >> currNode.x;
+		*fileStream >> currNode.y;
+		*fileStream >> currNode.z;
+
+		// Check against min/max values and flip the z-value if needed
+		if (currNode.x < minX)
+			minX = currNode.x;
+		else if (currNode.x > maxX)
+			maxX = currNode.x;
+		if (currNode.y < minY)
+			minY = currNode.y;
+		else if (currNode.y > maxY)
+			maxY = currNode.y;
+		if (flipZValue)
+			currNode.z *= -1.0;
+		if (currNode.z < minZ)
+			minZ = currNode.z;
+		else if (currNode.z > maxZ)
+			maxZ = currNode.z;
+		nodes.push_back(currNode);
+		if (totalProgress)
+			emit progress(100*(++currProgress)/totalProgress);
+	}
+	return currProgress;
+}
+
+
+unsigned int TerrainLayer::ReadElementData(unsigned int elementCount, std::ifstream *fileStream)
+{
+	return ReadElementData(elementCount, fileStream, 0, 0);
+}
+
+
+unsigned int TerrainLayer::ReadElementData(unsigned int elementCount, std::ifstream *fileStream, unsigned int currProgress, unsigned int totalProgress)
+{
+	Element currElement;
+	int trash, currNodeNumber;
+	for (unsigned int i=0; i<elementCount; i++)
+	{
+		*fileStream >> currElement.elementNumber;
+		*fileStream >> trash;
+		*fileStream >> currNodeNumber;
+		currElement.n1 = GetNode(currNodeNumber);
+		*fileStream >> currNodeNumber;
+		currElement.n2 = GetNode(currNodeNumber);
+		*fileStream >> currNodeNumber;
+		currElement.n3 = GetNode(currNodeNumber);
+		elements.push_back(currElement);
+		if (totalProgress)
+			emit progress(100*(++currProgress)/totalProgress);
+	}
+	return currProgress;
 }
 
