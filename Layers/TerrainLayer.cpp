@@ -29,7 +29,7 @@ TerrainLayer::TerrainLayer()
 
 	quadtree = 0;
 	numVisibleElements = 0;
-	viewingDepth = 3;
+	viewingDepth = 5;
 
 	useCulledShaders = false;
 	solidOutline = 0;
@@ -134,8 +134,8 @@ void TerrainLayer::LoadDataToGPU()
 	{
 
 		/* First check if we should be using culled shaders */
-//		if (numElements > 1000000)
-//			SwitchToCulledShaders();
+		if (largeDomain)
+			SwitchToCulledShaders();
 
 		/* Send the data to the GPU */
 		const size_t VertexBufferSize = 4*sizeof(GLfloat)*numNodes;
@@ -964,79 +964,38 @@ void TerrainLayer::readFort14()
 		emit foundNumNodes(numNodes);
 		emit foundNumElements(numElements);
 
-		// Progress bar stuff
-		int progressPoint = 0;
-		int progressPoints = numElements+2*numNodes;
+		/* Progress bar stuff */
+		int currentProgress = 0;
+		int totalProgress = CalculateTotalProgress(true, true, true, true, true);
 
 		if (numNodes > 0 && numElements > 0)
 		{
 			nodes.reserve(numNodes);
 			elements.reserve(numElements);
 
-			/* Read all of the nodal data */
-			progressPoint = ReadNodalData(numNodes, &fort14, progressPoint, progressPoints);
+			/* Read all of the nodal data with progress bar enabled */
+			currentProgress = ReadNodalData(numNodes, &fort14, currentProgress, totalProgress);
 
 
-			/* Read all of the element data */
-			progressPoint = ReadElementData(numElements, &fort14, progressPoint, progressPoints);
-
-//			Element currElement;
-//			int trash, currNodeNumber;
-//			for (unsigned int i=0; i<numElements; i++)
-//			{
-//				fort14 >> currElement.elementNumber;
-//				fort14 >> trash;
-//				fort14 >> currNodeNumber;
-//				currElement.n1 = GetNode(currNodeNumber);
-//				fort14 >> currNodeNumber;
-//				currElement.n2 = GetNode(currNodeNumber);
-//				fort14 >> currNodeNumber;
-//				currElement.n3 = GetNode(currNodeNumber);
-//				elements.push_back(currElement);
-//				emit progress(100*(++progressPoint)/progressPoints);
-//			}
+			/* Read all of the element data with progress bar enabled */
+			currentProgress = ReadElementData(numElements, &fort14, currentProgress, totalProgress);
 
 
 			/* Read all of the boundary data if this is a subdomain */
-			int numSegments, numBoundaryNodes;
-			std::getline(fort14, line);
-			std::getline(fort14, line);
-			std::stringstream(line) >> numSegments;
-			std::getline(fort14, line);
-			std::stringstream(line) >> numBoundaryNodes;
-			if (numSegments == 1)
-			{
-				int numNextBoundaryNodes, nextNodeNumber;
-				fort14 >> numNextBoundaryNodes;
-				for (int i=0; i<numNextBoundaryNodes; i++)
-				{
-					fort14 >> nextNodeNumber;
-					boundaryNodes.push_back(nextNodeNumber);
-				}
-			}
+			currentProgress = ReadBoundaryNodes(&fort14, currentProgress, totalProgress);
 
+			/* All data has been read from fort.14, so close it */
 			fort14.close();
-
 			fileLoaded = true;
 
-
-			// Calculate normalized coordinates
-			midX = minX + (maxX - minX) / 2.0;
-			midY = minY + (maxY - minY) / 2.0;
-			max = fmax(maxX-minX, maxY-minY);
-			for (unsigned int i=0; i<numNodes; i++)
-			{
-				nodes[i].normX = (nodes[i].x - midX)/max;
-				nodes[i].normY = (nodes[i].y - midY)/max;
-				nodes[i].normZ = nodes[i].z / (maxZ-minZ);
-				emit progress(100*(++progressPoint)/progressPoints);
-			}
+			/* Calculate normalized coordinates */
+			currentProgress = NormalizeCoordinates(currentProgress, totalProgress);
 
 
 			// Organize the data in a quadtree
 			if (!quadtree)
 			{
-				quadtree = new Quadtree(nodes, elements, 500, (minX-midX)/max, (maxX-midX)/max, (minY-midY)/max, (maxY-midY)/max);
+				quadtree = new Quadtree(nodes, elements, 50, (minX-midX)/max, (maxX-midX)/max, (minY-midY)/max, (maxY-midY)/max);
 			}
 
 			CheckForLargeDomain();
@@ -1062,6 +1021,37 @@ void TerrainLayer::readFort14()
 
 
 /**
+ * @brief Helper function that calculates the value used to represent a fully processed fort.14 file
+ *
+ * Helper function that calculates the value used to represent a fully processed fort.14 file. The value
+ * starts as 0 and the total number of points that will be accumulated during each process is added
+ * (eg. 1 per node when reading the nodes, so the total number of nodes is added).
+ *
+ * @param readNodes true if Nodes will be read, false otherwise
+ * @param readElements true if Elements will be read, false otherwise
+ * @param readBoundaries true if boundaries will be read, false otherwise
+ * @param normalizeCoordinates true if normal coordinates will be calculated, false otherwise
+ * @param createQuadtree true if a Quadtree will be created, false otherwise
+ * @return The total progress value that represents a fully processed fort.14 file
+ */
+unsigned int TerrainLayer::CalculateTotalProgress(bool readNodes, bool readElements, bool readBoundaries, bool normalizeCoordinates, bool createQuadtree)
+{
+	unsigned int totalProgress = 0;
+	if (readNodes)
+		totalProgress += numNodes;
+	if (readElements)
+		totalProgress += numElements;
+	if (readBoundaries)
+		totalProgress += BOUNDARY_PROGRESS_VALUE;
+	if (normalizeCoordinates)
+		totalProgress += numNodes;
+	if (createQuadtree)
+		totalProgress += QUADTREE_PROGRESS_VALUE;
+	return totalProgress;
+}
+
+
+/**
  * @brief Helper function that reads all Nodal data from a fort.14 file
  *
  * Helper function that reads all Nodal data from a fort.14 file. Compares Nodal coordinates
@@ -1071,6 +1061,7 @@ void TerrainLayer::readFort14()
  *
  * @param nodeCount The number of Nodes to read
  * @param fileStream File stream located at the beginning of the node list in fort.14
+ * @return 0
  */
 unsigned int TerrainLayer::ReadNodalData(unsigned int nodeCount, std::ifstream *fileStream)
 {
@@ -1127,12 +1118,38 @@ unsigned int TerrainLayer::ReadNodalData(unsigned int nodeCount, std::ifstream *
 }
 
 
+/**
+ * @brief Helper function that reads all Element data from the fort.14 file
+ *
+ * Helper function that reads all Element data from the fort.14 file.
+ *
+ * File stream object must already be at the beginning of the element list in the fort.14 file.
+ *
+ * @param elementCount The number of Elements to read
+ * @param fileStream File stream located at the beginning of the element list in the fort.14 file
+ * @return 0
+ */
 unsigned int TerrainLayer::ReadElementData(unsigned int elementCount, std::ifstream *fileStream)
 {
 	return ReadElementData(elementCount, fileStream, 0, 0);
 }
 
 
+/**
+ * @brief Helper function that reads all Element data from the fort.14 file
+ *
+ * Helper function that reads all Element data from the fort.14 file.
+ *
+ * File stream object must already be at the beginning of the element list in the fort.14 file.
+ *
+ * Emits the current fort.14 processing progress.
+ *
+ * @param elementCount The number of Elements to read
+ * @param fileStream File stream located at the beginning of the element list in the fort.14 file
+ * @param currProgress The current progress in processing the fort.14 file
+ * @param totalProgress The value that indicates all of the fort.14 file has processed
+ * @return The progress in processing the fort.14 file after the element data has been read
+ */
 unsigned int TerrainLayer::ReadElementData(unsigned int elementCount, std::ifstream *fileStream, unsigned int currProgress, unsigned int totalProgress)
 {
 	Element currElement;
@@ -1148,6 +1165,112 @@ unsigned int TerrainLayer::ReadElementData(unsigned int elementCount, std::ifstr
 		*fileStream >> currNodeNumber;
 		currElement.n3 = GetNode(currNodeNumber);
 		elements.push_back(currElement);
+		if (totalProgress)
+			emit progress(100*(++currProgress)/totalProgress);
+	}
+	return currProgress;
+}
+
+
+/**
+ * @brief Helper function that reads the list of boundary nodes from the fort.14 file
+ *
+ * Helper function that reads the list of boundary nodes from the fort.14 file.
+ *
+ * File stream object must already be at the beginning of the list of boundaries in the fort.14 file.
+ *
+ * @param fileStream File stream located at the beginning of the list of boundaries in the fort.14 file
+ * @return 0
+ */
+unsigned int TerrainLayer::ReadBoundaryNodes(std::ifstream *fileStream)
+{
+	return ReadBoundaryNodes(fileStream, 0, 0);
+}
+
+
+/**
+ * @brief Helper function that reads the list of boundary nodes from the fort.14 file
+ *
+ * Helper function that reads the list of boundary nodes from the fort.14 file.
+ *
+ * File stream object must already be at the beginning of the list of boundaries in the fort.14 file.
+ *
+ * Emits the current fort.14 processing progress.
+ *
+ * @param fileStream File stream located at the beginning of the list of boundaries in the fort.14 file
+ * @param currProgress The current progress in processing the fort.14 file
+ * @param totalProgress The value that indicates all of the fort.14 file has processed
+ * @return The progress in processing the fort.14 file after the boundary data has been read
+ */
+unsigned int TerrainLayer::ReadBoundaryNodes(std::ifstream *fileStream, unsigned int currProgress, unsigned int totalProgress)
+{
+	std::string line;
+	int numSegments, numBoundaryNodes, finalProgressValue;
+	finalProgressValue = currProgress + BOUNDARY_PROGRESS_VALUE;
+	std::getline(*fileStream, line);
+	std::getline(*fileStream, line);
+	std::stringstream(line) >> numSegments;
+	std::getline(*fileStream, line);
+	std::stringstream(line) >> numBoundaryNodes;
+	if (numSegments == 1)
+	{
+		int numNextBoundaryNodes, nextNodeNumber;
+		*fileStream >> numNextBoundaryNodes;
+		int progressPointSize = BOUNDARY_PROGRESS_VALUE/numNextBoundaryNodes;
+		for (int i=0; i<numNextBoundaryNodes; i++)
+		{
+			*fileStream >> nextNodeNumber;
+			boundaryNodes.push_back(nextNodeNumber);
+			if (totalProgress)
+			{
+				currProgress += progressPointSize;
+				emit progress(100*(currProgress)/totalProgress);
+			}
+		}
+	}
+	else if (totalProgress)
+	{
+		emit progress(finalProgressValue);
+		return finalProgressValue;
+	}
+	return currProgress;
+}
+
+
+/**
+ * @brief Helper function that calculates the normalized coordinates for each Node
+ *
+ * Helper function that calculates the normalized coordinates for each Node
+ *
+ * @return 0
+ */
+unsigned int TerrainLayer::NormalizeCoordinates()
+{
+	return NormalizeCoordinates(0, 0);
+}
+
+
+/**
+ * @brief Helper function that calculates the normalized coordinates for each Node
+ *
+ * Helper function that calculates the normalized coordinates for each Node
+ *
+ * Emits the current fort.14 processing progress.
+ *
+ * @param currProgress The current progress in processing the fort.14 file
+ * @param totalProgress The value that indicates all of the fort.14 file has processed
+ * @return The progress in processing the fort.14 file after the normalized coordinates have been calculated
+ */
+unsigned int TerrainLayer::NormalizeCoordinates(unsigned int currProgress, unsigned int totalProgress)
+{
+	midX = minX + (maxX - minX) / 2.0;
+	midY = minY + (maxY - minY) / 2.0;
+	max = fmax(maxX-minX, maxY-minY);
+	for (unsigned int i=0; i<numNodes; i++)
+	{
+		nodes[i].normX = (nodes[i].x - midX)/max;
+		nodes[i].normY = (nodes[i].y - midY)/max;
+		nodes[i].normZ = nodes[i].z / (maxZ-minZ);
 		if (totalProgress)
 			emit progress(100*(++currProgress)/totalProgress);
 	}

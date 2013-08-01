@@ -14,6 +14,9 @@
 #include <sstream>
 #include <QThread>
 
+#define BOUNDARY_PROGRESS_VALUE 100
+#define QUADTREE_PROGRESS_VALUE 10000
+
 
 /**
  * @brief This class is used to read and display terrain data from a fort.14 file
@@ -136,10 +139,17 @@ class TerrainLayer : public Layer
 		void	UpdateVisibleElements();
 
 		/* File Reading Methods */
+		unsigned int	CalculateTotalProgress(bool readNodes, bool readElements, bool readBoundaries, bool normalizeCoordinates, bool createQuadtree);
 		unsigned int	ReadNodalData(unsigned int nodeCount, std::ifstream* fileStream);
 		unsigned int	ReadNodalData(unsigned int nodeCount, std::ifstream *fileStream, unsigned int currProgress, unsigned int totalProgress);
 		unsigned int	ReadElementData(unsigned int elementCount, std::ifstream* fileStream);
 		unsigned int	ReadElementData(unsigned int elementCount, std::ifstream *fileStream, unsigned int currProgress, unsigned int totalProgress);
+		unsigned int	ReadBoundaryNodes(std::ifstream *fileStream);
+		unsigned int	ReadBoundaryNodes(std::ifstream *fileStream, unsigned int currProgress, unsigned int totalProgress);
+
+		/* Data Processing Methods */
+		unsigned int	NormalizeCoordinates();
+		unsigned int	NormalizeCoordinates(unsigned int currProgress, unsigned int totalProgress);
 
 	public slots:
 
