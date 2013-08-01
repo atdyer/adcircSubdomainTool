@@ -2,19 +2,37 @@
 #define BOUNDARYFINDER_H
 
 #include <vector>
-#include <set>
-
-#include <QObject>
+#include <map>
 
 #include "adcData.h"
+#include "Layers/Actions/ElementState.h"
 
-class BoundaryFinder : public QObject
+struct Edge
 {
-		Q_OBJECT
+		unsigned int n1;
+		unsigned int n2;
+		bool operator== (const Edge &e1) const{
+			return (n1 == e1.n1 && n2 == e1.n2);
+		}
+		bool operator< (const Edge &e1) const{
+			return n1 < e1.n1;
+		}
+};
+
+class BoundaryFinder
+{
 	public:
+		/* Constructor */
 		BoundaryFinder();
 
-		std::vector<Node*>	FindBoundaries(std::vector<Element *> fullElements, std::vector<Element*> selectedElements);
+		/* The Callable Search Function */
+		std::vector<Node*>	FindBoundaries(ElementState* elementSelection);
+
+	private:
+
+		std::map<Edge, int>	edgesMap;
+
+		void	CreateEdgesList(std::vector<Element*>* elements);
 
 };
 

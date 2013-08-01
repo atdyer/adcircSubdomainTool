@@ -5,41 +5,29 @@ BoundaryFinder::BoundaryFinder()
 }
 
 
-std::vector<Node*> BoundaryFinder::FindBoundaries(std::vector<Element *> fullElements, std::vector<Element *> selectedElements)
+std::vector<Node*> BoundaryFinder::FindBoundaries(ElementState *elementSelection)
 {
-//	// A set that contains all selected nodes
-//	std::set<Node*> selectedNodes;
+	CreateEdgesList(elementSelection->GetState());
+	std::vector<Node*> list;
+	return list;
+}
 
-//	// Add all nodes from the selected elements to the selected nodes
-//	for (std::vector<Element*>::iterator it = selectedElements.begin(); it != selectedElements.end(); it++)
-//	{
-//		selectedNodes.insert(*it);
-//	}
 
-//	// A list of the boundary nodes
-//	std::vector<Node*> boundaryNodes;
+void BoundaryFinder::CreateEdgesList(std::vector<Element *> *elements)
+{
+	/********** NOT WORKING YET!! **************/
+	edgesMap.clear();
+	for (std::vector<Element*>::iterator it = elements->begin(); it != elements->end(); ++it)
+	{
+		Edge newEdge {(*it)->n1->nodeNumber, (*it)->n2->nodeNumber};
+		edgesMap[newEdge] += 1;
+	}
 
-//	// Find our first boundary node using brute force
-//	Element* currElement = 0;
-//	for (std::vector<Element*>::iterator it = fullElements.begin(); it != fullElements.end(); it++)
-//	{
-//		bool n1 = false;
-//		bool n2 = false;
-//		bool n3 = false;
-//		currElement = *it;
-//		if (selectedNodes.count(currElement->n1))
-//			n1 = true;
-//		if (selectedNodes.count(currElement->n2))
-//			n2 = true;
-//		if (selectedNodes.count(currElement->n3))
-//			n3 = true;
+	DEBUG("Num edges: " << edgesMap.size());
 
-//		// If they aren't all true or they aren't all false, we've found a boundary node
-//		if (!(n1 && n2 && n3) || !(!n1 && !n2 && !n3))
-//			break;
-//	}
-
-//	// Add our first boundary node
-//	boundaryNodes.push_back();
-
+	int boundaryEdges = 0;
+	for (std::map<Edge, int>::iterator it = edgesMap.begin(); it != edgesMap.end(); ++it)
+		if (it->second == 1)
+			boundaryEdges++;
+	DEBUG("Num boundary edges: " << boundaryEdges);
 }

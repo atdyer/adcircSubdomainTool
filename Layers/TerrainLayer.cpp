@@ -134,8 +134,8 @@ void TerrainLayer::LoadDataToGPU()
 	{
 
 		/* First check if we should be using culled shaders */
-		if (largeDomain)
-			SwitchToCulledShaders();
+//		if (largeDomain)
+//			SwitchToCulledShaders();
 
 		/* Send the data to the GPU */
 		const size_t VertexBufferSize = 4*sizeof(GLfloat)*numNodes;

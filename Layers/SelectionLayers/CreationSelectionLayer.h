@@ -14,6 +14,7 @@
 #include "OpenGL/Shaders/SolidShader.h"
 
 #include "SubdomainTools/CircleTool.h"
+#include "SubdomainTools/BoundaryFinder.h"
 
 #include <QObject>
 
@@ -74,11 +75,15 @@ class CreationSelectionLayer : public SelectionLayer
 		virtual void	Undo();
 		virtual void	Redo();
 
+		void			FindBoundaries();
+		std::vector<Node*>	GetBoundaryNodes();
+
 	protected:
 
 		/* Selection Tools */
 		int		activeTool;	/**< Integer used to determine which tool mouse actions are sent to */
 		CircleTool*	circleTool;	/**< Tool for selecting elements inside of a circle */
+		BoundaryFinder*	boundaryFinder;	/**< Tool used for finding the boundary nodes of a selection */
 
 		/* Selected Elements */
 		ElementState*		selectedState;	/**< The current state of selected Elements */

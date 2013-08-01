@@ -11,6 +11,7 @@ CreationSelectionLayer::CreationSelectionLayer()
 {
 	activeTool = 1;
 	circleTool = 0;
+	boundaryFinder = new BoundaryFinder();
 
 	selectedState = 0;
 
@@ -58,6 +59,12 @@ CreationSelectionLayer::~CreationSelectionLayer()
 		glDeleteBuffers(1, &VAOId);
 	if (IBOId)
 		glDeleteBuffers(1, &IBOId);
+
+	/* Delete all tools */
+	if (circleTool)
+		delete circleTool;
+	if (boundaryFinder)
+		delete boundaryFinder;
 
 	/* Delete all states */
 	if (selectedState)
@@ -364,6 +371,35 @@ void CreationSelectionLayer::Redo()
 
 
 /**
+ * @brief Attempts to find the boundary of the currently selected elements
+ *
+ * Attempts to find the boundary of the currently selected elements. If a valid boundary is found,
+ * the validBoundary flag will be set to true and the boundary will be drawn around the selection.
+ * Once a valid boundary has been found, the GetBoundaryNodes function will return the current
+ * list of boundary nodes.
+ *
+ */
+void CreationSelectionLayer::FindBoundaries()
+{
+
+}
+
+
+/**
+ * @brief If a valid boundary exists, a list of the boundary Nodes will be returned.
+ *
+ * If a valid boundary exists, a list of the boundary Nodes will be returned. The list will
+ * be in counter-clockwise order around the subdomain.
+ *
+ * @return A list of boundary nodes in counter-clockwise order
+ */
+std::vector<Node*> CreationSelectionLayer::GetBoundaryNodes()
+{
+
+}
+
+
+/**
  * @brief Initializes the Buffer Objects and Shaders objects necessary for drawing the
  * selection layer
  *
@@ -567,6 +603,8 @@ void CreationSelectionLayer::CircleToolFinishedSearching()
 
 			/* Let everyone know we can undo this action */
 			emit UndoAvailable(true);
+
+			boundaryFinder->FindBoundaries(selectedState);
 		} else {
 			/* No elements were selected, so just go ahead and delete the new list */
 			delete newState;
