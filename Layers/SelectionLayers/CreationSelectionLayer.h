@@ -109,6 +109,8 @@ class CreationSelectionLayer : public SelectionLayer
 		/* Helper Functions */
 		void	ClearUndoStack();
 		void	ClearRedoStack();
+		void	UseNewState(ElementState* newState);
+		void	UseState(ElementState* state);
 
 	protected slots:
 

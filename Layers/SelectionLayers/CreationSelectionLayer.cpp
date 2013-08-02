@@ -355,12 +355,11 @@ void CreationSelectionLayer::Undo()
 	if (!undoStack.empty() && selectedState)
 	{
 		redoStack.push(selectedState);
-		selectedState = undoStack.top();
+		UseState(undoStack.top());
 		undoStack.pop();
 		emit RedoAvailable(true);
 		if (undoStack.empty())
 			emit UndoAvailable(false);
-		LoadDataToGPU();
 	}
 }
 
@@ -377,12 +376,11 @@ void CreationSelectionLayer::Redo()
 	if (!redoStack.empty() && selectedState)
 	{
 		undoStack.push(selectedState);
-		selectedState = redoStack.top();
+		UseState(redoStack.top());
 		redoStack.pop();
 		emit UndoAvailable(true);
 		if (redoStack.empty())
 			emit RedoAvailable(false);
-		LoadDataToGPU();
 	}
 }
 
@@ -541,6 +539,48 @@ void CreationSelectionLayer::ClearRedoStack()
 
 
 /**
+ * @brief Called after a new selection is made to set the current state to the newly created one
+ *
+ * Called after a new selection is made to set the current state to the newly created one. Takes
+ * care of undo/redo stacks and boundary searching.
+ *
+ * @param newState The newly created state
+ */
+void CreationSelectionLayer::UseNewState(ElementState *newState)
+{
+	/* A new selection has been made, so redo is no longer available */
+	ClearRedoStack();
+
+	/* Push the old state onto the undo stack */
+	undoStack.push(selectedState);
+	emit UndoAvailable(true);
+
+	UseState(newState);
+}
+
+
+/**
+ * @brief Sets the currently visible state
+ *
+ * Sets the currently visible state. Performs boundary search on that state and loads all data
+ * to the GPU.
+ *
+ * @param state The state to make visible
+ */
+void CreationSelectionLayer::UseState(ElementState *state)
+{
+	/* Set the current state to the new one */
+	selectedState = state;
+
+	/* Find the boundary */
+	boundaryNodes = boundaryFinder->FindBoundaries(selectedState);
+
+	/* Update the data on the GPU */
+	LoadDataToGPU();
+}
+
+
+/**
  * @brief Slot that contains all action that need to be performed after the
  * terrain data has been loaded to the GPU
  *
@@ -589,9 +629,6 @@ void CreationSelectionLayer::CircleToolFinishedSearching()
 				newList->reserve(newList->size() + currList->size());
 				newList->insert(newList->end(), currList->begin(), currList->end());
 
-				/* Push the old list onto the undo stack */
-				undoStack.push(selectedState);
-
 				/* Sort the new list */
 				std::sort(newList->begin(), newList->end());
 
@@ -599,30 +636,9 @@ void CreationSelectionLayer::CircleToolFinishedSearching()
 				std::vector<Element*>::iterator it;
 				it = std::unique(newList->begin(), newList->end());
 				newList->resize(std::distance(newList->begin(), it));
-
-				/* Set the new state as the current state */
-				selectedState = newState;
-			} else {
-				/* There aren't any currently selected elements, so just go ahead and
-				 * make the current state the new state. Push back
-				 * the empty state so that the it is saved in the undo stack */
-				undoStack.push(selectedState);
-
-				/* Set the new state as the current state */
-				selectedState = newState;
 			}
 
-			/* Find the boundary nodes */
-			boundaryNodes = boundaryFinder->FindBoundaries(selectedState);
-
-			/* Update the data being displayed */
-			LoadDataToGPU();
-
-			/* Clear the Redo stack */
-			ClearRedoStack();
-
-			/* Let everyone know we can undo this action */
-			emit UndoAvailable(true);
+			UseNewState(newState);
 
 		} else {
 			/* No elements were selected, so just go ahead and delete the new list */

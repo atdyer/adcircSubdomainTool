@@ -37,11 +37,13 @@ void BoundaryFinder::FindEdges(std::vector<Element *> *elements)
 	}
 
 	for (std::map<Edge, int>::iterator it = edgesMap.begin(); it != edgesMap.end(); ++it)
+	{
 		if (it->second == 1)
 		{
 			nodeAdjacency[it->first.n1].push_back(it->first.n2);
 			nodeAdjacency[it->first.n2].push_back(it->first.n1);
 		}
+	}
 }
 
 
