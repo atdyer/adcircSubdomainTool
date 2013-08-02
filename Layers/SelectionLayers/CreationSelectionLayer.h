@@ -88,6 +88,9 @@ class CreationSelectionLayer : public SelectionLayer
 		/* Selected Elements */
 		ElementState*		selectedState;	/**< The current state of selected Elements */
 
+		/* Boundary Nodes */
+		std::vector<unsigned int>	boundaryNodes;	/**< List of boundary node numbers */
+
 		/* Undo and Redo Stacks */
 		std::stack<ElementState*, std::vector<ElementState*> >	undoStack;	/**< The undo stack */
 		std::stack<ElementState*, std::vector<ElementState*> >	redoStack;	/**< The redo stack */

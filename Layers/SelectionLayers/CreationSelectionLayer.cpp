@@ -85,23 +85,35 @@ void CreationSelectionLayer::Draw()
 {
 	if (glLoaded && selectedState)
 	{
+		unsigned int numElements = selectedState->GetState()->size();
+
 		glBindVertexArray(VAOId);
 
 		if (fillShader)
 		{
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			if (fillShader->Use())
-				glDrawElements(GL_TRIANGLES, selectedState->GetState()->size()*3, GL_UNSIGNED_INT, (GLvoid*)0);
+				glDrawElements(GL_TRIANGLES, numElements*3, GL_UNSIGNED_INT, (GLvoid*)0);
 		}
 
 		if (outlineShader)
 		{
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			if (outlineShader->Use())
-				glDrawElements(GL_TRIANGLES, selectedState->GetState()->size()*3, GL_UNSIGNED_INT, (GLvoid*)0);
+				glDrawElements(GL_TRIANGLES, numElements*3, GL_UNSIGNED_INT, (GLvoid*)0);
 		}
 
-		// Draw boundaries here
+		if (boundaryShader && boundaryNodes.size())
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			glLineWidth(3.0);
+			if (boundaryShader->Use())
+				glDrawElements(GL_LINE_STRIP, boundaryNodes.size(), GL_UNSIGNED_INT, (GLvoid*)(0 + sizeof(GLuint)*numElements*3));
+			glLineWidth(1.0);
+		}
+
+		glBindVertexArray(0);
+		glUseProgram(0);
 	}
 
 	if (activeTool == CIRCLETOOLINDEX && circleTool)
@@ -127,7 +139,7 @@ void CreationSelectionLayer::LoadDataToGPU()
 	{
 		/* Load the connectivity data (elements) to the GPU, getting rid of any data that's already there */
 		std::vector<Element*> *currSelection = selectedState->GetState();
-		const size_t IndexBufferSize = 3*sizeof(GLuint)*currSelection->size();
+		const size_t IndexBufferSize = 3*sizeof(GLuint)*currSelection->size() + sizeof(GLuint)*boundaryNodes.size();
 		if (IndexBufferSize && VAOId && IBOId)
 		{
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBOId);
@@ -136,13 +148,18 @@ void CreationSelectionLayer::LoadDataToGPU()
 			if (glElementData)
 			{
 				Element* currElement;
-				int i=0;
+				unsigned int i=0;
+				unsigned int currSelectionSize = currSelection->size();
 				for (std::vector<Element*>::iterator it=currSelection->begin(); it != currSelection->end(); ++it, i++)
 				{
 					currElement = *it;
 					glElementData[3*i+0] = (GLuint)currElement->n1->nodeNumber-1;
 					glElementData[3*i+1] = (GLuint)currElement->n2->nodeNumber-1;
 					glElementData[3*i+2] = (GLuint)currElement->n3->nodeNumber-1;
+				}
+				for (i=0; i<boundaryNodes.size(); i++)
+				{
+					glElementData[3*currSelectionSize+i] = boundaryNodes[i]-1;
 				}
 			} else {
 				glLoaded = false;
@@ -595,6 +612,9 @@ void CreationSelectionLayer::CircleToolFinishedSearching()
 				selectedState = newState;
 			}
 
+			/* Find the boundary nodes */
+			boundaryNodes = boundaryFinder->FindBoundaries(selectedState);
+
 			/* Update the data being displayed */
 			LoadDataToGPU();
 
@@ -604,7 +624,6 @@ void CreationSelectionLayer::CircleToolFinishedSearching()
 			/* Let everyone know we can undo this action */
 			emit UndoAvailable(true);
 
-			boundaryFinder->FindBoundaries(selectedState);
 		} else {
 			/* No elements were selected, so just go ahead and delete the new list */
 			delete newState;
