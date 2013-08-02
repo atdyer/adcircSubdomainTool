@@ -21,11 +21,13 @@ class RectangleTool : public QObject
 
 		void	Draw();
 		void	InitializeGL();
+		void	UpdateGL();
 		void	SetCamera(GLCamera* cam);
 		void	SetViewportSize(float w, float h);
 		void	SetFirstCorner(int newX, int newY);
 		void	SetSecondCorner(int newX, int newY);
 		void	RectangleFinished();
+		void	CalculateVertexPoints();
 
 		std::vector<Element*>	GetSelectedElements();
 
@@ -35,11 +37,12 @@ class RectangleTool : public QObject
 		GLCamera*	camera;		/**< The GLCamera that is used to draw the TerrainLayer */
 
 		/* OpenGL Stuff */
-		bool	glLoaded;	/**< Flag that shows if the VAO/VBO/IBO have been created */
-		GLuint	VAOId;		/**< The vertex array object ID */
-		GLuint	VBOId;		/**< The vertex buffer object ID */
-		GLuint	IBOId;		/**< The index buffer object ID */
-		SolidShader*	fillShader;	/**< The shader used to draw the selection tool */
+		bool		glLoaded;		/**< Flag that shows if the VAO/VBO/IBO have been created */
+		GLuint		VAOId;			/**< The vertex array object ID */
+		GLuint		VBOId;			/**< The vertex buffer object ID */
+		GLuint		IBOId;			/**< The index buffer object ID */
+		SolidShader*	fillShader;		/**< The shader used to draw the selection tool */
+		float		vertexPoints[12][2];	/**< The actual vertices used to draw the tool */
 
 		/* Selection Mode */
 		SelectionType	selectionMode;	/**< The current selection mode */

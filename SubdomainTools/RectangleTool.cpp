@@ -9,6 +9,8 @@ RectangleTool::RectangleTool()
 	VBOId = 0;
 	IBOId = 0;
 	fillShader = 0;
+	for (int i=0; i<12; i++)
+		vertexPoints[i][0] = vertexPoints[i][1] = 0.0;
 
 	selectionMode = elementSelection;
 
@@ -59,6 +61,12 @@ void RectangleTool::Draw()
 
 
 void RectangleTool::InitializeGL()
+{
+
+}
+
+
+void RectangleTool::UpdateGL()
 {
 
 }
@@ -123,6 +131,62 @@ void RectangleTool::SetSecondCorner(int newX, int newY)
 
 void RectangleTool::RectangleFinished()
 {
+
+}
+
+
+void RectangleTool::CalculateVertexPoints()
+{
+	float topLeft[2] = {0.0, 0.0};
+	float bottomRight[2] = {0.0, 0.0};
+
+	/* First, figure out where the second point is in relation to the first */
+	if (firstCornerNormal[0] < secondCornerNormal[0])
+	{
+		/* The first point is to the left of the second point */
+		if (firstCornerNormal[1] < secondCornerNormal[1])
+		{
+			/* The first point is below the second point, we're drawing a first quadrant rectangle */
+			topLeft[0] = firstCornerNormal[0];
+			topLeft[1] = secondCornerNormal[1];
+			bottomRight[0] = secondCornerNormal[0];
+			bottomRight[1] = firstCornerNormal[0];
+		} else {
+			/* The first point is above the second point, we're drawing a fourth quadtrant rectangle */
+			topLeft[0] = firstCornerNormal[0];
+			topLeft[1] = firstCornerNormal[1];
+			bottomRight[0] = secondCornerNormal[0];
+			bottomRight[1] = secondCornerNormal[0];
+		}
+	} else {
+		/* The first point is to the right of the second point */
+		if (firstCornerNormal[1] < secondCornerNormal[1])
+		{
+			/* The first point is below the second point, we're drawing a second quadrant rectangle */
+			topLeft[0] = secondCornerNormal[0];
+			topLeft[1] = secondCornerNormal[1];
+			bottomRight[0] = firstCornerNormal[0];
+			bottomRight[1] = firstCornerNormal[0];
+		} else {
+			/* The first point is above the second point, we're drawing a third quadrant rectangle */
+			topLeft[0] = secondCornerNormal[0];
+			topLeft[1] = firstCornerNormal[1];
+			bottomRight[0] = firstCornerNormal[0];
+			bottomRight[1] = secondCornerNormal[0];
+		}
+	}
+
+	/* Set all x-values */
+	vertexPoints[0][0] = vertexPoints[1][0] = topLeft[0];
+	vertexPoints[2][0] = vertexPoints[3][0] = bottomRight[0];
+	vertexPoints[4][0] = vertexPoints[5][0] = vertexPoints[6][0] = vertexPoints[7][0] = -100.0;
+	vertexPoints[8][0] = vertexPoints[9][0] = vertexPoints[10][0] = vertexPoints[11][0] = 100.0;
+
+	/* Set all y-values */
+	vertexPoints[4][1] = vertexPoints[8][1] = -100.0;
+	vertexPoints[7][1] = vertexPoints[11][1] = 100.0;
+	vertexPoints[6][1] = vertexPoints[1][1] = vertexPoints[3][1] = vertexPoints[10][1] = topLeft[1];
+	vertexPoints[5][1] = vertexPoints[0][1] = vertexPoints[2][1] = vertexPoints[9][1] = bottomRight[1];
 
 }
 
