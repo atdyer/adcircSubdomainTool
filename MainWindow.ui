@@ -519,7 +519,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <property name="tabsClosable">
        <bool>false</bool>
@@ -1380,7 +1380,7 @@
  </resources>
  <connections/>
  <buttongroups>
-  <buttongroup name="fillColorButtonGroup"/>
   <buttongroup name="nth_PlotTypeButtonGroup"/>
+  <buttongroup name="fillColorButtonGroup"/>
  </buttongroups>
 </ui>

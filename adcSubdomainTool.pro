@@ -36,7 +36,8 @@ SOURCES += main.cpp\
     OpenGL/Shaders/CulledSolidShader.cpp \
     Layers/SelectionLayers/CreationSelectionLayer.cpp \
     Layers/Actions/ElementState.cpp \
-    SubdomainTools/BoundaryFinder.cpp
+    SubdomainTools/BoundaryFinder.cpp \
+    SubdomainTools/RectangleTool.cpp
 
 HEADERS  += MainWindow.h \
     OpenGL/OpenGLPanel.h \
@@ -61,7 +62,8 @@ HEADERS  += MainWindow.h \
     OpenGL/Shaders/CulledSolidShader.h \
     Layers/SelectionLayers/CreationSelectionLayer.h \
     Layers/Actions/ElementState.h \
-    SubdomainTools/BoundaryFinder.h
+    SubdomainTools/BoundaryFinder.h \
+    SubdomainTools/RectangleTool.h
 
 FORMS    += MainWindow.ui
 
