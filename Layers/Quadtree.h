@@ -65,10 +65,11 @@ class Quadtree
 		Node*			FindNode(float x, float y);
 		std::vector<Node*>	FindNodesInCircle(float x, float y, float radius);
 		std::vector<Element*>	FindElementsInCircle(float x, float y, float radius);
+		std::vector<Element*>	FindElementsInRectangle(float l, float r, float b, float t);
 		std::vector<std::vector<Element*> *> GetElementsThroughDepth(int depth);
 		std::vector<std::vector<Element*> *> GetElementsThroughDepth(int depth, float l, float r, float b, float t);
 
-	protected:
+	private:
 
 		// Data Variables
 		int			binSize;	/**< The maximum number of Nodes allowed in a leaf */
@@ -82,15 +83,19 @@ class Quadtree
 		////// Recursive searching functions
 		Node*	FindNode(float x, float y, branch *currBranch);
 		void	FindLeavesInCircle(float x, float y, float radius, branch *currBranch, std::vector<leaf*>* full, std::vector<leaf*>* partial);
+		void	FindLeavesInRectangle(float l, float r, float b, float t, branch *currBranch, std::vector<leaf*>* full, std::vector<leaf*>* partial);
 		void	AddAllLeaves(branch *currBranch, std::vector<leaf*>* full);
+		void	AddFullNodes(std::vector<leaf*>* full, std::vector<Node*>* nodes);
+		void	AddFullElements(std::vector<leaf*>* full, std::vector<Element*>* elements);
 
 		// Finding Nodes within a circle
-		void	AddFullNodes(std::vector<leaf*>* full, std::vector<Node*>* nodes);
 		void	AddPartialNodes(float x, float y, float radius, std::vector<leaf*>* partial, std::vector<Node*>* nodes);
 
 		// Finding Elements within a circle
-		void	AddFullElements(std::vector<leaf*>* full, std::vector<Element*>* elements);
 		void	AddPartialElements(float x, float y, float radius, std::vector<leaf*>* partial, std::vector<Element*>* elements);
+
+		// Finding Elements within a rectangle
+		void	AddPartialElements(float l, float r, float b, float t, std::vector<leaf*>* partial, std::vector<Element*>* elements);
 
 		// Retrieving Elements recursively
 		void	RetrieveElements(branch* currBranch, int depth, std::vector<std::vector<Element *> *> *list);

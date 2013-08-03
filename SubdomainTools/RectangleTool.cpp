@@ -254,6 +254,25 @@ void RectangleTool::RectangleFinished()
 {
 	visible = false;
 	emit ToolFinishedDrawing();
+
+	if (terrain)
+	{
+		if (selectionMode == NodeSelection)
+		{
+			/* TODO: Get nodes from rectangle in quadtree */
+		}
+		else if (selectionMode == ElementSelection)
+		{
+			selectedElements = terrain->GetElementsFromRectangle(vertexPoints[0][0], vertexPoints[3][0], vertexPoints[0][1], vertexPoints[3][1]);
+			emit FinishedSearching();
+		}
+	}
+}
+
+
+std::vector<Element*> RectangleTool::GetSelectedElements()
+{
+	return selectedElements;
 }
 
 

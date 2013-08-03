@@ -220,8 +220,8 @@ void CircleTool::CircleFinished()
 	{
 		if (selectionMode == NodeSelection)
 		{
-			std::vector<Node*> nodes = terrain->GetNodesFromCircle(xNormal, yNormal, radNormal);
-			emit NodesSelected(nodes);
+//			std::vector<Node*> nodes = terrain->GetNodesFromCircle(xNormal, yNormal, radNormal);
+//			emit NodesSelected(nodes);
 		}
 		else if (selectionMode == ElementSelection)
 		{

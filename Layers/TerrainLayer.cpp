@@ -354,7 +354,23 @@ Element* TerrainLayer::GetElement(float x, float y)
 std::vector<Element*> TerrainLayer::GetElementsFromCircle(float x, float y, float radius)
 {
 	if (quadtree)
+	{
 		return quadtree->FindElementsInCircle(x, y, radius);
+	}
+	else
+	{
+		std::vector<Element*> fail;
+		return fail;
+	}
+}
+
+
+std::vector<Element*> TerrainLayer::GetElementsFromRectangle(float l, float r, float b, float t)
+{
+	if (quadtree)
+	{
+		return quadtree->FindElementsInRectangle(l, r, b, t);
+	}
 	else
 	{
 		std::vector<Element*> fail;

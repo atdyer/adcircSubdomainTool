@@ -528,6 +528,7 @@ void CreationSelectionLayer::CreateRectangleTool()
 
 	rectangleTool->SetTerrainLayer(terrainLayer);
 	rectangleTool->SetCamera(camera);
+	connect(rectangleTool, SIGNAL(FinishedSearching()), this, SLOT(RectangleToolFinishedSearching()));
 	connect(rectangleTool, SIGNAL(ToolFinishedDrawing()), this, SIGNAL(ToolFinishedDrawing()));
 }
 
@@ -646,6 +647,48 @@ void CreationSelectionLayer::CircleToolFinishedSearching()
 	{
 		/* Create the new state object */
 		ElementState *newState = new ElementState(circleTool->GetSelectedElements());
+
+		/* Get pointers to new list of selected elements and current list of selected elements */
+		std::vector<Element*> *newList = newState->GetState();
+		std::vector<Element*> *currList = selectedState->GetState();
+
+		DEBUG("Found " << newList->size() << " elements");
+
+		if (newList->size() > 0)
+		{
+			if (currList->size() > 0)
+			{
+				/* There are currently selected elements, so combine the lists */
+				newList->reserve(newList->size() + currList->size());
+				newList->insert(newList->end(), currList->begin(), currList->end());
+
+				/* Sort the new list */
+				std::sort(newList->begin(), newList->end());
+
+				/* Get rid of any duplicates in the newly created list */
+				std::vector<Element*>::iterator it;
+				it = std::unique(newList->begin(), newList->end());
+				newList->resize(std::distance(newList->begin(), it));
+			}
+
+			UseNewState(newState);
+
+		} else {
+			/* No elements were selected, so just go ahead and delete the new list */
+			delete newState;
+		}
+	}
+}
+
+
+void CreationSelectionLayer::RectangleToolFinishedSearching()
+{
+	if (!selectedState)
+		selectedState = new ElementState();
+	if (rectangleTool)
+	{
+		/* Create the new state object */
+		ElementState *newState = new ElementState(rectangleTool->GetSelectedElements());
 
 		/* Get pointers to new list of selected elements and current list of selected elements */
 		std::vector<Element*> *newList = newState->GetState();

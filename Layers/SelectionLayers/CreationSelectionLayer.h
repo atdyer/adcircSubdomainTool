@@ -80,7 +80,7 @@ class CreationSelectionLayer : public SelectionLayer
 		void			FindBoundaries();
 		std::vector<Node*>	GetBoundaryNodes();
 
-	protected:
+	private:
 
 		/* Selection Tools */
 		ToolType	activeTool;	/**< The tool mouse actions will be sent to */
@@ -116,11 +116,12 @@ class CreationSelectionLayer : public SelectionLayer
 		void	UseNewState(ElementState* newState);
 		void	UseState(ElementState* state);
 
-	protected slots:
+	private slots:
 
 		/* Helper Slots */
 		void	TerrainDataLoaded();
 		void	CircleToolFinishedSearching();
+		void	RectangleToolFinishedSearching();
 };
 
 #endif // CREATIONSELECTIONLAYER_H
