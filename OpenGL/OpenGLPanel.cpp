@@ -110,7 +110,6 @@ void OpenGLPanel::mouseMoveEvent(QMouseEvent *event)
 {
 	if (activeDomain)
 		activeDomain->MouseMove(event);
-
 }
 
 

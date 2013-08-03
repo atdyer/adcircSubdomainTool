@@ -114,12 +114,11 @@ void Domain::MouseMove(QMouseEvent *event)
 			Pan(dx, dy);
 		else if (currentMode == SelectionAction && selectionLayer)
 			selectionLayer->MouseMove(newx, newy);
+		emit updateGL();
 	}
 
 	oldx = newx;
 	oldy = newy;
-
-	emit updateGL();
 }
 
 

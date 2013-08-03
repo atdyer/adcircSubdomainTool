@@ -41,7 +41,6 @@ class OpenGLPanel : public QGLWidget
 		int	viewportWidth;	/**< The width of the GL Panel in pixels */
 		int	viewportHeight;	/**< The height of the GL Panel in pixels */
 
-
 	signals:
 
 		void	emitMessage(QString);
