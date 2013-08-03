@@ -70,10 +70,30 @@ struct Element
 
 
 /**
- * @brief The SelectionType enum contains the available selection states for Selection Tools. The
- * state defines what is selected when the user uses the tool.
+ * @brief Types of actions that the user can perform
+ *
+ * Types of actions that the user can perform.
+ *
  */
-enum SelectionType {nodeSelection, elementSelection};
+enum ActionType {DisplayAction, SelectionAction};
+
+
+/**
+ * @brief Types of tools that the user can use
+ *
+ * Types of tools that the user can use.
+ *
+ */
+enum ToolType {CircleToolType, RectangleToolType};
+
+
+/**
+ * @brief Types of objects that the user can select
+ *
+ * Types of objects that the user can select.
+ *
+ */
+enum SelectionType {NodeSelection, ElementSelection};
 
 
 #endif // ADCDATA_H

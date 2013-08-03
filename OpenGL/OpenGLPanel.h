@@ -14,7 +14,7 @@
  * state defines what happens when the user interacts with the panel through
  * clicks and key presses.
  */
-enum Mode {DisplayMode, CircleSubdomainMode, RectangleSubdomainMode};
+//enum Mode {DisplayMode, CircleSubdomainMode, RectangleSubdomainMode};
 
 /**
  * @brief This is a custom widget that is used specifically for drawing Layer objects
@@ -46,30 +46,30 @@ class OpenGLPanel : public QGLWidget
 	private:
 
 		int	viewportWidth, viewportHeight;
-		enum	Mode viewMode;
-		float	xDomain, yDomain;
-		int	oldx, oldy, newx, newy, dx, dy;
-		bool	clicking, mouseMoved;
-		enum	Qt::MouseButton pushedButton;
+//		enum	Mode viewMode;
+//		float	xDomain, yDomain;
+//		int	oldx, oldy, newx, newy, dx, dy;
+//		bool	clicking, mouseMoved;
+//		enum	Qt::MouseButton pushedButton;
 
 	public slots:
 
-		void	enterDisplayMode();
-		void	enterCircleSubdomainMode();
-		void	enterRectangleSubdomainMode();
+//		void	enterDisplayMode();
+//		void	enterCircleSubdomainMode();
+//		void	enterRectangleSubdomainMode();
 
 	signals:
 
 		void	emitMessage(QString);
-		void	mouseCoordinates(float, float);
-		void	circleToolStatsSet(float, float, float);
-		void	circleToolStatsFinished();
-		void	numNodesSelected(int);
-		void	numElementsSelected(int);
-		void	undoAvailable(bool);
-		void	undo();
-		void	redoAvailable(bool);
-		void	redo();
+//		void	mouseCoordinates(float, float);
+//		void	circleToolStatsSet(float, float, float);
+//		void	circleToolStatsFinished();
+//		void	numNodesSelected(int);
+//		void	numElementsSelected(int);
+//		void	undoAvailable(bool);
+//		void	undo();
+//		void	redoAvailable(bool);
+//		void	redo();
 };
 
 #endif // OPENGLPANEL_H

@@ -39,7 +39,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->projectTree->expandAll();
 
 	/* Connect selection tool buttons to the OpenGLPanel */
-	connect(ui->selectNodesCircle, SIGNAL(clicked()), ui->GLPanel, SLOT(enterCircleSubdomainMode()));
+//	connect(ui->selectNodesCircle, SIGNAL(clicked()), ui->GLPanel, SLOT(enterCircleSubdomainMode()));
 
 
 
@@ -208,4 +208,16 @@ void MainWindow::on_redoButton_clicked()
 {
 	if (testDomain)
 		testDomain->Redo();
+}
+
+void MainWindow::on_selectNodesCircle_clicked()
+{
+	if (testDomain)
+		testDomain->UseTool(CircleToolType, ElementSelection);
+}
+
+void MainWindow::on_selectNodesSquare_clicked()
+{
+	if (testDomain)
+		testDomain->UseTool(RectangleToolType, ElementSelection);
 }

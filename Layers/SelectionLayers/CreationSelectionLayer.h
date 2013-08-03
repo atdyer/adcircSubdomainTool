@@ -67,7 +67,7 @@ class CreationSelectionLayer : public SelectionLayer
 
 		virtual void	SetCamera(GLCamera *newCamera);
 		virtual void	SetTerrainLayer(TerrainLayer* newLayer);
-		virtual void	UseTool(int toolID);
+		virtual void	UseTool(ToolType tool, SelectionType selection);
 
 		void	MouseClick(int x, int y);
 		void	MouseMove(int x, int y);
@@ -83,7 +83,7 @@ class CreationSelectionLayer : public SelectionLayer
 	protected:
 
 		/* Selection Tools */
-		int		activeTool;	/**< Integer used to determine which tool mouse actions are sent to */
+		ToolType	activeTool;	/**< The tool mouse actions will be sent to */
 		CircleTool*	circleTool;	/**< Tool for selecting elements inside of a circle */
 		RectangleTool*	rectangleTool;	/**< Tool for selecting elements inside of a rectangle */
 		BoundaryFinder*	boundaryFinder;	/**< Tool used for finding the boundary nodes of a selection */

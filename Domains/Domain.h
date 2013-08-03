@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QThread>
 #include <QProgressBar>
+#include <QMouseEvent>
+#include <QWheelEvent>
 
 #include <string>
 #include <vector>
@@ -11,15 +13,11 @@
 #include "Layers/Layer.h"
 #include "Layers/TerrainLayer.h"
 #include "Layers/SelectionLayers/CreationSelectionLayer.h"
-//#include "Layers/SelectionLayer.h"
-
-//#include "SubdomainTools/CircleTool.h"
 
 #include "OpenGL/GLCamera.h"
 #include "OpenGL/Shaders/GLShader.h"
 #include "OpenGL/Shaders/SolidShader.h"
 #include "OpenGL/Shaders/GradientShader.h"
-
 
 
 /**
@@ -62,17 +60,17 @@ class Domain : public QObject
 		Domain();
 		~Domain();
 
-		// OpenGL Panel Drawing and Selection Interaction Functions
+		// Drawing and Selection Interaction Functions
 		void	Draw();
-		void	Zoom(float zoomAmount);
-		void	Pan(float dx, float dy);
-		void	MouseClick(int x, int y);
-		void	MouseMove(int x, int y);
-		void	MouseRelease(int x, int y);
+		void	MouseClick(QMouseEvent *event);
+		void	MouseMove(QMouseEvent *event);
+		void	MouseRelease(QMouseEvent *event);
+		void	MouseWheel(QWheelEvent *event);
 		void	SetWindowSize(float w, float h);
-		void	SetCircleToolCenter(int x, int y);
-		void	SetCircleToolRadius(int x, int y);
-		void	SetCircleToolFinished();
+		void	UseTool(ToolType tool, SelectionType selection);
+//		void	SetCircleToolCenter(int x, int y);
+//		void	SetCircleToolRadius(int x, int y);
+//		void	SetCircleToolFinished();
 		void	Undo();
 		void	Redo();
 
@@ -102,23 +100,34 @@ class Domain : public QObject
 		unsigned int	GetNumElementsSelected();
 
 
-	protected:
+	private:
 
 		// Camera
 		GLCamera*	camera;		/**< The camera used for all drawing operations (except the selection layer)*/
 
 		// Layers
-//		SelectionLayer*	selectionLayer;	/**< The selection layer used for drawing selected nodes/elements */
 		TerrainLayer*		terrainLayer;	/**< The terrain layer */
 		CreationSelectionLayer*	selectionLayer;	/**< The selection layer */
-
-		// Tools
-//		CircleTool*	circleTool;	/**< The circle tool used to select nodes/elements inside of a user-drawn circle */
 
 		// Loading Operations
 		QThread*	layerThread;	/**< The thread on which file reading operations will execute */
 		QProgressBar*	progressBar;	/**< The progress bar that will show file reading progress */
 		Layer*		loadingLayer;	/**< Sort of a queue for the next layer that will send data to the GPU */
+
+		/* Mouse Clicking and Moving Stuff */
+		ActionType	currentMode;	/**< The current mode used to determine where actions are sent */
+		int		oldx;	/**< The old x-coordinate of the mouse */
+		int		oldy;	/**< The old y-coordinate of the mouse */
+		int		newx;	/**< The new x-coordinate of the mouse */
+		int		newy;	/**< The new y-coordinate of the mouse */
+		int		dx;	/**< The change in x-coordinates between mouse events */
+		int		dy;	/**< The change in y-coordinates between mouse events */
+		Qt::MouseButton	pushedButton;	/**< The mouse button being pushed */
+		bool		clicking;	/**< Flag that shows if a mouse button is being held down */
+		bool		mouseMoved;	/**< Flag that shows if the mouse has moved since the last event */
+		void		Zoom(float zoomAmount);
+		void		Pan(float dx, float dy);
+		void		CalculateMouseCoordinates();
 
 
 	signals:
@@ -141,13 +150,14 @@ class Domain : public QObject
 		void	emitMessage(QString);	/**< Emitted any time a text message needs to be passed to the GUI */
 		void	updateGL();		/**< Emitted any time the OpenGL context needs to be redrawn */
 
-	public slots:
+//	public slots:
 
-		void	setMouseCoordinates(float x, float y);
+//		void	setMouseCoordinates(float x, float y);
 
 	protected slots:
 
 		void	LoadLayerToGPU();
+		void	ToolFinishedDrawing();
 
 };
 

@@ -37,7 +37,7 @@ class SelectionLayer : public Layer
 
 		virtual void	SetCamera(GLCamera *newCamera) = 0;
 		virtual void	SetTerrainLayer(TerrainLayer* newLayer) = 0;
-		virtual void	UseTool(int toolID) = 0;
+		virtual void	UseTool(ToolType tool, SelectionType selection) = 0;
 
 		virtual void	MouseClick(int x, int y) = 0;
 		virtual void	MouseMove(int x, int y) = 0;
@@ -69,6 +69,7 @@ class SelectionLayer : public Layer
 		void	Refreshed();
 		void	NumNodesSelected(int);
 		void	NumElementsSelected(int);
+		void	ToolFinishedDrawing();
 };
 
 #endif // SELECTIONLAYER_H

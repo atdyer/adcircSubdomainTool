@@ -47,6 +47,8 @@ class MainWindow : public QMainWindow
 		void on_openProjectButton_clicked();
 		void on_undoButton_clicked();
 		void on_redoButton_clicked();
+		void on_selectNodesCircle_clicked();
+		void on_selectNodesSquare_clicked();
 
 	private:
 

@@ -73,7 +73,7 @@ class RectangleTool : public QObject
 
 		void	RectangleStatsSet(float w, float h);
 		void	RectangleStatsFinished();
-		void	FinishedSearching();
+		void	ToolFinishedDrawing();
 
 	public slots:
 

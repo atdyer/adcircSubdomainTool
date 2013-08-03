@@ -40,7 +40,7 @@ class BoundaryFinder
 		~BoundaryFinder();
 
 		/* The Callable Search Function */
-		std::vector<unsigned int> FindBoundaries(ElementState* elementSelection);
+		std::vector<unsigned int> FindBoundaries(ElementState* ElementSelection);
 
 	private:
 

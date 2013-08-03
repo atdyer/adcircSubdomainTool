@@ -9,7 +9,7 @@
  */
 CreationSelectionLayer::CreationSelectionLayer()
 {
-	activeTool = 1;
+	activeTool = CircleToolType;
 	circleTool = 0;
 	rectangleTool = 0;
 	boundaryFinder = new BoundaryFinder();
@@ -120,9 +120,9 @@ void CreationSelectionLayer::Draw()
 		glUseProgram(0);
 	}
 
-	if (activeTool == CIRCLETOOLINDEX && circleTool)
+	if (activeTool == CircleToolType && circleTool)
 		circleTool->Draw();
-	else if (activeTool == RECTANGLETOOLINDEX && rectangleTool)
+	else if (activeTool == RectangleToolType && rectangleTool)
 		rectangleTool->Draw();
 }
 
@@ -269,25 +269,21 @@ void CreationSelectionLayer::SetTerrainLayer(TerrainLayer *newLayer)
 /**
  * @brief Select the Selection Tool to be used for the next interaction
  *
- * Select the Selection Tool to be used for the next interaction:
- * - 0 - Stop using tools
- * - 1 - CircleTool - Select Elements inside of a circle
+ * Select the Selection Tool to be used for the next interaction. This
+ * type of SelectionLayer can only select Elements, so SelectionType
+ * is ignored.
  *
  * @param toolID The tool to be used for the next interaction
  */
-void CreationSelectionLayer::UseTool(int toolID)
+void CreationSelectionLayer::UseTool(ToolType tool, SelectionType)
 {
-	/* Make sure we're trying to select an ID that we've got */
-	if (toolID >= 0 && toolID <= AVAILABLETOOLS)
-	{
-		activeTool = toolID;
+	activeTool = tool;
 
-		/* If the tool hasn't been created yet, create it now */
-		if (activeTool == CIRCLETOOLINDEX && !circleTool)
-			CreateCircleTool();
-		else if (activeTool == RECTANGLETOOLINDEX && !rectangleTool)
-			CreateRectangleTool();
-	}
+	/* If the tool hasn't been created yet, create it now */
+	if (activeTool == CircleToolType && !circleTool)
+		CreateCircleTool();
+	else if (activeTool == RectangleToolType && !rectangleTool)
+		CreateRectangleTool();
 }
 
 
@@ -303,9 +299,9 @@ void CreationSelectionLayer::MouseClick(int x, int y)
 {
 	mousePressed = true;
 
-	if (activeTool == CIRCLETOOLINDEX && circleTool)
+	if (activeTool == CircleToolType && circleTool)
 		circleTool->SetCenter(x, y);
-	else if (activeTool == RECTANGLETOOLINDEX && rectangleTool)
+	else if (activeTool == RectangleToolType && rectangleTool)
 		rectangleTool->SetFirstCorner(x, y);
 }
 
@@ -322,9 +318,9 @@ void CreationSelectionLayer::MouseMove(int x, int y)
 {
 	if (mousePressed)
 	{
-		if (activeTool == CIRCLETOOLINDEX && circleTool)
+		if (activeTool == CircleToolType && circleTool)
 			circleTool->SetRadiusPoint(x, y);
-		else if (activeTool == RECTANGLETOOLINDEX && rectangleTool)
+		else if (activeTool == RectangleToolType && rectangleTool)
 			rectangleTool->SetSecondCorner(x, y);
 	}
 
@@ -343,9 +339,9 @@ void CreationSelectionLayer::MouseRelease(int x, int y)
 {
 	mousePressed = false;
 
-	if (activeTool == CIRCLETOOLINDEX && circleTool)
+	if (activeTool == CircleToolType && circleTool)
 		circleTool->CircleFinished();
-	else if (activeTool == RECTANGLETOOLINDEX && rectangleTool)
+	else if (activeTool == RectangleToolType && rectangleTool)
 		rectangleTool->RectangleFinished();
 }
 
@@ -521,6 +517,7 @@ void CreationSelectionLayer::CreateCircleTool()
 	circleTool->SetTerrainLayer(terrainLayer);
 	circleTool->SetCamera(camera);
 	connect(circleTool, SIGNAL(FinishedSearching()), this, SLOT(CircleToolFinishedSearching()));
+	connect(circleTool, SIGNAL(ToolFinishedDrawing()), this, SIGNAL(ToolFinishedDrawing()));
 }
 
 
@@ -531,6 +528,7 @@ void CreationSelectionLayer::CreateRectangleTool()
 
 	rectangleTool->SetTerrainLayer(terrainLayer);
 	rectangleTool->SetCamera(camera);
+	connect(rectangleTool, SIGNAL(ToolFinishedDrawing()), this, SIGNAL(ToolFinishedDrawing()));
 }
 
 

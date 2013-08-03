@@ -9,7 +9,7 @@ CircleTool::CircleTool()
 	terrain = 0;
 	camera = 0;
 
-	selectionMode = elementSelection;
+	selectionMode = ElementSelection;
 
 	xPixel = 0.0;
 	xNormal = 0.0;
@@ -213,17 +213,17 @@ void CircleTool::SetSelectionMode(SelectionType newMode)
  */
 void CircleTool::CircleFinished()
 {
-
+	emit ToolFinishedDrawing();
 	emit CircleStatsFinished();
 
 	if (terrain)
 	{
-		if (selectionMode == nodeSelection)
+		if (selectionMode == NodeSelection)
 		{
 			std::vector<Node*> nodes = terrain->GetNodesFromCircle(xNormal, yNormal, radNormal);
 			emit NodesSelected(nodes);
 		}
-		else if (selectionMode == elementSelection)
+		else if (selectionMode == ElementSelection)
 		{
 			selectedElements = terrain->GetElementsFromCircle(xNormal, yNormal, radNormal);
 			emit FinishedSearching();

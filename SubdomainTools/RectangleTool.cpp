@@ -47,7 +47,7 @@ RectangleTool::RectangleTool()
 	indexArray[7][1] = 9;
 	indexArray[7][2] = 10;
 
-	SetSelectionMode(elementSelection);
+	SetSelectionMode(ElementSelection);
 
 	firstCornerPixel[0] = 0.0;
 	firstCornerPixel[1] = 0.0;
@@ -253,6 +253,7 @@ void RectangleTool::SetSecondCorner(int newX, int newY)
 void RectangleTool::RectangleFinished()
 {
 	visible = false;
+	emit ToolFinishedDrawing();
 }
 
 

@@ -14,19 +14,27 @@
  */
 Domain::Domain()
 {
+	/***** Perform Initializations *****/
 	camera = new GLCamera();
 
-//	selectionLayer = new SelectionLayer();
-//	selectionLayer->SetCamera(camera);
-	selectionLayer = new CreationSelectionLayer();
-	selectionLayer->SetCamera(camera);
-
 	terrainLayer = 0;
-
-//	circleTool = new CircleTool();
-//	circleTool->SetCamera(camera);
+	selectionLayer = new CreationSelectionLayer();
 
 	layerThread = new QThread();
+	progressBar = 0;
+	loadingLayer = 0;
+
+	currentMode = DisplayAction;
+	oldx = oldy = newx = newy = dx = dy = 0;
+	pushedButton = Qt::LeftButton;
+	clicking = mouseMoved = false;
+
+
+
+	/***** Perform Required Initial Function Calls *****/
+	if (selectionLayer && camera)
+		selectionLayer->SetCamera(camera);
+
 	if (layerThread)
 	{
 		connect(this, SIGNAL(beingDestroyed()), layerThread, SLOT(quit()));
@@ -34,29 +42,12 @@ Domain::Domain()
 		layerThread->start();
 	}
 
-	progressBar = 0;
-	loadingLayer = 0;
-
-
-	/* Connect all selection tools to the selection layer */
-//	connect(circleTool, SIGNAL(NodesSelected(std::vector<Node*>)), selectionLayer, SLOT(SelectNodes(std::vector<Node*>)));
-//	connect(circleTool, SIGNAL(ElementsSelected(std::vector<Element*>)), selectionLayer, SLOT(SelectElements(std::vector<Element*>)));
-//	connect(circleTool, SIGNAL(NodeSelected(Node*)), selectionLayer, SLOT(SelectNode(Node*)));
-
 	/* Pass signals up from the selection layer */
 	connect(selectionLayer, SIGNAL(UndoAvailable(bool)), this, SIGNAL(undoAvailable(bool)));
 	connect(selectionLayer, SIGNAL(RedoAvailable(bool)), this, SIGNAL(redoAvailable(bool)));
 	connect(selectionLayer, SIGNAL(Refreshed()), this, SIGNAL(updateGL()));
 	connect(selectionLayer, SIGNAL(NumElementsSelected(int)), this, SIGNAL(numElementsSelected(int)));
-//	connect(selectionLayer, SIGNAL(undoAvailable(bool)), this, SIGNAL(undoAvailable(bool)));
-//	connect(selectionLayer, SIGNAL(redoAvailable(bool)), this, SIGNAL(redoAvailable(bool)));
-//	connect(selectionLayer, SIGNAL(emitMessage(QString)), this, SIGNAL(emitMessage(QString)));
-//	connect(selectionLayer, SIGNAL(numNodesSelected(int)), this, SIGNAL(numNodesSelected(int)));
-//	connect(selectionLayer, SIGNAL(numElementsSelected(int)), this, SIGNAL(numElementsSelected(int)));
-
-	/* Pass signals up from all selection tools */
-//	connect(circleTool, SIGNAL(CircleStatsSet(float,float,float)), this, SIGNAL(circleToolStatsSet(float,float,float)));
-//	connect(circleTool, SIGNAL(CircleStatsFinished()), this, SIGNAL(circleToolStatsFinished()));
+	connect(selectionLayer, SIGNAL(ToolFinishedDrawing()), this, SLOT(ToolFinishedDrawing()));
 
 }
 
@@ -98,55 +89,69 @@ void Domain::Draw()
 }
 
 
-/**
- * @brief Zooms the view by calling the Zoom function of the camera
- *
- * Zooms the view by calling the Zoom function of the camera
- *
- * @param zoomAmount A positive value for zooming in, a negative value for zooming out
- */
-void Domain::Zoom(float zoomAmount)
+void Domain::MouseClick(QMouseEvent *event)
 {
-	if (camera)
-		camera->Zoom(zoomAmount);
-	if (terrainLayer)
-		terrainLayer->UpdateZoomLevel(zoomAmount);
+	clicking = true;
+	pushedButton = event->button();
+
+	oldx = event->x();
+	oldy = event->y();
+	mouseMoved = false;
+
+	if (currentMode == SelectionAction && selectionLayer)
+		selectionLayer->MouseClick(oldx, oldy);
 }
 
 
-/**
- * @brief Pans the view by calling the Pan function of the camera
- *
- * Pans the view by calling the Pan function of the camera
- *
- * @param dx Change in x (pixels)
- * @param dy Change in y (pixels)
- */
-void Domain::Pan(float dx, float dy)
+void Domain::MouseMove(QMouseEvent *event)
 {
-	if (camera)
-		camera->Pan(dx, dy);
+	mouseMoved = true;
+	newx = event->x();
+	newy = event->y();
+	dx = newx-oldx;
+	dy = newy-oldy;
+
+	CalculateMouseCoordinates();
+
+	if (clicking)
+	{
+		if (currentMode == DisplayAction)
+			Pan(dx, dy);
+		else if (currentMode == SelectionAction && selectionLayer)
+			selectionLayer->MouseMove(newx, newy);
+	}
+
+	oldx = newx;
+	oldy = newy;
+
+	emit updateGL();
 }
 
 
-void Domain::MouseClick(int x, int y)
+void Domain::MouseRelease(QMouseEvent *event)
 {
-	if (selectionLayer)
-		selectionLayer->MouseClick(x, y);
+	clicking = false;
+	mouseMoved = false;
+
+	oldx = event->x();
+	oldy = event->y();
+
+	if (currentMode == SelectionAction && selectionLayer)
+	{
+		selectionLayer->MouseRelease(oldx, oldy);
+		currentMode = DisplayAction;
+	}
+
+	emit updateGL();
 }
 
 
-void Domain::MouseMove(int x, int y)
+void Domain::MouseWheel(QWheelEvent *event)
 {
-	if (selectionLayer)
-		selectionLayer->MouseMove(x, y);
-}
+	if (!clicking)
+		Zoom(event->delta());
 
-
-void Domain::MouseRelease(int x, int y)
-{
-	if (selectionLayer)
-		selectionLayer->MouseRelease(x, y);
+	emit updateGL();
 }
 
 
@@ -168,50 +173,58 @@ void Domain::SetWindowSize(float w, float h)
 }
 
 
-/**
- * @brief Sets the center point of the circle used in the CircleTool selection tool
- *
- * Sets the center point of the circle used in the CircleTool selection tool
- *
- * @param x The x-coordinate (pixels)
- * @param y The y-coordinate (pixels)
- */
-void Domain::SetCircleToolCenter(int x, int y)
+void Domain::UseTool(ToolType tool, SelectionType selection)
 {
-//	if (circleTool)
-//		circleTool->SetCenter(x, y);
+	currentMode = SelectionAction;
+	if (selectionLayer)
+		selectionLayer->UseTool(tool, selection);
 }
 
 
-/**
- * @brief Sets the point used to calculate the radius of the circle used in the
- * CircleTool selection tool
- *
- * Sets the point used to calculate the radius of the circle used in the
- * CircleTool selection tool
- *
- * @param x The x-coordinate (pixels)
- * @param y The y-coordinate (pixels)
- */
-void Domain::SetCircleToolRadius(int x, int y)
-{
-//	if (circleTool)
-//		circleTool->SetRadiusPoint(x, y);
-}
+///**
+// * @brief Sets the center point of the circle used in the CircleTool selection tool
+// *
+// * Sets the center point of the circle used in the CircleTool selection tool
+// *
+// * @param x The x-coordinate (pixels)
+// * @param y The y-coordinate (pixels)
+// */
+//void Domain::SetCircleToolCenter(int x, int y)
+//{
+////	if (circleTool)
+////		circleTool->SetCenter(x, y);
+//}
 
 
-/**
- * @brief Tells the CircleTool that the user has finished drawing the circle
- *
- * Tells the CircleTool that the user has finished drawing the circle. This will
- * initialize actual selection of Nodes/Elements inside of the circle.
- *
- */
-void Domain::SetCircleToolFinished()
-{
-//	if (circleTool)
-//		circleTool->CircleFinished();
-}
+///**
+// * @brief Sets the point used to calculate the radius of the circle used in the
+// * CircleTool selection tool
+// *
+// * Sets the point used to calculate the radius of the circle used in the
+// * CircleTool selection tool
+// *
+// * @param x The x-coordinate (pixels)
+// * @param y The y-coordinate (pixels)
+// */
+//void Domain::SetCircleToolRadius(int x, int y)
+//{
+////	if (circleTool)
+////		circleTool->SetRadiusPoint(x, y);
+//}
+
+
+///**
+// * @brief Tells the CircleTool that the user has finished drawing the circle
+// *
+// * Tells the CircleTool that the user has finished drawing the circle. This will
+// * initialize actual selection of Nodes/Elements inside of the circle.
+// *
+// */
+//void Domain::SetCircleToolFinished()
+//{
+////	if (circleTool)
+////		circleTool->CircleFinished();
+//}
 
 
 /**
@@ -596,29 +609,54 @@ unsigned int Domain::GetNumElementsSelected()
 
 
 /**
- * @brief Sets the mouse coordinates in pixels so that transformations can be
- * performed internally to get the mouse coordinates in the domain's coordinate
- * system
+ * @brief Zooms the view by calling the Zoom function of the camera
  *
- * Sets the mouse coordinates in pixels so that transformations can be
- * performed internally to get the mouse coordinates in the domain's coordinate
- * system. Implemented as a slot in order to more easily connect to the OpenGLPanel
- * class for continuous display of mouse x-y coordinates.
+ * Zooms the view by calling the Zoom function of the camera
  *
- * Causes the mouseX and mouseY signals to be fired. If the terrain layer has been
- * created (and thus, the domain's coordinate system is known), those signals will contain
- * mouse coordinates in domain space. Otherwise, they will be in either normalized OpenGL
- * space (the camera has been created), or in pixels (the camera has not been created).
- *
- * @param x The mouse x-coordinate (pixels)
- * @param y The mouse y-coordinate (pixels)
+ * @param zoomAmount A positive value for zooming in, a negative value for zooming out
  */
-void Domain::setMouseCoordinates(float x, float y)
+void Domain::Zoom(float zoomAmount)
+{
+	if (camera)
+		camera->Zoom(zoomAmount);
+	if (terrainLayer)
+		terrainLayer->UpdateZoomLevel(zoomAmount);
+}
+
+
+/**
+ * @brief Pans the view by calling the Pan function of the camera
+ *
+ * Pans the view by calling the Pan function of the camera
+ *
+ * @param dx Change in x (pixels)
+ * @param dy Change in y (pixels)
+ */
+void Domain::Pan(float dx, float dy)
+{
+	if (camera)
+		camera->Pan(dx, dy);
+}
+
+
+/**
+ * @brief Calculates the mouse coordinates (based on newx and newy) in the domain's
+ * coordinate system
+ *
+ * Calculates the mouse coordinates (based on newx and newy) in the domain's
+ * coordinate system. Fires the mouseX and mouseY signals with the calculated
+ * values. If no camera has been set, these are pixel values. If a camera has
+ * been set but a terrain layer hasn't, these are in the OpenGL coordinate
+ * system. If both have been set, these values are in the terrain layer's
+ * coordinate system.
+ *
+ */
+void Domain::CalculateMouseCoordinates()
 {
 	if (camera)
 	{
 		float glX, glY, domX, domY;
-		camera->GetUnprojectedPoint(x, y, &glX, &glY);
+		camera->GetUnprojectedPoint(newx, newy, &glX, &glY);
 		if (terrainLayer)
 		{
 			domX = terrainLayer->GetUnprojectedX(glX);
@@ -630,10 +668,51 @@ void Domain::setMouseCoordinates(float x, float y)
 			emit mouseY(glY);
 		}
 	} else {
-		emit mouseX(x);
-		emit mouseY(y);
+		emit mouseX(newx);
+		emit mouseY(newy);
 	}
 }
+
+
+///**
+// * @brief Sets the mouse coordinates in pixels so that transformations can be
+// * performed internally to get the mouse coordinates in the domain's coordinate
+// * system
+// *
+// * Sets the mouse coordinates in pixels so that transformations can be
+// * performed internally to get the mouse coordinates in the domain's coordinate
+// * system. Implemented as a slot in order to more easily connect to the OpenGLPanel
+// * class for continuous display of mouse x-y coordinates.
+// *
+// * Causes the mouseX and mouseY signals to be fired. If the terrain layer has been
+// * created (and thus, the domain's coordinate system is known), those signals will contain
+// * mouse coordinates in domain space. Otherwise, they will be in either normalized OpenGL
+// * space (the camera has been created), or in pixels (the camera has not been created).
+// *
+// * @param x The mouse x-coordinate (pixels)
+// * @param y The mouse y-coordinate (pixels)
+// */
+//void Domain::setMouseCoordinates(float x, float y)
+//{
+//	if (camera)
+//	{
+//		float glX, glY, domX, domY;
+//		camera->GetUnprojectedPoint(x, y, &glX, &glY);
+//		if (terrainLayer)
+//		{
+//			domX = terrainLayer->GetUnprojectedX(glX);
+//			domY = terrainLayer->GetUnprojectedY(glY);
+//			emit mouseX(domX);
+//			emit mouseY(domY);
+//		} else {
+//			emit mouseX(glX);
+//			emit mouseY(glY);
+//		}
+//	} else {
+//		emit mouseX(x);
+//		emit mouseY(y);
+//	}
+//}
 
 
 /**
@@ -662,3 +741,7 @@ void Domain::LoadLayerToGPU()
 }
 
 
+void Domain::ToolFinishedDrawing()
+{
+	currentMode = DisplayAction;
+}
