@@ -12,26 +12,6 @@ OpenGLPanel::OpenGLPanel(QWidget *parent) :
 
 	viewportWidth = 0.0;
 	viewportHeight = 0.0;
-
-//	xDomain = 0.0;
-//	yDomain = 0.0;
-
-//	clicking = false;
-
-//	viewMode = DisplayMode;
-
-//	connect(&circleTool, SIGNAL(CircleStatsSet(float,float,float)), this, SIGNAL(circleToolStatsSet(float,float,float)));
-//	connect(this, SIGNAL(circleToolStatsFinished()), &circleTool, SLOT(CircleFinished()));
-//	connect(&circleTool, SIGNAL(NodesSelected(std::vector<Node*>)), &selectionLayer, SLOT(SelectNodes(std::vector<Node*>)));
-
-	// Hook up all of the Selection Layer signals/slots
-//	connect(&selectionLayer, SIGNAL(emitMessage(QString)), this, SIGNAL(emitMessage(QString)));
-//	connect(&selectionLayer, SIGNAL(numNodesSelected(int)), this, SIGNAL(numNodesSelected(int)));
-//	connect(&selectionLayer, SIGNAL(undoAvailable(bool)), this, SIGNAL(undoAvailable(bool)));
-//	connect(&selectionLayer, SIGNAL(redoAvailable(bool)), this, SIGNAL(redoAvailable(bool)));
-//	connect(&selectionLayer, SIGNAL(refreshed()), this, SLOT(updateGL()));
-//	connect(this, SIGNAL(undo()), &selectionLayer, SLOT(undo()));
-//	connect(this, SIGNAL(redo()), &selectionLayer, SLOT(redo()));
 }
 
 
@@ -106,14 +86,8 @@ void OpenGLPanel::paintGL()
  */
 void OpenGLPanel::wheelEvent(QWheelEvent *event)
 {
-
-//	if (clicking == false && activeDomain)
-//		activeDomain->Zoom(event->delta());
-
 	if (activeDomain)
 		activeDomain->MouseWheel(event);
-
-//	updateGL();
 }
 
 
@@ -123,18 +97,8 @@ void OpenGLPanel::wheelEvent(QWheelEvent *event)
  */
 void OpenGLPanel::mousePressEvent(QMouseEvent *event)
 {
-//	clicking = true;
-//	pushedButton = event->button();
-
-//	oldx = event->x();
-//	oldy = event->y();
-//	mouseMoved = false;
-
-//	if (viewMode == CircleSubdomainMode || viewMode == RectangleSubdomainMode)
-//	{
-		if (activeDomain)
-			activeDomain->MouseClick(event);
-//	}
+	if (activeDomain)
+		activeDomain->MouseClick(event);
 }
 
 
@@ -144,32 +108,9 @@ void OpenGLPanel::mousePressEvent(QMouseEvent *event)
  */
 void OpenGLPanel::mouseMoveEvent(QMouseEvent *event)
 {
-//	mouseMoved = true;
-//	newx = event->x();
-//	newy = event->y();
-//	dx = newx-oldx;
-//	dy = newy-oldy;
+	if (activeDomain)
+		activeDomain->MouseMove(event);
 
-//	emit mouseCoordinates(newx, newy);
-
-//	if (clicking)
-//	{
-//		if (viewMode == DisplayMode)
-//		{
-//			if (activeDomain)
-//				activeDomain->Pan(dx, dy);
-//		}
-//		else if (viewMode == CircleSubdomainMode || viewMode == RectangleSubdomainMode)
-//		{
-			if (activeDomain)
-				activeDomain->MouseMove(event);
-//		}
-
-//		updateGL();
-//	}
-
-//	oldx = newx;
-//	oldy = newy;
 }
 
 
@@ -179,29 +120,8 @@ void OpenGLPanel::mouseMoveEvent(QMouseEvent *event)
  */
 void OpenGLPanel::mouseReleaseEvent(QMouseEvent *event)
 {
-//	clicking = false;
-
-//	if (!mouseMoved)
-//	{
-//		if (viewMode == DisplayMode)
-//		{
-//			float x, y;
-//			if (currentCam)
-//				currentCam->GetUnprojectedPoint(event->x(), event->y(), &x, &y);
-//		}
-//	}
-
-//	if (viewMode == CircleSubdomainMode)
-//	{
-		if (activeDomain)
-			activeDomain->MouseRelease(event);
-//			activeDomain->SetCircleToolFinished();
-//		viewMode = DisplayMode;
-//	}
-
-//	mouseMoved = false;
-
-//	updateGL();
+	if (activeDomain)
+		activeDomain->MouseRelease(event);
 }
 
 
@@ -218,36 +138,10 @@ void OpenGLPanel::SetActiveDomain(Domain *newDomain)
 	if (activeDomain)
 	{
 		disconnect(activeDomain, SIGNAL(updateGL()), this, SLOT(updateGL()));
-//		disconnect(this, SIGNAL(mouseCoordinates(float,float)), activeDomain, SLOT(setMouseCoordinates(float,float)));
 	}
 
 	/* Set up connections with the new one */
 	activeDomain = newDomain;
 	activeDomain->SetWindowSize(viewportWidth, viewportHeight);
 	connect(activeDomain, SIGNAL(updateGL()), this, SLOT(updateGL()));
-//	connect(this, SIGNAL(mouseCoordinates(float,float)), activeDomain, SLOT(setMouseCoordinates(float,float)));
 }
-
-
-///**
-// * @brief Sets the current view mode to Display Mode
-// */
-//void OpenGLPanel::enterDisplayMode()
-//{
-//	viewMode = DisplayMode;
-//}
-
-
-///**
-// * @brief Sets the current view mode to Circle Subdomain Mode
-// */
-//void OpenGLPanel::enterCircleSubdomainMode()
-//{
-//	viewMode = CircleSubdomainMode;
-//}
-
-
-//void OpenGLPanel::enterRectangleSubdomainMode()
-//{
-//	viewMode = RectangleSubdomainMode;
-//}

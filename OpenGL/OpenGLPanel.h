@@ -10,16 +10,9 @@
 #include "Domains/Domain.h"
 
 /**
- * @brief The Mode enum contains the available states for the OpenGLPanel. The
- * state defines what happens when the user interacts with the panel through
- * clicks and key presses.
- */
-//enum Mode {DisplayMode, CircleSubdomainMode, RectangleSubdomainMode};
-
-/**
- * @brief This is a custom widget that is used specifically for drawing Layer objects
+ * @brief This is a custom widget that is used specifically for drawing Domain objects
  *
- * Use this custom widget in conjuntion with a LayerManager to draw multiple Layers
+ * A custom widget used to draw Domain objects in an OpenGL context
  *
  */
 class OpenGLPanel : public QGLWidget
@@ -45,31 +38,14 @@ class OpenGLPanel : public QGLWidget
 
 	private:
 
-		int	viewportWidth, viewportHeight;
-//		enum	Mode viewMode;
-//		float	xDomain, yDomain;
-//		int	oldx, oldy, newx, newy, dx, dy;
-//		bool	clicking, mouseMoved;
-//		enum	Qt::MouseButton pushedButton;
+		int	viewportWidth;	/**< The width of the GL Panel in pixels */
+		int	viewportHeight;	/**< The height of the GL Panel in pixels */
 
-	public slots:
-
-//		void	enterDisplayMode();
-//		void	enterCircleSubdomainMode();
-//		void	enterRectangleSubdomainMode();
 
 	signals:
 
 		void	emitMessage(QString);
-//		void	mouseCoordinates(float, float);
-//		void	circleToolStatsSet(float, float, float);
-//		void	circleToolStatsFinished();
-//		void	numNodesSelected(int);
-//		void	numElementsSelected(int);
-//		void	undoAvailable(bool);
-//		void	undo();
-//		void	redoAvailable(bool);
-//		void	redo();
+
 };
 
 #endif // OPENGLPANEL_H

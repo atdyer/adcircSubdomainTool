@@ -65,9 +65,6 @@ Domain::~Domain()
 		delete selectionLayer;
 	if (terrainLayer)
 		delete terrainLayer;
-
-//	if (circleTool)
-//		delete circleTool;
 }
 
 
@@ -84,8 +81,6 @@ void Domain::Draw()
 		terrainLayer->Draw();
 	if (selectionLayer)
 		selectionLayer->Draw();
-//	if (circleTool)
-//		circleTool->Draw();
 }
 
 
@@ -181,52 +176,6 @@ void Domain::UseTool(ToolType tool, SelectionType selection)
 }
 
 
-///**
-// * @brief Sets the center point of the circle used in the CircleTool selection tool
-// *
-// * Sets the center point of the circle used in the CircleTool selection tool
-// *
-// * @param x The x-coordinate (pixels)
-// * @param y The y-coordinate (pixels)
-// */
-//void Domain::SetCircleToolCenter(int x, int y)
-//{
-////	if (circleTool)
-////		circleTool->SetCenter(x, y);
-//}
-
-
-///**
-// * @brief Sets the point used to calculate the radius of the circle used in the
-// * CircleTool selection tool
-// *
-// * Sets the point used to calculate the radius of the circle used in the
-// * CircleTool selection tool
-// *
-// * @param x The x-coordinate (pixels)
-// * @param y The y-coordinate (pixels)
-// */
-//void Domain::SetCircleToolRadius(int x, int y)
-//{
-////	if (circleTool)
-////		circleTool->SetRadiusPoint(x, y);
-//}
-
-
-///**
-// * @brief Tells the CircleTool that the user has finished drawing the circle
-// *
-// * Tells the CircleTool that the user has finished drawing the circle. This will
-// * initialize actual selection of Nodes/Elements inside of the circle.
-// *
-// */
-//void Domain::SetCircleToolFinished()
-//{
-////	if (circleTool)
-////		circleTool->CircleFinished();
-//}
-
-
 /**
  * @brief Undoes the last selection action performed by the user
  *
@@ -311,8 +260,6 @@ void Domain::SetFort14Location(std::string newLoc)
 //		terrainLayer->SetGradientOutline(GradientShaderProperties(0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0));
 //		terrainLayer->SetGradientFill(GradientShaderProperties(0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0));
 
-//		if (circleTool)
-//			circleTool->SetTerrainLayer(terrainLayer);
 		if (selectionLayer)
 			selectionLayer->SetTerrainLayer(terrainLayer);
 	}
@@ -586,8 +533,6 @@ unsigned int Domain::GetNumElementsDomain()
  */
 unsigned int Domain::GetNumNodesSelected()
 {
-//	if (selectionLayer)
-//		return selectionLayer->GetNumNodesSelected();
 	return 0;
 }
 
@@ -672,47 +617,6 @@ void Domain::CalculateMouseCoordinates()
 		emit mouseY(newy);
 	}
 }
-
-
-///**
-// * @brief Sets the mouse coordinates in pixels so that transformations can be
-// * performed internally to get the mouse coordinates in the domain's coordinate
-// * system
-// *
-// * Sets the mouse coordinates in pixels so that transformations can be
-// * performed internally to get the mouse coordinates in the domain's coordinate
-// * system. Implemented as a slot in order to more easily connect to the OpenGLPanel
-// * class for continuous display of mouse x-y coordinates.
-// *
-// * Causes the mouseX and mouseY signals to be fired. If the terrain layer has been
-// * created (and thus, the domain's coordinate system is known), those signals will contain
-// * mouse coordinates in domain space. Otherwise, they will be in either normalized OpenGL
-// * space (the camera has been created), or in pixels (the camera has not been created).
-// *
-// * @param x The mouse x-coordinate (pixels)
-// * @param y The mouse y-coordinate (pixels)
-// */
-//void Domain::setMouseCoordinates(float x, float y)
-//{
-//	if (camera)
-//	{
-//		float glX, glY, domX, domY;
-//		camera->GetUnprojectedPoint(x, y, &glX, &glY);
-//		if (terrainLayer)
-//		{
-//			domX = terrainLayer->GetUnprojectedX(glX);
-//			domY = terrainLayer->GetUnprojectedY(glY);
-//			emit mouseX(domX);
-//			emit mouseY(domY);
-//		} else {
-//			emit mouseX(glX);
-//			emit mouseY(glY);
-//		}
-//	} else {
-//		emit mouseX(x);
-//		emit mouseY(y);
-//	}
-//}
 
 
 /**

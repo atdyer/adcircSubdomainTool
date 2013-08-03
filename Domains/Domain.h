@@ -68,9 +68,6 @@ class Domain : public QObject
 		void	MouseWheel(QWheelEvent *event);
 		void	SetWindowSize(float w, float h);
 		void	UseTool(ToolType tool, SelectionType selection);
-//		void	SetCircleToolCenter(int x, int y);
-//		void	SetCircleToolRadius(int x, int y);
-//		void	SetCircleToolFinished();
 		void	Undo();
 		void	Redo();
 
@@ -149,10 +146,6 @@ class Domain : public QObject
 		void	beingDestroyed();	/**< Emitted when the destructor is first called */
 		void	emitMessage(QString);	/**< Emitted any time a text message needs to be passed to the GUI */
 		void	updateGL();		/**< Emitted any time the OpenGL context needs to be redrawn */
-
-//	public slots:
-
-//		void	setMouseCoordinates(float x, float y);
 
 	protected slots:
 
