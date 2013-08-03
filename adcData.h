@@ -69,4 +69,11 @@ struct Element
 };
 
 
+/**
+ * @brief The SelectionType enum contains the available selection states for Selection Tools. The
+ * state defines what is selected when the user uses the tool.
+ */
+enum SelectionType {nodeSelection, elementSelection};
+
+
 #endif // ADCDATA_H

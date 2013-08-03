@@ -150,7 +150,7 @@ void OpenGLPanel::mousePressEvent(QMouseEvent *event)
 	oldy = event->y();
 	mouseMoved = false;
 
-	if (viewMode == CircleSubdomainMode)
+	if (viewMode == CircleSubdomainMode || viewMode == RectangleSubdomainMode)
 	{
 		if (activeDomain)
 			activeDomain->MouseClick(oldx, oldy);
@@ -179,7 +179,7 @@ void OpenGLPanel::mouseMoveEvent(QMouseEvent *event)
 			if (activeDomain)
 				activeDomain->Pan(dx, dy);
 		}
-		else if (viewMode == CircleSubdomainMode)
+		else if (viewMode == CircleSubdomainMode || viewMode == RectangleSubdomainMode)
 		{
 			if (activeDomain)
 				activeDomain->MouseMove(newx, newy);
@@ -264,4 +264,10 @@ void OpenGLPanel::enterDisplayMode()
 void OpenGLPanel::enterCircleSubdomainMode()
 {
 	viewMode = CircleSubdomainMode;
+}
+
+
+void OpenGLPanel::enterRectangleSubdomainMode()
+{
+	viewMode = RectangleSubdomainMode;
 }

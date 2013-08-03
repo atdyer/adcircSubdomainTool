@@ -9,9 +9,6 @@
 #include "Layers/TerrainLayer.h"
 
 
-enum SelectionType {nodeSelection, elementSelection};
-
-
 class RectangleTool : public QObject
 {
 		Q_OBJECT
@@ -38,11 +35,14 @@ class RectangleTool : public QObject
 
 		/* OpenGL Stuff */
 		bool		glLoaded;		/**< Flag that shows if the VAO/VBO/IBO have been created */
+		bool		visible;		/**< Flag that shows if the tool is currently visible */
 		GLuint		VAOId;			/**< The vertex array object ID */
 		GLuint		VBOId;			/**< The vertex buffer object ID */
 		GLuint		IBOId;			/**< The index buffer object ID */
 		SolidShader*	fillShader;		/**< The shader used to draw the selection tool */
-		float		vertexPoints[12][2];	/**< The actual vertices used to draw the tool */
+		GLfloat		vertexPoints[12][4];	/**< The actual vertices used to draw the tool */
+		GLuint		indexArray[8][3];	/**< The indices that make up the triangles */
+		size_t		vertexBufferSize;	/**< The size of the vertex data in bytes */
 
 		/* Selection Mode */
 		SelectionType	selectionMode;	/**< The current selection mode */

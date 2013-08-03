@@ -14,12 +14,14 @@
 #include "OpenGL/Shaders/SolidShader.h"
 
 #include "SubdomainTools/CircleTool.h"
+#include "SubdomainTools/RectangleTool.h"
 #include "SubdomainTools/BoundaryFinder.h"
 
 #include <QObject>
 
 #define AVAILABLETOOLS 1
 #define CIRCLETOOLINDEX 1
+#define RECTANGLETOOLINDEX 2
 
 
 /**
@@ -83,6 +85,7 @@ class CreationSelectionLayer : public SelectionLayer
 		/* Selection Tools */
 		int		activeTool;	/**< Integer used to determine which tool mouse actions are sent to */
 		CircleTool*	circleTool;	/**< Tool for selecting elements inside of a circle */
+		RectangleTool*	rectangleTool;	/**< Tool for selecting elements inside of a rectangle */
 		BoundaryFinder*	boundaryFinder;	/**< Tool used for finding the boundary nodes of a selection */
 
 		/* Selected Elements */
@@ -105,6 +108,7 @@ class CreationSelectionLayer : public SelectionLayer
 
 		/* Tool Initialization Functions */
 		void	CreateCircleTool();
+		void	CreateRectangleTool();
 
 		/* Helper Functions */
 		void	ClearUndoStack();

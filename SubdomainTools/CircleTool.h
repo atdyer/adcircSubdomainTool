@@ -10,13 +10,6 @@
 
 
 /**
- * @brief The SelectionType enum contains the available selection states for the CircleTool. The
- * state defines what is selected when the user draws a circle.
- */
-enum SelectionType {nodeSelection, elementSelection};
-
-
-/**
  * @brief This class provides functionality for selecting Nodes and Elements by
  * drawing a circle over the desired area of the current TerrainLayer
  */

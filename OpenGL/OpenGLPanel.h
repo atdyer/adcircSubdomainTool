@@ -14,7 +14,7 @@
  * state defines what happens when the user interacts with the panel through
  * clicks and key presses.
  */
-enum Mode {DisplayMode, CircleSubdomainMode};
+enum Mode {DisplayMode, CircleSubdomainMode, RectangleSubdomainMode};
 
 /**
  * @brief This is a custom widget that is used specifically for drawing Layer objects
@@ -56,6 +56,7 @@ class OpenGLPanel : public QGLWidget
 
 		void	enterDisplayMode();
 		void	enterCircleSubdomainMode();
+		void	enterRectangleSubdomainMode();
 
 	signals:
 

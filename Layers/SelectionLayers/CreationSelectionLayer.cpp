@@ -11,6 +11,7 @@ CreationSelectionLayer::CreationSelectionLayer()
 {
 	activeTool = 1;
 	circleTool = 0;
+	rectangleTool = 0;
 	boundaryFinder = new BoundaryFinder();
 
 	selectedState = 0;
@@ -26,6 +27,7 @@ CreationSelectionLayer::CreationSelectionLayer()
 
 	mousePressed = false;
 	CreateCircleTool();
+	CreateRectangleTool();
 }
 
 
@@ -63,6 +65,8 @@ CreationSelectionLayer::~CreationSelectionLayer()
 	/* Delete all tools */
 	if (circleTool)
 		delete circleTool;
+	if (rectangleTool)
+		delete rectangleTool;
 	if (boundaryFinder)
 		delete boundaryFinder;
 
@@ -118,6 +122,8 @@ void CreationSelectionLayer::Draw()
 
 	if (activeTool == CIRCLETOOLINDEX && circleTool)
 		circleTool->Draw();
+	else if (activeTool == RECTANGLETOOLINDEX && rectangleTool)
+		rectangleTool->Draw();
 }
 
 
@@ -219,6 +225,8 @@ void CreationSelectionLayer::SetCamera(GLCamera *newCamera)
 	/* Set the camera for the tools */
 	if (circleTool)
 		circleTool->SetCamera(newCamera);
+	if (rectangleTool)
+		rectangleTool->SetCamera(newCamera);
 }
 
 
@@ -253,6 +261,8 @@ void CreationSelectionLayer::SetTerrainLayer(TerrainLayer *newLayer)
 
 	if (circleTool)
 		circleTool->SetTerrainLayer(newLayer);
+	if (rectangleTool)
+		rectangleTool->SetTerrainLayer(newLayer);
 }
 
 
@@ -274,7 +284,9 @@ void CreationSelectionLayer::UseTool(int toolID)
 
 		/* If the tool hasn't been created yet, create it now */
 		if (activeTool == CIRCLETOOLINDEX && !circleTool)
-			circleTool = new CircleTool();
+			CreateCircleTool();
+		else if (activeTool == RECTANGLETOOLINDEX && !rectangleTool)
+			CreateRectangleTool();
 	}
 }
 
@@ -293,6 +305,8 @@ void CreationSelectionLayer::MouseClick(int x, int y)
 
 	if (activeTool == CIRCLETOOLINDEX && circleTool)
 		circleTool->SetCenter(x, y);
+	else if (activeTool == RECTANGLETOOLINDEX && rectangleTool)
+		rectangleTool->SetFirstCorner(x, y);
 }
 
 
@@ -306,8 +320,14 @@ void CreationSelectionLayer::MouseClick(int x, int y)
  */
 void CreationSelectionLayer::MouseMove(int x, int y)
 {
-	if (mousePressed && activeTool == CIRCLETOOLINDEX && circleTool)
-		circleTool->SetRadiusPoint(x, y);
+	if (mousePressed)
+	{
+		if (activeTool == CIRCLETOOLINDEX && circleTool)
+			circleTool->SetRadiusPoint(x, y);
+		else if (activeTool == RECTANGLETOOLINDEX && rectangleTool)
+			rectangleTool->SetSecondCorner(x, y);
+	}
+
 }
 
 
@@ -325,6 +345,8 @@ void CreationSelectionLayer::MouseRelease(int x, int y)
 
 	if (activeTool == CIRCLETOOLINDEX && circleTool)
 		circleTool->CircleFinished();
+	else if (activeTool == RECTANGLETOOLINDEX && rectangleTool)
+		rectangleTool->RectangleFinished();
 }
 
 
@@ -340,6 +362,8 @@ void CreationSelectionLayer::WindowSizeChanged(float w, float h)
 {
 	if (circleTool)
 		circleTool->SetViewportSize(w, h);
+	if (rectangleTool)
+		rectangleTool->SetViewportSize(w, h);
 }
 
 
@@ -497,6 +521,16 @@ void CreationSelectionLayer::CreateCircleTool()
 	circleTool->SetTerrainLayer(terrainLayer);
 	circleTool->SetCamera(camera);
 	connect(circleTool, SIGNAL(FinishedSearching()), this, SLOT(CircleToolFinishedSearching()));
+}
+
+
+void CreationSelectionLayer::CreateRectangleTool()
+{
+	if (!rectangleTool)
+		rectangleTool = new RectangleTool();
+
+	rectangleTool->SetTerrainLayer(terrainLayer);
+	rectangleTool->SetCamera(camera);
 }
 
 
