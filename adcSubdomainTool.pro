@@ -37,7 +37,8 @@ SOURCES += main.cpp\
     Layers/SelectionLayers/CreationSelectionLayer.cpp \
     Layers/Actions/ElementState.cpp \
     SubdomainTools/BoundaryFinder.cpp \
-    SubdomainTools/RectangleTool.cpp
+    SubdomainTools/RectangleTool.cpp \
+    SubdomainTools/PolygonTool.cpp
 
 HEADERS  += MainWindow.h \
     OpenGL/OpenGLPanel.h \
@@ -63,7 +64,8 @@ HEADERS  += MainWindow.h \
     Layers/SelectionLayers/CreationSelectionLayer.h \
     Layers/Actions/ElementState.h \
     SubdomainTools/BoundaryFinder.h \
-    SubdomainTools/RectangleTool.h
+    SubdomainTools/RectangleTool.h \
+    SubdomainTools/PolygonTool.h
 
 FORMS    += MainWindow.ui
 
