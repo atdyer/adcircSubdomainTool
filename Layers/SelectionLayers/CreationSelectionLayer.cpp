@@ -12,6 +12,7 @@ CreationSelectionLayer::CreationSelectionLayer()
 	activeTool = CircleToolType;
 	circleTool = 0;
 	rectangleTool = 0;
+	polygonTool = 0;
 	boundaryFinder = new BoundaryFinder();
 
 	selectedState = 0;
@@ -28,6 +29,7 @@ CreationSelectionLayer::CreationSelectionLayer()
 	mousePressed = false;
 	CreateCircleTool();
 	CreateRectangleTool();
+	CreatePolygonTool();
 }
 
 
@@ -67,6 +69,8 @@ CreationSelectionLayer::~CreationSelectionLayer()
 		delete circleTool;
 	if (rectangleTool)
 		delete rectangleTool;
+	if (polygonTool)
+		delete polygonTool;
 	if (boundaryFinder)
 		delete boundaryFinder;
 
@@ -124,6 +128,8 @@ void CreationSelectionLayer::Draw()
 		circleTool->Draw();
 	else if (activeTool == RectangleToolType && rectangleTool)
 		rectangleTool->Draw();
+	else if (activeTool == PolygonToolType && polygonTool)
+		polygonTool->Draw();
 }
 
 
@@ -227,6 +233,8 @@ void CreationSelectionLayer::SetCamera(GLCamera *newCamera)
 		circleTool->SetCamera(newCamera);
 	if (rectangleTool)
 		rectangleTool->SetCamera(newCamera);
+	if (polygonTool)
+		polygonTool->SetCamera(newCamera);
 }
 
 
@@ -263,6 +271,8 @@ void CreationSelectionLayer::SetTerrainLayer(TerrainLayer *newLayer)
 		circleTool->SetTerrainLayer(newLayer);
 	if (rectangleTool)
 		rectangleTool->SetTerrainLayer(newLayer);
+	if (polygonTool)
+		polygonTool->SetTerrainLayer(newLayer);
 }
 
 
@@ -284,6 +294,12 @@ void CreationSelectionLayer::UseTool(ToolType tool, SelectionType)
 		CreateCircleTool();
 	else if (activeTool == RectangleToolType && !rectangleTool)
 		CreateRectangleTool();
+	else if (activeTool == PolygonToolType)
+	{
+		if (!polygonTool)
+			CreatePolygonTool();
+		polygonTool->StartUsingTool();
+	}
 }
 
 
@@ -303,6 +319,8 @@ void CreationSelectionLayer::MouseClick(int x, int y)
 		circleTool->SetCenter(x, y);
 	else if (activeTool == RectangleToolType && rectangleTool)
 		rectangleTool->SetFirstCorner(x, y);
+	else if (activeTool == PolygonToolType && polygonTool)
+		polygonTool->MouseClick(x, y);
 }
 
 
@@ -322,6 +340,11 @@ void CreationSelectionLayer::MouseMove(int x, int y)
 			circleTool->SetRadiusPoint(x, y);
 		else if (activeTool == RectangleToolType && rectangleTool)
 			rectangleTool->SetSecondCorner(x, y);
+		else if (activeTool == PolygonToolType && polygonTool)
+			polygonTool->MouseMove(x, y);
+	} else {
+		if (activeTool == PolygonToolType && polygonTool)
+			polygonTool->MouseMove(x, y);
 	}
 
 }
@@ -343,6 +366,8 @@ void CreationSelectionLayer::MouseRelease(int x, int y)
 		circleTool->CircleFinished();
 	else if (activeTool == RectangleToolType && rectangleTool)
 		rectangleTool->RectangleFinished();
+	else if (activeTool == PolygonToolType && polygonTool)
+		polygonTool->MouseRelease(x, y);
 }
 
 
@@ -360,6 +385,8 @@ void CreationSelectionLayer::WindowSizeChanged(float w, float h)
 		circleTool->SetViewportSize(w, h);
 	if (rectangleTool)
 		rectangleTool->SetViewportSize(w, h);
+	if (polygonTool)
+		polygonTool->SetViewportSize(w, h);
 }
 
 
@@ -516,6 +543,7 @@ void CreationSelectionLayer::CreateCircleTool()
 
 	circleTool->SetTerrainLayer(terrainLayer);
 	circleTool->SetCamera(camera);
+	circleTool->SetSelectionMode(ElementSelection);
 	connect(circleTool, SIGNAL(FinishedSearching()), this, SLOT(CircleToolFinishedSearching()));
 	connect(circleTool, SIGNAL(ToolFinishedDrawing()), this, SIGNAL(ToolFinishedDrawing()));
 }
@@ -528,8 +556,21 @@ void CreationSelectionLayer::CreateRectangleTool()
 
 	rectangleTool->SetTerrainLayer(terrainLayer);
 	rectangleTool->SetCamera(camera);
+	rectangleTool->SetSelectionMode(ElementSelection);
 	connect(rectangleTool, SIGNAL(FinishedSearching()), this, SLOT(RectangleToolFinishedSearching()));
 	connect(rectangleTool, SIGNAL(ToolFinishedDrawing()), this, SIGNAL(ToolFinishedDrawing()));
+}
+
+
+void CreationSelectionLayer::CreatePolygonTool()
+{
+	if (!polygonTool)
+		polygonTool = new PolygonTool();
+
+	polygonTool->SetTerrainLayer(terrainLayer);
+	polygonTool->SetCamera(camera);
+	polygonTool->SetSelectionMode(ElementSelection);
+	connect(polygonTool, SIGNAL(ToolFinishedDrawing()), this, SIGNAL(ToolFinishedDrawing()));
 }
 
 

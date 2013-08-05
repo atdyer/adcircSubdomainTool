@@ -221,3 +221,9 @@ void MainWindow::on_selectNodesSquare_clicked()
 	if (testDomain)
 		testDomain->UseTool(RectangleToolType, ElementSelection);
 }
+
+void MainWindow::on_selectNodeSingle_clicked()
+{
+	if (testDomain)
+		testDomain->UseTool(PolygonToolType, ElementSelection);
+}

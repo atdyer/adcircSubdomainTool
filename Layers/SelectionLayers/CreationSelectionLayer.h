@@ -15,6 +15,7 @@
 
 #include "SubdomainTools/CircleTool.h"
 #include "SubdomainTools/RectangleTool.h"
+#include "SubdomainTools/PolygonTool.h"
 #include "SubdomainTools/BoundaryFinder.h"
 
 #include <QObject>
@@ -86,6 +87,7 @@ class CreationSelectionLayer : public SelectionLayer
 		ToolType	activeTool;	/**< The tool mouse actions will be sent to */
 		CircleTool*	circleTool;	/**< Tool for selecting elements inside of a circle */
 		RectangleTool*	rectangleTool;	/**< Tool for selecting elements inside of a rectangle */
+		PolygonTool*	polygonTool;	/**< Tool for selecting elements inside of a user defined polygon */
 		BoundaryFinder*	boundaryFinder;	/**< Tool used for finding the boundary nodes of a selection */
 
 		/* Selected Elements */
@@ -109,12 +111,14 @@ class CreationSelectionLayer : public SelectionLayer
 		/* Tool Initialization Functions */
 		void	CreateCircleTool();
 		void	CreateRectangleTool();
+		void	CreatePolygonTool();
 
 		/* Helper Functions */
 		void	ClearUndoStack();
 		void	ClearRedoStack();
 		void	UseNewState(ElementState* newState);
 		void	UseState(ElementState* state);
+
 
 	private slots:
 

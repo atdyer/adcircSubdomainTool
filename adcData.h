@@ -84,7 +84,7 @@ enum ActionType {DisplayAction, SelectionAction};
  * Types of tools that the user can use.
  *
  */
-enum ToolType {CircleToolType, RectangleToolType};
+enum ToolType {CircleToolType, RectangleToolType, PolygonToolType};
 
 
 /**

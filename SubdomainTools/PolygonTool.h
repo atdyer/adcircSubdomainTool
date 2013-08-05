@@ -9,6 +9,7 @@
 #include "adcData.h"
 #include "OpenGL/GLCamera.h"
 #include "Layers/TerrainLayer.h"
+#include "OpenGL/Shaders/SolidShader.h"
 
 class PolygonTool : public QObject
 {
@@ -19,19 +20,21 @@ class PolygonTool : public QObject
 
 		void	Draw();
 		void	SetCamera(GLCamera *cam);
+		void	SetTerrainLayer(TerrainLayer *layer);
 		void	SetViewportSize(float w, float h);
+		void	SetSelectionMode(SelectionType newMode);
 
-		void	MouseClick(QMouseEvent *event);
-		void	MouseMove(QMouseEvent *event);
-		void	MouseRelease(QMouseEvent *event);
+		void	MouseClick(int x, int y);
+		void	MouseMove(int x, int y);
+		void	MouseRelease(int x, int y);
 		void	MouseWheel(QWheelEvent *event);
 		void	KeyPress(QKeyEvent *event);
 
+		void	StartUsingTool();
+		void	FinishDrawingTool();
+
 		std::vector<Element*>	GetSelectedElements();
 
-	public slots:
-
-		void	StartUsingTool();
 
 	signals:
 
@@ -57,7 +60,19 @@ class PolygonTool : public QObject
 		GLuint		VAOId;			/**< The vertex array object ID */
 		GLuint		VBOId;			/**< The vertex buffer object ID */
 		GLuint		IBOId;			/**< The index buffer object ID */
-		SolidShader*	fillShader;		/**< The shader used to draw the selection tool */
+		SolidShader*	lineShader;		/**< The shader used to draw the selection tool */
+		void		InitializeGL();
+		void		UpdateVertexBuffer();
+		void		UpdateIndexBuffer();
+		void		UpdateMouseVertex();
+
+		/* Mouse Attributes */
+		float	mouseX;
+		float	mouseY;
+		bool	mousePressed;
+		bool	mouseMoved;
+		void	AddPoint(float x, float y);
+		bool	CheckForDoubleClick(float x, float y);
 
 		/* Selection Mode */
 		SelectionType	selectionMode;	/**< The current selection mode */
@@ -67,7 +82,16 @@ class PolygonTool : public QObject
 		std::vector<Element*>	selectedElements;
 
 		/* Polygon Attributes */
+		int			pointCount;
 		std::vector<Point>	pointsList;
+
+		/* Viewport Attributes */
+		float	w;	/**< The viewport width */
+		float	h;	/**< The viewport height */
+		float	l;	/**< The left side of the viewport */
+		float	r;	/**< The right side of the viewport */
+		float	b;	/**< The bottom of the viewport */
+		float	t;	/**< The top of the viewport */
 
 };
 

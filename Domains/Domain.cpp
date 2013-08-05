@@ -108,14 +108,18 @@ void Domain::MouseMove(QMouseEvent *event)
 
 	CalculateMouseCoordinates();
 
-	if (clicking)
+	if (currentMode == DisplayAction)
 	{
-		if (currentMode == DisplayAction)
+		if (clicking)
+		{
 			Pan(dx, dy);
-		else if (currentMode == SelectionAction && selectionLayer)
-			selectionLayer->MouseMove(newx, newy);
-		emit updateGL();
+		}
 	}
+	else if (currentMode == SelectionAction && selectionLayer)
+	{
+		selectionLayer->MouseMove(newx, newy);
+	}
+	emit updateGL();
 
 	oldx = newx;
 	oldy = newy;
@@ -133,7 +137,7 @@ void Domain::MouseRelease(QMouseEvent *event)
 	if (currentMode == SelectionAction && selectionLayer)
 	{
 		selectionLayer->MouseRelease(oldx, oldy);
-		currentMode = DisplayAction;
+//		currentMode = DisplayAction;
 	}
 
 	emit updateGL();
