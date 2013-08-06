@@ -69,7 +69,8 @@ class SelectionLayer : public Layer
 		void	Refreshed();
 		void	NumNodesSelected(int);
 		void	NumElementsSelected(int);
-		void	ToolFinishedDrawing();
+		void	FinishedUsingTool();
+//		void	ToolFinishedDrawing();
 };
 
 #endif // SELECTIONLAYER_H

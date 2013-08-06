@@ -47,7 +47,7 @@ Domain::Domain()
 	connect(selectionLayer, SIGNAL(RedoAvailable(bool)), this, SIGNAL(redoAvailable(bool)));
 	connect(selectionLayer, SIGNAL(Refreshed()), this, SIGNAL(updateGL()));
 	connect(selectionLayer, SIGNAL(NumElementsSelected(int)), this, SIGNAL(numElementsSelected(int)));
-	connect(selectionLayer, SIGNAL(ToolFinishedDrawing()), this, SLOT(ToolFinishedDrawing()));
+	connect(selectionLayer, SIGNAL(FinishedUsingTool()), this, SLOT(EnterDisplayMode()));
 
 }
 
@@ -651,7 +651,7 @@ void Domain::LoadLayerToGPU()
 }
 
 
-void Domain::ToolFinishedDrawing()
+void Domain::EnterDisplayMode()
 {
 	currentMode = DisplayAction;
 }

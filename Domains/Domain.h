@@ -150,7 +150,7 @@ class Domain : public QObject
 	protected slots:
 
 		void	LoadLayerToGPU();
-		void	ToolFinishedDrawing();
+		void	EnterDisplayMode();
 
 };
 

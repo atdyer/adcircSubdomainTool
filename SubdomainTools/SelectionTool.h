@@ -32,6 +32,8 @@ class SelectionTool : public QObject
 		virtual void	UseTool() = 0;
 		void		UseTool(SelectionType newMode);
 
+		virtual std::vector<Element*>	GetSelectedElements() = 0;
+
 	signals:
 
 		void	Message(QString);

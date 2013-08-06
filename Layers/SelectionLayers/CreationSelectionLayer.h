@@ -129,14 +129,16 @@ class CreationSelectionLayer : public SelectionLayer
 		void	ClearRedoStack();
 		void	UseNewState(ElementState* newState);
 		void	UseState(ElementState* state);
+		void	GetSelectionFromActiveTool();
 
 
 	private slots:
 
 		/* Helper Slots */
 		void	TerrainDataLoaded();
-		void	CircleToolFinishedSearching();
-		void	RectangleToolFinishedSearching();
+		void	ToolFinishedDrawing();
+//		void	CircleToolFinishedSearching();
+//		void	RectangleToolFinishedSearching();
 };
 
 #endif // CREATIONSELECTIONLAYER_H

@@ -11,10 +11,6 @@ CircleTool::CircleTool()
 
 	selectionMode = ElementSelection;
 
-	centerX = 0.0;
-	centerY = 0.0;
-	edgeX = 0.0;
-	edgeY = 0.0;
 	visible = false;
 	mousePressed = false;
 
@@ -62,7 +58,7 @@ CircleTool::~CircleTool()
  */
 void CircleTool::Draw()
 {
-	if (radPixel > 0.0)
+	if (visible)
 	{
 		glUseProgram(0); // Turn off any shaders that were previously being used
 		glLoadIdentity();
@@ -141,23 +137,14 @@ void CircleTool::MouseClick(QMouseEvent *event)
 	visible = true;
 	mousePressed = true;
 	SetCenter(event->x(), event->y());
-//	centerX = event->x();
-//	centerY = event->y();
-//	if (camera)
-//	{
-////		camera->GetUnprojectedPoint(event->x(), event->y(), &centerX, &centerY);
-//	}
 }
 
 
 void CircleTool::MouseMove(QMouseEvent *event)
 {
-	if (mousePressed && camera)
+	if (mousePressed)
 	{
 		SetRadiusPoint(event->x(), event->y());
-//		edgeX = event->x();
-//		edgeY = event->y();
-//		camera->GetUnprojectedPoint(event->x(), event->y(), &edgeX, &edgeY);
 	}
 }
 
@@ -165,27 +152,7 @@ void CircleTool::MouseMove(QMouseEvent *event)
 void CircleTool::MouseRelease(QMouseEvent*)
 {
 	mousePressed = false;
-	CircleFinished();
-//	emit ToolFinishedDrawing();
-
-//	if (terrain && camera)
-//	{
-//		float xCenterNormal, yCenterNormal;
-//		float xEdgeNormal, yEdgeNormal;
-//		camera->GetUnprojectedPoint(centerX, centerY, &xCenterNormal, &yCenterNormal);
-//		camera->GetUnprojectedPoint(edgeX, edgeY, &xEdgeNormal, &yEdgeNormal);
-//		float xCenterDomain = terrain->GetUnprojectedX(xCenterNormal);
-//		float yCenterDomain = terrain->GetUnprojectedY(yCenterNormal);
-//		float xEdgeDomain = terrain->GetUnprojectedX(xEdgeNormal);
-//		float yEdgeDomain = terrain->GetUnprojectedY(yEdgeNormal);
-//		float radius = distance(xCenterDomain, yCenterDomain, xEdgeDomain, yEdgeDomain);
-
-//		if (selectionMode == ElementSelection)
-//		{
-//			selectedElements = terrain->GetElementsFromCircle(xCenterDomain, yCenterDomain, radius);
-//			emit FinishedSearching();
-//		}
-//	}
+	emit ToolFinishedDrawing();
 }
 
 
@@ -204,6 +171,13 @@ void CircleTool::KeyPress(QKeyEvent*)
 void CircleTool::UseTool()
 {
 	ResetTool();
+}
+
+
+std::vector<Element*> CircleTool::GetSelectedElements()
+{
+	FindElements();
+	return selectedElements;
 }
 
 
@@ -265,59 +239,26 @@ void CircleTool::SetRadiusPoint(int newX, int newY)
 		edgeYDomain = terrain->GetUnprojectedY(edgeYNormal);
 	}
 
-	radPixel = distance(xPixel, yPixel, edgeXPixel, edgeYPixel);
-	radNormal = distance(xNormal, yNormal, edgeXNormal, edgeYNormal);
-	radDomain = distance(xDomain, yDomain, edgeXDomain, edgeYDomain);
+	radPixel = Distance(xPixel, yPixel, edgeXPixel, edgeYPixel);
+	radNormal = Distance(xNormal, yNormal, edgeXNormal, edgeYNormal);
+	radDomain = Distance(xDomain, yDomain, edgeXDomain, edgeYDomain);
 
 	emit CircleStatsSet(xDomain, yDomain, radDomain);
 }
 
 
-std::vector<Element*> CircleTool::GetSelectedElements()
+void CircleTool::FindElements()
 {
-	return selectedElements;
+	if (terrain)
+	{
+		selectedElements = terrain->GetElementsFromCircle(xNormal, yNormal, radNormal);
+	}
 }
 
 
 void CircleTool::ResetTool()
 {
 	visible = false;
-	centerX = 0.0;
-	centerY = 0.0;
-	edgeX = 0.0;
-	edgeY = 0.0;
-}
-
-
-/**
- * @brief Tells the circle tool that the user has finished drawing the circle
- *
- * Tells the circle tool that the user has finished drawing the circle and that
- * it is time to find all of the Nodes inside of the circle. Typically called
- * after the user stops clicking to drop the circle.
- *
- * Resets all coordinate and radius values to zero to prepare to draw another circle.
- *
- */
-void CircleTool::CircleFinished()
-{
-	emit ToolFinishedDrawing();
-	emit CircleStatsFinished();
-
-	if (terrain)
-	{
-		if (selectionMode == NodeSelection)
-		{
-//			std::vector<Node*> nodes = terrain->GetNodesFromCircle(xNormal, yNormal, radNormal);
-//			emit NodesSelected(nodes);
-		}
-		else if (selectionMode == ElementSelection)
-		{
-			selectedElements = terrain->GetElementsFromCircle(xNormal, yNormal, radNormal);
-			emit FinishedSearching();
-		}
-	}
-
 	xPixel = 0.0;
 	xNormal = 0.0;
 	xDomain = 0.0;
@@ -327,6 +268,8 @@ void CircleTool::CircleFinished()
 	radPixel = 0.0;
 	radNormal = 0.0;
 	radDomain = 0.0;
+	selectedNodes.clear();
+	selectedElements.clear();
 }
 
 
@@ -339,7 +282,7 @@ void CircleTool::CircleFinished()
  * @param y2 The y-coordinate of the second point
  * @return The distance between the two points
  */
-float CircleTool::distance(float x1, float y1, float x2, float y2)
+float CircleTool::Distance(float x1, float y1, float x2, float y2)
 {
 	return sqrt(pow(x2-x1, 2.0)+pow(y2-y1, 2.0));
 }

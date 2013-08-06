@@ -42,13 +42,15 @@ class CircleTool : public SelectionTool
 
 	private:
 
-		void	SetCenter(int newX, int newY);
-		void	SetRadiusPoint(int newX, int newY);
-
 		TerrainLayer*	terrain;	/**< The TerrainLayer that nodes/elements will be selected from */
 		GLCamera*	camera;		/**< The GLCamera that is being used to draw the TerrainLayer */
 
+		/* Helper Functions */
+		void	SetCenter(int newX, int newY);
+		void	SetRadiusPoint(int newX, int newY);
+		void	FindElements();
 		void	ResetTool();
+		float	Distance(float x1, float y1, float x2, float y2);
 
 		// Selection Mode
 		SelectionType	selectionMode;	/**< The current selection mode of the circle tool */
@@ -58,10 +60,6 @@ class CircleTool : public SelectionTool
 		std::vector<Element*>	selectedElements;
 
 		// Circle attributes
-		float	centerX;
-		float	centerY;
-		float	edgeX;
-		float	edgeY;
 		bool	visible;
 		bool	mousePressed;
 
@@ -94,21 +92,9 @@ class CircleTool : public SelectionTool
 		// Use GLU to draw the circle for now
 		GLUquadricObj*	quad;	/**< The quadric object used to draw the disk */
 
-		float	distance(float x1, float y1, float x2, float y2);
-
 	signals:
 
 		void	CircleStatsSet(float, float, float);
-		void	CircleStatsFinished();
-		void	NodeSelected(Node*);
-		void	NodesSelected(std::vector<Node*>);
-		void	ElementsSelected(std::vector<Element*>);
-		void	FinishedSearching();
-		void	ToolFinishedDrawing();
-
-	public slots:
-
-		void	CircleFinished();
 };
 
 #endif // CIRCLETOOL_H
