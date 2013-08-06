@@ -157,7 +157,7 @@ void RectangleTool::MouseMove(QMouseEvent *event)
 void RectangleTool::MouseRelease(QMouseEvent *event)
 {
 	clicking = false;
-	RectangleFinished();
+	emit ToolFinishedDrawing();
 }
 
 
@@ -175,8 +175,16 @@ void RectangleTool::KeyPress(QKeyEvent *event)
 
 void RectangleTool::UseTool()
 {
+	ResetTool();
 	if (!glLoaded)
 		InitializeGL();
+}
+
+
+std::vector<Element*> RectangleTool::GetSelectedElements()
+{
+	FindElements();
+	return selectedElements;
 }
 
 
@@ -238,30 +246,13 @@ void RectangleTool::UpdateGL()
 
 	if (glLoaded)
 	{
-		if (VAOId)
+		if (VBOId)
 		{
-//			glBindVertexArray(VAOId);
 			glBindBuffer(GL_ARRAY_BUFFER, VBOId);
-//			glEnableVertexAttribArray(0);
-//			glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4*sizeof(GLfloat), 0);
 			glBufferSubData(GL_ARRAY_BUFFER, 0, vertexBufferSize, &vertexPoints[0][0]);
-//			GLfloat* glNodeData = (GLfloat *)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-//			if (glNodeData)
-//			{
-//				for (int i=0; i<12; ++i)
-//				{
-//					glNodeData[4*i+0] = vertexPoints[i][0];
-//					glNodeData[4*i+1] = vertexPoints[i][1];
-//				}
-//			}
-//			glUnmapBuffer(GL_ARRAY_BUFFER);
-//			glBindVertexArray(0);
 		}
 	}
 }
-
-
-
 
 
 void RectangleTool::SetFirstCorner(int newX, int newY)
@@ -304,33 +295,22 @@ void RectangleTool::SetSecondCorner(int newX, int newY)
 
 	CalculateVertexPoints();
 	UpdateGL();
-	visible = true;
 }
 
 
-void RectangleTool::RectangleFinished()
+void RectangleTool::FindElements()
 {
-	visible = false;
-	emit ToolFinishedDrawing();
-
 	if (terrain)
 	{
-		if (selectionMode == NodeSelection)
-		{
-			/* TODO: Get nodes from rectangle in quadtree */
-		}
-		else if (selectionMode == ElementSelection)
-		{
-			selectedElements = terrain->GetElementsFromRectangle(vertexPoints[0][0], vertexPoints[3][0], vertexPoints[0][1], vertexPoints[3][1]);
-			emit FinishedSearching();
-		}
+		selectedElements = terrain->GetElementsFromRectangle(vertexPoints[0][0], vertexPoints[3][0], vertexPoints[0][1], vertexPoints[3][1]);
 	}
 }
 
 
-std::vector<Element*> RectangleTool::GetSelectedElements()
+void RectangleTool::ResetTool()
 {
-	return selectedElements;
+	visible = false;
+	clicking = false;
 }
 
 
@@ -383,6 +363,3 @@ void RectangleTool::CalculateVertexPoints()
 	vertexPoints[6][1] = vertexPoints[1][1] = vertexPoints[3][1] = vertexPoints[10][1] = topLeft[1];
 	vertexPoints[5][1] = vertexPoints[0][1] = vertexPoints[2][1] = vertexPoints[9][1] = bottomRight[1];
 }
-
-
-

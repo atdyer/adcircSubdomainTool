@@ -41,9 +41,13 @@ class RectangleTool : public SelectionTool
 		TerrainLayer*	terrain;	/**< The TerrainLayer that nodes/elements will be selected from */
 		GLCamera*	camera;		/**< The GLCamera that is used to draw the TerrainLayer */
 
+		/* Helper Functions */
+		void	InitializeGL();
+		void	UpdateGL();
 		void	SetFirstCorner(int newX, int newY);
 		void	SetSecondCorner(int newX, int newY);
-		void	RectangleFinished();
+		void	FindElements();
+		void	ResetTool();
 		void	CalculateVertexPoints();
 
 		/* OpenGL Stuff */
@@ -56,8 +60,7 @@ class RectangleTool : public SelectionTool
 		GLfloat		vertexPoints[12][4];	/**< The actual vertices used to draw the tool */
 		GLuint		indexArray[8][3];	/**< The indices that make up the triangles */
 		size_t		vertexBufferSize;	/**< The size of the vertex data in bytes */
-		void	InitializeGL();
-		void	UpdateGL();
+
 
 		/* Mouse State */
 		bool	clicking;
@@ -90,8 +93,8 @@ class RectangleTool : public SelectionTool
 	signals:
 
 		void	RectangleStatsSet(float w, float h);
-		void	RectangleStatsFinished();
-		void	FinishedSearching();
+//		void	RectangleStatsFinished();
+//		void	FinishedSearching();
 //		void	ToolFinishedDrawing();
 
 //	public slots:
