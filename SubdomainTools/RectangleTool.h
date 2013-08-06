@@ -34,17 +34,17 @@ class RectangleTool : public SelectionTool
 
 		void	UseTool();
 
-		void	SetFirstCorner(int newX, int newY);
-		void	SetSecondCorner(int newX, int newY);
-		void	RectangleFinished();
-		void	CalculateVertexPoints();
-
 		std::vector<Element*>	GetSelectedElements();
 
 	private:
 
 		TerrainLayer*	terrain;	/**< The TerrainLayer that nodes/elements will be selected from */
 		GLCamera*	camera;		/**< The GLCamera that is used to draw the TerrainLayer */
+
+		void	SetFirstCorner(int newX, int newY);
+		void	SetSecondCorner(int newX, int newY);
+		void	RectangleFinished();
+		void	CalculateVertexPoints();
 
 		/* OpenGL Stuff */
 		bool		glLoaded;		/**< Flag that shows if the VAO/VBO/IBO have been created */
@@ -58,6 +58,9 @@ class RectangleTool : public SelectionTool
 		size_t		vertexBufferSize;	/**< The size of the vertex data in bytes */
 		void	InitializeGL();
 		void	UpdateGL();
+
+		/* Mouse State */
+		bool	clicking;
 
 		/* Selection Mode */
 		SelectionType	selectionMode;	/**< The current selection mode */

@@ -13,16 +13,20 @@
 #include "OpenGL/GLCamera.h"
 #include "OpenGL/Shaders/SolidShader.h"
 
+#include "SubdomainTools/SelectionTool.h"
 #include "SubdomainTools/CircleTool.h"
 #include "SubdomainTools/RectangleTool.h"
 #include "SubdomainTools/PolygonTool.h"
 #include "SubdomainTools/BoundaryFinder.h"
 
 #include <QObject>
+#include <QMouseEvent>
+#include <QWheelEvent>
+#include <QKeyEvent>
 
-#define AVAILABLETOOLS 1
-#define CIRCLETOOLINDEX 1
-#define RECTANGLETOOLINDEX 2
+//#define AVAILABLETOOLS 1
+//#define CIRCLETOOLINDEX 1
+//#define RECTANGLETOOLINDEX 2
 
 
 /**
@@ -70,6 +74,12 @@ class CreationSelectionLayer : public SelectionLayer
 		virtual void	SetTerrainLayer(TerrainLayer* newLayer);
 		virtual void	UseTool(ToolType tool, SelectionType selection);
 
+		void	MouseClick(QMouseEvent *event);
+		void	MouseMove(QMouseEvent *event);
+		void	MouseRelease(QMouseEvent *event);
+		void	MouseWheel(QWheelEvent *event);
+		void	KeyPress(QKeyEvent *event);
+
 		void	MouseClick(int x, int y);
 		void	MouseMove(int x, int y);
 		void	MouseRelease(int x, int y);
@@ -84,7 +94,8 @@ class CreationSelectionLayer : public SelectionLayer
 	private:
 
 		/* Selection Tools */
-		ToolType	activeTool;	/**< The tool mouse actions will be sent to */
+		ToolType	activeToolType;	/**< The type of tool currently being used */
+		SelectionTool*	activeTool;	/**< The tool currently being used */
 		CircleTool*	circleTool;	/**< Tool for selecting elements inside of a circle */
 		RectangleTool*	rectangleTool;	/**< Tool for selecting elements inside of a rectangle */
 		PolygonTool*	polygonTool;	/**< Tool for selecting elements inside of a user defined polygon */

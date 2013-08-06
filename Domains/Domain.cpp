@@ -94,7 +94,8 @@ void Domain::MouseClick(QMouseEvent *event)
 	mouseMoved = false;
 
 	if (currentMode == SelectionAction && selectionLayer)
-		selectionLayer->MouseClick(oldx, oldy);
+		selectionLayer->MouseClick(event);
+//		selectionLayer->MouseClick(oldx, oldy);
 }
 
 
@@ -117,7 +118,8 @@ void Domain::MouseMove(QMouseEvent *event)
 	}
 	else if (currentMode == SelectionAction && selectionLayer)
 	{
-		selectionLayer->MouseMove(newx, newy);
+		selectionLayer->MouseMove(event);
+//		selectionLayer->MouseMove(newx, newy);
 	}
 	emit updateGL();
 
@@ -136,7 +138,8 @@ void Domain::MouseRelease(QMouseEvent *event)
 
 	if (currentMode == SelectionAction && selectionLayer)
 	{
-		selectionLayer->MouseRelease(oldx, oldy);
+		selectionLayer->MouseRelease(event);
+//		selectionLayer->MouseRelease(oldx, oldy);
 //		currentMode = DisplayAction;
 	}
 

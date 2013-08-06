@@ -22,6 +22,8 @@ RectangleTool::RectangleTool()
 	vertexPoints[7][1] = vertexPoints[11][1] = 100.0;
 	vertexBufferSize = 12*4*sizeof(GLuint);
 
+	clicking = false;
+
 	indexArray[0][0] = 4;
 	indexArray[0][1] = 8;
 	indexArray[0][2] = 9;
@@ -139,19 +141,23 @@ void RectangleTool::SetSelectionMode(SelectionType newMode)
 
 void RectangleTool::MouseClick(QMouseEvent *event)
 {
-
+	clicking = true;
+	visible = true;
+	SetFirstCorner(event->x(), event->y());
 }
 
 
 void RectangleTool::MouseMove(QMouseEvent *event)
 {
-
+	if (clicking)
+		SetSecondCorner(event->x(), event->y());
 }
 
 
 void RectangleTool::MouseRelease(QMouseEvent *event)
 {
-
+	clicking = false;
+	RectangleFinished();
 }
 
 
@@ -169,7 +175,8 @@ void RectangleTool::KeyPress(QKeyEvent *event)
 
 void RectangleTool::UseTool()
 {
-
+	if (!glLoaded)
+		InitializeGL();
 }
 
 

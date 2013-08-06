@@ -38,15 +38,17 @@ class CircleTool : public SelectionTool
 
 		void	UseTool();
 
-		void	SetCenter(int newX, int newY);
-		void	SetRadiusPoint(int newX, int newY);
-
 		std::vector<Element*>	GetSelectedElements();
 
 	private:
 
+		void	SetCenter(int newX, int newY);
+		void	SetRadiusPoint(int newX, int newY);
+
 		TerrainLayer*	terrain;	/**< The TerrainLayer that nodes/elements will be selected from */
 		GLCamera*	camera;		/**< The GLCamera that is being used to draw the TerrainLayer */
+
+		void	ResetTool();
 
 		// Selection Mode
 		SelectionType	selectionMode;	/**< The current selection mode of the circle tool */
@@ -56,6 +58,13 @@ class CircleTool : public SelectionTool
 		std::vector<Element*>	selectedElements;
 
 		// Circle attributes
+		float	centerX;
+		float	centerY;
+		float	edgeX;
+		float	edgeY;
+		bool	visible;
+		bool	mousePressed;
+
 		float	xPixel;		/**< The x-coordinate of the circle center, in pixels */
 		float	yPixel;		/**< The y-coordinate of the circle center, in pixels */
 		float	xNormal;	/**< The x-coordinate of the circle center, in normalized OpenGL space */

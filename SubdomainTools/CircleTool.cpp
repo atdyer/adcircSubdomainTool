@@ -11,6 +11,13 @@ CircleTool::CircleTool()
 
 	selectionMode = ElementSelection;
 
+	centerX = 0.0;
+	centerY = 0.0;
+	edgeX = 0.0;
+	edgeY = 0.0;
+	visible = false;
+	mousePressed = false;
+
 	xPixel = 0.0;
 	xNormal = 0.0;
 	xDomain = 0.0;
@@ -131,29 +138,64 @@ void CircleTool::SetSelectionMode(SelectionType newMode)
 
 void CircleTool::MouseClick(QMouseEvent *event)
 {
-
+	visible = true;
+	mousePressed = true;
+	SetCenter(event->x(), event->y());
+//	centerX = event->x();
+//	centerY = event->y();
+//	if (camera)
+//	{
+////		camera->GetUnprojectedPoint(event->x(), event->y(), &centerX, &centerY);
+//	}
 }
 
 
 void CircleTool::MouseMove(QMouseEvent *event)
 {
-
+	if (mousePressed && camera)
+	{
+		SetRadiusPoint(event->x(), event->y());
+//		edgeX = event->x();
+//		edgeY = event->y();
+//		camera->GetUnprojectedPoint(event->x(), event->y(), &edgeX, &edgeY);
+	}
 }
 
 
-void CircleTool::MouseRelease(QMouseEvent *event)
+void CircleTool::MouseRelease(QMouseEvent*)
+{
+	mousePressed = false;
+	CircleFinished();
+//	emit ToolFinishedDrawing();
+
+//	if (terrain && camera)
+//	{
+//		float xCenterNormal, yCenterNormal;
+//		float xEdgeNormal, yEdgeNormal;
+//		camera->GetUnprojectedPoint(centerX, centerY, &xCenterNormal, &yCenterNormal);
+//		camera->GetUnprojectedPoint(edgeX, edgeY, &xEdgeNormal, &yEdgeNormal);
+//		float xCenterDomain = terrain->GetUnprojectedX(xCenterNormal);
+//		float yCenterDomain = terrain->GetUnprojectedY(yCenterNormal);
+//		float xEdgeDomain = terrain->GetUnprojectedX(xEdgeNormal);
+//		float yEdgeDomain = terrain->GetUnprojectedY(yEdgeNormal);
+//		float radius = distance(xCenterDomain, yCenterDomain, xEdgeDomain, yEdgeDomain);
+
+//		if (selectionMode == ElementSelection)
+//		{
+//			selectedElements = terrain->GetElementsFromCircle(xCenterDomain, yCenterDomain, radius);
+//			emit FinishedSearching();
+//		}
+//	}
+}
+
+
+void CircleTool::MouseWheel(QWheelEvent*)
 {
 
 }
 
 
-void CircleTool::MouseWheel(QWheelEvent *event)
-{
-
-}
-
-
-void CircleTool::KeyPress(QKeyEvent *event)
+void CircleTool::KeyPress(QKeyEvent*)
 {
 
 }
@@ -161,7 +203,7 @@ void CircleTool::KeyPress(QKeyEvent *event)
 
 void CircleTool::UseTool()
 {
-
+	ResetTool();
 }
 
 
@@ -234,6 +276,16 @@ void CircleTool::SetRadiusPoint(int newX, int newY)
 std::vector<Element*> CircleTool::GetSelectedElements()
 {
 	return selectedElements;
+}
+
+
+void CircleTool::ResetTool()
+{
+	visible = false;
+	centerX = 0.0;
+	centerY = 0.0;
+	edgeX = 0.0;
+	edgeY = 0.0;
 }
 
 

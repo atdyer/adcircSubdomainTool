@@ -9,7 +9,8 @@
  */
 CreationSelectionLayer::CreationSelectionLayer()
 {
-	activeTool = CircleToolType;
+	activeToolType = CircleToolType;
+	activeTool = 0;
 	circleTool = 0;
 	rectangleTool = 0;
 	polygonTool = 0;
@@ -124,12 +125,14 @@ void CreationSelectionLayer::Draw()
 		glUseProgram(0);
 	}
 
-	if (activeTool == CircleToolType && circleTool)
-		circleTool->Draw();
-	else if (activeTool == RectangleToolType && rectangleTool)
-		rectangleTool->Draw();
-	else if (activeTool == PolygonToolType && polygonTool)
-		polygonTool->Draw();
+	if (activeTool)
+		activeTool->Draw();
+//	if (activeToolType == CircleToolType && circleTool)
+//		circleTool->Draw();
+//	else if (activeToolType == RectangleToolType && rectangleTool)
+//		rectangleTool->Draw();
+//	else if (activeToolType == PolygonToolType && polygonTool)
+//		polygonTool->Draw();
 }
 
 
@@ -287,19 +290,65 @@ void CreationSelectionLayer::SetTerrainLayer(TerrainLayer *newLayer)
  */
 void CreationSelectionLayer::UseTool(ToolType tool, SelectionType)
 {
-	activeTool = tool;
+	activeToolType = tool;
 
 	/* If the tool hasn't been created yet, create it now */
-	if (activeTool == CircleToolType && !circleTool)
-		CreateCircleTool();
-	else if (activeTool == RectangleToolType && !rectangleTool)
-		CreateRectangleTool();
-	else if (activeTool == PolygonToolType)
+	if (activeToolType == CircleToolType)
+	{
+		if (!circleTool)
+			CreateCircleTool();
+		activeTool = circleTool;
+	}
+	else if (activeToolType == RectangleToolType)
+	{
+		if (!rectangleTool)
+			CreateRectangleTool();
+		activeTool = rectangleTool;
+	}
+	else if (activeToolType == PolygonToolType)
 	{
 		if (!polygonTool)
 			CreatePolygonTool();
-		polygonTool->StartUsingTool();
+		activeTool = polygonTool;
 	}
+
+	if (activeTool)
+		activeTool->UseTool(ElementSelection);
+}
+
+
+void CreationSelectionLayer::MouseClick(QMouseEvent *event)
+{
+	if (activeTool)
+		activeTool->MouseClick(event);
+}
+
+
+void CreationSelectionLayer::MouseMove(QMouseEvent *event)
+{
+	if (activeTool)
+		activeTool->MouseMove(event);
+}
+
+
+void CreationSelectionLayer::MouseRelease(QMouseEvent *event)
+{
+	if (activeTool)
+		activeTool->MouseRelease(event);
+}
+
+
+void CreationSelectionLayer::MouseWheel(QWheelEvent *event)
+{
+	if (activeTool)
+		activeTool->MouseWheel(event);
+}
+
+
+void CreationSelectionLayer::KeyPress(QKeyEvent *event)
+{
+	if (activeTool)
+		activeTool->KeyPress(event);
 }
 
 
@@ -313,14 +362,14 @@ void CreationSelectionLayer::UseTool(ToolType tool, SelectionType)
  */
 void CreationSelectionLayer::MouseClick(int x, int y)
 {
-	mousePressed = true;
+//	mousePressed = true;
 
-	if (activeTool == CircleToolType && circleTool)
-		circleTool->SetCenter(x, y);
-	else if (activeTool == RectangleToolType && rectangleTool)
-		rectangleTool->SetFirstCorner(x, y);
-	else if (activeTool == PolygonToolType && polygonTool)
-		polygonTool->MouseClick(x, y);
+//	if (activeToolType == CircleToolType && circleTool)
+//		circleTool->SetCenter(x, y);
+//	else if (activeToolType == RectangleToolType && rectangleTool)
+//		rectangleTool->SetFirstCorner(x, y);
+//	else if (activeToolType == PolygonToolType && polygonTool)
+//		polygonTool->MouseClick(x, y);
 }
 
 
@@ -334,18 +383,18 @@ void CreationSelectionLayer::MouseClick(int x, int y)
  */
 void CreationSelectionLayer::MouseMove(int x, int y)
 {
-	if (mousePressed)
-	{
-		if (activeTool == CircleToolType && circleTool)
-			circleTool->SetRadiusPoint(x, y);
-		else if (activeTool == RectangleToolType && rectangleTool)
-			rectangleTool->SetSecondCorner(x, y);
-		else if (activeTool == PolygonToolType && polygonTool)
-			polygonTool->MouseMove(x, y);
-	} else {
-		if (activeTool == PolygonToolType && polygonTool)
-			polygonTool->MouseMove(x, y);
-	}
+//	if (mousePressed)
+//	{
+//		if (activeToolType == CircleToolType && circleTool)
+//			circleTool->SetRadiusPoint(x, y);
+//		else if (activeToolType == RectangleToolType && rectangleTool)
+//			rectangleTool->SetSecondCorner(x, y);
+//		else if (activeToolType == PolygonToolType && polygonTool)
+//			polygonTool->MouseMove(x, y);
+//	} else {
+//		if (activeToolType == PolygonToolType && polygonTool)
+//			polygonTool->MouseMove(x, y);
+//	}
 
 }
 
@@ -360,14 +409,14 @@ void CreationSelectionLayer::MouseMove(int x, int y)
  */
 void CreationSelectionLayer::MouseRelease(int x, int y)
 {
-	mousePressed = false;
+//	mousePressed = false;
 
-	if (activeTool == CircleToolType && circleTool)
-		circleTool->CircleFinished();
-	else if (activeTool == RectangleToolType && rectangleTool)
-		rectangleTool->RectangleFinished();
-	else if (activeTool == PolygonToolType && polygonTool)
-		polygonTool->MouseRelease(x, y);
+//	if (activeToolType == CircleToolType && circleTool)
+//		circleTool->CircleFinished();
+//	else if (activeToolType == RectangleToolType && rectangleTool)
+//		rectangleTool->RectangleFinished();
+//	else if (activeToolType == PolygonToolType && polygonTool)
+//		polygonTool->MouseRelease(x, y);
 }
 
 
