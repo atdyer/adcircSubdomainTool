@@ -93,14 +93,6 @@ class RectangleTool : public SelectionTool
 	signals:
 
 		void	RectangleStatsSet(float w, float h);
-//		void	RectangleStatsFinished();
-//		void	FinishedSearching();
-//		void	ToolFinishedDrawing();
-
-//	public slots:
-
-//		void	SetTerrainLayer(TerrainLayer *layer);
-//		void	SetSelectionMode(SelectionType newMode);
 };
 
 #endif // RECTANGLETOOL_H

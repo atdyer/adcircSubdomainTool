@@ -131,14 +131,16 @@ class CreationSelectionLayer : public SelectionLayer
 		void	UseState(ElementState* state);
 		void	GetSelectionFromActiveTool();
 
+	signals:
+
+		void	CircleToolStatsSet(float, float, float);
+		void	RectangleToolStatsSet(float, float);
 
 	private slots:
 
 		/* Helper Slots */
 		void	TerrainDataLoaded();
-		void	ToolFinishedDrawing();
-//		void	CircleToolFinishedSearching();
-//		void	RectangleToolFinishedSearching();
+		void	GetSelectionFromTool();
 };
 
 #endif // CREATIONSELECTIONLAYER_H

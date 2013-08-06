@@ -129,23 +129,27 @@ class Domain : public QObject
 
 	signals:
 
-		void	mouseX(float);		/**< Emits the mouse x-coordinate in domain space as the mouse is moved */
-		void	mouseY(float);		/**< Emits the mouse y-coordinate in domain space as the mosue is moved */
-		void	undoAvailable(bool);	/**< Emitted when an undo action becomes available or unavailable */
-		void	redoAvailable(bool);	/**< Emitted when a redo action becomes available or unavailable */
+		void	Message(QString);
+		void	Instructions(QString);
+		void	MouseX(float);		/**< Emits the mouse x-coordinate in domain space as the mouse is moved */
+		void	MouseY(float);		/**< Emits the mouse y-coordinate in domain space as the mosue is moved */
+		void	UndoAvailable(bool);	/**< Emitted when an undo action becomes available or unavailable */
+		void	RedoAvailable(bool);	/**< Emitted when a redo action becomes available or unavailable */
 
-		void	numNodesDomain(int);		/**< Emitted when the number of nodes in the domain changes */
-		void	numElementsDomain(int);		/**< Emitted when the number of elements in the domain changes */
-		void	numNodesSelected(int);		/**< Emitted when the number of currently selected nodes changes */
-		void	numElementsSelected(int);	/**< Emitted when the number of currently selected elements changes */
+		/* Node and Element Count Pass Through Signals */
+		void	NumNodesDomain(int);		/**< Emitted when the number of nodes in the domain changes */
+		void	NumElementsDomain(int);		/**< Emitted when the number of elements in the domain changes */
+		void	NumNodesSelected(int);		/**< Emitted when the number of currently selected nodes changes */
+		void	NumElementsSelected(int);	/**< Emitted when the number of currently selected elements changes */
 
 		/* Selection Tool Pass-through Signals */
-		void	circleToolStatsSet(float, float, float);	/**< Emitted when the circle tool circle changes size */
-		void	circleToolStatsFinished();			/**< Emitted when the circle tool has stopped drawing the circle */
+		void	ToolFinishedDrawing();				/**< Emitted when a selection tool has finished drawing */
+		void	CircleToolStatsSet(float, float, float);	/**< Emitted when a circle tool circle changes size */
+		void	RectangleToolStatsSet(float, float);		/**< Emitted when a rectangle tool rectangle changes size */
 
-		void	beingDestroyed();	/**< Emitted when the destructor is first called */
-		void	emitMessage(QString);	/**< Emitted any time a text message needs to be passed to the GUI */
-		void	updateGL();		/**< Emitted any time the OpenGL context needs to be redrawn */
+		void	BeingDestroyed();	/**< Emitted when the destructor is first called */
+		void	EmitMessage(QString);	/**< Emitted any time a text message needs to be passed to the GUI */
+		void	UpdateGL();		/**< Emitted any time the OpenGL context needs to be redrawn */
 
 	protected slots:
 

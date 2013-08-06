@@ -64,13 +64,14 @@ class SelectionLayer : public Layer
 
 	signals:
 
+		void	Message(QString);
+		void	Instructions(QString);
 		void	UndoAvailable(bool);
 		void	RedoAvailable(bool);
 		void	Refreshed();
 		void	NumNodesSelected(int);
 		void	NumElementsSelected(int);
-		void	FinishedUsingTool();
-//		void	ToolFinishedDrawing();
+		void	ToolFinishedDrawing();
 };
 
 #endif // SELECTIONLAYER_H

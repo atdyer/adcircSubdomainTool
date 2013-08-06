@@ -137,6 +137,7 @@ void CircleTool::MouseClick(QMouseEvent *event)
 	visible = true;
 	mousePressed = true;
 	SetCenter(event->x(), event->y());
+	emit Instructions(QString("Drag to resize circle, drop to select elements"));
 }
 
 
@@ -152,6 +153,13 @@ void CircleTool::MouseMove(QMouseEvent *event)
 void CircleTool::MouseRelease(QMouseEvent*)
 {
 	mousePressed = false;
+	emit Message(QString("Circle Tool:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Center: (<b>")
+		     .append(QString::number(xDomain, 'g', 8))
+		     .append("</b>, <b>")
+		     .append(QString::number(yDomain, 'g', 8))
+		     .append("</b>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Radius: <b>")
+		     .append(QString::number(radDomain))
+		     .append("</b>"));
 	emit ToolFinishedDrawing();
 }
 
@@ -171,6 +179,7 @@ void CircleTool::KeyPress(QKeyEvent*)
 void CircleTool::UseTool()
 {
 	ResetTool();
+	emit Instructions(QString("Click to drop circle center"));
 }
 
 

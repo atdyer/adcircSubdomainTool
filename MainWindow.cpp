@@ -170,19 +170,22 @@ void MainWindow::on_openFileButton_clicked()
 	testDomain->SetFort14Location("/home/tristan/Desktop/adcSwan/sub/fort.14");
 //	testDomain->SetFort14Location("/home/tristan/Desktop/fort.14");
 
-	connect(testDomain, SIGNAL(mouseX(float)), this, SLOT(showMouseX(float)));
-	connect(testDomain, SIGNAL(mouseY(float)), this, SLOT(showMouseY(float)));
-	connect(testDomain, SIGNAL(circleToolStatsSet(float,float,float)), this, SLOT(showCircleStats(float,float,float)));
-	connect(testDomain, SIGNAL(numNodesDomain(int)), this, SLOT(showNumNodes(int)));
-	connect(testDomain, SIGNAL(numElementsDomain(int)), this, SLOT(showNumElements(int)));
-	connect(testDomain, SIGNAL(numNodesSelected(int)), this, SLOT(showNumSelectedNodes(int)));
-	connect(testDomain, SIGNAL(numElementsSelected(int)), this, SLOT(showNumSelectedElements(int)));
-	connect(testDomain, SIGNAL(circleToolStatsFinished()), glStatusBar, SLOT(clearMessage()));
-	connect(testDomain, SIGNAL(emitMessage(QString)), this, SLOT(displayOutput(QString)));
+	connect(testDomain, SIGNAL(Message(QString)), this, SLOT(displayOutput(QString)));
+	connect(testDomain, SIGNAL(Instructions(QString)), ui->statusBar, SLOT(showMessage(QString)));
+	connect(testDomain, SIGNAL(ToolFinishedDrawing()), ui->statusBar, SLOT(clearMessage()));
+	connect(testDomain, SIGNAL(MouseX(float)), this, SLOT(showMouseX(float)));
+	connect(testDomain, SIGNAL(MouseY(float)), this, SLOT(showMouseY(float)));
+	connect(testDomain, SIGNAL(CircleToolStatsSet(float,float,float)), this, SLOT(showCircleStats(float,float,float)));
+	connect(testDomain, SIGNAL(NumNodesDomain(int)), this, SLOT(showNumNodes(int)));
+	connect(testDomain, SIGNAL(NumElementsDomain(int)), this, SLOT(showNumElements(int)));
+	connect(testDomain, SIGNAL(NumNodesSelected(int)), this, SLOT(showNumSelectedNodes(int)));
+	connect(testDomain, SIGNAL(NumElementsSelected(int)), this, SLOT(showNumSelectedElements(int)));
+	connect(testDomain, SIGNAL(ToolFinishedDrawing()), glStatusBar, SLOT(clearMessage()));
+	connect(testDomain, SIGNAL(EmitMessage(QString)), this, SLOT(displayOutput(QString)));
 
 	/* Hook up undo/redo buttons */
-	connect(testDomain, SIGNAL(undoAvailable(bool)), ui->undoButton, SLOT(setEnabled(bool)));
-	connect(testDomain, SIGNAL(redoAvailable(bool)), ui->redoButton, SLOT(setEnabled(bool)));
+	connect(testDomain, SIGNAL(UndoAvailable(bool)), ui->undoButton, SLOT(setEnabled(bool)));
+	connect(testDomain, SIGNAL(RedoAvailable(bool)), ui->redoButton, SLOT(setEnabled(bool)));
 }
 
 

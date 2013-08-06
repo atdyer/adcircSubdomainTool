@@ -37,17 +37,23 @@ Domain::Domain()
 
 	if (layerThread)
 	{
-		connect(this, SIGNAL(beingDestroyed()), layerThread, SLOT(quit()));
+		connect(this, SIGNAL(BeingDestroyed()), layerThread, SLOT(quit()));
 		connect(layerThread, SIGNAL(finished()), layerThread, SLOT(deleteLater()));
 		layerThread->start();
 	}
 
 	/* Pass signals up from the selection layer */
-	connect(selectionLayer, SIGNAL(UndoAvailable(bool)), this, SIGNAL(undoAvailable(bool)));
-	connect(selectionLayer, SIGNAL(RedoAvailable(bool)), this, SIGNAL(redoAvailable(bool)));
-	connect(selectionLayer, SIGNAL(Refreshed()), this, SIGNAL(updateGL()));
-	connect(selectionLayer, SIGNAL(NumElementsSelected(int)), this, SIGNAL(numElementsSelected(int)));
-	connect(selectionLayer, SIGNAL(FinishedUsingTool()), this, SLOT(EnterDisplayMode()));
+	connect(selectionLayer, SIGNAL(Message(QString)), this, SIGNAL(Message(QString)));
+	connect(selectionLayer, SIGNAL(Instructions(QString)), this, SIGNAL(Instructions(QString)));
+	connect(selectionLayer, SIGNAL(UndoAvailable(bool)), this, SIGNAL(UndoAvailable(bool)));
+	connect(selectionLayer, SIGNAL(RedoAvailable(bool)), this, SIGNAL(RedoAvailable(bool)));
+	connect(selectionLayer, SIGNAL(Refreshed()), this, SIGNAL(UpdateGL()));
+	connect(selectionLayer, SIGNAL(NumElementsSelected(int)), this, SIGNAL(NumElementsSelected(int)));
+	connect(selectionLayer, SIGNAL(CircleToolStatsSet(float,float,float)), this, SIGNAL(CircleToolStatsSet(float,float,float)));
+	connect(selectionLayer, SIGNAL(RectangleToolStatsSet(float,float)), this, SIGNAL(RectangleToolStatsSet(float,float)));
+	connect(selectionLayer, SIGNAL(ToolFinishedDrawing()), this, SIGNAL(ToolFinishedDrawing()));
+
+	connect(selectionLayer, SIGNAL(ToolFinishedDrawing()), this, SLOT(EnterDisplayMode()));
 
 }
 
@@ -95,7 +101,6 @@ void Domain::MouseClick(QMouseEvent *event)
 
 	if (currentMode == SelectionAction && selectionLayer)
 		selectionLayer->MouseClick(event);
-//		selectionLayer->MouseClick(oldx, oldy);
 }
 
 
@@ -121,7 +126,7 @@ void Domain::MouseMove(QMouseEvent *event)
 		selectionLayer->MouseMove(event);
 //		selectionLayer->MouseMove(newx, newy);
 	}
-	emit updateGL();
+	emit UpdateGL();
 
 	oldx = newx;
 	oldy = newy;
@@ -143,7 +148,7 @@ void Domain::MouseRelease(QMouseEvent *event)
 //		currentMode = DisplayAction;
 	}
 
-	emit updateGL();
+	emit UpdateGL();
 }
 
 
@@ -152,7 +157,7 @@ void Domain::MouseWheel(QWheelEvent *event)
 	if (!clicking)
 		Zoom(event->delta());
 
-	emit updateGL();
+	emit UpdateGL();
 }
 
 
@@ -192,7 +197,7 @@ void Domain::Undo()
 {
 	if (selectionLayer)
 		selectionLayer->Undo();
-	emit updateGL();
+	emit UpdateGL();
 }
 
 
@@ -206,7 +211,7 @@ void Domain::Redo()
 {
 	if (selectionLayer)
 		selectionLayer->Redo();
-	emit updateGL();
+	emit UpdateGL();
 }
 
 
@@ -252,11 +257,11 @@ void Domain::SetFort14Location(std::string newLoc)
 			connect(terrainLayer, SIGNAL(finishedReadingData()), progressBar, SLOT(hide()));
 		}
 
-		connect(terrainLayer, SIGNAL(emitMessage(QString)), this, SIGNAL(emitMessage(QString)));
+		connect(terrainLayer, SIGNAL(EmitMessage(QString)), this, SIGNAL(EmitMessage(QString)));
 		connect(terrainLayer, SIGNAL(finishedReadingData()), this, SLOT(LoadLayerToGPU()));
-		connect(terrainLayer, SIGNAL(finishedLoadingToGPU()), this, SIGNAL(updateGL()));
-		connect(terrainLayer, SIGNAL(foundNumNodes(int)), this, SIGNAL(numNodesDomain(int)));
-		connect(terrainLayer, SIGNAL(foundNumElements(int)), this, SIGNAL(numElementsDomain(int)));
+		connect(terrainLayer, SIGNAL(finishedLoadingToGPU()), this, SIGNAL(UpdateGL()));
+		connect(terrainLayer, SIGNAL(foundNumNodes(int)), this, SIGNAL(NumNodesDomain(int)));
+		connect(terrainLayer, SIGNAL(foundNumElements(int)), this, SIGNAL(NumElementsDomain(int)));
 
 
 		terrainLayer->SetCamera(camera);
@@ -612,15 +617,15 @@ void Domain::CalculateMouseCoordinates()
 		{
 			domX = terrainLayer->GetUnprojectedX(glX);
 			domY = terrainLayer->GetUnprojectedY(glY);
-			emit mouseX(domX);
-			emit mouseY(domY);
+			emit MouseX(domX);
+			emit MouseY(domY);
 		} else {
-			emit mouseX(glX);
-			emit mouseY(glY);
+			emit MouseX(glX);
+			emit MouseY(glY);
 		}
 	} else {
-		emit mouseX(newx);
-		emit mouseY(newy);
+		emit MouseX(newx);
+		emit MouseY(newy);
 	}
 }
 

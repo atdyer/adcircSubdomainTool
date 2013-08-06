@@ -5,7 +5,7 @@
 #include <QMouseEvent>
 #include <QWheelEvent>
 #include <QKeyEvent>
-#include <string>
+#include <QString>
 
 #include "adcData.h"
 #include "OpenGL/GLCamera.h"

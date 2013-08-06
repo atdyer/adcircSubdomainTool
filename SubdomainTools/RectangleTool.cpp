@@ -144,6 +144,7 @@ void RectangleTool::MouseClick(QMouseEvent *event)
 	clicking = true;
 	visible = true;
 	SetFirstCorner(event->x(), event->y());
+	emit Instructions(QString("Drag to resize the rectangle. Drop to select elements."));
 }
 
 
@@ -157,6 +158,11 @@ void RectangleTool::MouseMove(QMouseEvent *event)
 void RectangleTool::MouseRelease(QMouseEvent *event)
 {
 	clicking = false;
+	emit Message(QString("Rectangle Tool:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Width: <b>")
+		     .append(QString::number(fabs(secondCornerDomain[0] - firstCornerDomain[0]), 'g', 8))
+			.append(QString("</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Height: <b>"))
+			.append(QString::number(fabs(secondCornerDomain[1] - firstCornerDomain[1]), 'g', 8))
+			.append("</b>"));
 	emit ToolFinishedDrawing();
 }
 
@@ -178,6 +184,7 @@ void RectangleTool::UseTool()
 	ResetTool();
 	if (!glLoaded)
 		InitializeGL();
+	emit Instructions(QString("Click to drop the first corner of the rectangle"));
 }
 
 
@@ -289,6 +296,7 @@ void RectangleTool::SetSecondCorner(int newX, int newY)
 	{
 		secondCornerDomain[0] = terrain->GetUnprojectedX(secondCornerNormal[0]);
 		secondCornerDomain[1] = terrain->GetUnprojectedY(secondCornerNormal[1]);
+		emit RectangleStatsSet(fabs(secondCornerDomain[0] - firstCornerDomain[0]), fabs(secondCornerDomain[1] - firstCornerDomain[1]));
 	} else {
 		DEBUG("Rectangle Tool: No Terrain");
 	}

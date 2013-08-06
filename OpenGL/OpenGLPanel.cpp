@@ -142,5 +142,5 @@ void OpenGLPanel::SetActiveDomain(Domain *newDomain)
 	/* Set up connections with the new one */
 	activeDomain = newDomain;
 	activeDomain->SetWindowSize(viewportWidth, viewportHeight);
-	connect(activeDomain, SIGNAL(updateGL()), this, SLOT(updateGL()));
+	connect(activeDomain, SIGNAL(UpdateGL()), this, SLOT(updateGL()));
 }
