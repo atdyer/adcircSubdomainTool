@@ -149,61 +149,10 @@ void PolygonTool::KeyPress(QKeyEvent *event)
 
 void PolygonTool::UseTool()
 {
+	ResetTool();
 	if (!glLoaded)
 		InitializeGL();
 	visible = true;
-}
-
-
-void PolygonTool::MouseClick(int, int)
-{
-	mousePressed = true;
-	mouseMoved = false;
-}
-
-
-void PolygonTool::MouseMove(int x, int y)
-{
-	mouseMoved = true;
-	if (!mousePressed && camera)
-	{
-		camera->GetUnprojectedPoint(x, y, &mouseX, &mouseY);
-		if (pointCount > 0)
-			UpdateMouseVertex();
-	}
-}
-
-
-void PolygonTool::MouseRelease(int x, int y)
-{
-	mousePressed = false;
-	if (!mouseMoved && camera)
-	{
-		camera->GetUnprojectedPoint(x, y, &mouseX, &mouseY);
-		if (CheckForDoubleClick(mouseX, mouseY))
-		{
-			FinishDrawingTool();
-		} else {
-			AddPoint(mouseX, mouseY);
-		}
-	}
-}
-
-
-void PolygonTool::StartUsingTool()
-{
-	if (!glLoaded)
-		InitializeGL();
-	visible = true;
-}
-
-
-void PolygonTool::FinishDrawingTool()
-{
-	visible = false;
-	pointsList.clear();
-	pointCount = 0;
-	emit ToolFinishedDrawing();
 }
 
 
@@ -269,7 +218,7 @@ void PolygonTool::UpdateVertexBuffer()
 		GLfloat* glNodeData = (GLfloat*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
 		if (glNodeData)
 		{
-			for (unsigned int i=0; i<pointCount; ++i)
+			for (int i=0; i<pointCount; ++i)
 			{
 				glNodeData[4*i+0] = (GLfloat)pointsList[i].x;
 				glNodeData[4*i+1] = (GLfloat)pointsList[i].y;
@@ -336,4 +285,20 @@ bool PolygonTool::CheckForDoubleClick(float x, float y)
 	if (pointsList.size() > 0 && pointsList[pointsList.size()-1].x == x && pointsList[pointsList.size()-1].y == y)
 		return true;
 	return false;
+}
+
+
+void PolygonTool::FinishDrawingTool()
+{
+	visible = false;
+	emit ToolFinishedDrawing();
+}
+
+
+void PolygonTool::ResetTool()
+{
+	pointsList.clear();
+	pointCount = 0;
+	mousePressed = false;
+	mouseMoved = false;
 }

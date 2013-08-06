@@ -33,19 +33,7 @@ class PolygonTool : public SelectionTool
 
 		void	UseTool();
 
-		void	MouseClick(int x, int y);
-		void	MouseMove(int x, int y);
-		void	MouseRelease(int x, int y);
-
-		void	StartUsingTool();
-		void	FinishDrawingTool();
-
 		std::vector<Element*>	GetSelectedElements();
-
-//	signals:
-
-//		void	ToolFinishedDrawing();
-//		void	ToolFinishedSearching();
 
 	private:
 
@@ -75,10 +63,14 @@ class PolygonTool : public SelectionTool
 		/* Mouse Attributes */
 		float	mouseX;
 		float	mouseY;
+		float	dx;
+		float	dy;
 		bool	mousePressed;
 		bool	mouseMoved;
 		void	AddPoint(float x, float y);
 		bool	CheckForDoubleClick(float x, float y);
+		void	FinishDrawingTool();
+		void	ResetTool();
 
 		/* Selection Mode */
 		SelectionType	selectionMode;	/**< The current selection mode */
