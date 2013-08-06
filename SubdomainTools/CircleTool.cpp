@@ -70,6 +70,17 @@ void CircleTool::Draw()
 
 
 /**
+ * @brief Set the GLCamera that will be used to draw the circle.
+ *
+ * @param cam Pointer to the desired GLCamera
+ */
+void CircleTool::SetCamera(GLCamera *cam)
+{
+	camera = cam;
+}
+
+
+/**
  * @brief Set the TerrainLayer that Nodes will come from when looking for
  * Nodes inside of the circle
  *
@@ -78,17 +89,6 @@ void CircleTool::Draw()
 void CircleTool::SetTerrainLayer(TerrainLayer *layer)
 {
 	terrain = layer;
-}
-
-
-/**
- * @brief Set the GLCamera that will be used to draw the circle.
- *
- * @param cam Pointer to the desired GLCamera
- */
-void CircleTool::SetCamera(GLCamera *cam)
-{
-	camera = cam;
 }
 
 
@@ -112,6 +112,56 @@ void CircleTool::SetViewportSize(float w, float h)
 	this->t = 1.0;
 	glLoadIdentity();
 	gluOrtho2D(l, r, b, t);
+}
+
+
+/**
+ * @brief Sets the selection mode currently being used by the circle tool
+ *
+ * Sets the selection mode currently being used by the circle tool. The mode
+ * determines what is selected when the user draws a circle using the tool.
+ *
+ * @param newMode The new mode
+ */
+void CircleTool::SetSelectionMode(SelectionType newMode)
+{
+	selectionMode = newMode;
+}
+
+
+void CircleTool::MouseClick(QMouseEvent *event)
+{
+
+}
+
+
+void CircleTool::MouseMove(QMouseEvent *event)
+{
+
+}
+
+
+void CircleTool::MouseRelease(QMouseEvent *event)
+{
+
+}
+
+
+void CircleTool::MouseWheel(QWheelEvent *event)
+{
+
+}
+
+
+void CircleTool::KeyPress(QKeyEvent *event)
+{
+
+}
+
+
+void CircleTool::UseTool()
+{
+
 }
 
 
@@ -184,20 +234,6 @@ void CircleTool::SetRadiusPoint(int newX, int newY)
 std::vector<Element*> CircleTool::GetSelectedElements()
 {
 	return selectedElements;
-}
-
-
-/**
- * @brief Sets the selection mode currently being used by the circle tool
- *
- * Sets the selection mode currently being used by the circle tool. The mode
- * determines what is selected when the user draws a circle using the tool.
- *
- * @param newMode The new mode
- */
-void CircleTool::SetSelectionMode(SelectionType newMode)
-{
-	selectionMode = newMode;
 }
 
 

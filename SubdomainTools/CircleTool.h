@@ -2,18 +2,22 @@
 #define CIRCLETOOL_H
 
 #include <QObject>
+#include <QMouseEvent>
+#include <QWheelEvent>
+#include <QKeyEvent>
 #include <string>
 
 #include "adcData.h"
 #include "OpenGL/GLCamera.h"
 #include "Layers/TerrainLayer.h"
+#include "SubdomainTools/SelectionTool.h"
 
 
 /**
  * @brief This class provides functionality for selecting Nodes and Elements by
  * drawing a circle over the desired area of the current TerrainLayer
  */
-class CircleTool : public QObject
+class CircleTool : public SelectionTool
 {
 		Q_OBJECT
 	public:
@@ -22,13 +26,24 @@ class CircleTool : public QObject
 
 		void	Draw();
 		void	SetCamera(GLCamera* cam);
+		void	SetTerrainLayer(TerrainLayer *layer);
 		void	SetViewportSize(float w, float h);
+		void	SetSelectionMode(SelectionType newMode);
+
+		void	MouseClick(QMouseEvent *event);
+		void	MouseMove(QMouseEvent *event);
+		void	MouseRelease(QMouseEvent *event);
+		void	MouseWheel(QWheelEvent *event);
+		void	KeyPress(QKeyEvent *event);
+
+		void	UseTool();
+
 		void	SetCenter(int newX, int newY);
 		void	SetRadiusPoint(int newX, int newY);
 
 		std::vector<Element*>	GetSelectedElements();
 
-	protected:
+	private:
 
 		TerrainLayer*	terrain;	/**< The TerrainLayer that nodes/elements will be selected from */
 		GLCamera*	camera;		/**< The GLCamera that is being used to draw the TerrainLayer */
@@ -84,8 +99,6 @@ class CircleTool : public QObject
 
 	public slots:
 
-		void	SetTerrainLayer(TerrainLayer *layer);
-		void	SetSelectionMode(SelectionType newMode);
 		void	CircleFinished();
 };
 

@@ -106,6 +106,73 @@ void RectangleTool::Draw()
 }
 
 
+void RectangleTool::SetCamera(GLCamera *cam)
+{
+	camera = cam;
+	if (fillShader)
+		fillShader->SetCamera(camera);
+}
+
+
+void RectangleTool::SetTerrainLayer(TerrainLayer *layer)
+{
+	terrain = layer;
+}
+
+
+void RectangleTool::SetViewportSize(float w, float h)
+{
+	this->w = w;
+	this->h = h;
+	this->l = -1.0*w/h;
+	this->r = 1.0*w/h;
+	this->b = -1.0;
+	this->t = 1.0;
+}
+
+
+void RectangleTool::SetSelectionMode(SelectionType newMode)
+{
+	selectionMode = newMode;
+}
+
+
+void RectangleTool::MouseClick(QMouseEvent *event)
+{
+
+}
+
+
+void RectangleTool::MouseMove(QMouseEvent *event)
+{
+
+}
+
+
+void RectangleTool::MouseRelease(QMouseEvent *event)
+{
+
+}
+
+
+void RectangleTool::MouseWheel(QWheelEvent *event)
+{
+
+}
+
+
+void RectangleTool::KeyPress(QKeyEvent *event)
+{
+
+}
+
+
+void RectangleTool::UseTool()
+{
+
+}
+
+
 void RectangleTool::InitializeGL()
 {
 	if (!glLoaded)
@@ -187,23 +254,7 @@ void RectangleTool::UpdateGL()
 }
 
 
-void RectangleTool::SetCamera(GLCamera *cam)
-{
-	camera = cam;
-	if (fillShader)
-		fillShader->SetCamera(camera);
-}
 
-
-void RectangleTool::SetViewportSize(float w, float h)
-{
-	this->w = w;
-	this->h = h;
-	this->l = -1.0*w/h;
-	this->r = 1.0*w/h;
-	this->b = -1.0;
-	this->t = 1.0;
-}
 
 
 void RectangleTool::SetFirstCorner(int newX, int newY)
@@ -327,13 +378,4 @@ void RectangleTool::CalculateVertexPoints()
 }
 
 
-void RectangleTool::SetTerrainLayer(TerrainLayer *layer)
-{
-	terrain = layer;
-}
 
-
-void RectangleTool::SetSelectionMode(SelectionType newMode)
-{
-	selectionMode = newMode;
-}

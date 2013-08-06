@@ -2,14 +2,18 @@
 #define RECTANGLETOOL_H
 
 #include <QObject>
+#include <QMouseEvent>
+#include <QWheelEvent>
+#include <QKeyEvent>
 #include <string>
 
 #include "adcData.h"
 #include "OpenGL/GLCamera.h"
 #include "Layers/TerrainLayer.h"
+#include "SubdomainTools/SelectionTool.h"
 
 
-class RectangleTool : public QObject
+class RectangleTool : public SelectionTool
 {
 		Q_OBJECT
 	public:
@@ -17,10 +21,19 @@ class RectangleTool : public QObject
 		~RectangleTool();
 
 		void	Draw();
-		void	InitializeGL();
-		void	UpdateGL();
 		void	SetCamera(GLCamera* cam);
+		void	SetTerrainLayer(TerrainLayer *layer);
 		void	SetViewportSize(float w, float h);
+		void	SetSelectionMode(SelectionType newMode);
+
+		void	MouseClick(QMouseEvent *event);
+		void	MouseMove(QMouseEvent *event);
+		void	MouseRelease(QMouseEvent *event);
+		void	MouseWheel(QWheelEvent *event);
+		void	KeyPress(QKeyEvent *event);
+
+		void	UseTool();
+
 		void	SetFirstCorner(int newX, int newY);
 		void	SetSecondCorner(int newX, int newY);
 		void	RectangleFinished();
@@ -28,7 +41,7 @@ class RectangleTool : public QObject
 
 		std::vector<Element*>	GetSelectedElements();
 
-	protected:
+	private:
 
 		TerrainLayer*	terrain;	/**< The TerrainLayer that nodes/elements will be selected from */
 		GLCamera*	camera;		/**< The GLCamera that is used to draw the TerrainLayer */
@@ -43,6 +56,8 @@ class RectangleTool : public QObject
 		GLfloat		vertexPoints[12][4];	/**< The actual vertices used to draw the tool */
 		GLuint		indexArray[8][3];	/**< The indices that make up the triangles */
 		size_t		vertexBufferSize;	/**< The size of the vertex data in bytes */
+		void	InitializeGL();
+		void	UpdateGL();
 
 		/* Selection Mode */
 		SelectionType	selectionMode;	/**< The current selection mode */
@@ -74,12 +89,12 @@ class RectangleTool : public QObject
 		void	RectangleStatsSet(float w, float h);
 		void	RectangleStatsFinished();
 		void	FinishedSearching();
-		void	ToolFinishedDrawing();
+//		void	ToolFinishedDrawing();
 
-	public slots:
+//	public slots:
 
-		void	SetTerrainLayer(TerrainLayer *layer);
-		void	SetSelectionMode(SelectionType newMode);
+//		void	SetTerrainLayer(TerrainLayer *layer);
+//		void	SetSelectionMode(SelectionType newMode);
 };
 
 #endif // RECTANGLETOOL_H

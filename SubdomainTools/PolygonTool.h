@@ -10,8 +10,9 @@
 #include "OpenGL/GLCamera.h"
 #include "Layers/TerrainLayer.h"
 #include "OpenGL/Shaders/SolidShader.h"
+#include "SubdomainTools/SelectionTool.h"
 
-class PolygonTool : public QObject
+class PolygonTool : public SelectionTool
 {
 		Q_OBJECT
 	public:
@@ -24,22 +25,27 @@ class PolygonTool : public QObject
 		void	SetViewportSize(float w, float h);
 		void	SetSelectionMode(SelectionType newMode);
 
+		void	MouseClick(QMouseEvent *event);
+		void	MouseMove(QMouseEvent *event);
+		void	MouseRelease(QMouseEvent *event);
+		void	MouseWheel(QWheelEvent *event);
+		void	KeyPress(QKeyEvent *event);
+
+		void	UseTool();
+
 		void	MouseClick(int x, int y);
 		void	MouseMove(int x, int y);
 		void	MouseRelease(int x, int y);
-		void	MouseWheel(QWheelEvent *event);
-		void	KeyPress(QKeyEvent *event);
 
 		void	StartUsingTool();
 		void	FinishDrawingTool();
 
 		std::vector<Element*>	GetSelectedElements();
 
+//	signals:
 
-	signals:
-
-		void	ToolFinishedDrawing();
-		void	ToolFinishedSearching();
+//		void	ToolFinishedDrawing();
+//		void	ToolFinishedSearching();
 
 	private:
 

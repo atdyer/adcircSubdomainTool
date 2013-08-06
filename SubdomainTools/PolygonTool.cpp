@@ -97,6 +97,64 @@ void PolygonTool::SetSelectionMode(SelectionType newMode)
 }
 
 
+void PolygonTool::MouseClick(QMouseEvent*)
+{
+	mousePressed = true;
+	mouseMoved = false;
+}
+
+
+void PolygonTool::MouseMove(QMouseEvent *event)
+{
+	mouseMoved = true;
+	if (!mousePressed && camera)
+	{
+		camera->GetUnprojectedPoint(event->x(), event->y(), &mouseX, &mouseY);
+		if (pointCount > 0)
+			UpdateMouseVertex();
+	}
+}
+
+
+void PolygonTool::MouseRelease(QMouseEvent *event)
+{
+	mousePressed = false;
+	if (!mouseMoved && camera)
+	{
+		camera->GetUnprojectedPoint(event->x(), event->y(), &mouseX, &mouseY);
+		if (CheckForDoubleClick(mouseX, mouseY))
+		{
+			FinishDrawingTool();
+		} else {
+			AddPoint(mouseX, mouseY);
+		}
+	}
+}
+
+
+void PolygonTool::MouseWheel(QWheelEvent *event)
+{
+
+}
+
+
+void PolygonTool::KeyPress(QKeyEvent *event)
+{
+	if (event->key() == Qt::Key_Enter)
+	{
+		emit ToolFinishedDrawing();
+	}
+}
+
+
+void PolygonTool::UseTool()
+{
+	if (!glLoaded)
+		InitializeGL();
+	visible = true;
+}
+
+
 void PolygonTool::MouseClick(int, int)
 {
 	mousePressed = true;
@@ -132,27 +190,6 @@ void PolygonTool::MouseRelease(int x, int y)
 }
 
 
-void PolygonTool::MouseWheel(QWheelEvent *event)
-{
-
-}
-
-
-void PolygonTool::KeyPress(QKeyEvent *event)
-{
-	if (event->key() == Qt::Key_Enter)
-	{
-		emit ToolFinishedDrawing();
-	}
-}
-
-
-std::vector<Element*> PolygonTool::GetSelectedElements()
-{
-	return selectedElements;
-}
-
-
 void PolygonTool::StartUsingTool()
 {
 	if (!glLoaded)
@@ -167,6 +204,12 @@ void PolygonTool::FinishDrawingTool()
 	pointsList.clear();
 	pointCount = 0;
 	emit ToolFinishedDrawing();
+}
+
+
+std::vector<Element*> PolygonTool::GetSelectedElements()
+{
+	return selectedElements;
 }
 
 
