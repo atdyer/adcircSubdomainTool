@@ -900,10 +900,10 @@ void TerrainLayer::UpdateVisibleElements()
 		numVisibleElements = 0;
 		for (unsigned int i=0; i<visibleElementLists.size(); i++)
 			numVisibleElements += visibleElementLists[i]->size();
-		DEBUG("Number of visible elements: " << numVisibleElements);
+//		DEBUG("Number of visible elements: " << numVisibleElements);
 		const size_t IndexBufferSize = 3*sizeof(GLuint)*numVisibleElements;
 
-		glBindVertexArray(VAOId);
+//		glBindVertexArray(VAOId);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBOId);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, IndexBufferSize, NULL, GL_DYNAMIC_DRAW);
 		GLuint* glElementData = (GLuint *)glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
@@ -933,21 +933,21 @@ void TerrainLayer::UpdateVisibleElements()
 			return;
 		}
 
-		GLenum errorCheck = glGetError();
-		if (errorCheck == GL_NO_ERROR)
-		{
-			if (VAOId && VBOId && IBOId)
-			{
-				glLoaded = true;
-				emit finishedLoadingToGPU();
-			}
-		} else {
-			const GLubyte *errString = gluErrorString(errorCheck);
-			DEBUG("OpenGL Error: " << errString);
-			glLoaded = false;
-		}
+//		GLenum errorCheck = glGetError();
+//		if (errorCheck == GL_NO_ERROR)
+//		{
+//			if (VAOId && VBOId && IBOId)
+//			{
+//				glLoaded = true;
+//				emit finishedLoadingToGPU();
+//			}
+//		} else {
+//			const GLubyte *errString = gluErrorString(errorCheck);
+//			DEBUG("OpenGL Error: " << errString);
+//			glLoaded = false;
+//		}
 
-		glBindVertexArray(0);
+//		glBindVertexArray(0);
 	}
 }
 
