@@ -4,10 +4,3 @@ SelectionTool::SelectionTool()
 {
 
 }
-
-
-//void SelectionTool::UseTool(SelectionType newMode)
-//{
-//	SetSelectionMode(newMode);
-//	UseTool();
-//}

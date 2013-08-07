@@ -32,8 +32,8 @@ class GLShader
 		void	SetCamera(GLCamera *newCamera);
 
 		// Getter Methods
-		unsigned int	GetID();
-		unsigned int	GetNumShaders();
+		unsigned int		GetID();
+		static unsigned int	GetNumShaders();
 
 	protected:
 

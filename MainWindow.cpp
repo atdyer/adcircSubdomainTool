@@ -50,6 +50,10 @@ MainWindow::~MainWindow()
 	if (testDomain)
 		delete testDomain;
 	delete ui;
+
+	DEBUG(GLShader::GetNumShaders() << " shaders left undeleted");
+	DEBUG(Layer::GetNumLayers() << " layers left undeleted");
+	DEBUG(GLCamera::GetNumCameras() << " cameras left undeleted");
 }
 
 

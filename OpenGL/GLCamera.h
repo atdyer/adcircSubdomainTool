@@ -23,6 +23,10 @@ class GLCamera
 {
 	public:
 
+		/* Constructor/Destructor */
+		GLCamera();
+		~GLCamera();
+
 		// The Model, View, and Projection matrices, as well as the MVP matrix
 		//	- Matrix multiplication is performed once on the CPU, as opposed to it
 		//	  being performed continuously in the shader program
@@ -43,9 +47,6 @@ class GLCamera
 		float	viewportY;
 		float	pixelToViewRatio;
 
-		// Constructor
-		GLCamera();
-
 		// Public functions
 		void	Pan(float dx, float dy);
 		void	Zoom(float zoomAmount);
@@ -56,8 +57,8 @@ class GLCamera
 		float	GetViewportWidth();
 		float	GetViewportHeight();
 
-		unsigned int	GetID();
-		unsigned int	GetNumCameras();
+		unsigned int		GetID();
+		static unsigned int	GetNumCameras();
 
 	private:
 

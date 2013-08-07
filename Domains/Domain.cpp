@@ -71,6 +71,8 @@ Domain::~Domain()
 		delete selectionLayer;
 	if (terrainLayer)
 		delete terrainLayer;
+	if (camera)
+		delete camera;
 }
 
 

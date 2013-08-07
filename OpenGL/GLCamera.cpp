@@ -7,9 +7,9 @@ unsigned int	GLCamera::nextID = 1;
 GLCamera::GLCamera()
 {
 	// ID initialization
-	cameraCount++;
+	++cameraCount;
 	cameraID = nextID;
-	nextID++;
+	++nextID;
 
 	// All matrices begin as the identity matrix
 	MVPMatrix = IDENTITY_MATRIX;
@@ -39,6 +39,12 @@ GLCamera::GLCamera()
 
 	// Calculate ratio of window width to viewport width
 	pixelToViewRatio = ((window[1]-window[0]/2.0)/viewportX);
+}
+
+
+GLCamera::~GLCamera()
+{
+	--cameraCount;
 }
 
 

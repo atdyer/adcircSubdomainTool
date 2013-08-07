@@ -32,7 +32,6 @@ class SelectionTool : public QObject
 		virtual void	SetCamera(GLCamera *cam) = 0;
 		virtual void	SetTerrainLayer(TerrainLayer *layer) = 0;
 		virtual void	SetViewportSize(float w, float h) = 0;
-//		virtual void	SetSelectionMode(SelectionType newMode) = 0;
 
 		virtual void	MouseClick(QMouseEvent *event) = 0;
 		virtual void	MouseMove(QMouseEvent *event) = 0;
@@ -41,7 +40,6 @@ class SelectionTool : public QObject
 		virtual void	KeyPress(QKeyEvent *event) = 0;
 
 		virtual void	UseTool() = 0;
-//		void		UseTool(SelectionType newMode);
 
 		virtual std::vector<Node*>	GetSelectedNodes() = 0;
 		virtual std::vector<Element*>	GetSelectedElements() = 0;

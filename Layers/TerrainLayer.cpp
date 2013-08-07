@@ -55,10 +55,14 @@ TerrainLayer::~TerrainLayer()
 		delete solidOutline;
 	if (solidFill)
 		delete solidFill;
+	if (solidBoundary)
+		delete solidBoundary;
 	if (gradientOutline)
 		delete gradientOutline;
 	if (gradientFill)
 		delete gradientFill;
+	if (gradientBoundary)
+		delete gradientBoundary;
 
 	if (VBOId)
 		glDeleteBuffers(1, &VBOId);

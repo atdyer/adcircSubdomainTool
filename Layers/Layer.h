@@ -47,8 +47,8 @@ class Layer : public QObject
 		virtual void	Draw() = 0;
 
 		// Getter Methods
-		unsigned int	GetID();
-		unsigned int	GetNumLayers();
+		unsigned int		GetID();
+		static unsigned int	GetNumLayers();
 
 
 		// Setter Methods
