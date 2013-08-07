@@ -81,9 +81,9 @@ void CircleTool::Draw()
 
 
 /**
- * @brief Set the GLCamera that will be used to draw the circle.
+ * @brief Sets the GLCamera that will be used to draw the circle.
  *
- * Set the GLCamera that will be used to draw the circle. Typically, this
+ * Sets the GLCamera that will be used to draw the circle. Typically, this
  * should be the same GLCamera being used to draw the TerrainLayer
  *
  * @param cam Pointer to the desired GLCamera
@@ -95,9 +95,9 @@ void CircleTool::SetCamera(GLCamera *cam)
 
 
 /**
- * @brief Set the TerrainLayer that selections will be made from
+ * @brief Sets the TerrainLayer that selections will be made from
  *
- * Set the TerrainLayer that selections will be made from.
+ * Sets the TerrainLayer that selections will be made from.
  *
  * @param layer Pointer to the desired TerrainLayer
  */
@@ -111,7 +111,7 @@ void CircleTool::SetTerrainLayer(TerrainLayer *layer)
  * @brief Sets internal values of the viewport size that are used to draw
  * the circle
  *
- * Sets the internal values of the viewport size that are used to draw the circle.
+ * Sets the viewport size that is used to to draw the circle.
  * This needs to be called every time the size of the OpenGL context changes size.
  *
  * @param w The viewport width in pixels

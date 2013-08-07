@@ -62,11 +62,11 @@ class RectangleTool : public SelectionTool
 		size_t		vertexBufferSize;	/**< The size of the vertex data in bytes */
 
 		/* Mouse State */
-		bool	clicking;
+		bool	mousePressed;	/**< Flag that shows if the left mouse button is pressed */
 
 		/* Selected Nodes/Elements */
-		std::vector<Node*>	selectedNodes;
-		std::vector<Element*>	selectedElements;
+		std::vector<Node*>	selectedNodes;		/**< The list of currently selected Nodes */
+		std::vector<Element*>	selectedElements;	/**< The list of currently selected Elements */
 
 		/* Rectangle Attributes */
 		float	firstCornerPixel[2];	/**< The coordinates of the first corner of the rectangle, in pixels */

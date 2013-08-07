@@ -1,28 +1,28 @@
 #include "RectangleTool.h"
 
+
+/**
+ * @brief Constructor that initializes the tool with default values
+ *
+ * Constructor that initializes the tool with default values. By default,
+ * the tool is not visible and operates on an 800x800 window.
+ *
+ * The indices are set in the constructor because they will never change.
+ *
+ */
 RectangleTool::RectangleTool()
 {
 	terrain = 0;
 	camera = 0;
 
 	glLoaded = false;
-	visible = false;
 	VAOId = 0;
 	VBOId = 0;
 	IBOId = 0;
 	fillShader = 0;
-	for (int i=0; i<12; i++)
-	{
-		vertexPoints[i][0] = vertexPoints[i][1] = vertexPoints[i][2] = 0.0;
-		vertexPoints[i][3] = 1.0;
-	}
-	vertexPoints[4][0] = vertexPoints[5][0] = vertexPoints[6][0] = vertexPoints[7][0] = -100.0;
-	vertexPoints[8][0] = vertexPoints[9][0] = vertexPoints[10][0] = vertexPoints[11][0] = 100.0;
-	vertexPoints[4][1] = vertexPoints[8][1] = -100.0;
-	vertexPoints[7][1] = vertexPoints[11][1] = 100.0;
 	vertexBufferSize = 12*4*sizeof(GLuint);
 
-	clicking = false;
+	ResetTool();
 
 	indexArray[0][0] = 4;
 	indexArray[0][1] = 8;
@@ -63,7 +63,7 @@ RectangleTool::RectangleTool()
 	secondCornerDomain[1] = 0.0;
 
 	w = 800;
-	h = 600;
+	h = 800;
 	l = -1.0;
 	r = 1.0;
 	b = -1.0;
@@ -71,6 +71,13 @@ RectangleTool::RectangleTool()
 }
 
 
+/**
+ * @brief Destructor
+ *
+ * Destructor that cleans up memory allocated by the object and deletes
+ * buffers in the OpenGL context
+ *
+ */
 RectangleTool::~RectangleTool()
 {
 	/* Clean up shader */
@@ -89,6 +96,13 @@ RectangleTool::~RectangleTool()
 }
 
 
+/**
+ * @brief Draws the rectangle
+ *
+ * Draws the rectangle if it is visible and the vertex data
+ * has been loaded to the OpenGL context.
+ *
+ */
 void RectangleTool::Draw()
 {
 	if (visible && glLoaded)
@@ -106,6 +120,14 @@ void RectangleTool::Draw()
 }
 
 
+/**
+ * @brief Sets the GLCamera that will be used to draw the rectangle
+ *
+ * Sets the GLCamera that will be used to draw the rectangle. Typically, this
+ * should be the same GLCamera being used to draw the TerrainLayer
+ *
+ * @param cam Pointer to the desired GLCamera
+ */
 void RectangleTool::SetCamera(GLCamera *cam)
 {
 	camera = cam;
@@ -114,12 +136,29 @@ void RectangleTool::SetCamera(GLCamera *cam)
 }
 
 
+/**
+ * @brief Sets the TerrainLayer that selections will be made from
+ *
+ * Sets the TerrainLayer that selections will be made from.
+ *
+ * @param layer Pointer to the desired TerrainLayer
+ */
 void RectangleTool::SetTerrainLayer(TerrainLayer *layer)
 {
 	terrain = layer;
 }
 
 
+/**
+ * @brief Sets internal values of the viewport size that are used to draw
+ * the rectangle
+ *
+ * Sets the viewport size that is used to to draw the rectangle.
+ * This needs to be called every time the size of the OpenGL context changes size.
+ *
+ * @param w The viewport width in pixels
+ * @param h The viewport height in pixels
+ */
 void RectangleTool::SetViewportSize(float w, float h)
 {
 	this->w = w;
@@ -131,46 +170,101 @@ void RectangleTool::SetViewportSize(float w, float h)
 }
 
 
+/**
+ * @brief Actions that are performed when a mouse button is pressed
+ *
+ * Actions that are performed when a mouse button is pressed. In this case,
+ * a left click will drop the first corner of the rectangle and make
+ * the rectangle visible.
+ *
+ * @param event The QMouseEvent object created by the GUI on the click
+ */
 void RectangleTool::MouseClick(QMouseEvent *event)
 {
-	clicking = true;
-	visible = true;
-	SetFirstCorner(event->x(), event->y());
-	emit Instructions(QString("Drag to resize the rectangle. Drop to select elements."));
+	if (event->button() == Qt::LeftButton)
+	{
+		mousePressed = true;
+		visible = true;
+		SetFirstCorner(event->x(), event->y());
+		emit Instructions(QString("Drag to resize the rectangle. Drop to select elements."));
+	}
 }
 
 
+/**
+ * @brief Actions that are performed when the mouse is moved
+ *
+ * Actions that are performed when the mouse is moved.
+ *
+ * @param event The QMouseEvent object created by the GUI on the mouse move
+ */
 void RectangleTool::MouseMove(QMouseEvent *event)
 {
-	if (clicking)
+	if (mousePressed)
+	{
 		SetSecondCorner(event->x(), event->y());
+	}
 }
 
 
+/**
+ * @brief Actions that are performed when a mouse button is released
+ *
+ * Actions that are performed when a mouse button is released. In this case,
+ * if the left mouse button was just released (meaning we've been drawing the
+ * rectangle), tell everyone we've finished drawing the rectangle by emitting
+ * ToolFinishedDrawing().
+ *
+ * @param event The QMouseEvent object created by the GUI on the button release
+ */
 void RectangleTool::MouseRelease(QMouseEvent *event)
 {
-	clicking = false;
-	emit Message(QString("Rectangle Tool:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Width: <b>")
-		     .append(QString::number(fabs(secondCornerDomain[0] - firstCornerDomain[0]), 'g', 8))
-			.append(QString("</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Height: <b>"))
-			.append(QString::number(fabs(secondCornerDomain[1] - firstCornerDomain[1]), 'g', 8))
-			.append("</b>"));
-	emit ToolFinishedDrawing();
+	if (event->button() == Qt::LeftButton)
+	{
+		mousePressed = false;
+		emit Message(QString("Rectangle Tool:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Width: <b>")
+			     .append(QString::number(fabs(secondCornerDomain[0] - firstCornerDomain[0]), 'g', 8))
+				.append(QString("</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Height: <b>"))
+				.append(QString::number(fabs(secondCornerDomain[1] - firstCornerDomain[1]), 'g', 8))
+				.append("</b>"));
+		emit ToolFinishedDrawing();
+	}
 }
 
 
-void RectangleTool::MouseWheel(QWheelEvent *event)
+/**
+ * @brief Actions performed when the mouse wheel is used
+ *
+ * Actions performed when the mouse wheel is used. In this case, no action
+ * is required.
+ *
+ */
+void RectangleTool::MouseWheel(QWheelEvent*)
 {
 
 }
 
 
-void RectangleTool::KeyPress(QKeyEvent *event)
+/**
+ * @brief Actions performed when a key is pressed
+ *
+ * Actions performed when a key is pressed. In this case, no action
+ * is required
+ *
+ */
+void RectangleTool::KeyPress(QKeyEvent*)
 {
 
 }
 
 
+/**
+ * @brief Function called when the user wants to use to tool
+ *
+ * Function called when the user wants to use to tool. This resets the
+ * tool to default values, preparing it for interaction with the user.
+ *
+ */
 void RectangleTool::UseTool()
 {
 	ResetTool();
@@ -180,12 +274,32 @@ void RectangleTool::UseTool()
 }
 
 
+/**
+ * @brief Function used to query to the tool for all Nodes that were
+ * selected in the last interaction
+ *
+ * <b> Not yet implemented </b>
+ *
+ * Function used to query to the tool for all Nodes that were
+ * selected in the last interaction.
+ *
+ * @return A vector of pointers to all selected Nodes
+ */
 std::vector<Node*> RectangleTool::GetSelectedNodes()
 {
 	return selectedNodes;
 }
 
 
+/**
+ * @brief Function used to query the tool for all Elements that were
+ * selected in the last interaction
+ *
+ * Function used to query the tool for all Elements that were
+ * selected in the last interaction.
+ *
+ * @return A vector of pointers to all selected Elements
+ */
 std::vector<Element*> RectangleTool::GetSelectedElements()
 {
 	FindElements();
@@ -193,6 +307,14 @@ std::vector<Element*> RectangleTool::GetSelectedElements()
 }
 
 
+/**
+ * @brief Initializes this object's state on the OpenGL context
+ *
+ * Initializes this object's state on the OpenGL context by creating
+ * the Vertex Array Object, Vertex Buffer Object, and Index Buffer
+ * Object.
+ *
+ */
 void RectangleTool::InitializeGL()
 {
 	if (!glLoaded)
@@ -244,6 +366,14 @@ void RectangleTool::InitializeGL()
 }
 
 
+/**
+ * @brief Updates the vertex data on the OpenGL context
+ *
+ * Updates the vertex data on the OpenGL context by substituting
+ * the current vertexPoints array into the place of the data
+ * currently on the OpenGL context.
+ *
+ */
 void RectangleTool::UpdateGL()
 {
 	if (!glLoaded)
@@ -260,6 +390,15 @@ void RectangleTool::UpdateGL()
 }
 
 
+/**
+ * @brief Sets the first corner of the rectangle
+ *
+ * Sets the first corner of the rectangle. The corner is converted
+ * from pixel coordinates to OpenGL normalized coordinates.
+ *
+ * @param newX The x-coordinate of the first corner (in pixels)
+ * @param newY The y-coordinate of the first corner (in pixels)
+ */
 void RectangleTool::SetFirstCorner(int newX, int newY)
 {
 	firstCornerPixel[0] = newX;
@@ -280,6 +419,16 @@ void RectangleTool::SetFirstCorner(int newX, int newY)
 }
 
 
+/**
+ * @brief Sets the second corner of the rectangle (diagonally opposite the first corner)
+ *
+ * Sets the second corner of the rectangle. The second corner is always diagonally
+ * opposite the first corner. The corner is converted from pixel coordinates to
+ * OpenGL normalized coordinates.
+ *
+ * @param newX The x-coordinate of the second corner (in pixels)
+ * @param newY The y-coordinate of the second corner (in pixels)
+ */
 void RectangleTool::SetSecondCorner(int newX, int newY)
 {
 	secondCornerPixel[0] = newX;
@@ -304,6 +453,14 @@ void RectangleTool::SetSecondCorner(int newX, int newY)
 }
 
 
+/**
+ * @brief Searches the current TerrainLayer for Elements that fall within the currently
+ * defined rectangle
+ *
+ * Searches the current TerrainLayer for Elements that fall within the currently
+ * defined rectangle.
+ *
+ */
 void RectangleTool::FindElements()
 {
 	if (terrain)
@@ -313,13 +470,36 @@ void RectangleTool::FindElements()
 }
 
 
+/**
+ * @brief Resets the tool to default values
+ *
+ * Resets the tool to default values.
+ *
+ */
 void RectangleTool::ResetTool()
 {
+	for (int i=0; i<12; i++)
+	{
+		vertexPoints[i][0] = vertexPoints[i][1] = vertexPoints[i][2] = 0.0;
+		vertexPoints[i][3] = 1.0;
+	}
+	vertexPoints[4][0] = vertexPoints[5][0] = vertexPoints[6][0] = vertexPoints[7][0] = -100.0;
+	vertexPoints[8][0] = vertexPoints[9][0] = vertexPoints[10][0] = vertexPoints[11][0] = 100.0;
+	vertexPoints[4][1] = vertexPoints[8][1] = -100.0;
+	vertexPoints[7][1] = vertexPoints[11][1] = 100.0;
+
 	visible = false;
-	clicking = false;
+	mousePressed = false;
 }
 
 
+/**
+ * @brief Calculates the physical coordinates of all four corners of the rectangle
+ *
+ * Determines which of the four possible diagonal orientations to use for the first
+ * and second points and uses this to calculate the coordinates of the other two points.
+ *
+ */
 void RectangleTool::CalculateVertexPoints()
 {
 	float topLeft[2] = {0.0, 0.0};
