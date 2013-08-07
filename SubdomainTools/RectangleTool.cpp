@@ -75,7 +75,7 @@ RectangleTool::RectangleTool()
  * @brief Destructor
  *
  * Destructor that cleans up memory allocated by the object and deletes
- * buffers in the OpenGL context
+ * buffers in the OpenGL context.
  *
  */
 RectangleTool::~RectangleTool()
@@ -312,7 +312,8 @@ std::vector<Element*> RectangleTool::GetSelectedElements()
  *
  * Initializes this object's state on the OpenGL context by creating
  * the Vertex Array Object, Vertex Buffer Object, and Index Buffer
- * Object.
+ * Object. The IBO data is sent to the OpenGL context here and never
+ * changes.
  *
  */
 void RectangleTool::InitializeGL()

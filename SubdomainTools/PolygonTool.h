@@ -12,6 +12,21 @@
 #include "OpenGL/Shaders/SolidShader.h"
 #include "SubdomainTools/SelectionTool.h"
 
+
+/**
+ * @brief A tool used to select Nodes or Elements by drawing a polygon over
+ * the desired area of a TerrainLayer object
+ *
+ * A tool used to select Nodes or Elements by drawing a polygon over
+ * the desired area of a TerrainLayer object. The polygon is defined
+ * by the user by dropping a string of points that define the outer
+ * boundary of an arbitrarily shaped polygon. A double click will drop
+ * the last point and close the polygon by connecting the last point
+ * to the first. Alternatively, pressing the Enter key will not drop
+ * another point, but will close the polygon used the last point dropped
+ * by the user.
+ *
+ */
 class PolygonTool : public SelectionTool
 {
 		Q_OBJECT
@@ -37,6 +52,9 @@ class PolygonTool : public SelectionTool
 
 	private:
 
+		/**
+		 * @brief Internal struct used to define a 2D point in space
+		 */
 		struct Point
 		{
 				float x;
@@ -63,8 +81,6 @@ class PolygonTool : public SelectionTool
 		/* Mouse Attributes */
 		float	mouseX;
 		float	mouseY;
-		float	dx;
-		float	dy;
 		bool	mousePressed;
 		bool	mouseMoved;
 		void	AddPoint(float x, float y);

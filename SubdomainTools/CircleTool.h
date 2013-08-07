@@ -14,8 +14,8 @@
 
 
 /**
- * @brief This class provides functionality for selecting Nodes and Elements by
- * drawing a circle over the desired area of the current TerrainLayer
+ * @brief A tool used to select Nodes or Elements by drawing a circle over
+ * the desired area of a TerrainLayer object
  */
 class CircleTool : public SelectionTool
 {

@@ -13,6 +13,10 @@
 #include "SubdomainTools/SelectionTool.h"
 
 
+/**
+ * @brief A tool used to select Nodes or Elements by drawing a rectangle over
+ * the desired area of a TerrainLayer object
+ */
 class RectangleTool : public SelectionTool
 {
 		Q_OBJECT

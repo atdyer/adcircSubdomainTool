@@ -60,10 +60,11 @@ class MainWindow : public QMainWindow
 		QStatusBar	*glStatusBar;
 		QLabel		*mouseXLabel, *mouseYLabel, *numNodesLabel, *numElementsLabel, *numTSLabel;
 
-		// The LayerManager
-//		LayerManager	layerManager;
+		// The test Domain
 		Domain*		testDomain;
 
+
+		void	CheckForMemoryLeaks();
 
 };
 

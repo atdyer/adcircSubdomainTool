@@ -51,9 +51,7 @@ MainWindow::~MainWindow()
 		delete testDomain;
 	delete ui;
 
-	DEBUG(GLShader::GetNumShaders() << " shaders left undeleted");
-	DEBUG(Layer::GetNumLayers() << " layers left undeleted");
-	DEBUG(GLCamera::GetNumCameras() << " cameras left undeleted");
+	CheckForMemoryLeaks();
 }
 
 
@@ -234,3 +232,23 @@ void MainWindow::on_selectNodeSingle_clicked()
 	if (testDomain)
 		testDomain->UseTool(PolygonToolType, ElementSelection);
 }
+
+
+void MainWindow::CheckForMemoryLeaks()
+{
+	if (GLShader::GetNumShaders() != 0)
+	{
+		DEBUG("MEMORY LEAK: " << GLShader::GetNumShaders() << " GLShader objects not deleted");
+	}
+	if (Layer::GetNumLayers() != 0)
+	{
+		DEBUG("MEMORY LEAK: " << Layer::GetNumLayers() << " Layer objects not deleted");
+	}
+	if (GLCamera::GetNumCameras() != 0)
+	{
+		DEBUG("MEMORY LEAK: " << GLCamera::GetNumCameras() << " GLCamera objects not deleted");
+	}
+}
+
+
+
