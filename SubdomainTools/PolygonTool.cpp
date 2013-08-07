@@ -17,8 +17,6 @@ PolygonTool::PolygonTool()
 	mousePressed = false;
 	mouseMoved = false;
 
-	SetSelectionMode(ElementSelection);
-
 	pointCount = 0;
 
 	w = 800;
@@ -91,12 +89,6 @@ void PolygonTool::SetViewportSize(float w, float h)
 }
 
 
-void PolygonTool::SetSelectionMode(SelectionType newMode)
-{
-	selectionMode = newMode;
-}
-
-
 void PolygonTool::MouseClick(QMouseEvent*)
 {
 	mousePressed = true;
@@ -153,6 +145,12 @@ void PolygonTool::UseTool()
 	if (!glLoaded)
 		InitializeGL();
 	visible = true;
+}
+
+
+std::vector<Node*> PolygonTool::GetSelectedNodes()
+{
+	return selectedNodes;
 }
 
 

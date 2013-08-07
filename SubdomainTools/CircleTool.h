@@ -28,7 +28,6 @@ class CircleTool : public SelectionTool
 		void	SetCamera(GLCamera* cam);
 		void	SetTerrainLayer(TerrainLayer *layer);
 		void	SetViewportSize(float w, float h);
-		void	SetSelectionMode(SelectionType newMode);
 
 		void	MouseClick(QMouseEvent *event);
 		void	MouseMove(QMouseEvent *event);
@@ -38,6 +37,7 @@ class CircleTool : public SelectionTool
 
 		void	UseTool();
 
+		std::vector<Node*>	GetSelectedNodes();
 		std::vector<Element*>	GetSelectedElements();
 
 	private:
@@ -52,16 +52,13 @@ class CircleTool : public SelectionTool
 		void	ResetTool();
 		float	Distance(float x1, float y1, float x2, float y2);
 
-		// Selection Mode
-		SelectionType	selectionMode;	/**< The current selection mode of the circle tool */
-
 		// Selected Nodes/Elements
-		std::vector<Node*>	selectedNodes;
-		std::vector<Element*>	selectedElements;
+		std::vector<Node*>	selectedNodes;		/**< The list of currently selected Nodes */
+		std::vector<Element*>	selectedElements;	/**< The list of currently selected Elements */
 
 		// Circle attributes
-		bool	visible;
-		bool	mousePressed;
+		bool	visible;	/**< Flag that shows if the tool is visible */
+		bool	mousePressed;	/**< Flag that shows if the left mouse button is pressed */
 
 		float	xPixel;		/**< The x-coordinate of the circle center, in pixels */
 		float	yPixel;		/**< The y-coordinate of the circle center, in pixels */
@@ -94,7 +91,7 @@ class CircleTool : public SelectionTool
 
 	signals:
 
-		void	CircleStatsSet(float, float, float);
+		void	CircleStatsSet(float, float, float);	/**< Signal emitted when the circle properties change: (x-coordinate, y-coordinate, radius) */
 };
 
 #endif // CIRCLETOOL_H

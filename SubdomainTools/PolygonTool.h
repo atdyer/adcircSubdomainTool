@@ -23,7 +23,6 @@ class PolygonTool : public SelectionTool
 		void	SetCamera(GLCamera *cam);
 		void	SetTerrainLayer(TerrainLayer *layer);
 		void	SetViewportSize(float w, float h);
-		void	SetSelectionMode(SelectionType newMode);
 
 		void	MouseClick(QMouseEvent *event);
 		void	MouseMove(QMouseEvent *event);
@@ -33,6 +32,7 @@ class PolygonTool : public SelectionTool
 
 		void	UseTool();
 
+		std::vector<Node*>	GetSelectedNodes();
 		std::vector<Element*>	GetSelectedElements();
 
 	private:
@@ -71,9 +71,6 @@ class PolygonTool : public SelectionTool
 		bool	CheckForDoubleClick(float x, float y);
 		void	FinishDrawingTool();
 		void	ResetTool();
-
-		/* Selection Mode */
-		SelectionType	selectionMode;	/**< The current selection mode */
 
 		/* Selected Nodes/Elements */
 		std::vector<Node*>	selectedNodes;

@@ -3,13 +3,15 @@
 
 /**
  * @brief Constructor that initializes the tool with default values
+ *
+ * Constructor that initializes the tool with default values. By default,
+ * the tool is not visible and operates on an 800x800 window.
+ *
  */
 CircleTool::CircleTool()
 {
 	terrain = 0;
 	camera = 0;
-
-	selectionMode = ElementSelection;
 
 	visible = false;
 	mousePressed = false;
@@ -31,7 +33,7 @@ CircleTool::CircleTool()
 	radDomain = 0.0;
 
 	w = 800;
-	h = 600;
+	h = 800;
 	l = -1.0;
 	r = 1.0;
 	b = -1.0;
@@ -43,6 +45,12 @@ CircleTool::CircleTool()
 }
 
 
+/**
+ * @brief Destructor
+ *
+ * Destructor that only needs to clean up the glu object used to draw the circle
+ *
+ */
 CircleTool::~CircleTool()
 {
 	if (quad)
@@ -75,6 +83,9 @@ void CircleTool::Draw()
 /**
  * @brief Set the GLCamera that will be used to draw the circle.
  *
+ * Set the GLCamera that will be used to draw the circle. Typically, this
+ * should be the same GLCamera being used to draw the TerrainLayer
+ *
  * @param cam Pointer to the desired GLCamera
  */
 void CircleTool::SetCamera(GLCamera *cam)
@@ -84,8 +95,9 @@ void CircleTool::SetCamera(GLCamera *cam)
 
 
 /**
- * @brief Set the TerrainLayer that Nodes will come from when looking for
- * Nodes inside of the circle
+ * @brief Set the TerrainLayer that selections will be made from
+ *
+ * Set the TerrainLayer that selections will be made from.
  *
  * @param layer Pointer to the desired TerrainLayer
  */
@@ -119,28 +131,33 @@ void CircleTool::SetViewportSize(float w, float h)
 
 
 /**
- * @brief Sets the selection mode currently being used by the circle tool
+ * @brief Actions that are performed when a mouse button is pressed
  *
- * Sets the selection mode currently being used by the circle tool. The mode
- * determines what is selected when the user draws a circle using the tool.
+ * Actions that are performed when a mouse button is pressed. In this case,
+ * a left click will drop the center of the circle and make the circle
+ * visible.
  *
- * @param newMode The new mode
+ * @param event The QMouseEvent object created by the GUI on the click
  */
-void CircleTool::SetSelectionMode(SelectionType newMode)
-{
-	selectionMode = newMode;
-}
-
-
 void CircleTool::MouseClick(QMouseEvent *event)
 {
-	visible = true;
-	mousePressed = true;
-	SetCenter(event->x(), event->y());
-	emit Instructions(QString("Drag to resize circle, drop to select elements"));
+	if (event->button() == Qt::LeftButton)
+	{
+		visible = true;
+		mousePressed = true;
+		SetCenter(event->x(), event->y());
+		emit Instructions(QString("Drag to resize circle, drop to select elements"));
+	}
 }
 
 
+/**
+ * @brief Actions that are performed when the mouse is moved
+ *
+ * Actions that are performed when the mouse is moved.
+ *
+ * @param event The QMouseEvent object created by the GUI on the mouse move
+ */
 void CircleTool::MouseMove(QMouseEvent *event)
 {
 	if (mousePressed)
@@ -150,32 +167,66 @@ void CircleTool::MouseMove(QMouseEvent *event)
 }
 
 
-void CircleTool::MouseRelease(QMouseEvent*)
+/**
+ * @brief Actions that are performed when a mouse button is released
+ *
+ * Actions that are performed when a mouse button is released. In this case,
+ * if the left mouse button was just released (meaning we've been drawing the
+ * circle), tell everyone we've finished drawing the circle by emitting
+ * ToolFinishedDrawing().
+ *
+ * @param event The QMouseEvent object created by the GUI on the button release
+ */
+void CircleTool::MouseRelease(QMouseEvent *event)
 {
-	mousePressed = false;
-	emit Message(QString("Circle Tool:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Center: (<b>")
-		     .append(QString::number(xDomain, 'g', 8))
-		     .append("</b>, <b>")
-		     .append(QString::number(yDomain, 'g', 8))
-		     .append("</b>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Radius: <b>")
-		     .append(QString::number(radDomain))
-		     .append("</b>"));
-	emit ToolFinishedDrawing();
+	if (event->button() == Qt::LeftButton)
+	{
+		mousePressed = false;
+		emit Message(QString("Circle Tool:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Center: (<b>")
+			     .append(QString::number(xDomain, 'g', 8))
+			     .append("</b>, <b>")
+			     .append(QString::number(yDomain, 'g', 8))
+			     .append("</b>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Radius: <b>")
+			     .append(QString::number(radDomain))
+			     .append("</b>"));
+		emit ToolFinishedDrawing();
+	}
 }
 
 
+/**
+ * @brief Actions performed when the mouse wheel is used
+ *
+ * Actions performed when the mouse wheel is used. In this case, no action
+ * is required.
+ *
+ */
 void CircleTool::MouseWheel(QWheelEvent*)
 {
 
 }
 
 
+/**
+ * @brief Actions performed when a key is pressed
+ *
+ * Actions performed when a key is pressed. In this case, no action
+ * is required
+ *
+ */
 void CircleTool::KeyPress(QKeyEvent*)
 {
 
 }
 
 
+/**
+ * @brief Function called when the user wants to use to tool
+ *
+ * Function called when the user wants to use to tool. This resets the
+ * tool to default values, preparing it for interaction with the user.
+ *
+ */
 void CircleTool::UseTool()
 {
 	ResetTool();
@@ -183,6 +234,32 @@ void CircleTool::UseTool()
 }
 
 
+/**
+ * @brief Function used to query to the tool for all Nodes that were
+ * selected in the last interaction
+ *
+ * <b> Not yet implemented </b>
+ *
+ * Function used to query to the tool for all Nodes that were
+ * selected in the last interaction.
+ *
+ * @return A vector of pointers to all selected Nodes
+ */
+std::vector<Node*> CircleTool::GetSelectedNodes()
+{
+	return selectedNodes;
+}
+
+
+/**
+ * @brief Function used to query the tool for all Elements that were
+ * selected in the last interaction
+ *
+ * Function used to query the tool for all Elements that were
+ * selected in the last interaction.
+ *
+ * @return A vector of pointers to all selected Elements
+ */
 std::vector<Element*> CircleTool::GetSelectedElements()
 {
 	FindElements();
@@ -193,8 +270,7 @@ std::vector<Element*> CircleTool::GetSelectedElements()
 /**
  * @brief Set the center of the circle
  *
- * Sets the center of the circle. Typically called once when the user clicks to start
- * drawing the circle.
+ * Sets the center of the circle.
  *
  * @param newX The x-coordinate of the circle center, in pixels
  * @param newY The y-coordiante of the circle center, in pixels
@@ -256,6 +332,14 @@ void CircleTool::SetRadiusPoint(int newX, int newY)
 }
 
 
+/**
+ * @brief Searches the current TerrainLayer for Elements that fall within the currently
+ * defined circle
+ *
+ * Searches the current TerrainLayer for Elements that fall within the currently
+ * defined circle.
+ *
+ */
 void CircleTool::FindElements()
 {
 	if (terrain)
@@ -265,6 +349,12 @@ void CircleTool::FindElements()
 }
 
 
+/**
+ * @brief Resets the tool to default values
+ *
+ * Resets the tool to default values.
+ *
+ */
 void CircleTool::ResetTool()
 {
 	visible = false;

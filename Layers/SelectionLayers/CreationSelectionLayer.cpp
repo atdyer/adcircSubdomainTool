@@ -307,7 +307,7 @@ void CreationSelectionLayer::UseTool(ToolType tool, SelectionType)
 	}
 
 	if (activeTool)
-		activeTool->UseTool(ElementSelection);
+		activeTool->UseTool();
 }
 
 
@@ -586,7 +586,6 @@ void CreationSelectionLayer::CreateCircleTool()
 
 	circleTool->SetTerrainLayer(terrainLayer);
 	circleTool->SetCamera(camera);
-	circleTool->SetSelectionMode(ElementSelection);
 	connect(circleTool, SIGNAL(Message(QString)), this, SIGNAL(Message(QString)));
 	connect(circleTool, SIGNAL(Instructions(QString)), this, SIGNAL(Instructions(QString)));
 	connect(circleTool, SIGNAL(ToolFinishedDrawing()), this, SLOT(GetSelectionFromTool()));
@@ -602,7 +601,6 @@ void CreationSelectionLayer::CreateRectangleTool()
 
 	rectangleTool->SetTerrainLayer(terrainLayer);
 	rectangleTool->SetCamera(camera);
-	rectangleTool->SetSelectionMode(ElementSelection);
 	connect(rectangleTool, SIGNAL(Message(QString)), this, SIGNAL(Message(QString)));
 	connect(rectangleTool, SIGNAL(Instructions(QString)), this, SIGNAL(Instructions(QString)));
 	connect(rectangleTool, SIGNAL(ToolFinishedDrawing()), this, SLOT(GetSelectionFromTool()));
@@ -618,7 +616,6 @@ void CreationSelectionLayer::CreatePolygonTool()
 
 	polygonTool->SetTerrainLayer(terrainLayer);
 	polygonTool->SetCamera(camera);
-	polygonTool->SetSelectionMode(ElementSelection);
 	connect(polygonTool, SIGNAL(Message(QString)), this, SIGNAL(Message(QString)));
 	connect(polygonTool, SIGNAL(Instructions(QString)), this, SIGNAL(Instructions(QString)));
 	connect(polygonTool, SIGNAL(ToolFinishedDrawing()), this, SLOT(GetSelectionFromTool()));

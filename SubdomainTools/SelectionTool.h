@@ -11,6 +11,17 @@
 #include "OpenGL/GLCamera.h"
 #include "Layers/TerrainLayer.h"
 
+
+/**
+ * @brief A virtual class that provides all basic functionality needed for a
+ * tool that is used to select Nodes or Elements
+ *
+ * A virtual class that provides all basic functionality needed for a
+ * tool that is used to select Nodes or Elements.
+ *
+ * A subclass of QObject to provide Signal/Slot functionality.
+ *
+ */
 class SelectionTool : public QObject
 {
 		Q_OBJECT
@@ -21,7 +32,7 @@ class SelectionTool : public QObject
 		virtual void	SetCamera(GLCamera *cam) = 0;
 		virtual void	SetTerrainLayer(TerrainLayer *layer) = 0;
 		virtual void	SetViewportSize(float w, float h) = 0;
-		virtual void	SetSelectionMode(SelectionType newMode) = 0;
+//		virtual void	SetSelectionMode(SelectionType newMode) = 0;
 
 		virtual void	MouseClick(QMouseEvent *event) = 0;
 		virtual void	MouseMove(QMouseEvent *event) = 0;
@@ -30,15 +41,16 @@ class SelectionTool : public QObject
 		virtual void	KeyPress(QKeyEvent *event) = 0;
 
 		virtual void	UseTool() = 0;
-		void		UseTool(SelectionType newMode);
+//		void		UseTool(SelectionType newMode);
 
+		virtual std::vector<Node*>	GetSelectedNodes() = 0;
 		virtual std::vector<Element*>	GetSelectedElements() = 0;
 
 	signals:
 
-		void	Message(QString);
-		void	Instructions(QString);
-		void	ToolFinishedDrawing();
+		void	Message(QString);	/**< Signal emitted containing a message to display */
+		void	Instructions(QString);	/**< Signal emitted containing instructions to display */
+		void	ToolFinishedDrawing();	/**< Signal emitted when to tool has finished drawing */
 };
 
 #endif // SELECTIONTOOL_H

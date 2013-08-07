@@ -24,7 +24,6 @@ class RectangleTool : public SelectionTool
 		void	SetCamera(GLCamera* cam);
 		void	SetTerrainLayer(TerrainLayer *layer);
 		void	SetViewportSize(float w, float h);
-		void	SetSelectionMode(SelectionType newMode);
 
 		void	MouseClick(QMouseEvent *event);
 		void	MouseMove(QMouseEvent *event);
@@ -34,6 +33,7 @@ class RectangleTool : public SelectionTool
 
 		void	UseTool();
 
+		std::vector<Node*>	GetSelectedNodes();
 		std::vector<Element*>	GetSelectedElements();
 
 	private:
@@ -61,12 +61,8 @@ class RectangleTool : public SelectionTool
 		GLuint		indexArray[8][3];	/**< The indices that make up the triangles */
 		size_t		vertexBufferSize;	/**< The size of the vertex data in bytes */
 
-
 		/* Mouse State */
 		bool	clicking;
-
-		/* Selection Mode */
-		SelectionType	selectionMode;	/**< The current selection mode */
 
 		/* Selected Nodes/Elements */
 		std::vector<Node*>	selectedNodes;
@@ -92,7 +88,7 @@ class RectangleTool : public SelectionTool
 
 	signals:
 
-		void	RectangleStatsSet(float w, float h);
+		void	RectangleStatsSet(float w, float h);	/**< Signal emitted when the rectangle properties change: (width, height) */
 };
 
 #endif // RECTANGLETOOL_H

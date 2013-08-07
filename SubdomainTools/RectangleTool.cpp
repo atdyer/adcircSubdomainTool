@@ -49,8 +49,6 @@ RectangleTool::RectangleTool()
 	indexArray[7][1] = 9;
 	indexArray[7][2] = 10;
 
-	SetSelectionMode(ElementSelection);
-
 	firstCornerPixel[0] = 0.0;
 	firstCornerPixel[1] = 0.0;
 	secondCornerPixel[0] = 0.0;
@@ -133,12 +131,6 @@ void RectangleTool::SetViewportSize(float w, float h)
 }
 
 
-void RectangleTool::SetSelectionMode(SelectionType newMode)
-{
-	selectionMode = newMode;
-}
-
-
 void RectangleTool::MouseClick(QMouseEvent *event)
 {
 	clicking = true;
@@ -185,6 +177,12 @@ void RectangleTool::UseTool()
 	if (!glLoaded)
 		InitializeGL();
 	emit Instructions(QString("Click to drop the first corner of the rectangle"));
+}
+
+
+std::vector<Node*> RectangleTool::GetSelectedNodes()
+{
+	return selectedNodes;
 }
 
 
