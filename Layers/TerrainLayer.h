@@ -1,7 +1,7 @@
 #ifndef TERRAINLAYER_H
 #define TERRAINLAYER_H
 
-#include "Quadtree.h"
+#include "Quadtree/Quadtree.h"
 #include "Layer.h"
 #include "OpenGL/Shaders/GLShader.h"
 #include "OpenGL/Shaders/SolidShader.h"

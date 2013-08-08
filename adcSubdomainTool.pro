@@ -23,7 +23,6 @@ SOURCES += main.cpp\
     OpenGL/GLCamera.cpp \
     Layers/Layer.cpp \
     Layers/TerrainLayer.cpp \
-    Layers/Quadtree.cpp \
     OpenGL/Shaders/GLShader.cpp \
     OpenGL/Shaders/SolidShader.cpp \
     SubdomainTools/CircleTool.cpp \
@@ -41,7 +40,8 @@ SOURCES += main.cpp\
     SubdomainTools/PolygonTool.cpp \
     SubdomainTools/SelectionTool.cpp \
     Dialogs/CreateProjectDialog.cpp \
-    Quadtree/SearchTools/PolygonSearch.cpp
+    Quadtree/SearchTools/PolygonSearch.cpp \
+    Quadtree/Quadtree.cpp
 
 HEADERS  += MainWindow.h \
     OpenGL/OpenGLPanel.h \
@@ -53,7 +53,6 @@ HEADERS  += MainWindow.h \
     adcData.h \
     Layers/Layer.h \
     Layers/TerrainLayer.h \
-    Layers/Quadtree.h \
     OpenGL/Shaders/GLShader.h \
     OpenGL/Shaders/SolidShader.h \
     SubdomainTools/CircleTool.h \
@@ -71,7 +70,8 @@ HEADERS  += MainWindow.h \
     SubdomainTools/PolygonTool.h \
     SubdomainTools/SelectionTool.h \
     Dialogs/CreateProjectDialog.h \
-    Quadtree/SearchTools/PolygonSearch.h
+    Quadtree/SearchTools/PolygonSearch.h \
+    Quadtree/Quadtree.h
 
 FORMS    += MainWindow.ui \
     Dialogs/CreateProjectDialog.ui
