@@ -39,7 +39,8 @@ SOURCES += main.cpp\
     SubdomainTools/BoundaryFinder.cpp \
     SubdomainTools/RectangleTool.cpp \
     SubdomainTools/PolygonTool.cpp \
-    SubdomainTools/SelectionTool.cpp
+    SubdomainTools/SelectionTool.cpp \
+    Dialogs/CreateProjectDialog.cpp
 
 HEADERS  += MainWindow.h \
     OpenGL/OpenGLPanel.h \
@@ -67,9 +68,11 @@ HEADERS  += MainWindow.h \
     SubdomainTools/BoundaryFinder.h \
     SubdomainTools/RectangleTool.h \
     SubdomainTools/PolygonTool.h \
-    SubdomainTools/SelectionTool.h
+    SubdomainTools/SelectionTool.h \
+    Dialogs/CreateProjectDialog.h
 
-FORMS    += MainWindow.ui
+FORMS    += MainWindow.ui \
+    Dialogs/CreateProjectDialog.ui
 
 RESOURCES += \
     icons.qrc
