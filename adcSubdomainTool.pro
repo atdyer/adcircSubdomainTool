@@ -71,7 +71,8 @@ HEADERS  += MainWindow.h \
     SubdomainTools/SelectionTool.h \
     Dialogs/CreateProjectDialog.h \
     Quadtree/SearchTools/PolygonSearch.h \
-    Quadtree/Quadtree.h
+    Quadtree/Quadtree.h \
+    Quadtree/QuadtreeData.h
 
 FORMS    += MainWindow.ui \
     Dialogs/CreateProjectDialog.ui
