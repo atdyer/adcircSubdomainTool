@@ -218,8 +218,8 @@ border-top-right-radius: 4px;
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>274</width>
-             <height>389</height>
+             <width>256</width>
+             <height>334</height>
             </rect>
            </property>
            <property name="styleSheet">
@@ -395,12 +395,15 @@ border-top-right-radius: 4px;
            </layout>
           </widget>
           <widget class="QWidget" name="createSubdomainPage">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>168</width>
-             <height>389</height>
+             <width>210</width>
+             <height>364</height>
             </rect>
            </property>
            <attribute name="label">
@@ -593,11 +596,32 @@ border-top-right-radius: 4px;
            </layout>
           </widget>
           <widget class="QWidget" name="editSubdomainPage">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>168</width>
+             <height>334</height>
+            </rect>
+           </property>
            <attribute name="label">
             <string>Edit Subdomain</string>
            </attribute>
           </widget>
+          <widget class="QWidget" name="adcircPage">
+           <attribute name="label">
+            <string>ADCIRC</string>
+           </attribute>
+          </widget>
           <widget class="QWidget" name="analyzeResultsPage">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>168</width>
+             <height>334</height>
+            </rect>
+           </property>
            <attribute name="label">
             <string>Analyze Results</string>
            </attribute>
@@ -746,6 +770,18 @@ border-top-right-radius: 4px;
         <string>Output</string>
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout">
+        <property name="leftMargin">
+         <number>2</number>
+        </property>
+        <property name="topMargin">
+         <number>2</number>
+        </property>
+        <property name="rightMargin">
+         <number>2</number>
+        </property>
+        <property name="bottomMargin">
+         <number>2</number>
+        </property>
         <item>
          <widget class="QTextEdit" name="outputBox">
           <property name="enabled">
@@ -1571,8 +1607,21 @@ border-top-right-radius: 4px;
     <property name="title">
      <string>Help</string>
     </property>
+    <addaction name="actionTutorial"/>
+   </widget>
+   <widget class="QMenu" name="menuDisplay">
+    <property name="title">
+     <string>Display</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
    </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuEdit"/>
+   <addaction name="menuDisplay"/>
    <addaction name="menuADCIRC"/>
    <addaction name="menuHelp"/>
   </widget>
@@ -1580,6 +1629,11 @@ border-top-right-radius: 4px;
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionTutorial">
+   <property name="text">
+    <string>Tutorial</string>
    </property>
   </action>
  </widget>

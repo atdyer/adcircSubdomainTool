@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	ui->setupUi(this);
 
+	ui->toolBox->setCurrentIndex(0);
 	ui->toolBox->setMinimumWidth(ui->projectTree->width()+6);
 
 	testDomain = 0;
