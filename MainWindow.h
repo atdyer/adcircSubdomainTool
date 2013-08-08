@@ -5,6 +5,7 @@
 #include <QMainWindow>
 #include <QThread>
 #include <QLabel>
+#include <QFileDialog>
 //#include <qwt_plot.h>
 
 #include "Domains/Domain.h"

@@ -259,7 +259,7 @@ void Domain::SetFort14Location(std::string newLoc)
 			connect(terrainLayer, SIGNAL(finishedReadingData()), progressBar, SLOT(hide()));
 		}
 
-		connect(terrainLayer, SIGNAL(EmitMessage(QString)), this, SIGNAL(EmitMessage(QString)));
+		connect(terrainLayer, SIGNAL(EmitMessage(QString)), this, SIGNAL(Message(QString)));
 		connect(terrainLayer, SIGNAL(finishedReadingData()), this, SLOT(LoadLayerToGPU()));
 		connect(terrainLayer, SIGNAL(finishedLoadingToGPU()), this, SIGNAL(UpdateGL()));
 		connect(terrainLayer, SIGNAL(foundNumNodes(int)), this, SIGNAL(NumNodesDomain(int)));

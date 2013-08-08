@@ -40,7 +40,8 @@ SOURCES += main.cpp\
     SubdomainTools/RectangleTool.cpp \
     SubdomainTools/PolygonTool.cpp \
     SubdomainTools/SelectionTool.cpp \
-    Dialogs/CreateProjectDialog.cpp
+    Dialogs/CreateProjectDialog.cpp \
+    Quadtree/SearchTools/PolygonSearch.cpp
 
 HEADERS  += MainWindow.h \
     OpenGL/OpenGLPanel.h \
@@ -69,7 +70,8 @@ HEADERS  += MainWindow.h \
     SubdomainTools/RectangleTool.h \
     SubdomainTools/PolygonTool.h \
     SubdomainTools/SelectionTool.h \
-    Dialogs/CreateProjectDialog.h
+    Dialogs/CreateProjectDialog.h \
+    Quadtree/SearchTools/PolygonSearch.h
 
 FORMS    += MainWindow.ui \
     Dialogs/CreateProjectDialog.ui

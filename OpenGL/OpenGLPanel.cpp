@@ -136,7 +136,7 @@ void OpenGLPanel::SetActiveDomain(Domain *newDomain)
 	/* Disconnect the old domain */
 	if (activeDomain)
 	{
-		disconnect(activeDomain, SIGNAL(updateGL()), this, SLOT(updateGL()));
+		disconnect(activeDomain, SIGNAL(UpdateGL()), this, SLOT(updateGL()));
 	}
 
 	/* Set up connections with the new one */

@@ -165,10 +165,14 @@ void MainWindow::on_minimizeMainTabButton_clicked()
   */
 void MainWindow::on_openFileButton_clicked()
 {
+	if (testDomain)
+		delete testDomain;
 	testDomain = new Domain();
 	testDomain->SetProgressBar(ui->progressBar);
 	ui->GLPanel->SetActiveDomain(testDomain);
-	testDomain->SetFort14Location("/home/tristan/Desktop/adcSwan/sub/fort.14");
+
+	testDomain->SetFort14Location(QFileDialog::getOpenFileName(this, "Open File", "/home/tristan/Desktop/", "ADCIRC Files (*.14 *.15 *.63 *.64)").toStdString());
+//	testDomain->SetFort14Location("/home/tristan/Desktop/adcSwan/sub/fort.14");
 //	testDomain->SetFort14Location("/home/tristan/Desktop/fort.14");
 
 	connect(testDomain, SIGNAL(Message(QString)), this, SLOT(displayOutput(QString)));
