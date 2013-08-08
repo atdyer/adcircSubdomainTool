@@ -52,17 +52,6 @@ class PolygonTool : public SelectionTool
 
 	private:
 
-		/**
-		 * @brief Internal struct used to define a 2D point in space
-		 */
-		struct Point
-		{
-				float x;
-				float y;
-				Point() : x(0.0), y(0.0) {}
-				Point(float a, float b) : x(a), y(b) {}
-		};
-
 		TerrainLayer*	terrain;	/**< The TerrainLayer that nodes/elements will be selected from */
 		GLCamera*	camera;		/**< The GLCamera that is used to draw the TerrainLayer */
 

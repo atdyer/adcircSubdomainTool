@@ -70,6 +70,18 @@ struct Element
 
 
 /**
+ * @brief A 2-D point in space
+ */
+struct Point
+{
+		float x;
+		float y;
+		Point() : x(0.0), y(0.0) {}
+		Point(float a, float b) : x(a), y(b) {}
+};
+
+
+/**
  * @brief Types of actions that the user can perform
  *
  * Types of actions that the user can perform.
