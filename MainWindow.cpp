@@ -8,6 +8,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	ui->setupUi(this);
 
+	ui->toolBox->setMinimumWidth(ui->projectTree->width()+6);
+
 	testDomain = 0;
 
 	// Create GLPanel status bar and all labels
@@ -37,10 +39,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	// Expand the project tree
 	ui->projectTree->expandAll();
-
-	/* Connect selection tool buttons to the OpenGLPanel */
-//	connect(ui->selectNodesCircle, SIGNAL(clicked()), ui->GLPanel, SLOT(enterCircleSubdomainMode()));
-
 
 
 }
