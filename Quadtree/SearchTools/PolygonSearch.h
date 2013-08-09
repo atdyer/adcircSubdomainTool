@@ -5,7 +5,7 @@
 #include "Quadtree/QuadtreeData.h"
 
 /**
- * @brief A searching tool used to find Nodes or Elements from a Quadtree inside of a Polygon
+ * @brief A tool used to search a Quadtree for Nodes or Elements that fall within a polygon
  */
 class PolygonSearch
 {
@@ -27,6 +27,8 @@ class PolygonSearch
 		/* Search Functions */
 		void	SearchNodes(branch *currBranch);
 		void	SearchElements(branch *currBranch);
+		void	BruteForceNodes();
+		void	BruteForceElements();
 
 		/* Algorithm Functions */
 		int	CountCornersInsidePolygon(branch *currBranch);
@@ -37,8 +39,9 @@ class PolygonSearch
 
 		/* Helper Functions */
 		bool	PointIsInsidePolygon(float x, float y);
-		bool	PointIsInsideSquare(Point *point, branch *currBranch);
-		bool	PointIsInsideSquare(Point *point, leaf *currLeaf);
+		bool	PointIsInsideSquare(Point point, branch *currBranch);
+		bool	PointIsInsideSquare(Point point, leaf *currLeaf);
+		bool	EdgesIntersect(Point pointA, Point pointB, Point pointC, Point pointD);
 
 		/* List Functions */
 		void	AddToFullNodes(branch *currBranch);
