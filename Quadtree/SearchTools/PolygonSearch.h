@@ -35,7 +35,9 @@ class PolygonSearch
 		int	CountCornersInsidePolygon(leaf *currLeaf);
 
 		bool	PolygonHasPointsInside(branch *currBranch);
+		bool	PolygonHasPointsInside(leaf *currLeaf);
 		bool	PolygonHasEdgeIntersection(branch *currBranch);
+		bool	PolygonHasEdgeIntersection(leaf* currLeaf);
 
 		/* Helper Functions */
 		bool	PointIsInsidePolygon(float x, float y);

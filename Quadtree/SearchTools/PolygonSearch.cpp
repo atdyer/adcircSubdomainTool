@@ -57,7 +57,9 @@ void PolygonSearch::SearchElements(branch *currBranch)
 	{
 		AddToFullElements(currBranch);
 	}
-	else if (branchCornersInsidePolygon != 0 || (branchCornersInsidePolygon == 0 && (PolygonHasPointsInside(currBranch) || PolygonHasEdgeIntersection(currBranch))))
+	else if (branchCornersInsidePolygon != 0 ||
+		 PolygonHasPointsInside(currBranch) ||
+		 PolygonHasEdgeIntersection(currBranch))
 	{
 		for (int i=0; i<4; ++i)
 		{
@@ -78,7 +80,9 @@ void PolygonSearch::SearchElements(branch *currBranch)
 			{
 				AddToFullElements(currBranch->leaves[i]);
 			}
-			else if (leafCornersInsidePolygon != 0)
+			else if (leafCornersInsidePolygon != 0 ||
+				 PolygonHasPointsInside(currBranch->leaves[i]) ||
+				 PolygonHasEdgeIntersection(currBranch->leaves[i]))
 			{
 				AddToPartialElements(currBranch->leaves[i]);
 			}
@@ -187,6 +191,24 @@ bool PolygonSearch::PolygonHasPointsInside(branch *currBranch)
 
 
 /**
+ * @brief Determines if any of the polygon points are inside of a leaf
+ *
+ * Determines if any of the polygon points are inside of a leaf.
+ *
+ * @param currLeaf The leaf to test
+ * @return true if the polygon has at least one point inside of the leaf
+ * @return false if the polygon has no points inside of the branch
+ */
+bool PolygonSearch::PolygonHasPointsInside(leaf *currLeaf)
+{
+	for (unsigned int i=0; i<polygonPoints.size(); ++i)
+		if (PointIsInsideSquare(polygonPoints[i], currLeaf))
+			return true;
+	return false;
+}
+
+
+/**
  * @brief Determines if any edge of the polygon intersects with any edge of a branch
  *
  * Determines if any edge of the polygon intersects with any edge of a branch.
@@ -201,13 +223,47 @@ bool PolygonSearch::PolygonHasEdgeIntersection(branch *currBranch)
 	Point point2(currBranch->bounds[1], currBranch->bounds[2]);	/* Bottom Right */
 	Point point3(currBranch->bounds[0], currBranch->bounds[3]);	/* Top Left */
 	Point point4(currBranch->bounds[1], currBranch->bounds[3]);	/* Top Right */
+	unsigned int pointCount = polygonPoints.size();
 
-	for (unsigned int i=0; i<polygonPoints.size()-1; ++i)
+	for (unsigned int i=0; i<pointCount-1; ++i)
 		if (EdgesIntersect(point1, point2, polygonPoints[i], polygonPoints[i+1]) ||
 		    EdgesIntersect(point1, point3, polygonPoints[i], polygonPoints[i+1]) ||
 		    EdgesIntersect(point3, point4, polygonPoints[i], polygonPoints[i+1]) ||
 		    EdgesIntersect(point2, point4, polygonPoints[i], polygonPoints[i+1]))
 			return true;
+	if (EdgesIntersect(point1, point2, polygonPoints[0], polygonPoints[pointCount-1]) ||
+	    EdgesIntersect(point1, point3, polygonPoints[0], polygonPoints[pointCount-1]) ||
+	    EdgesIntersect(point3, point4, polygonPoints[0], polygonPoints[pointCount-1]) ||
+	    EdgesIntersect(point2, point4, polygonPoints[0], polygonPoints[pointCount-1]))
+		return true;
+	return false;
+}
+
+
+/**
+ * @brief Determines if any edge of the polygon intersects with any edge of a branch
+ * @param currLeaf
+ * @return
+ */
+bool PolygonSearch::PolygonHasEdgeIntersection(leaf *currLeaf)
+{
+	Point point1(currLeaf->bounds[0], currLeaf->bounds[2]);	/* Bottom Left */
+	Point point2(currLeaf->bounds[1], currLeaf->bounds[2]);	/* Bottom Right */
+	Point point3(currLeaf->bounds[0], currLeaf->bounds[3]);	/* Top Left */
+	Point point4(currLeaf->bounds[1], currLeaf->bounds[3]);	/* Top Right */
+	unsigned int pointCount = polygonPoints.size();
+
+	for (unsigned int i=0; i<pointCount-1; ++i)
+		if (EdgesIntersect(point1, point2, polygonPoints[i], polygonPoints[i+1]) ||
+		    EdgesIntersect(point1, point3, polygonPoints[i], polygonPoints[i+1]) ||
+		    EdgesIntersect(point3, point4, polygonPoints[i], polygonPoints[i+1]) ||
+		    EdgesIntersect(point2, point4, polygonPoints[i], polygonPoints[i+1]))
+			return true;
+	if (EdgesIntersect(point1, point2, polygonPoints[0], polygonPoints[pointCount-1]) ||
+	    EdgesIntersect(point1, point3, polygonPoints[0], polygonPoints[pointCount-1]) ||
+	    EdgesIntersect(point3, point4, polygonPoints[0], polygonPoints[pointCount-1]) ||
+	    EdgesIntersect(point2, point4, polygonPoints[0], polygonPoints[pointCount-1]))
+		return true;
 	return false;
 }
 
@@ -318,6 +374,9 @@ bool PolygonSearch::EdgesIntersect(Point pointA, Point pointB, Point pointC, Poi
 	float uY = (xIntersection - pointC.y) / (pointD.y - pointC.y);
 	if (uX < 0.0 || uX > 1.0 || uY < 0.0 || uY > 1.0)
 		return false;
+
+	DEBUG("Edge Intersection Found");
+
 	return true;
 }
 
