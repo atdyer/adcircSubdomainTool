@@ -212,27 +212,113 @@ bool PolygonSearch::PolygonHasEdgeIntersection(branch *currBranch)
 }
 
 
+/**
+ * @brief Determines if a point is inside of the polygon
+ *
+ * Determines if a point is inside of the polygon using the ray casting algorithm. Casts
+ * a ray out in the positive x-direction, counting the number of edges it crosses.
+ * Specific code found at: http://www.ecse.rpi.edu/~wrf/Research/Short_Notes/pnpoly.html
+ *
+ * @param x The x-coordinate of the point
+ * @param y The y-coordinate of the point
+ * @return true if the point lies within the polygon
+ * @return false if the point does not lie within the polygon
+ */
 bool PolygonSearch::PointIsInsidePolygon(float x, float y)
 {
-	return false;
+	bool pointIsInside = false;
+	unsigned int i, j = 0;
+	for (i=0, j=polygonPoints.size()-1; i<polygonPoints.size(); j = i++)
+	{
+		if (((polygonPoints[i].y > y) != (polygonPoints[j].y > y)) &&
+		    (x < (polygonPoints[j].x-polygonPoints[i].x) * (y-polygonPoints[i].y) / (polygonPoints[j].y-polygonPoints[i].y) + polygonPoints[i].x))
+			pointIsInside = !pointIsInside;
+	}
+
+	return pointIsInside;
 }
 
 
+/**
+ * @brief Determines if a point is inside the bounding box of a branch
+ *
+ * Determines if a point is inside the bounding box of a branch.
+ *
+ * @param point The point to test
+ * @param currBranch The branch to test
+ * @return true if the point falls within the bounds of the branch
+ * @return false if the point does not fall within the bounds of the branch
+ */
 bool PolygonSearch::PointIsInsideSquare(Point point, branch *currBranch)
 {
+	if (point.x >= currBranch->bounds[0] &&
+	    point.x <= currBranch->bounds[1] &&
+	    point.y >= currBranch->bounds[2] &&
+	    point.y <= currBranch->bounds[3])
+		return true;
 	return false;
 }
 
 
+/**
+ * @brief Determines if a point is inside the bounding box of a leaf
+ *
+ * Determines if a point is inside the bounding box of a leaf.
+ *
+ * @param point The point to test
+ * @param currLeaf The leaf to test
+ * @return true if the point falls within the bounds of the leaf
+ * @return false if the point does not fall within the bounds of the leaf
+ */
 bool PolygonSearch::PointIsInsideSquare(Point point, leaf *currLeaf)
 {
+	if (point.x >= currLeaf->bounds[0] &&
+	    point.x <= currLeaf->bounds[1] &&
+	    point.y >= currLeaf->bounds[2] &&
+	    point.y <= currLeaf->bounds[3])
+		return true;
 	return false;
 }
 
 
+/**
+ * @brief Determines if the line segment defined by (pointA, pointB) intersects with the
+ * line segment formed by the line segment defined by (pointC, pointD)
+ *
+ * Determines if the line segment defined by (pointA, pointB) intersects with the
+ * line segment formed by the line segment defined by (pointC, pointD).
+ *
+ * @param pointA The first point of the first line segment
+ * @param pointB The second point of the first line segment
+ * @param pointC The first point of the second line segment
+ * @param pointD The second point of the second line segment
+ * @return true if the two line segments intersect
+ * @return false if the two line segments do not intersect
+ */
 bool PolygonSearch::EdgesIntersect(Point pointA, Point pointB, Point pointC, Point pointD)
 {
+	float denominator = ((pointA.x - pointB.x) * (pointC.y - pointD.y)) - ((pointA.y - pointB.y) * (pointC.x - pointD.x));
 
+	/* Check if lines are parallel */
+	if (denominator == 0.0)
+		return false;
+
+	/* Find the intersection point for the two continuous lines */
+	float A = pointA.x*pointB.y - pointA.y*pointB.x;
+	float B = pointC.x*pointD.y - pointC.y*pointD.x;
+	float xIntersection = (A*(pointC.x - pointD.x) - (pointA.x - pointB.x)*B) / denominator;
+	float yIntersection = (A*(pointC.y - pointD.y) - (pointA.y - pointB.y)*B) / denominator;
+
+	/* Determine if the intersection point falls within the bounds of both edges */
+	float tX = (xIntersection - pointA.x) / (pointB.x - pointA.x);
+	float tY = (yIntersection - pointA.y) / (pointB.y - pointA.y);
+	if (tX < 0.0 || tX > 1.0 || tY < 0.0 || tY > 1.0)
+		return false;
+	float uX = (xIntersection - pointC.x) / (pointD.x - pointC.x);
+	float uY = (xIntersection - pointC.y) / (pointD.y - pointC.y);
+	if (uX < 0.0 || uX > 1.0 || uY < 0.0 || uY > 1.0)
+		return false;
+	return true;
 }
 
 

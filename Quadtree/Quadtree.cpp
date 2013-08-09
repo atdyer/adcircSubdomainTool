@@ -174,6 +174,12 @@ std::vector<Element*> Quadtree::FindElementsInRectangle(float l, float r, float 
 }
 
 
+std::vector<Element*> Quadtree::FindElementsInPolygon(std::vector<Point> polyLine)
+{
+	return polySearch.FindElements(root, polyLine);
+}
+
+
 std::vector<std::vector<Element*>*> Quadtree::GetElementsThroughDepth(int depth)
 {
 	std::vector< std::vector<Element*> *> elements;

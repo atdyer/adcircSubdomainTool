@@ -275,6 +275,10 @@ std::vector<Node*> PolygonTool::GetSelectedNodes()
  */
 std::vector<Element*> PolygonTool::GetSelectedElements()
 {
+	if (terrain)
+	{
+		selectedElements = terrain->GetElementsFromPolygon(pointsList);
+	}
 	return selectedElements;
 }
 

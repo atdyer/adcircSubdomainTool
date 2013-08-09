@@ -24,10 +24,6 @@
 #include <QWheelEvent>
 #include <QKeyEvent>
 
-//#define AVAILABLETOOLS 1
-//#define CIRCLETOOLINDEX 1
-//#define RECTANGLETOOLINDEX 2
-
 
 /**
  * @brief A Layer class used for the creation of subdomains. Specializes in selecting

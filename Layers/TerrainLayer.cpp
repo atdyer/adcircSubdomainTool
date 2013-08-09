@@ -360,9 +360,7 @@ std::vector<Element*> TerrainLayer::GetElementsFromCircle(float x, float y, floa
 	if (quadtree)
 	{
 		return quadtree->FindElementsInCircle(x, y, radius);
-	}
-	else
-	{
+	} else {
 		std::vector<Element*> fail;
 		return fail;
 	}
@@ -374,9 +372,19 @@ std::vector<Element*> TerrainLayer::GetElementsFromRectangle(float l, float r, f
 	if (quadtree)
 	{
 		return quadtree->FindElementsInRectangle(l, r, b, t);
+	} else {
+		std::vector<Element*> fail;
+		return fail;
 	}
-	else
+}
+
+
+std::vector<Element*> TerrainLayer::GetElementsFromPolygon(std::vector<Point> polyLine)
+{
+	if (quadtree)
 	{
+		return quadtree->FindElementsInPolygon(polyLine);
+	} else {
 		std::vector<Element*> fail;
 		return fail;
 	}

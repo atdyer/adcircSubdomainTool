@@ -6,6 +6,8 @@
 #include <vector>
 #include <math.h>
 
+#include "Quadtree/SearchTools/PolygonSearch.h"
+
 /**
  * @brief This class provides a data structure that can be used to store a large number
  * of Node objects and provide very quick access to the node closest to a specific point.
@@ -46,6 +48,7 @@ class Quadtree
 		std::vector<Node*>	FindNodesInCircle(float x, float y, float radius);
 		std::vector<Element*>	FindElementsInCircle(float x, float y, float radius);
 		std::vector<Element*>	FindElementsInRectangle(float l, float r, float b, float t);
+		std::vector<Element*>	FindElementsInPolygon(std::vector<Point> polyLine);
 		std::vector<std::vector<Element*> *> GetElementsThroughDepth(int depth);
 		std::vector<std::vector<Element*> *> GetElementsThroughDepth(int depth, float l, float r, float b, float t);
 
@@ -59,6 +62,9 @@ class Quadtree
 		std::vector<leaf*>	leafList;	/**< The list of all leaves in the Quadtree */
 		branch*			root;		/**< A pointer to the top of the Quadtree */
 		bool			hasElements;	/**< Flag that shows if the Quadtree contains Element data */
+
+		/* Search Tools */
+		PolygonSearch	polySearch;
 
 		////// Recursive searching functions
 		Node*	FindNode(float x, float y, branch *currBranch);
