@@ -55,7 +55,13 @@ void PolygonSearch::SearchElements(branch *currBranch)
 	int branchCornersInsidePolygon = CountCornersInsidePolygon(currBranch);
 	if (branchCornersInsidePolygon == 4)
 	{
-		AddToFullElements(currBranch);
+		for (int i=0; i<4; ++i)
+		{
+			if (currBranch->branches[i])
+			{
+				AddToFullElements(currBranch->branches[i]);
+			}
+		}
 	}
 	else if (branchCornersInsidePolygon != 0 ||
 		 PolygonHasPointsInside(currBranch) ||
