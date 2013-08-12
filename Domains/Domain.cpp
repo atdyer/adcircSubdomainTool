@@ -567,6 +567,23 @@ unsigned int Domain::GetNumElementsSelected()
 
 
 /**
+ * @brief Displays or hides the Quadtree of the TerrainLayer
+ *
+ * Displays or hides the Quadtree of the TerrainLayer
+ *
+ * @param toggleValue true to display the Quadtree, false to hide it
+ */
+void Domain::ToggleTerrainQuadtree()
+{
+	if (terrainLayer)
+	{
+		terrainLayer->ToggleQuadtreeVisible();
+		emit UpdateGL();
+	}
+}
+
+
+/**
  * @brief Zooms the view by calling the Zoom function of the camera
  *
  * Zooms the view by calling the Zoom function of the camera

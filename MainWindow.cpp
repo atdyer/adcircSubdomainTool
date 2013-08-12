@@ -54,6 +54,14 @@ MainWindow::~MainWindow()
 }
 
 
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+	if (event->key() == Qt::Key_O)
+		if (testDomain)
+			testDomain->ToggleTerrainQuadtree();
+}
+
+
 /**
  * @brief Displays output to the text box in the Output tab
  * @param The text (or rich HTML) to be displayed

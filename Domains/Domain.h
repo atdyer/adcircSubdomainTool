@@ -96,6 +96,9 @@ class Domain : public QObject
 		unsigned int	GetNumNodesSelected();
 		unsigned int	GetNumElementsSelected();
 
+		/* Display methods used to change visibility of layers, etc. */
+		void	ToggleTerrainQuadtree();
+
 
 	private:
 

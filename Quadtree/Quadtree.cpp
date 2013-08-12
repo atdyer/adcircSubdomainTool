@@ -14,6 +14,14 @@ Quadtree::Quadtree(std::vector<Node> nodes, int size, float minX, float maxX, fl
 	nodeList = nodes;
 	binSize = size;
 
+	glLoaded = false;
+	pointCount = 0;
+	VAOId = 0;
+	VBOId = 0;
+	IBOId = 0;
+	outlineShader = 0;
+	camera = 0;
+
 	// Create the root branch
 	root = newBranch(minX, maxX, minY, maxY);
 
@@ -42,6 +50,14 @@ Quadtree::Quadtree(std::vector<Node> nodes, std::vector<Element> elements, int s
 	elementList = elements;
 	binSize = size;
 
+	glLoaded = false;
+	pointCount = 0;
+	VAOId = 0;
+	VBOId = 0;
+	IBOId = 0;
+	outlineShader = 0;
+	camera = 0;
+
 	// Create the root branch
 	root = newBranch(minX, maxX, minY, maxY);
 
@@ -55,7 +71,6 @@ Quadtree::Quadtree(std::vector<Node> nodes, std::vector<Element> elements, int s
 	}
 
 	hasElements = true;
-	DEBUG(elements.size() << " elements added to quadtree");
 }
 
 
@@ -67,6 +82,197 @@ Quadtree::~Quadtree()
 	for (unsigned int i=0; i<branchList.size(); i++)
 		if (branchList[i] != 0)
 			delete branchList[i];
+
+	/* Clean up shader */
+	if (outlineShader)
+		delete outlineShader;
+
+	/* Clean up OpenGL stuff */
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	if (VAOId)
+		glDeleteBuffers(1, &VAOId);
+	if (VBOId)
+		glDeleteBuffers(1, &VBOId);
+	if (IBOId)
+		glDeleteBuffers(1, &IBOId);
+}
+
+
+void Quadtree::DrawOutlines()
+{
+	if (!glLoaded)
+		InitializeGL();
+
+	if (glLoaded)
+	{
+		glBindVertexArray(VAOId);
+		if (outlineShader)
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			if (outlineShader->Use())
+				glDrawElements(GL_LINES, 2*pointCount, GL_UNSIGNED_INT, (GLvoid*)0);
+		}
+		glBindVertexArray(0);
+		glUseProgram(0);
+	}
+}
+
+
+void Quadtree::SetCamera(GLCamera *newCam)
+{
+	camera = newCam;
+	if (outlineShader)
+		outlineShader->SetCamera(camera);
+}
+
+
+void Quadtree::InitializeGL()
+{
+	if (!outlineShader)
+		outlineShader = new SolidShader();
+	outlineShader->SetColor(0.0, 0.0, 0.0, 1.0);
+	outlineShader->SetCamera(camera);
+
+	if (!VAOId)
+		glGenVertexArrays(1, &VAOId);
+	if (!VBOId)
+		glGenBuffers(1, &VBOId);
+	if (!IBOId)
+		glGenBuffers(1, &IBOId);
+
+	glBindVertexArray(VAOId);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBOId);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4*sizeof(GLfloat), 0);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBOId);
+
+	glBindVertexArray(0);
+
+	std::vector<Point> pointsList = BuildOutlinesList();
+	std::vector<GLuint> indicesList = BuildOutlinesIndices();
+
+	if (pointsList.size() > 0 && indicesList.size() > 0)
+	{
+		LoadOutlinesToGPU(pointsList, indicesList);
+	} else {
+		glLoaded = false;
+		return;
+	}
+
+	GLenum errorCheck = glGetError();
+	if (errorCheck == GL_NO_ERROR)
+	{
+		if (VAOId && VBOId && IBOId)
+		{
+			glLoaded = true;
+		} else {
+			DEBUG("Quadtree drawing not initialized");
+			glLoaded = false;
+		}
+	} else {
+		const GLubyte *errString = gluErrorString(errorCheck);
+		DEBUG("Quadtree Drawing OpenGL Error: " << errString);
+		glLoaded = false;
+	}
+}
+
+
+std::vector<Point> Quadtree::BuildOutlinesList()
+{
+	std::vector<Point> pointsList;
+
+	if (root)
+	{
+		AddOutlinePoints(root, &pointsList);
+	}
+
+	return pointsList;
+}
+
+
+std::vector<GLuint> Quadtree::BuildOutlinesIndices()
+{
+	std::vector<GLuint> indexList;
+
+	for (int i=0; i<pointCount/4; ++i)
+	{
+		indexList.push_back(4*i+0); indexList.push_back(4*i+1);
+		indexList.push_back(4*i+1); indexList.push_back(4*i+2);
+		indexList.push_back(4*i+2); indexList.push_back(4*i+3);
+		indexList.push_back(4*i+3); indexList.push_back(4*i+0);
+	}
+
+	return indexList;
+}
+
+
+void Quadtree::AddOutlinePoints(branch *currBranch, std::vector<Point> *pointsList)
+{
+	pointsList->push_back(Point(currBranch->bounds[0], currBranch->bounds[2]));
+	pointsList->push_back(Point(currBranch->bounds[1], currBranch->bounds[2]));
+	pointsList->push_back(Point(currBranch->bounds[1], currBranch->bounds[3]));
+	pointsList->push_back(Point(currBranch->bounds[0], currBranch->bounds[3]));
+	pointCount += 4;
+
+	for (int i=0; i<4; ++i)
+		if (currBranch->branches[i])
+			AddOutlinePoints(currBranch->branches[i], pointsList);
+	for (int i=0; i<4; ++i)
+		if (currBranch->leaves[i])
+			AddOutlinePoints(currBranch->leaves[i], pointsList);
+}
+
+
+void Quadtree::AddOutlinePoints(leaf *currLeaf, std::vector<Point> *pointsList)
+{
+	pointsList->push_back(Point(currLeaf->bounds[0], currLeaf->bounds[2]));
+	pointsList->push_back(Point(currLeaf->bounds[1], currLeaf->bounds[2]));
+	pointsList->push_back(Point(currLeaf->bounds[1], currLeaf->bounds[3]));
+	pointsList->push_back(Point(currLeaf->bounds[0], currLeaf->bounds[3]));
+	pointCount += 4;
+}
+
+
+void Quadtree::LoadOutlinesToGPU(std::vector<Point> pointsList, std::vector<GLuint> indicesList)
+{
+	const size_t VertexBufferSize = 4*sizeof(GLfloat)*pointsList.size();
+	const size_t IndexBufferSize = sizeof(GLuint)*indicesList.size();
+
+	if (VBOId)
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, VBOId);
+		glBufferData(GL_ARRAY_BUFFER, VertexBufferSize, NULL, GL_STATIC_DRAW);
+		GLfloat* glNodeData = (GLfloat*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+		if (glNodeData)
+		{
+			for (unsigned int i=0; i<pointsList.size(); ++i)
+			{
+				glNodeData[4*i+0] = (GLfloat)pointsList[i].x;
+				glNodeData[4*i+1] = (GLfloat)pointsList[i].y;
+				glNodeData[4*i+2] = (GLfloat)1.0;
+				glNodeData[4*i+3] = (GLfloat)1.0;
+			}
+		}
+		glUnmapBuffer(GL_ARRAY_BUFFER);
+	}
+
+	if (IBOId)
+	{
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBOId);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, IndexBufferSize, NULL, GL_STATIC_DRAW);
+		GLuint* glIndexData = (GLuint*)glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
+		if (glIndexData)
+		{
+			for (unsigned int i=0; i<indicesList.size(); ++i)
+			{
+				glIndexData[i] = indicesList[i];
+			}
+		}
+		glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
+	}
 }
 
 

@@ -6,6 +6,7 @@
 #include <QThread>
 #include <QLabel>
 #include <QFileDialog>
+#include <QKeyEvent>
 //#include <qwt_plot.h>
 
 #include "Domains/Domain.h"
@@ -22,6 +23,9 @@ class MainWindow : public QMainWindow
 		explicit MainWindow(QWidget *parent = 0);
 		~MainWindow();
 
+	protected:
+
+		void	keyPressEvent(QKeyEvent *event);
 
 
 	public slots:

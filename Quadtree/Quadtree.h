@@ -1,6 +1,8 @@
 #ifndef QUADTREE_H
 #define QUADTREE_H
 
+#include "OpenGL/GLCamera.h"
+#include "OpenGL/Shaders/SolidShader.h"
 #include "adcData.h"
 #include "QuadtreeData.h"
 #include <vector>
@@ -43,6 +45,10 @@ class Quadtree
 		Quadtree(std::vector<Node> nodes, std::vector<Element> elements, int size, float minX, float maxX, float minY, float maxY);
 		~Quadtree();
 
+		/* Drawing Functions */
+		void	DrawOutlines();
+		void	SetCamera(GLCamera* newCam);
+
 		// Public Functions
 		Node*			FindNode(float x, float y);
 		std::vector<Node*>	FindNodesInCircle(float x, float y, float radius);
@@ -65,6 +71,23 @@ class Quadtree
 
 		/* Search Tools */
 		PolygonSearch	polySearch;
+
+		/* Drawing Variables */
+		bool	glLoaded;
+		int	pointCount;
+		GLuint	VAOId;
+		GLuint	VBOId;
+		GLuint	IBOId;
+		SolidShader*	outlineShader;
+		GLCamera*	camera;
+
+		/* Drawing Functions */
+		void			InitializeGL();
+		std::vector<Point>	BuildOutlinesList();
+		std::vector<GLuint>	BuildOutlinesIndices();
+		void			AddOutlinePoints(branch *currBranch, std::vector<Point> *pointsList);
+		void			AddOutlinePoints(leaf *currLeaf, std::vector<Point> *pointsList);
+		void			LoadOutlinesToGPU(std::vector<Point> pointsList, std::vector<GLuint> indicesList);
 
 		////// Recursive searching functions
 		Node*	FindNode(float x, float y, branch *currBranch);

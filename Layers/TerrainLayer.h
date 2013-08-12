@@ -31,15 +31,15 @@ class TerrainLayer : public Layer
 		Q_OBJECT
 	public:
 
-		// Constructor/Destructor
+		/* Constructor/Destructor */
 		TerrainLayer();
 		~TerrainLayer();
 
-		// Virtual methods to override
+		/* Virtual methods to override */
 		virtual void	Draw();
 		virtual void	LoadDataToGPU();
 
-		// Getter Methods
+		/* Getter Methods */
 		std::string		GetFort14Location();
 		Node*			GetNode(unsigned int nodeNumber);
 		Node*			GetNode(float x, float y);
@@ -67,7 +67,7 @@ class TerrainLayer : public Layer
 		GradientShaderProperties	GetGradientBoundary();
 		GLuint				GetVBOId();
 
-		// Setter Methods
+		/* Setter Methods */
 		virtual void	SetCamera(GLCamera *newCamera);
 		void		SetFort14Location(std::string newLocation);
 		void		SetSolidOutline(SolidShaderProperties newProperties);
@@ -76,6 +76,9 @@ class TerrainLayer : public Layer
 		void		SetGradientOutline(GradientShaderProperties newProperties);
 		void		SetGradientFill(GradientShaderProperties newProperties);
 		void		SetGradientBoundary(GradientShaderProperties newProperties);
+
+		/* Visibility Methods */
+		void	ToggleQuadtreeVisible();
 
 		// Large Domain Functions
 		void	UpdateZoomLevel(float zoomAmount);
@@ -122,6 +125,7 @@ class TerrainLayer : public Layer
 
 		/* Quadtree and Large Domain Variables */
 		Quadtree*	quadtree;	/**< The quadtree used for Node picking */
+		bool		drawQuadtreeOutline;	/**< Flag that shows if we want to draw the quadtree outline */
 		std::vector<std::vector<Element*>*>	visibleElementLists;	/**< The list of lists elements that are currently visible */
 		int					numVisibleElements;	/**< The total number of elements that are currently visible */
 		int					viewingDepth;

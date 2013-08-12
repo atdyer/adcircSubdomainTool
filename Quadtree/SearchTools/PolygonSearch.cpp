@@ -363,7 +363,12 @@ bool PolygonSearch::EdgesIntersect(Point pointA, Point pointB, Point pointC, Poi
 
 	/* Check if lines are parallel */
 	if (denominator == 0.0)
+	{
+		DEBUG("No Intersection - Parallel");
 		return false;
+	}
+
+	DEBUG("Denominator - " << denominator);
 
 	/* Find the intersection point for the two continuous lines */
 	float A = pointA.x*pointB.y - pointA.y*pointB.x;
@@ -371,18 +376,25 @@ bool PolygonSearch::EdgesIntersect(Point pointA, Point pointB, Point pointC, Poi
 	float xIntersection = (A*(pointC.x - pointD.x) - (pointA.x - pointB.x)*B) / denominator;
 	float yIntersection = (A*(pointC.y - pointD.y) - (pointA.y - pointB.y)*B) / denominator;
 
+	DEBUG("x-intersection - " << xIntersection << ", y-intersection - " << yIntersection);
+
 	/* Determine if the intersection point falls within the bounds of both edges */
 	float tX = (xIntersection - pointA.x) / (pointB.x - pointA.x);
 	float tY = (yIntersection - pointA.y) / (pointB.y - pointA.y);
 	if (tX < 0.0 || tX > 1.0 || tY < 0.0 || tY > 1.0)
+	{
+		DEBUG("No Intersection - " << tX << ", " << tY);
 		return false;
+	}
 	float uX = (xIntersection - pointC.x) / (pointD.x - pointC.x);
 	float uY = (xIntersection - pointC.y) / (pointD.y - pointC.y);
 	if (uX < 0.0 || uX > 1.0 || uY < 0.0 || uY > 1.0)
+	{
+		DEBUG("No Intersection - " << uX << ", " <<uY);
 		return false;
+	}
 
-	DEBUG("Edge Intersection Found");
-
+	DEBUG("Intersection - (" << tX << ", " << tY << "), (" << uX << ", " << uY << ")");
 	return true;
 }
 
@@ -471,7 +483,12 @@ void PolygonSearch::AddToFullElements(branch *currBranch)
 void PolygonSearch::AddToFullElements(leaf *currLeaf)
 {
 	if (currLeaf->elements.size() > 0)
+	{
 		fullElements.insert(fullElements.end(), currLeaf->elements.begin(), currLeaf->elements.end());
+		DEBUG("Leaf added to full - " << currLeaf->elements.size() << " elements");
+	} else {
+		DEBUG("Leaf added to full - 0 elements");
+	}
 }
 
 
@@ -485,5 +502,10 @@ void PolygonSearch::AddToFullElements(leaf *currLeaf)
 void PolygonSearch::AddToPartialElements(leaf *currLeaf)
 {
 	if (currLeaf->elements.size() > 0)
+	{
 		partialElements.insert(partialElements.end(), currLeaf->elements.begin(), currLeaf->elements.end());
+		DEBUG("Leaf added to partial - " << currLeaf->elements.size() << " elements");
+	} else {
+		DEBUG("Leaf added to partial - 0 elements");
+	}
 }

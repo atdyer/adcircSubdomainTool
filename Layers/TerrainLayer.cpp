@@ -28,6 +28,7 @@ TerrainLayer::TerrainLayer()
 	largeDomain = false;
 
 	quadtree = 0;
+	drawQuadtreeOutline = false;
 	numVisibleElements = 0;
 	viewingDepth = 5;
 
@@ -115,6 +116,11 @@ void TerrainLayer::Draw()
 			if (boundaryShader->Use())
 				glDrawElements(GL_LINE_STRIP, boundaryNodes.size(), GL_UNSIGNED_INT, (GLvoid*)(0 + sizeof(GLuint)*numElements*3));
 			glLineWidth(1.0);
+		}
+
+		if (drawQuadtreeOutline && quadtree)
+		{
+			quadtree->DrawOutlines();
 		}
 
 		glBindVertexArray(0);
@@ -595,35 +601,6 @@ GradientShaderProperties TerrainLayer::GetGradientBoundary()
 }
 
 
-void TerrainLayer::UpdateZoomLevel(float zoomAmount)
-{
-	if (largeDomain && camera && quadtree)
-	{
-		/* Get the bounds of the viewport in domain space */
-		float xTopLeft, yTopLeft, xBotRight, yBotRight;
-		camera->GetUnprojectedPoint(0, 0, &xTopLeft, &yTopLeft);
-		camera->GetUnprojectedPoint(camera->GetViewportWidth(), camera->GetViewportHeight(), &xBotRight, &yBotRight);
-//		xTopLeft = GetUnprojectedX(xTopLeft);
-//		yTopLeft = GetUnprojectedY(yTopLeft);
-//		xBotRight = GetUnprojectedX(xBotRight);
-//		yBotRight = GetUnprojectedY(yBotRight);
-
-//		DEBUG(xTopLeft << " " << yTopLeft << " " << xBotRight << " " <<yBotRight);
-
-//		if (zoomAmount > 0)
-//			viewingDepth++;
-//		else if (zoomAmount < 0 && viewingDepth != 0)
-//			viewingDepth--;
-
-		/* Get the visible elements from the quadtree */
-		visibleElementLists = quadtree->GetElementsThroughDepth(viewingDepth, xTopLeft, xBotRight, yBotRight, yTopLeft);
-
-		/* Update the elements on the OpenGL context */
-		UpdateVisibleElements();
-	}
-}
-
-
 /**
  * @brief Returns the ID of the Vertex Buffer that contains Nodal data
  *
@@ -658,6 +635,8 @@ void TerrainLayer::SetCamera(GLCamera *newCamera)
 		gradientOutline->SetCamera(camera);
 	if (gradientFill)
 		gradientFill->SetCamera(camera);
+	if (quadtree)
+		quadtree->SetCamera(camera);
 }
 
 
@@ -855,6 +834,48 @@ void TerrainLayer::SetGradientBoundary(GradientShaderProperties newProperties)
 
 
 /**
+ * @brief Sets whether or not the outline of the Quadtree will be displayed
+ *
+ * Sets whether or not the outline of the Quadtree will be displayed
+ *
+ * @param toggleValue true to display the outline, false to disable the outline
+ */
+void TerrainLayer::ToggleQuadtreeVisible()
+{
+	drawQuadtreeOutline = !drawQuadtreeOutline;
+}
+
+
+void TerrainLayer::UpdateZoomLevel(float zoomAmount)
+{
+	if (largeDomain && camera && quadtree)
+	{
+		/* Get the bounds of the viewport in domain space */
+		float xTopLeft, yTopLeft, xBotRight, yBotRight;
+		camera->GetUnprojectedPoint(0, 0, &xTopLeft, &yTopLeft);
+		camera->GetUnprojectedPoint(camera->GetViewportWidth(), camera->GetViewportHeight(), &xBotRight, &yBotRight);
+//		xTopLeft = GetUnprojectedX(xTopLeft);
+//		yTopLeft = GetUnprojectedY(yTopLeft);
+//		xBotRight = GetUnprojectedX(xBotRight);
+//		yBotRight = GetUnprojectedY(yBotRight);
+
+//		DEBUG(xTopLeft << " " << yTopLeft << " " << xBotRight << " " <<yBotRight);
+
+//		if (zoomAmount > 0)
+//			viewingDepth++;
+//		else if (zoomAmount < 0 && viewingDepth != 0)
+//			viewingDepth--;
+
+		/* Get the visible elements from the quadtree */
+		visibleElementLists = quadtree->GetElementsThroughDepth(viewingDepth, xTopLeft, xBotRight, yBotRight, yTopLeft);
+
+		/* Update the elements on the OpenGL context */
+		UpdateVisibleElements();
+	}
+}
+
+
+/**
  * @brief Function used internally to make the switch over to culled shaders in the
  * event that the number of elements exceeds a certain limit.
  *
@@ -1024,6 +1045,7 @@ void TerrainLayer::readFort14()
 			if (!quadtree)
 			{
 				quadtree = new Quadtree(nodes, elements, 50, (minX-midX)/max, (maxX-midX)/max, (minY-midY)/max, (maxY-midY)/max);
+				quadtree->SetCamera(camera);
 			}
 
 			CheckForLargeDomain();
