@@ -16,6 +16,18 @@ std::vector<Node*> CircleSearch::FindNodes(branch *root, float x, float y, float
 
 std::vector<Element*> CircleSearch::FindElements(branch *root, float x, float y, float radius)
 {
+	fullElements.clear();
+	partialElements.clear();
+	this->x = x;
+	this->y = y;
+	this->radius = radius;
+
+	/* Build the two lists */
+	SearchElements(root);
+
+	/* Do a brute force search on the elements in partialElements */
+	BruteForceElements();
+
 	return fullElements;
 }
 
@@ -76,66 +88,169 @@ void CircleSearch::SearchElements(leaf *currLeaf)
 
 void CircleSearch::BruteForceNodes()
 {
-
+	Node *currNode = 0;
+	for (std::vector<Node*>::iterator it = partialNodes.begin(); it != partialNodes.end(); ++it)
+	{
+		currNode = *it;
+		if (PointIsInsideCircle(currNode->normX, currNode->normY))
+			fullNodes.push_back(currNode);
+	}
 }
 
 
 void CircleSearch::BruteForceElements()
 {
-
+	Element *currElement = 0;
+	for (std::vector<Element*>::iterator it = partialElements.begin(); it != partialElements.end(); ++it)
+	{
+		currElement = *it;
+		if (PointIsInsideCircle(currElement->n1->normX, currElement->n1->normY) ||
+		    PointIsInsideCircle(currElement->n2->normX, currElement->n2->normY) ||
+		    PointIsInsideCircle(currElement->n3->normX, currElement->n3->normY))
+			fullElements.push_back(currElement);
+	}
 }
 
 
 int CircleSearch::CountCornersInsideCircle(branch *currBranch)
 {
-	return 0;
+	int count = 0;
+	count += PointIsInsideCircle(currBranch->bounds[0], currBranch->bounds[2]) ? 1 : 0;
+	count += PointIsInsideCircle(currBranch->bounds[1], currBranch->bounds[2]) ? 1 : 0;
+	count += PointIsInsideCircle(currBranch->bounds[0], currBranch->bounds[3]) ? 1 : 0;
+	count += PointIsInsideCircle(currBranch->bounds[1], currBranch->bounds[3]) ? 1 : 0;
+	return count;
 }
 
 
 int CircleSearch::CountCornersInsideCircle(leaf *currLeaf)
 {
-	return 0;
-}
-
-
-bool CircleSearch::PointIsInsideCircle(float x, float y)
-{
-	return false;
-}
-
-
-bool CircleSearch::PointIsInsideSquare(Point point, branch *currBranch)
-{
-	return false;
-}
-
-
-bool CircleSearch::PointIsInsideSquare(Point point, leaf *currLeaf)
-{
-	return false;
+	int count = 0;
+	count += PointIsInsideCircle(currLeaf->bounds[0], currLeaf->bounds[2]) ? 1 : 0;
+	count += PointIsInsideCircle(currLeaf->bounds[1], currLeaf->bounds[2]) ? 1 : 0;
+	count += PointIsInsideCircle(currLeaf->bounds[0], currLeaf->bounds[3]) ? 1 : 0;
+	count += PointIsInsideCircle(currLeaf->bounds[1], currLeaf->bounds[3]) ? 1 : 0;
+	return count;
 }
 
 
 bool CircleSearch::CircleIsInsideSquare(branch *currBranch)
 {
+	if (PointIsInsideSquare(Point(x-radius, y), currBranch) &&
+	    PointIsInsideSquare(Point(x+radius, y), currBranch) &&
+	    PointIsInsideSquare(Point(x, y-radius), currBranch) &&
+	    PointIsInsideSquare(Point(x, y+radius), currBranch))
+		return true;
 	return false;
 }
 
 
 bool CircleSearch::CircleIsInsideSquare(leaf *currLeaf)
 {
+	if (PointIsInsideSquare(Point(x-radius, y), currLeaf) &&
+	    PointIsInsideSquare(Point(x+radius, y), currLeaf) &&
+	    PointIsInsideSquare(Point(x, y-radius), currLeaf) &&
+	    PointIsInsideSquare(Point(x, y+radius), currLeaf))
+		return true;
 	return false;
 }
 
 
 bool CircleSearch::CircleHasEdgeIntersection(branch *currBranch)
 {
+	Point BottomLeft(currBranch->bounds[0], currBranch->bounds[2]);
+	Point BottomRight(currBranch->bounds[1], currBranch->bounds[2]);
+	Point TopLeft(currBranch->bounds[0], currBranch->bounds[3]);
+	Point TopRight(currBranch->bounds[1], currBranch->bounds[3]);
+
+	if (CircleIntersectsEdge(BottomLeft, BottomRight) ||
+	    CircleIntersectsEdge(BottomRight, TopRight) ||
+	    CircleIntersectsEdge(TopRight, TopLeft) ||
+	    CircleIntersectsEdge(TopLeft, BottomLeft))
+		return true;
+
 	return false;
 }
 
 
 bool CircleSearch::CircleHasEdgeIntersection(leaf *currLeaf)
 {
+	Point BottomLeft(currLeaf->bounds[0], currLeaf->bounds[2]);
+	Point BottomRight(currLeaf->bounds[1], currLeaf->bounds[2]);
+	Point TopLeft(currLeaf->bounds[0], currLeaf->bounds[3]);
+	Point TopRight(currLeaf->bounds[1], currLeaf->bounds[3]);
+
+	if (CircleIntersectsEdge(BottomLeft, BottomRight) ||
+	    CircleIntersectsEdge(BottomRight, TopRight) ||
+	    CircleIntersectsEdge(TopRight, TopLeft) ||
+	    CircleIntersectsEdge(TopLeft, BottomLeft))
+		return true;
+
+	return false;
+}
+
+
+bool CircleSearch::PointIsInsideCircle(float pointX, float pointY)
+{
+	return (pow(pointX - x, 2.0) + (pow(pointY - y, 2.0))) < pow(radius, 2.0);
+}
+
+
+/**
+ * @brief Determines if a point is inside the bounding box of a branch
+ *
+ * Determines if a point is inside the bounding box of a branch.
+ *
+ * @param point The point to test
+ * @param currBranch The branch to test
+ * @return true if the point falls within the bounds of the branch
+ * @return false if the point does not fall within the bounds of the branch
+ */
+bool CircleSearch::PointIsInsideSquare(Point point, branch *currBranch)
+{
+	if (point.x >= currBranch->bounds[0] &&
+	    point.x <= currBranch->bounds[1] &&
+	    point.y >= currBranch->bounds[2] &&
+	    point.y <= currBranch->bounds[3])
+		return true;
+	return false;
+}
+
+
+/**
+ * @brief Determines if a point is inside the bounding box of a leaf
+ *
+ * Determines if a point is inside the bounding box of a leaf.
+ *
+ * @param point The point to test
+ * @param currLeaf The leaf to test
+ * @return true if the point falls within the bounds of the leaf
+ * @return false if the point does not fall within the bounds of the leaf
+ */
+bool CircleSearch::PointIsInsideSquare(Point point, leaf *currLeaf)
+{
+	if (point.x >= currLeaf->bounds[0] &&
+	    point.x <= currLeaf->bounds[1] &&
+	    point.y >= currLeaf->bounds[2] &&
+	    point.y <= currLeaf->bounds[3])
+		return true;
+	return false;
+}
+
+
+bool CircleSearch::CircleIntersectsEdge(Point A, Point B)
+{
+	float left = A.x < B.x ? A.x : B.x;
+	float right = A.x < B.x ? B.x : A.x;
+	float bottom = A.y < B.y ? A.y : B.y;
+	float top = A.y < B.y ? B.y : A.y;
+
+	if (left-radius < x &&
+	    x < right + radius &&
+	    bottom-radius < y &&
+	    y < top + radius)
+		return true;
+
 	return false;
 }
 

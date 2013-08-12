@@ -1,6 +1,8 @@
 #ifndef CIRCLESEARCH_H
 #define CIRCLESEARCH_H
 
+#include <math.h>
+
 #include "adcData.h"
 #include "Quadtree/QuadtreeData.h"
 
@@ -39,15 +41,16 @@ class CircleSearch
 		/* Algorithm Functions */
 		int	CountCornersInsideCircle(branch *currBranch);
 		int	CountCornersInsideCircle(leaf *currLeaf);
-
-		/* Helper Functions */
-		bool	PointIsInsideCircle(float x, float y);
-		bool	PointIsInsideSquare(Point point, branch *currBranch);
-		bool	PointIsInsideSquare(Point point, leaf *currLeaf);
 		bool	CircleIsInsideSquare(branch *currBranch);
 		bool	CircleIsInsideSquare(leaf *currLeaf);
 		bool	CircleHasEdgeIntersection(branch *currBranch);
 		bool	CircleHasEdgeIntersection(leaf *currLeaf);
+
+		/* Helper Functions */
+		bool	PointIsInsideCircle(float pointX, float pointY);
+		bool	PointIsInsideSquare(Point point, branch *currBranch);
+		bool	PointIsInsideSquare(Point point, leaf *currLeaf);
+		bool	CircleIntersectsEdge(Point A, Point B);
 
 		/* List Functions */
 		void	AddToFullNodes(branch *currBranch);

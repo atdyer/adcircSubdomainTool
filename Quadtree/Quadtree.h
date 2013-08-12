@@ -8,6 +8,7 @@
 #include <vector>
 #include <math.h>
 
+#include "Quadtree/SearchTools/CircleSearch.h"
 #include "Quadtree/SearchTools/PolygonSearch.h"
 
 /**
@@ -71,6 +72,7 @@ class Quadtree
 
 		/* Search Tools */
 		PolygonSearch	polySearch;
+		CircleSearch	circleSearch;
 
 		/* Drawing Variables */
 		bool	glLoaded;
@@ -91,17 +93,17 @@ class Quadtree
 
 		////// Recursive searching functions
 		Node*	FindNode(float x, float y, branch *currBranch);
-		void	FindLeavesInCircle(float x, float y, float radius, branch *currBranch, std::vector<leaf*>* full, std::vector<leaf*>* partial);
+//		void	FindLeavesInCircle(float x, float y, float radius, branch *currBranch, std::vector<leaf*>* full, std::vector<leaf*>* partial);
 		void	FindLeavesInRectangle(float l, float r, float b, float t, branch *currBranch, std::vector<leaf*>* full, std::vector<leaf*>* partial);
 		void	AddAllLeaves(branch *currBranch, std::vector<leaf*>* full);
 		void	AddFullNodes(std::vector<leaf*>* full, std::vector<Node*>* nodes);
 		void	AddFullElements(std::vector<leaf*>* full, std::vector<Element*>* elements);
 
 		// Finding Nodes within a circle
-		void	AddPartialNodes(float x, float y, float radius, std::vector<leaf*>* partial, std::vector<Node*>* nodes);
+//		void	AddPartialNodes(float x, float y, float radius, std::vector<leaf*>* partial, std::vector<Node*>* nodes);
 
 		// Finding Elements within a circle
-		void	AddPartialElements(float x, float y, float radius, std::vector<leaf*>* partial, std::vector<Element*>* elements);
+//		void	AddPartialElements(float x, float y, float radius, std::vector<leaf*>* partial, std::vector<Element*>* elements);
 
 		// Finding Elements within a rectangle
 		void	AddPartialElements(float l, float r, float b, float t, std::vector<leaf*>* partial, std::vector<Element*>* elements);
@@ -125,7 +127,7 @@ class Quadtree
 		bool	pointIsInside(leaf *currLeaf, float x, float y);
 		bool	pointIsInside(branch *currBranch, float x, float y);
 		bool	pointIsInside(float l, float r, float b, float t, float x, float y);
-		bool	pointIsInsideCircle(float x, float y, float circleX, float circleY, float radius);
+//		bool	pointIsInsideCircle(float x, float y, float circleX, float circleY, float radius);
 		bool	rectangleIntersection(leaf *currLeaf, float l, float r, float b, float t);
 		bool	rectangleIntersection(branch *currBranch, float l, float r, float b, float t);
 		bool	branchIsInside(branch *currBranch, float l, float r, float b, float t);
