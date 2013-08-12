@@ -475,12 +475,7 @@ void PolygonSearch::AddToFullElements(branch *currBranch)
 void PolygonSearch::AddToFullElements(leaf *currLeaf)
 {
 	if (currLeaf->elements.size() > 0)
-	{
 		fullElements.insert(fullElements.end(), currLeaf->elements.begin(), currLeaf->elements.end());
-		DEBUG("Leaf added to full - " << currLeaf->elements.size() << " elements");
-	} else {
-		DEBUG("Leaf added to full - 0 elements");
-	}
 }
 
 
@@ -494,10 +489,5 @@ void PolygonSearch::AddToFullElements(leaf *currLeaf)
 void PolygonSearch::AddToPartialElements(leaf *currLeaf)
 {
 	if (currLeaf->elements.size() > 0)
-	{
 		partialElements.insert(partialElements.end(), currLeaf->elements.begin(), currLeaf->elements.end());
-		DEBUG("Leaf added to partial - " << currLeaf->elements.size() << " elements");
-	} else {
-		DEBUG("Leaf added to partial - 0 elements");
-	}
 }
