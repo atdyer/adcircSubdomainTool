@@ -366,19 +366,20 @@ std::vector<Element*> Quadtree::FindElementsInCircle(float x, float y, float rad
 
 std::vector<Element*> Quadtree::FindElementsInRectangle(float l, float r, float b, float t)
 {
-	std::vector<Element*> rectangleElements;
+//	std::vector<Element*> rectangleElements;
 
-	if (!hasElements)
-		return rectangleElements;
+//	if (!hasElements)
+//		return rectangleElements;
 
-	std::vector<leaf*> fullLeaves;
-	std::vector<leaf*> partialLeaves;
+//	std::vector<leaf*> fullLeaves;
+//	std::vector<leaf*> partialLeaves;
 
-	FindLeavesInRectangle(l, r, b, t, root, &fullLeaves, &partialLeaves);
-	AddFullElements(&fullLeaves, &rectangleElements);
-	AddPartialElements(l, r, b, t, &partialLeaves, &rectangleElements);
+//	FindLeavesInRectangle(l, r, b, t, root, &fullLeaves, &partialLeaves);
+//	AddFullElements(&fullLeaves, &rectangleElements);
+//	AddPartialElements(l, r, b, t, &partialLeaves, &rectangleElements);
 
-	return rectangleElements;
+//	return rectangleElements;
+	return rectangleSearch.FindElements(root, l, r, b, t);
 }
 
 

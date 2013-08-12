@@ -9,6 +9,7 @@
 #include <math.h>
 
 #include "Quadtree/SearchTools/CircleSearch.h"
+#include "Quadtree/SearchTools/RectangleSearch.h"
 #include "Quadtree/SearchTools/PolygonSearch.h"
 
 /**
@@ -73,6 +74,7 @@ class Quadtree
 		/* Search Tools */
 		PolygonSearch	polySearch;
 		CircleSearch	circleSearch;
+		RectangleSearch	rectangleSearch;
 
 		/* Drawing Variables */
 		bool	glLoaded;
