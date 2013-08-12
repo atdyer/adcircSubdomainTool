@@ -359,43 +359,35 @@ bool PolygonSearch::PointIsInsideSquare(Point point, leaf *currLeaf)
  */
 bool PolygonSearch::EdgesIntersect(Point pointA, Point pointB, Point pointC, Point pointD)
 {
-	float denominator = ((pointA.x - pointB.x) * (pointC.y - pointD.y)) - ((pointA.y - pointB.y) * (pointC.x - pointD.x));
-
-	/* Check if lines are parallel */
-	if (denominator == 0.0)
+	if (IsCCW(pointA, pointC, pointD) == IsCCW(pointB, pointC, pointD))
 	{
-		DEBUG("No Intersection - Parallel");
 		return false;
 	}
-
-	DEBUG("Denominator - " << denominator);
-
-	/* Find the intersection point for the two continuous lines */
-	float A = pointA.x*pointB.y - pointA.y*pointB.x;
-	float B = pointC.x*pointD.y - pointC.y*pointD.x;
-	float xIntersection = (A*(pointC.x - pointD.x) - (pointA.x - pointB.x)*B) / denominator;
-	float yIntersection = (A*(pointC.y - pointD.y) - (pointA.y - pointB.y)*B) / denominator;
-
-	DEBUG("x-intersection - " << xIntersection << ", y-intersection - " << yIntersection);
-
-	/* Determine if the intersection point falls within the bounds of both edges */
-	float tX = (xIntersection - pointA.x) / (pointB.x - pointA.x);
-	float tY = (yIntersection - pointA.y) / (pointB.y - pointA.y);
-	if (tX < 0.0 || tX > 1.0 || tY < 0.0 || tY > 1.0)
+	else if (IsCCW(pointA, pointB, pointC) == IsCCW(pointA, pointB, pointD))
 	{
-		DEBUG("No Intersection - " << tX << ", " << tY);
 		return false;
+	} else {
+		return true;
 	}
-	float uX = (xIntersection - pointC.x) / (pointD.x - pointC.x);
-	float uY = (xIntersection - pointC.y) / (pointD.y - pointC.y);
-	if (uX < 0.0 || uX > 1.0 || uY < 0.0 || uY > 1.0)
-	{
-		DEBUG("No Intersection - " << uX << ", " <<uY);
-		return false;
-	}
+}
 
-	DEBUG("Intersection - (" << tX << ", " << tY << "), (" << uX << ", " << uY << ")");
-	return true;
+
+/**
+ * @brief Determines if the given list of points is in counter-clockwise order
+ *
+ * Determines if the given list of points is in counter-clockwise order.
+ *
+ * @param A The first point
+ * @param B The second point
+ * @param C The third point
+ * @return true if the points are given in counter-clockwise order
+ * @return false if the points are not give in counter-clockwise order
+ */
+bool PolygonSearch::IsCCW(Point A, Point B, Point C)
+{
+	if ((C.y-A.y) * (B.x-A.x) > (B.y-A.y) * (C.x-A.x))
+		return true;
+	return false;
 }
 
 

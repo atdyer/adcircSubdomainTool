@@ -44,6 +44,7 @@ class PolygonSearch
 		bool	PointIsInsideSquare(Point point, branch *currBranch);
 		bool	PointIsInsideSquare(Point point, leaf *currLeaf);
 		bool	EdgesIntersect(Point pointA, Point pointB, Point pointC, Point pointD);
+		bool	IsCCW(Point A, Point B, Point C);
 
 		/* List Functions */
 		void	AddToFullNodes(branch *currBranch);
