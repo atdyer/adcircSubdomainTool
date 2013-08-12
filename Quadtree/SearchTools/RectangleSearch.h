@@ -4,6 +4,9 @@
 #include "adcData.h"
 #include "Quadtree/QuadtreeData.h"
 
+/**
+ * @brief A tool used to search a Quadtree for Nodes or Elements that fall within a rectangle
+ */
 class RectangleSearch
 {
 	public:

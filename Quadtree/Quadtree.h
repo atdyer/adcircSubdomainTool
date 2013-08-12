@@ -93,23 +93,6 @@ class Quadtree
 		void			AddOutlinePoints(leaf *currLeaf, std::vector<Point> *pointsList);
 		void			LoadOutlinesToGPU(std::vector<Point> pointsList, std::vector<GLuint> indicesList);
 
-		////// Recursive searching functions
-		Node*	FindNode(float x, float y, branch *currBranch);
-//		void	FindLeavesInCircle(float x, float y, float radius, branch *currBranch, std::vector<leaf*>* full, std::vector<leaf*>* partial);
-		void	FindLeavesInRectangle(float l, float r, float b, float t, branch *currBranch, std::vector<leaf*>* full, std::vector<leaf*>* partial);
-		void	AddAllLeaves(branch *currBranch, std::vector<leaf*>* full);
-		void	AddFullNodes(std::vector<leaf*>* full, std::vector<Node*>* nodes);
-		void	AddFullElements(std::vector<leaf*>* full, std::vector<Element*>* elements);
-
-		// Finding Nodes within a circle
-//		void	AddPartialNodes(float x, float y, float radius, std::vector<leaf*>* partial, std::vector<Node*>* nodes);
-
-		// Finding Elements within a circle
-//		void	AddPartialElements(float x, float y, float radius, std::vector<leaf*>* partial, std::vector<Element*>* elements);
-
-		// Finding Elements within a rectangle
-		void	AddPartialElements(float l, float r, float b, float t, std::vector<leaf*>* partial, std::vector<Element*>* elements);
-
 		// Retrieving Elements recursively
 		void	RetrieveElements(branch* currBranch, int depth, std::vector<std::vector<Element *> *> *list);
 		void	RetrieveElements(branch* currBranch, int depth, std::vector<std::vector<Element *> *> *list, float l, float r, float b, float t);
@@ -125,11 +108,6 @@ class Quadtree
 		bool	nodeIsInside(Node *currNode, branch *currBranch);
 
 		////// Helper functions
-		float	distance(Node *currNode, float x, float y);
-		bool	pointIsInside(leaf *currLeaf, float x, float y);
-		bool	pointIsInside(branch *currBranch, float x, float y);
-		bool	pointIsInside(float l, float r, float b, float t, float x, float y);
-//		bool	pointIsInsideCircle(float x, float y, float circleX, float circleY, float radius);
 		bool	rectangleIntersection(leaf *currLeaf, float l, float r, float b, float t);
 		bool	rectangleIntersection(branch *currBranch, float l, float r, float b, float t);
 		bool	branchIsInside(branch *currBranch, float l, float r, float b, float t);

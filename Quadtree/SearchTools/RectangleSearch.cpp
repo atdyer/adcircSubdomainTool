@@ -1,5 +1,9 @@
 #include "RectangleSearch.h"
 
+
+/**
+ * @brief Constructor
+ */
 RectangleSearch::RectangleSearch()
 {
 	l = 0.0;
@@ -9,6 +13,19 @@ RectangleSearch::RectangleSearch()
 }
 
 
+/**
+ * @brief Finds all Nodes that fall within a rectangle
+ *
+ * Finds all Nodes that fall within a rectangle by searching the Nodes
+ * in a Quadtree.
+ *
+ * @param root The highest level of the Quadtree to search
+ * @param l The left bound of the rectangle
+ * @param r The right bound of the rectangle
+ * @param b The bottom bound of the rectangle
+ * @param t The top bound of the rectangle
+ * @return A list of Nodes that fall within the rectangle
+ */
 std::vector<Node*> RectangleSearch::FindNodes(branch *root, float l, float r, float b, float t)
 {
 	fullNodes.clear();
@@ -26,6 +43,19 @@ std::vector<Node*> RectangleSearch::FindNodes(branch *root, float l, float r, fl
 }
 
 
+/**
+ * @brief Finds all Elements that fall within a rectangle
+ *
+ * Finds all Elements that fall within a rectangle by searching the Elements
+ * in a Quadtree.
+ *
+ * @param root The highest level of the Quadtree to search
+ * @param l The left bound of the rectangle
+ * @param r The right bound of the rectangle
+ * @param b The bottom bound of the rectangle
+ * @param t The top bound of the rectangle
+ * @return A list of Elements that fall within the rectangle
+ */
 std::vector<Element*> RectangleSearch::FindElements(branch *root, float l, float r, float b, float t)
 {
 	fullElements.clear();
@@ -43,6 +73,15 @@ std::vector<Element*> RectangleSearch::FindElements(branch *root, float l, float
 }
 
 
+/**
+ * @brief Recursively searches through the branch for Nodes that may be part of the selection
+ *
+ * Recursively searches through the branch for Nodes that may be part of the selection. Nodes
+ * that are guaranteed to fall inside of the rectangle are added to the fullNodes list. Nodes
+ * that could possibly fall inside of the rectangle are added to the partialNodes list.
+ *
+ * @param currBranch The branch through which recursion will take place
+ */
 void RectangleSearch::SearchNodes(branch *currBranch)
 {
 	int branchCornersInsideRectange = CountCornersInsideRectangle(currBranch);
@@ -68,6 +107,15 @@ void RectangleSearch::SearchNodes(branch *currBranch)
 }
 
 
+/**
+ * @brief Searches through the leaf for Nodes that may be a part of the selection
+ *
+ * Searches through the leaf for Nodes that may be a part of the selection. Nodes that are
+ * guaranteed to fall inside of the rectangle are added to the fullNodes list. Nodes that
+ * could possibly fall inside of the rectangle are added to the partialNodes list.
+ *
+ * @param currLeaf The leaf to search
+ */
 void RectangleSearch::SearchNodes(leaf *currLeaf)
 {
 	int leafCornersInsideRectangle = CountCornersInsideRectangle(currLeaf);
@@ -83,6 +131,15 @@ void RectangleSearch::SearchNodes(leaf *currLeaf)
 }
 
 
+/**
+ * @brief Recursively searches through the branch for Elements that may be part of the selection
+ *
+ * Recursively searches through the branch for Elements that may be part of the selection. Elements
+ * that are guaranteed to fall inside of the rectangle are added to the fullElements list. Elements
+ * that could possibly fall inside of the rectangle are added to the partialElements list.
+ *
+ * @param currBranch The branch through which recursion will take place
+ */
 void RectangleSearch::SearchElements(branch *currBranch)
 {
 	int branchCornersInsideRectange = CountCornersInsideRectangle(currBranch);
@@ -108,6 +165,15 @@ void RectangleSearch::SearchElements(branch *currBranch)
 }
 
 
+/**
+ * @brief Searches through the leaf for Elements that may be a part of the selection
+ *
+ * Searches through the leaf for Elements that may be a part of the selection. Elements that are
+ * guaranteed to fall inside of the rectangle are added to the fullElements list. Elements that
+ * could possibly fall inside of the rectangle are added to the partialElements list.
+ *
+ * @param currLeaf The leaf to search
+ */
 void RectangleSearch::SearchElements(leaf *currLeaf)
 {
 	int leafCornersInsideRectangle = CountCornersInsideRectangle(currLeaf);
@@ -123,6 +189,13 @@ void RectangleSearch::SearchElements(leaf *currLeaf)
 }
 
 
+/**
+ * @brief Determines if each individual Node in the partialNodes list falls within the rectangle
+ *
+ * Determines if each individual Node in the partialNodes list falls within the rectangle. If a
+ * Node does fall within the rectangle, it is added to the fullNodes list.
+ *
+ */
 void RectangleSearch::BruteForceNodes()
 {
 	Node *currNode = 0;
@@ -135,6 +208,13 @@ void RectangleSearch::BruteForceNodes()
 }
 
 
+/**
+ * @brief Determines if each individual Element in the partialElements list falls within the rectangle
+ *
+ * Determines if each individual Element in the partialElements list falls within the rectangle. If
+ * an Element does fall within the rectangle, it is added to the fullElements list.
+ *
+ */
 void RectangleSearch::BruteForceElements()
 {
 	Element *currElement = 0;
@@ -149,6 +229,15 @@ void RectangleSearch::BruteForceElements()
 }
 
 
+/**
+ * @brief Counts the number of corners of a branch that are inside of the rectangle
+ *
+ * Counts the number of corners of a branch that are inside of the rectangle. Will always
+ * return a number between (and including) 0 and 4
+ *
+ * @param currBranch Pointer to the branch to test
+ * @return The number of corners of the branch that are inside of the rectangle
+ */
 int RectangleSearch::CountCornersInsideRectangle(branch *currBranch)
 {
 	int count = 0;
@@ -160,6 +249,15 @@ int RectangleSearch::CountCornersInsideRectangle(branch *currBranch)
 }
 
 
+/**
+ * @brief Counts the number of corners of a leaf that are inside of the rectangle
+ *
+ * Counts the number of corners of a leaf that are inside of the rectangle. Will always
+ * return a number between (and including) 0 and 4
+ *
+ * @param currLeaf Pointer to the leaf to test
+ * @return The number of corners of the leaf that are inside of the rectangle
+ */
 int RectangleSearch::CountCornersInsideRectangle(leaf *currLeaf)
 {
 	int count = 0;
@@ -171,6 +269,15 @@ int RectangleSearch::CountCornersInsideRectangle(leaf *currLeaf)
 }
 
 
+/**
+ * @brief Determines if the rectangle has an intersection with any edge of a branch
+ *
+ * Determines if the rectangle has an intersection with any edge of a branch.
+ *
+ * @param currBranch The branch to test
+ * @return true if the rectangle intersects any edge of the branch
+ * @return false if the rectangle does not intersect any edge of the branch
+ */
 bool RectangleSearch::RectangleHasEdgeIntersection(branch *currBranch)
 {
 	return		!(l >= currBranch->bounds[1] ||
@@ -180,6 +287,15 @@ bool RectangleSearch::RectangleHasEdgeIntersection(branch *currBranch)
 }
 
 
+/**
+ * @brief Determines if the rectangle has an intersection with any edge of a leaf
+ *
+ * Determines if the rectangle has an intersection with any edge of a leaf.
+ *
+ * @param currLeaf The leaf to test
+ * @return true if the rectangle intersects any edge of the leaf
+ * @return false if the rectangle does not intersect any edge of the leaf
+ */
 bool RectangleSearch::RectangleHasEdgeIntersection(leaf *currLeaf)
 {
 	return		!(l >= currLeaf->bounds[1] ||
@@ -189,6 +305,16 @@ bool RectangleSearch::RectangleHasEdgeIntersection(leaf *currLeaf)
 }
 
 
+/**
+ * @brief Determines if a point is inside of the rectangle
+ *
+ * Determines if a point is inside of the rectangle.
+ *
+ * @param x The x-coordinate of the point
+ * @param y The y-coordinate of the point
+ * @return true if the point falls inside of the rectangle
+ * @return false if the point does not fall inside of the rectangle
+ */
 bool RectangleSearch::PointIsInsideRectangle(float x, float y)
 {
 	if (l <= x &&
