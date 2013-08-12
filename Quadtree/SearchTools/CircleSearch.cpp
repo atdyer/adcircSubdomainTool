@@ -1,5 +1,9 @@
 #include "CircleSearch.h"
 
+
+/**
+ * @brief Constructor
+ */
 CircleSearch::CircleSearch()
 {
 	x = 0.0;
@@ -8,12 +12,46 @@ CircleSearch::CircleSearch()
 }
 
 
+/**
+ * @brief Finds all Nodes that fall within a circle
+ *
+ * Finds all Nodes that fall within a circle by searching the Nodes
+ * in a Quadtree.
+ *
+ * @param root The highest level of the Quadtree to search
+ * @param x The x-coordinate of the circle center
+ * @param y The y-coordinate of the circle center
+ * @param radius The radius of the circle
+ * @return A list of Nodes that fall within the circle
+ */
 std::vector<Node*> CircleSearch::FindNodes(branch *root, float x, float y, float radius)
 {
+	fullNodes.clear();
+	partialNodes.clear();
+	this->x = x;
+	this->y = y;
+	this->radius = radius;
+
+	SearchNodes(root);
+
+	BruteForceNodes();
+
 	return fullNodes;
 }
 
 
+/**
+ * @brief Finds all Elements that fall within a circle
+ *
+ * Finds all Elements that fall within a circle by searching the Elements
+ * in a Quadtree.
+ *
+ * @param root The highest level of the Quadtree to search
+ * @param x The x-coordinate of the circle center
+ * @param y The y-coordinate of the circle center
+ * @param radius The radius of the circle
+ * @return A list of Elements that fall within the circle
+ */
 std::vector<Element*> CircleSearch::FindElements(branch *root, float x, float y, float radius)
 {
 	fullElements.clear();
@@ -22,28 +60,83 @@ std::vector<Element*> CircleSearch::FindElements(branch *root, float x, float y,
 	this->y = y;
 	this->radius = radius;
 
-	/* Build the two lists */
 	SearchElements(root);
 
-	/* Do a brute force search on the elements in partialElements */
 	BruteForceElements();
 
 	return fullElements;
 }
 
 
+/**
+ * @brief Recursively searches through the branch for Nodes that may be part of the selection
+ *
+ * Recursively searches through the branch for Nodes that may be part of the selection. Nodes
+ * that are guaranteed to fall inside of the circle are added to the fullNodes list. Nodes
+ * that could possibly fall inside of the circle are added to the partialNodes list.
+ *
+ * @param currBranch The branch through which recursion will take place
+ */
 void CircleSearch::SearchNodes(branch *currBranch)
 {
-
+	int branchCornersInsideCircle = CountCornersInsideCircle(currBranch);
+	if (branchCornersInsideCircle == 4)
+	{
+		AddToFullNodes(currBranch);
+	}
+	else if (branchCornersInsideCircle != 0 ||
+		 CircleIsInsideSquare(currBranch) ||
+		 CircleHasEdgeIntersection(currBranch))
+	{
+		for (int i=0; i<4; ++i)
+		{
+			if (currBranch->branches[i])
+			{
+				SearchNodes(currBranch->branches[i]);
+			}
+			if (currBranch->leaves[i])
+			{
+				SearchNodes(currBranch->leaves[i]);
+			}
+		}
+	}
 }
 
 
+/**
+ * @brief Searches through the leaf for Nodes that may be a part of the selection
+ *
+ * Searches through the leaf for Nodes that may be a part of the selection. Nodes that are
+ * guaranteed to fall inside of the circle are added to the fullNodes list. Nodes that
+ * could possibly fall inside of the circle are added to the partialNodes list.
+ *
+ * @param currLeaf The leaf to search
+ */
 void CircleSearch::SearchNodes(leaf *currLeaf)
 {
-
+	int leafCornersInsideCircle = CountCornersInsideCircle(currLeaf);
+	if (leafCornersInsideCircle == 4)
+	{
+		AddToFullNodes(currLeaf);
+	}
+	else if (leafCornersInsideCircle != 0 ||
+		 CircleIsInsideSquare(currLeaf) ||
+		 CircleHasEdgeIntersection(currLeaf))
+	{
+		AddToPartialNodes(currLeaf);
+	}
 }
 
 
+/**
+ * @brief Recursively searches through the branch for Elements that may be part of the selection
+ *
+ * Recursively searches through the branch for Elements that may be part of the selection. Elements
+ * that are guaranteed to fall inside of the circle are added to the fullElements list. Elements
+ * that could possibly fall inside of the circle are added to the partialElements list.
+ *
+ * @param currBranch The branch through which recursion will take place
+ */
 void CircleSearch::SearchElements(branch *currBranch)
 {
 	int branchCornersInsideCircle = CountCornersInsideCircle(currBranch);
@@ -70,6 +163,15 @@ void CircleSearch::SearchElements(branch *currBranch)
 }
 
 
+/**
+ * @brief Searches through the leaf for Elements that may be a part of the selection
+ *
+ * Searches through the leaf for Elements that may be a part of the selection. Elements that are
+ * guaranteed to fall inside of the circle are added to the fullElements list. Elements that
+ * could possibly fall inside of the circle are added to the partialElements list.
+ *
+ * @param currLeaf The leaf to search
+ */
 void CircleSearch::SearchElements(leaf *currLeaf)
 {
 	int leafCornersInsideCircle = CountCornersInsideCircle(currLeaf);
@@ -86,6 +188,13 @@ void CircleSearch::SearchElements(leaf *currLeaf)
 }
 
 
+/**
+ * @brief Determines if each individual Node in the partialNodes list falls within the circle
+ *
+ * Determines if each individual Node in the partialNodes list falls within the circle. If a
+ * Node does fall within the circle, it is added to the fullNodes list.
+ *
+ */
 void CircleSearch::BruteForceNodes()
 {
 	Node *currNode = 0;
@@ -98,6 +207,13 @@ void CircleSearch::BruteForceNodes()
 }
 
 
+/**
+ * @brief Determines if each individual Element in the partialElements list falls within the circle
+ *
+ * Determines if each individual Element in the partialElements list falls within the circle. If
+ * an Element does fall within the circle, it is added to the fullElements list.
+ *
+ */
 void CircleSearch::BruteForceElements()
 {
 	Element *currElement = 0;
@@ -112,6 +228,15 @@ void CircleSearch::BruteForceElements()
 }
 
 
+/**
+ * @brief Counts the number of corners of a branch that are inside of the circle
+ *
+ * Counts the number of corners of a branch that are inside of the circle. Will always
+ * return a number between (and including) 0 and 4
+ *
+ * @param currBranch Pointer to the branch to test
+ * @return The number of corners of the branch that are inside of the circle
+ */
 int CircleSearch::CountCornersInsideCircle(branch *currBranch)
 {
 	int count = 0;
@@ -123,6 +248,15 @@ int CircleSearch::CountCornersInsideCircle(branch *currBranch)
 }
 
 
+/**
+ * @brief Counts the number of corners of a leaf that are inside of the circle
+ *
+ * Counts the number of corners of a leaf that are inside of the circle. Will always
+ * return a number between (and including) 0 and 4
+ *
+ * @param currLeaf Pointer to the leaf to test
+ * @return The number of corners of the leaf that are inside of the circle
+ */
 int CircleSearch::CountCornersInsideCircle(leaf *currLeaf)
 {
 	int count = 0;
@@ -134,6 +268,15 @@ int CircleSearch::CountCornersInsideCircle(leaf *currLeaf)
 }
 
 
+/**
+ * @brief Determines if the circle is entirely inside of the bounding square of a branch
+ *
+ * Determines if the circle is entirely inside of the bounding square of a branch.
+ *
+ * @param currBranch The branch to test
+ * @return true if the circle is entirely inside of the bounding square of the branch
+ * @return false if the circle is not entirely inside of the bounding square of the branch
+ */
 bool CircleSearch::CircleIsInsideSquare(branch *currBranch)
 {
 	if (PointIsInsideSquare(Point(x-radius, y), currBranch) &&
@@ -145,6 +288,15 @@ bool CircleSearch::CircleIsInsideSquare(branch *currBranch)
 }
 
 
+/**
+ * @brief Determines if the circle is entirely inside of the bounding square of a leaf
+ *
+ * Determines if the circle is entirely inside of the bounding square of a leaf.
+ *
+ * @param currLeaf The leaf to test
+ * @return true if the circle is entirely inside of the bounding square of the leaf
+ * @return false if the circle is not entirely inside of the bounding square of the leaf
+ */
 bool CircleSearch::CircleIsInsideSquare(leaf *currLeaf)
 {
 	if (PointIsInsideSquare(Point(x-radius, y), currLeaf) &&
@@ -156,6 +308,15 @@ bool CircleSearch::CircleIsInsideSquare(leaf *currLeaf)
 }
 
 
+/**
+ * @brief Determines if the circle has an intersection with any edge of a branch
+ *
+ * Determines if the circle has an intersection with any edge of a branch.
+ *
+ * @param currBranch The branch to test
+ * @return true if the circle intersects any edge of the branch
+ * @return false if the circle does not intersect any edge of the branch
+ */
 bool CircleSearch::CircleHasEdgeIntersection(branch *currBranch)
 {
 	Point BottomLeft(currBranch->bounds[0], currBranch->bounds[2]);
@@ -173,6 +334,15 @@ bool CircleSearch::CircleHasEdgeIntersection(branch *currBranch)
 }
 
 
+/**
+ * @brief Determines if the circle has an intersection with any edge of a leaf
+ *
+ * Determines if the circle has an intersection with any edge of a leaf.
+ *
+ * @param currLeaf The leaf to test
+ * @return true if the circle intersects any edge of the leaf
+ * @return false if the circle does not intersect any edge of the leaf
+ */
 bool CircleSearch::CircleHasEdgeIntersection(leaf *currLeaf)
 {
 	Point BottomLeft(currLeaf->bounds[0], currLeaf->bounds[2]);
@@ -190,6 +360,16 @@ bool CircleSearch::CircleHasEdgeIntersection(leaf *currLeaf)
 }
 
 
+/**
+ * @brief Determines if a point is inside of the circle
+ *
+ * Determines if a point is inside of the circle.
+ *
+ * @param pointX The x-coordinate of the point
+ * @param pointY The y-coordinate of the point
+ * @return true if the point falls inside of the circle
+ * @return false if the point does not fall inside of the circle
+ */
 bool CircleSearch::PointIsInsideCircle(float pointX, float pointY)
 {
 	return (pow(pointX - x, 2.0) + (pow(pointY - y, 2.0))) < pow(radius, 2.0);
@@ -238,6 +418,17 @@ bool CircleSearch::PointIsInsideSquare(Point point, leaf *currLeaf)
 }
 
 
+/**
+ * @brief Determines if the circle intersects with an edge
+ *
+ * Determines if the circle intersects with an edge. Only guaranteed to work
+ * for a horizontal or vertical edge.
+ *
+ * @param A The first point of the edge
+ * @param B The second point of the edge
+ * @return true if the circle intersects the edge
+ * @return false if the circle does not intersect the edge
+ */
 bool CircleSearch::CircleIntersectsEdge(Point A, Point B)
 {
 	float left = A.x < B.x ? A.x : B.x;

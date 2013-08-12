@@ -20,15 +20,15 @@ class CircleSearch
 	private:
 
 		/* Circle Attributes */
-		float	x;
-		float	y;
-		float	radius;
+		float	x;	/**< The x-coordinate of the circle */
+		float	y;	/**< The y-coordinate of the circle */
+		float	radius;	/**< The radius of the circle */
 
 		/* Searching Lists */
-		std::vector<Node*>	fullNodes;
-		std::vector<Node*>	partialNodes;
-		std::vector<Element*>	fullElements;
-		std::vector<Element*>	partialElements;
+		std::vector<Node*>	fullNodes;		/**< The list of Nodes inside of the circle */
+		std::vector<Node*>	partialNodes;		/**< The list of Nodes that might fall inside of the circle */
+		std::vector<Element*>	fullElements;		/**< The list of Elements inside of the circle */
+		std::vector<Element*>	partialElements;	/**< The list of Elements that might fall inside of the circle */
 
 		/* Search Functions */
 		void	SearchNodes(branch *currBranch);

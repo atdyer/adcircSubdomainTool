@@ -13,10 +13,10 @@ PolygonSearch::PolygonSearch()
 /**
  * @brief Finds all Nodes that fall within the polygon
  *
- * Finds all Nodes that fall within the polygon by searching the quadtree at
- * the level of root
+ * Finds all Nodes that fall within the polygon by searching the Nodes
+ * in a Quadtree.
  *
- * @param root The highest level of the quadtree to search
+ * @param root The highest level of the Quadtree to search
  * @param polyLine A list of points that define an arbitrarily shaped polygon
  * @return A list of Nodes that fall within the polygon
  */
@@ -28,6 +28,8 @@ std::vector<Node*> PolygonSearch::FindNodes(branch *root, std::vector<Point> pol
 
 	SearchNodes(root);
 
+	BruteForceNodes();
+
 	return fullNodes;
 }
 
@@ -35,10 +37,10 @@ std::vector<Node*> PolygonSearch::FindNodes(branch *root, std::vector<Point> pol
 /**
  * @brief Finds all Elements that fall within the polygon
  *
- * Finds all Elements that fall within the polygon by searching the quadtree at
- * the level of root
+ * Finds all Elements that fall within the polygon by searching the
+ * Elements in a Quadtree
  *
- * @param root The highest level of the quadtree to search
+ * @param root The highest level of the Quadtree to search
  * @param polyLine A list of points that define an arbitrarily shaped polygon
  * @return A list of Elements that fall within the polygon
  */
@@ -48,10 +50,8 @@ std::vector<Element*> PolygonSearch::FindElements(branch *root, std::vector<Poin
 	partialElements.clear();
 	polygonPoints = polyLine;
 
-	/* Build the two lists */
 	SearchElements(root);
 
-	/* Do a brute force search on the elements in partialElements */
 	BruteForceElements();
 
 	return fullElements;
@@ -62,8 +62,8 @@ std::vector<Element*> PolygonSearch::FindElements(branch *root, std::vector<Poin
  * @brief Recursively searches through the branch for Nodes that may be part of the selection
  *
  * Recursively searches through the branch for Nodes that may be part of the selection. Nodes
- * that are guaranteed to fall inside of the polygon are added to the fullElements list. Nodes
- * that could possibly fall inside of the polygon are added to the partialElements list.
+ * that are guaranteed to fall inside of the polygon are added to the fullNodes list. Nodes
+ * that could possibly fall inside of the polygon are added to the partialNodes list.
  *
  * @param currBranch The branch through which recursion will take place
  */
@@ -97,8 +97,8 @@ void PolygonSearch::SearchNodes(branch *currBranch)
  * @brief Searches through the leaf for Nodes that may be part of the selection
  *
  * Searches through the leaf for Nodes that may be part of the selection. Nodes that are
- * guaranteed to fall inside of the polygon are added to the fullElements list. Nodes that
- * could possibly fall inside of the polygon are added to the partialElements list.
+ * guaranteed to fall inside of the polygon are added to the fullNodes list. Nodes that
+ * could possibly fall inside of the polygon are added to the partialNodes list.
  *
  * @param currLeaf The leaf to search
  */

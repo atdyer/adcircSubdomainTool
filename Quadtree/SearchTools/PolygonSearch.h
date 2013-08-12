@@ -18,11 +18,11 @@ class PolygonSearch
 
 	private:
 
-		std::vector<Point>	polygonPoints;
-		std::vector<Node*>	fullNodes;
-		std::vector<Node*>	partialNodes;
-		std::vector<Element*>	fullElements;
-		std::vector<Element*>	partialElements;
+		std::vector<Point>	polygonPoints;		/**< The list of points that make up the polygon */
+		std::vector<Node*>	fullNodes;		/**< The list of Nodes inside of the polygon */
+		std::vector<Node*>	partialNodes;		/**< The list of Nodes that might fall inside of the polygon */
+		std::vector<Element*>	fullElements;		/**< The list of Elements inside of the polygon */
+		std::vector<Element*>	partialElements;	/**< The list of Elements that might fall inside of the polygon */
 
 		/* Search Functions */
 		void	SearchNodes(branch *currBranch);
