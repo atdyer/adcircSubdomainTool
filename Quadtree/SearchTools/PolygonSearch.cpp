@@ -1,11 +1,25 @@
 #include "PolygonSearch.h"
 
+
+/**
+ * @brief Constructor
+ */
 PolygonSearch::PolygonSearch()
 {
 
 }
 
 
+/**
+ * @brief Finds all Nodes that fall within the polygon
+ *
+ * Finds all Nodes that fall within the polygon by searching the quadtree at
+ * the level of root
+ *
+ * @param root The highest level of the quadtree to search
+ * @param polyLine A list of points that define an arbitrarily shaped polygon
+ * @return A list of Nodes that fall within the polygon
+ */
 std::vector<Node*> PolygonSearch::FindNodes(branch *root, std::vector<Point> polyLine)
 {
 	fullNodes.clear();
@@ -18,6 +32,16 @@ std::vector<Node*> PolygonSearch::FindNodes(branch *root, std::vector<Point> pol
 }
 
 
+/**
+ * @brief Finds all Elements that fall within the polygon
+ *
+ * Finds all Elements that fall within the polygon by searching the quadtree at
+ * the level of root
+ *
+ * @param root The highest level of the quadtree to search
+ * @param polyLine A list of points that define an arbitrarily shaped polygon
+ * @return A list of Elements that fall within the polygon
+ */
 std::vector<Element*> PolygonSearch::FindElements(branch *root, std::vector<Point> polyLine)
 {
 	fullElements.clear();
@@ -34,9 +58,63 @@ std::vector<Element*> PolygonSearch::FindElements(branch *root, std::vector<Poin
 }
 
 
+/**
+ * @brief Recursively searches through the branch for Nodes that may be part of the selection
+ *
+ * Recursively searches through the branch for Nodes that may be part of the selection. Nodes
+ * that are guaranteed to fall inside of the polygon are added to the fullElements list. Nodes
+ * that could possibly fall inside of the polygon are added to the partialElements list.
+ *
+ * @param currBranch The branch through which recursion will take place
+ */
 void PolygonSearch::SearchNodes(branch *currBranch)
 {
+	int branchCornersInsidePolygon = CountCornersInsidePolygon(currBranch);
+	if (branchCornersInsidePolygon == 4)
+	{
+		AddToFullNodes(currBranch);
+	}
+	else if (branchCornersInsidePolygon != 0 ||
+		 PolygonHasPointsInside(currBranch) ||
+		 PolygonHasEdgeIntersection(currBranch))
+	{
+		for (int i=0; i<4; ++i)
+		{
+			if (currBranch->branches[i])
+			{
+				SearchNodes(currBranch->branches[i]);
+			}
+			if (currBranch->leaves[i])
+			{
+				SearchNodes(currBranch->leaves[i]);
+			}
+		}
+	}
+}
 
+
+/**
+ * @brief Searches through the leaf for Nodes that may be part of the selection
+ *
+ * Searches through the leaf for Nodes that may be part of the selection. Nodes that are
+ * guaranteed to fall inside of the polygon are added to the fullElements list. Nodes that
+ * could possibly fall inside of the polygon are added to the partialElements list.
+ *
+ * @param currLeaf The leaf to search
+ */
+void PolygonSearch::SearchNodes(leaf *currLeaf)
+{
+	int leafCornersInsidePolygon = CountCornersInsidePolygon(currLeaf);
+	if (leafCornersInsidePolygon == 4)
+	{
+		AddToFullNodes(currLeaf);
+	}
+	else if (leafCornersInsidePolygon != 0 ||
+		 PolygonHasPointsInside(currLeaf) ||
+		 PolygonHasEdgeIntersection(currLeaf))
+	{
+		AddToPartialNodes(currLeaf);
+	}
 }
 
 
@@ -51,17 +129,11 @@ void PolygonSearch::SearchNodes(branch *currBranch)
  */
 void PolygonSearch::SearchElements(branch *currBranch)
 {
-	/* Search all branches */
+
 	int branchCornersInsidePolygon = CountCornersInsidePolygon(currBranch);
 	if (branchCornersInsidePolygon == 4)
 	{
-		for (int i=0; i<4; ++i)
-		{
-			if (currBranch->branches[i])
-			{
-				AddToFullElements(currBranch->branches[i]);
-			}
-		}
+		AddToFullElements(currBranch);
 	}
 	else if (branchCornersInsidePolygon != 0 ||
 		 PolygonHasPointsInside(currBranch) ||
@@ -73,28 +145,38 @@ void PolygonSearch::SearchElements(branch *currBranch)
 			{
 				SearchElements(currBranch->branches[i]);
 			}
+			if (currBranch->leaves[i])
+			{
+				SearchElements(currBranch->leaves[i]);
+			}
 		}
 	}
+}
 
-	/* Search all leaves */
-	for (int i=0; i<4; ++i)
+
+/**
+ * @brief Searches through the leaf for Elements that may be a part of the selection
+ *
+ * Searches through the leaf for Elements that may be a part of the selection. Elements
+ * that are guaranteed to fall inside of the polygon are added to the fullElements list.
+ * Elements that could possibly fall inside of the polygon are added to the partialElements
+ * list.
+ *
+ * @param currLeaf The leaf to search
+ */
+void PolygonSearch::SearchElements(leaf *currLeaf)
+{
+	int leafCornersInsidePolygon = CountCornersInsidePolygon(currLeaf);
+	if (leafCornersInsidePolygon == 4)
 	{
-		if (currBranch->leaves[i])
-		{
-			int leafCornersInsidePolygon = CountCornersInsidePolygon(currBranch->leaves[i]);
-			if (leafCornersInsidePolygon == 4)
-			{
-				AddToFullElements(currBranch->leaves[i]);
-			}
-			else if (leafCornersInsidePolygon != 0 ||
-				 PolygonHasPointsInside(currBranch->leaves[i]) ||
-				 PolygonHasEdgeIntersection(currBranch->leaves[i]))
-			{
-				AddToPartialElements(currBranch->leaves[i]);
-			}
-		}
+		AddToFullElements(currLeaf);
 	}
-
+	else if (leafCornersInsidePolygon != 0 ||
+		 PolygonHasPointsInside(currLeaf) ||
+		 PolygonHasEdgeIntersection(currLeaf))
+	{
+		AddToPartialElements(currLeaf);
+	}
 }
 
 

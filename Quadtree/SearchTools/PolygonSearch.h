@@ -26,7 +26,9 @@ class PolygonSearch
 
 		/* Search Functions */
 		void	SearchNodes(branch *currBranch);
+		void	SearchNodes(leaf *currLeaf);
 		void	SearchElements(branch *currBranch);
+		void	SearchElements(leaf *currLeaf);
 		void	BruteForceNodes();
 		void	BruteForceElements();
 
