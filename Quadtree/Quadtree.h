@@ -8,6 +8,7 @@
 #include <vector>
 #include <math.h>
 
+#include "Quadtree/SearchTools/ClickSearch.h"
 #include "Quadtree/SearchTools/CircleSearch.h"
 #include "Quadtree/SearchTools/RectangleSearch.h"
 #include "Quadtree/SearchTools/PolygonSearch.h"
@@ -54,6 +55,7 @@ class Quadtree
 
 		// Public Functions
 		Node*			FindNode(float x, float y);
+		Element*		FindElement(float x, float y);
 		std::vector<Node*>	FindNodesInCircle(float x, float y, float radius);
 		std::vector<Element*>	FindElementsInCircle(float x, float y, float radius);
 		std::vector<Element*>	FindElementsInRectangle(float l, float r, float b, float t);
@@ -73,6 +75,7 @@ class Quadtree
 		bool			hasElements;	/**< Flag that shows if the Quadtree contains Element data */
 
 		/* Search Tools */
+		ClickSearch	clickSearch;
 		PolygonSearch	polySearch;
 		CircleSearch	circleSearch;
 		RectangleSearch	rectangleSearch;

@@ -6,6 +6,11 @@
 
 #include "OpenGL/GLCamera.h"
 
+#include <QObject>
+#include <QMouseEvent>
+#include <QWheelEvent>
+#include <QKeyEvent>
+
 
 /**
  * @brief A virtual class that contains all of the generic functions needed for
@@ -39,9 +44,11 @@ class SelectionLayer : public Layer
 		virtual void	SetTerrainLayer(TerrainLayer* newLayer) = 0;
 		virtual void	UseTool(ToolType tool, SelectionType selection) = 0;
 
-		virtual void	MouseClick(int x, int y) = 0;
-		virtual void	MouseMove(int x, int y) = 0;
-		virtual void	MouseRelease(int x, int y) = 0;
+		virtual void	MouseClick(QMouseEvent *event) = 0;
+		virtual void	MouseMove(QMouseEvent *event) = 0;
+		virtual void	MouseRelease(QMouseEvent *event) = 0;
+		virtual void	MouseWheel(QWheelEvent *event) = 0;
+		virtual void	KeyPress(QKeyEvent *event) = 0;
 		virtual void	WindowSizeChanged(float w, float h) = 0;
 
 		virtual void	Undo() = 0;

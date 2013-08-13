@@ -139,7 +139,23 @@ void Quadtree::SetCamera(GLCamera *newCam)
  */
 Node* Quadtree::FindNode(float x, float y)
 {
-	return 0;
+	return clickSearch.FindNode(root, x, y);
+}
+
+
+/**
+ * @brief Finds the Element that contains the given point
+ *
+ * Finds the Element that contains the given point.
+ *
+ * @param x The x-coordinate of the point
+ * @param y The y-coordinate of the point
+ * @return Pointer to the Element that contains the point
+ * @return 0 if no Element contains the point
+ */
+Element* Quadtree::FindElement(float x, float y)
+{
+	return clickSearch.FindElement(root, x, y);
 }
 
 

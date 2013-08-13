@@ -288,8 +288,7 @@ Node* TerrainLayer::GetNode(float x, float y)
 {
 	if (quadtree)
 		return quadtree->FindNode(x, y);
-	else
-		return 0;
+	return 0;
 }
 
 
@@ -355,8 +354,8 @@ Element* TerrainLayer::GetElement(unsigned int elementNumber)
  */
 Element* TerrainLayer::GetElement(float x, float y)
 {
-	if (x || y)
-		return 0;
+	if (quadtree)
+		return quadtree->FindElement(x, y);
 	return 0;
 }
 

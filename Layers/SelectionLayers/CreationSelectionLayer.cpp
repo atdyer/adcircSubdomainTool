@@ -287,7 +287,11 @@ void CreationSelectionLayer::UseTool(ToolType tool, SelectionType)
 	activeToolType = tool;
 
 	/* If the tool hasn't been created yet, create it now */
-	if (activeToolType == CircleToolType)
+	if (activeToolType == ClickToolType)
+	{
+		activeTool = 0;
+	}
+	else if (activeToolType == CircleToolType)
 	{
 		if (!circleTool)
 			CreateCircleTool();
@@ -327,8 +331,14 @@ void CreationSelectionLayer::MouseMove(QMouseEvent *event)
 
 void CreationSelectionLayer::MouseRelease(QMouseEvent *event)
 {
-	if (activeTool)
+	if (activeToolType == ClickToolType)
+	{
+		GetSelectionFromMouseClick(event->x(), event->y());
+	}
+	else if (activeTool)
+	{
 		activeTool->MouseRelease(event);
+	}
 }
 
 
@@ -343,74 +353,6 @@ void CreationSelectionLayer::KeyPress(QKeyEvent *event)
 {
 	if (activeTool)
 		activeTool->KeyPress(event);
-}
-
-
-/**
- * @brief Passes the mouse click coordinates to the currently active selection tool
- *
- * Passes the mouse click coordinates to the currently active selection tool.
- *
- * @param x x-coordinate (pixels)
- * @param y y-coordinate (pixels)
- */
-void CreationSelectionLayer::MouseClick(int x, int y)
-{
-//	mousePressed = true;
-
-//	if (activeToolType == CircleToolType && circleTool)
-//		circleTool->SetCenter(x, y);
-//	else if (activeToolType == RectangleToolType && rectangleTool)
-//		rectangleTool->SetFirstCorner(x, y);
-//	else if (activeToolType == PolygonToolType && polygonTool)
-//		polygonTool->MouseClick(x, y);
-}
-
-
-/**
- * @brief Passes the mouse coordinates to the currently active selection tool when the mouse is moved
- *
- * Passes the mouse coordinates to the currently active selection tool when the mouse is moved
- *
- * @param x x-coordinate (pixels)
- * @param y y-coordinate (pixels)
- */
-void CreationSelectionLayer::MouseMove(int x, int y)
-{
-//	if (mousePressed)
-//	{
-//		if (activeToolType == CircleToolType && circleTool)
-//			circleTool->SetRadiusPoint(x, y);
-//		else if (activeToolType == RectangleToolType && rectangleTool)
-//			rectangleTool->SetSecondCorner(x, y);
-//		else if (activeToolType == PolygonToolType && polygonTool)
-//			polygonTool->MouseMove(x, y);
-//	} else {
-//		if (activeToolType == PolygonToolType && polygonTool)
-//			polygonTool->MouseMove(x, y);
-//	}
-
-}
-
-
-/**
- * @brief Passes the mouse coordinates to the currently active selection tool when the mouse click is released
- *
- * Passes the mouse coordinates to the currently active selection tool when the mouse click is released
- *
- * @param x x-coordinate (pixels)
- * @param y y-coordinate (pixels)
- */
-void CreationSelectionLayer::MouseRelease(int x, int y)
-{
-//	mousePressed = false;
-
-//	if (activeToolType == CircleToolType && circleTool)
-//		circleTool->CircleFinished();
-//	else if (activeToolType == RectangleToolType && rectangleTool)
-//		rectangleTool->RectangleFinished();
-//	else if (activeToolType == PolygonToolType && polygonTool)
-//		polygonTool->MouseRelease(x, y);
 }
 
 
@@ -700,6 +642,54 @@ void CreationSelectionLayer::UseState(ElementState *state)
 
 	/* Update the data on the GPU */
 	LoadDataToGPU();
+}
+
+
+void CreationSelectionLayer::GetSelectionFromMouseClick(float x, float y)
+{
+	if (terrainLayer)
+	{
+		Element *selectedElement = terrainLayer->GetElement(x, y);
+		if (selectedElement)
+		{
+			std::vector<Element*> list;
+			list.push_back(selectedElement);
+			ElementState *newState = new ElementState(list);
+
+			/* Get pointers to new list of selected elements and current list of selected elements */
+			std::vector<Element*> *newList = newState->GetState();
+			std::vector<Element*> *currList = selectedState->GetState();
+
+			if (newList->size() > 0)
+			{
+				if (currList->size() > 0)
+				{
+					/* There are currently selected elements, so combine the lists */
+					newList->reserve(newList->size() + currList->size());
+					newList->insert(newList->end(), currList->begin(), currList->end());
+
+					/* Sort the new list */
+					std::sort(newList->begin(), newList->end());
+
+					/* Get rid of any duplicates in the newly created list */
+					std::vector<Element*>::iterator it;
+					it = std::unique(newList->begin(), newList->end());
+					newList->resize(std::distance(newList->begin(), it));
+				}
+				emit Message(QString("Element #")
+					     .append(QString::number(selectedElement->elementNumber))
+					     .append(" selected. <b>")
+					     .append(QString::number(newList->size()))
+					     .append("</b> total elements selected."));
+
+				UseNewState(newState);
+
+			} else {
+				/* No elements were selected, so just go ahead and delete the new list */
+				delete newState;
+			}
+		}
+	}
 }
 
 

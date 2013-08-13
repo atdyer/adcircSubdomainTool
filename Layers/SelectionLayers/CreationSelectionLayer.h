@@ -75,10 +75,6 @@ class CreationSelectionLayer : public SelectionLayer
 		void	MouseRelease(QMouseEvent *event);
 		void	MouseWheel(QWheelEvent *event);
 		void	KeyPress(QKeyEvent *event);
-
-		void	MouseClick(int x, int y);
-		void	MouseMove(int x, int y);
-		void	MouseRelease(int x, int y);
 		void	WindowSizeChanged(float w, float h);
 
 		virtual void	Undo();
@@ -125,6 +121,7 @@ class CreationSelectionLayer : public SelectionLayer
 		void	ClearRedoStack();
 		void	UseNewState(ElementState* newState);
 		void	UseState(ElementState* state);
+		void	GetSelectionFromMouseClick(float x, float y);
 		void	GetSelectionFromActiveTool();
 
 	signals:
