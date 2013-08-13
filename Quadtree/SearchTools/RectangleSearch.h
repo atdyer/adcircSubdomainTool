@@ -40,8 +40,8 @@ class RectangleSearch
 		/* Algorithm Functions */
 		int	CountCornersInsideRectangle(branch *currBranch);
 		int	CountCornersInsideRectangle(leaf *currLeaf);
-		bool	RectangleHasEdgeIntersection(branch *currBranch);
-		bool	RectangleHasEdgeIntersection(leaf *currLeaf);
+		bool	RectangleHasIntersection(branch *currBranch);
+		bool	RectangleHasIntersection(leaf *currLeaf);
 
 		/* Helper Functions */
 		bool	PointIsInsideRectangle(float x, float y);

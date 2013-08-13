@@ -11,6 +11,7 @@
 #include "Quadtree/SearchTools/CircleSearch.h"
 #include "Quadtree/SearchTools/RectangleSearch.h"
 #include "Quadtree/SearchTools/PolygonSearch.h"
+#include "Quadtree/SearchTools/DepthSearch.h"
 
 /**
  * @brief This class provides a data structure that can be used to store a large number
@@ -42,7 +43,7 @@ class Quadtree
 {
 	public:
 
-		// Constructor/Destructor
+		/* Constructors/Destructor */
 		Quadtree(std::vector<Node> nodes, int size, float minX, float maxX, float minY, float maxY);
 		Quadtree(std::vector<Node> nodes, std::vector<Element> elements, int size, float minX, float maxX, float minY, float maxY);
 		~Quadtree();
@@ -75,29 +76,9 @@ class Quadtree
 		PolygonSearch	polySearch;
 		CircleSearch	circleSearch;
 		RectangleSearch	rectangleSearch;
+		DepthSearch	depthSearch;
 
-		/* Drawing Variables */
-		bool	glLoaded;
-		int	pointCount;
-		GLuint	VAOId;
-		GLuint	VBOId;
-		GLuint	IBOId;
-		SolidShader*	outlineShader;
-		GLCamera*	camera;
-
-		/* Drawing Functions */
-		void			InitializeGL();
-		std::vector<Point>	BuildOutlinesList();
-		std::vector<GLuint>	BuildOutlinesIndices();
-		void			AddOutlinePoints(branch *currBranch, std::vector<Point> *pointsList);
-		void			AddOutlinePoints(leaf *currLeaf, std::vector<Point> *pointsList);
-		void			LoadOutlinesToGPU(std::vector<Point> pointsList, std::vector<GLuint> indicesList);
-
-		// Retrieving Elements recursively
-		void	RetrieveElements(branch* currBranch, int depth, std::vector<std::vector<Element *> *> *list);
-		void	RetrieveElements(branch* currBranch, int depth, std::vector<std::vector<Element *> *> *list, float l, float r, float b, float t);
-
-		////// Building functions
+		/* Quadtree Building Methods */
 		leaf*	newLeaf(float l, float r, float b, float t);
 		branch*	newBranch(float l, float r, float b, float t);
 		branch*	leafToBranch(leaf *currLeaf);
@@ -107,13 +88,22 @@ class Quadtree
 		bool	nodeIsInside(Node *currNode, leaf *currLeaf);
 		bool	nodeIsInside(Node *currNode, branch *currBranch);
 
-		////// Helper functions
-		bool	rectangleIntersection(leaf *currLeaf, float l, float r, float b, float t);
-		bool	rectangleIntersection(branch *currBranch, float l, float r, float b, float t);
-		bool	branchIsInside(branch *currBranch, float l, float r, float b, float t);
-		bool	leafIsInside(leaf *currLeaf, float l, float r, float b, float t);
-		bool	rectangleIsInside(float l, float r, float b, float t, branch *currBranch);
-		bool	rectangleIsInside(float l, float r, float b, float t, leaf *currLeaf);
+		/* Outline Drawing Variables */
+		bool	glLoaded;
+		int	pointCount;
+		GLuint	VAOId;
+		GLuint	VBOId;
+		GLuint	IBOId;
+		SolidShader*	outlineShader;
+		GLCamera*	camera;
+
+		/* Outline Drawing Methods */
+		void			InitializeGL();
+		std::vector<Point>	BuildOutlinesList();
+		std::vector<GLuint>	BuildOutlinesIndices();
+		void			AddOutlinePoints(branch *currBranch, std::vector<Point> *pointsList);
+		void			AddOutlinePoints(leaf *currLeaf, std::vector<Point> *pointsList);
+		void			LoadOutlinesToGPU(std::vector<Point> pointsList, std::vector<GLuint> indicesList);
 };
 
 #endif // QUADTREE_H

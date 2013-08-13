@@ -90,7 +90,7 @@ void RectangleSearch::SearchNodes(branch *currBranch)
 		AddToFullNodes(currBranch);
 	}
 	else if (branchCornersInsideRectange != 0 ||
-		 RectangleHasEdgeIntersection(currBranch))
+		 RectangleHasIntersection(currBranch))
 	{
 		for (int i=0; i<4; ++i)
 		{
@@ -124,7 +124,7 @@ void RectangleSearch::SearchNodes(leaf *currLeaf)
 		AddToFullNodes(currLeaf);
 	}
 	else if (leafCornersInsideRectangle != 0 ||
-		 RectangleHasEdgeIntersection(currLeaf))
+		 RectangleHasIntersection(currLeaf))
 	{
 		AddToFullNodes(currLeaf);
 	}
@@ -148,7 +148,7 @@ void RectangleSearch::SearchElements(branch *currBranch)
 		AddToFullElements(currBranch);
 	}
 	else if (branchCornersInsideRectange != 0 ||
-		 RectangleHasEdgeIntersection(currBranch))
+		 RectangleHasIntersection(currBranch))
 	{
 		for (int i=0; i<4; ++i)
 		{
@@ -182,7 +182,7 @@ void RectangleSearch::SearchElements(leaf *currLeaf)
 		AddToFullElements(currLeaf);
 	}
 	else if (leafCornersInsideRectangle != 0 ||
-		 RectangleHasEdgeIntersection(currLeaf))
+		 RectangleHasIntersection(currLeaf))
 	{
 		AddToPartialElements(currLeaf);
 	}
@@ -278,7 +278,7 @@ int RectangleSearch::CountCornersInsideRectangle(leaf *currLeaf)
  * @return true if the rectangle intersects any edge of the branch
  * @return false if the rectangle does not intersect any edge of the branch
  */
-bool RectangleSearch::RectangleHasEdgeIntersection(branch *currBranch)
+bool RectangleSearch::RectangleHasIntersection(branch *currBranch)
 {
 	return		!(l >= currBranch->bounds[1] ||
 			  r <= currBranch->bounds[0] ||
@@ -296,7 +296,7 @@ bool RectangleSearch::RectangleHasEdgeIntersection(branch *currBranch)
  * @return true if the rectangle intersects any edge of the leaf
  * @return false if the rectangle does not intersect any edge of the leaf
  */
-bool RectangleSearch::RectangleHasEdgeIntersection(leaf *currLeaf)
+bool RectangleSearch::RectangleHasIntersection(leaf *currLeaf)
 {
 	return		!(l >= currLeaf->bounds[1] ||
 			  r <= currLeaf->bounds[0] ||

@@ -127,155 +127,6 @@ void Quadtree::SetCamera(GLCamera *newCam)
 }
 
 
-void Quadtree::InitializeGL()
-{
-	if (!outlineShader)
-		outlineShader = new SolidShader();
-	outlineShader->SetColor(0.0, 0.0, 0.0, 1.0);
-	outlineShader->SetCamera(camera);
-
-	if (!VAOId)
-		glGenVertexArrays(1, &VAOId);
-	if (!VBOId)
-		glGenBuffers(1, &VBOId);
-	if (!IBOId)
-		glGenBuffers(1, &IBOId);
-
-	glBindVertexArray(VAOId);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBOId);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4*sizeof(GLfloat), 0);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBOId);
-
-	glBindVertexArray(0);
-
-	std::vector<Point> pointsList = BuildOutlinesList();
-	std::vector<GLuint> indicesList = BuildOutlinesIndices();
-
-	if (pointsList.size() > 0 && indicesList.size() > 0)
-	{
-		LoadOutlinesToGPU(pointsList, indicesList);
-	} else {
-		glLoaded = false;
-		return;
-	}
-
-	GLenum errorCheck = glGetError();
-	if (errorCheck == GL_NO_ERROR)
-	{
-		if (VAOId && VBOId && IBOId)
-		{
-			glLoaded = true;
-		} else {
-			DEBUG("Quadtree drawing not initialized");
-			glLoaded = false;
-		}
-	} else {
-		const GLubyte *errString = gluErrorString(errorCheck);
-		DEBUG("Quadtree Drawing OpenGL Error: " << errString);
-		glLoaded = false;
-	}
-}
-
-
-std::vector<Point> Quadtree::BuildOutlinesList()
-{
-	std::vector<Point> pointsList;
-
-	if (root)
-	{
-		AddOutlinePoints(root, &pointsList);
-	}
-
-	return pointsList;
-}
-
-
-std::vector<GLuint> Quadtree::BuildOutlinesIndices()
-{
-	std::vector<GLuint> indexList;
-
-	for (int i=0; i<pointCount/4; ++i)
-	{
-		indexList.push_back(4*i+0); indexList.push_back(4*i+1);
-		indexList.push_back(4*i+1); indexList.push_back(4*i+2);
-		indexList.push_back(4*i+2); indexList.push_back(4*i+3);
-		indexList.push_back(4*i+3); indexList.push_back(4*i+0);
-	}
-
-	return indexList;
-}
-
-
-void Quadtree::AddOutlinePoints(branch *currBranch, std::vector<Point> *pointsList)
-{
-	pointsList->push_back(Point(currBranch->bounds[0], currBranch->bounds[2]));
-	pointsList->push_back(Point(currBranch->bounds[1], currBranch->bounds[2]));
-	pointsList->push_back(Point(currBranch->bounds[1], currBranch->bounds[3]));
-	pointsList->push_back(Point(currBranch->bounds[0], currBranch->bounds[3]));
-	pointCount += 4;
-
-	for (int i=0; i<4; ++i)
-		if (currBranch->branches[i])
-			AddOutlinePoints(currBranch->branches[i], pointsList);
-	for (int i=0; i<4; ++i)
-		if (currBranch->leaves[i])
-			AddOutlinePoints(currBranch->leaves[i], pointsList);
-}
-
-
-void Quadtree::AddOutlinePoints(leaf *currLeaf, std::vector<Point> *pointsList)
-{
-	pointsList->push_back(Point(currLeaf->bounds[0], currLeaf->bounds[2]));
-	pointsList->push_back(Point(currLeaf->bounds[1], currLeaf->bounds[2]));
-	pointsList->push_back(Point(currLeaf->bounds[1], currLeaf->bounds[3]));
-	pointsList->push_back(Point(currLeaf->bounds[0], currLeaf->bounds[3]));
-	pointCount += 4;
-}
-
-
-void Quadtree::LoadOutlinesToGPU(std::vector<Point> pointsList, std::vector<GLuint> indicesList)
-{
-	const size_t VertexBufferSize = 4*sizeof(GLfloat)*pointsList.size();
-	const size_t IndexBufferSize = sizeof(GLuint)*indicesList.size();
-
-	if (VBOId)
-	{
-		glBindBuffer(GL_ARRAY_BUFFER, VBOId);
-		glBufferData(GL_ARRAY_BUFFER, VertexBufferSize, NULL, GL_STATIC_DRAW);
-		GLfloat* glNodeData = (GLfloat*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-		if (glNodeData)
-		{
-			for (unsigned int i=0; i<pointsList.size(); ++i)
-			{
-				glNodeData[4*i+0] = (GLfloat)pointsList[i].x;
-				glNodeData[4*i+1] = (GLfloat)pointsList[i].y;
-				glNodeData[4*i+2] = (GLfloat)1.0;
-				glNodeData[4*i+3] = (GLfloat)1.0;
-			}
-		}
-		glUnmapBuffer(GL_ARRAY_BUFFER);
-	}
-
-	if (IBOId)
-	{
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBOId);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, IndexBufferSize, NULL, GL_STATIC_DRAW);
-		GLuint* glIndexData = (GLuint*)glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
-		if (glIndexData)
-		{
-			for (unsigned int i=0; i<indicesList.size(); ++i)
-			{
-				glIndexData[i] = indicesList[i];
-			}
-		}
-		glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
-	}
-}
-
-
 /**
  * @brief This function is called by the user to find the Node closest to the provided x-y coordinates
  *
@@ -289,7 +140,6 @@ void Quadtree::LoadOutlinesToGPU(std::vector<Point> pointsList, std::vector<GLui
 Node* Quadtree::FindNode(float x, float y)
 {
 	return 0;
-//	return FindNode(x, y, root);
 }
 
 
@@ -329,91 +179,13 @@ std::vector<Element*> Quadtree::FindElementsInPolygon(std::vector<Point> polyLin
 
 std::vector<std::vector<Element*>*> Quadtree::GetElementsThroughDepth(int depth)
 {
-	std::vector< std::vector<Element*> *> elements;
-	if (hasElements && depth >= 0)
-	{
-		RetrieveElements(root, depth, &elements);
-	}
-	return elements;
+	return depthSearch.FindElements(root, depth);
 }
 
 
 std::vector<std::vector<Element*>*> Quadtree::GetElementsThroughDepth(int depth, float l, float r, float b, float t)
 {
-	std::vector< std::vector<Element*> *> elements;
-	if (hasElements && depth >= 0)
-	{
-		RetrieveElements(root, depth, &elements, l, r, b, t);
-	}
-	return elements;
-}
-
-
-void Quadtree::RetrieveElements(branch *currBranch, int depth, std::vector< std::vector<Element*>* >*list)
-{
-	for (int i=0; i<4; i++)
-	{
-		if (currBranch->leaves[i] != 0)
-		{
-			list->push_back(&currBranch->leaves[i]->elements);
-		}
-	}
-
-	if (depth <= 0)
-	{
-		return;
-	} else {
-		depth--;
-		for (int i=0; i<4; i++)
-		{
-			if (currBranch->branches[i] != 0)
-			{
-				RetrieveElements(currBranch->branches[i], depth, list);
-			}
-		}
-	}
-}
-
-
-void Quadtree::RetrieveElements(branch *currBranch, int depth, std::vector<std::vector<Element *> *> *list, float l, float r, float b, float t)
-{
-	/* Check starting with root if branch intersects with window, searching recursively */
-	/* Once an intersection has been found, retrieve elements through depth value */
-
-	for (int i=0; i<4; i++)
-	{
-		if (currBranch->leaves[i] != 0)
-		{
-			if (rectangleIntersection(currBranch->leaves[i], l, r, b, t) ||
-			    leafIsInside(currBranch->leaves[i], l, r, b, t) ||
-			    rectangleIsInside(l, r, b, t, currBranch->leaves[i]))
-			{
-				list->push_back(&currBranch->leaves[i]->elements);
-			}
-		}
-	}
-
-	if (depth <= 0)
-	{
-		return;
-	} else {
-//		depth--;
-		for (int i=0; i<4; i++)
-		{
-			if (currBranch->branches[i] != 0)
-			{
-				if (branchIsInside(currBranch->branches[i], l, r, b, t))
-				{
-					RetrieveElements(currBranch->branches[i], depth, list);
-				}
-				else if (rectangleIntersection(currBranch->branches[i], l, r, b, t) ||
-					 rectangleIsInside(l, r, b, t, currBranch->branches[i]))
-				{
-					RetrieveElements(currBranch->branches[i], depth, list, l, r, b, t);
-				}
-			}
-		}
-	}
+	return depthSearch.FindElements(root, depth, l, r, b, t);
 }
 
 
@@ -676,55 +448,150 @@ bool Quadtree::nodeIsInside(Node *currNode, branch *currBranch)
 }
 
 
-bool Quadtree::rectangleIntersection(leaf *currLeaf, float l, float r, float b, float t)
+void Quadtree::InitializeGL()
 {
-	return		!(l >= currLeaf->bounds[1] ||
-			  r <= currLeaf->bounds[0] ||
-			  b >= currLeaf->bounds[3] ||
-			  t <= currLeaf->bounds[2]);
+	if (!outlineShader)
+		outlineShader = new SolidShader();
+	outlineShader->SetColor(0.0, 0.0, 0.0, 1.0);
+	outlineShader->SetCamera(camera);
+
+	if (!VAOId)
+		glGenVertexArrays(1, &VAOId);
+	if (!VBOId)
+		glGenBuffers(1, &VBOId);
+	if (!IBOId)
+		glGenBuffers(1, &IBOId);
+
+	glBindVertexArray(VAOId);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBOId);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4*sizeof(GLfloat), 0);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBOId);
+
+	glBindVertexArray(0);
+
+	std::vector<Point> pointsList = BuildOutlinesList();
+	std::vector<GLuint> indicesList = BuildOutlinesIndices();
+
+	if (pointsList.size() > 0 && indicesList.size() > 0)
+	{
+		LoadOutlinesToGPU(pointsList, indicesList);
+	} else {
+		glLoaded = false;
+		return;
+	}
+
+	GLenum errorCheck = glGetError();
+	if (errorCheck == GL_NO_ERROR)
+	{
+		if (VAOId && VBOId && IBOId)
+		{
+			glLoaded = true;
+		} else {
+			DEBUG("Quadtree drawing not initialized");
+			glLoaded = false;
+		}
+	} else {
+		const GLubyte *errString = gluErrorString(errorCheck);
+		DEBUG("Quadtree Drawing OpenGL Error: " << errString);
+		glLoaded = false;
+	}
 }
 
 
-bool Quadtree::rectangleIntersection(branch *currBranch, float l, float r, float b, float t)
+std::vector<Point> Quadtree::BuildOutlinesList()
 {
-	return		!(l >= currBranch->bounds[1] ||
-			  r <= currBranch->bounds[0] ||
-			  b >= currBranch->bounds[3] ||
-			  t <= currBranch->bounds[2]);
+	std::vector<Point> pointsList;
+
+	if (root)
+	{
+		AddOutlinePoints(root, &pointsList);
+	}
+
+	return pointsList;
 }
 
 
-bool Quadtree::branchIsInside(branch *currBranch, float l, float r, float b, float t)
+std::vector<GLuint> Quadtree::BuildOutlinesIndices()
 {
-	return		currBranch->bounds[0] >= l &&
-			currBranch->bounds[1] <= r &&
-			currBranch->bounds[2] >= b &&
-			currBranch->bounds[3] <= t;
+	std::vector<GLuint> indexList;
+
+	for (int i=0; i<pointCount/4; ++i)
+	{
+		indexList.push_back(4*i+0); indexList.push_back(4*i+1);
+		indexList.push_back(4*i+1); indexList.push_back(4*i+2);
+		indexList.push_back(4*i+2); indexList.push_back(4*i+3);
+		indexList.push_back(4*i+3); indexList.push_back(4*i+0);
+	}
+
+	return indexList;
 }
 
 
-bool Quadtree::leafIsInside(leaf *currLeaf, float l, float r, float b, float t)
+void Quadtree::AddOutlinePoints(branch *currBranch, std::vector<Point> *pointsList)
 {
-	return		currLeaf->bounds[0] >= l &&
-			currLeaf->bounds[1] <= r &&
-			currLeaf->bounds[2] >= b &&
-			currLeaf->bounds[3] <= t;
+	pointsList->push_back(Point(currBranch->bounds[0], currBranch->bounds[2]));
+	pointsList->push_back(Point(currBranch->bounds[1], currBranch->bounds[2]));
+	pointsList->push_back(Point(currBranch->bounds[1], currBranch->bounds[3]));
+	pointsList->push_back(Point(currBranch->bounds[0], currBranch->bounds[3]));
+	pointCount += 4;
+
+	for (int i=0; i<4; ++i)
+		if (currBranch->branches[i])
+			AddOutlinePoints(currBranch->branches[i], pointsList);
+	for (int i=0; i<4; ++i)
+		if (currBranch->leaves[i])
+			AddOutlinePoints(currBranch->leaves[i], pointsList);
 }
 
 
-bool Quadtree::rectangleIsInside(float l, float r, float b, float t, branch *currBranch)
+void Quadtree::AddOutlinePoints(leaf *currLeaf, std::vector<Point> *pointsList)
 {
-	return		l >= currBranch->bounds[0] &&
-			r <= currBranch->bounds[1] &&
-			b >= currBranch->bounds[2] &&
-			t <= currBranch->bounds[3];
+	pointsList->push_back(Point(currLeaf->bounds[0], currLeaf->bounds[2]));
+	pointsList->push_back(Point(currLeaf->bounds[1], currLeaf->bounds[2]));
+	pointsList->push_back(Point(currLeaf->bounds[1], currLeaf->bounds[3]));
+	pointsList->push_back(Point(currLeaf->bounds[0], currLeaf->bounds[3]));
+	pointCount += 4;
 }
 
 
-bool Quadtree::rectangleIsInside(float l, float r, float b, float t, leaf *currLeaf)
+void Quadtree::LoadOutlinesToGPU(std::vector<Point> pointsList, std::vector<GLuint> indicesList)
 {
-	return		l >= currLeaf->bounds[0] &&
-			r <= currLeaf->bounds[1] &&
-			b >= currLeaf->bounds[2] &&
-			t <= currLeaf->bounds[3];
+	const size_t VertexBufferSize = 4*sizeof(GLfloat)*pointsList.size();
+	const size_t IndexBufferSize = sizeof(GLuint)*indicesList.size();
+
+	if (VBOId)
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, VBOId);
+		glBufferData(GL_ARRAY_BUFFER, VertexBufferSize, NULL, GL_STATIC_DRAW);
+		GLfloat* glNodeData = (GLfloat*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+		if (glNodeData)
+		{
+			for (unsigned int i=0; i<pointsList.size(); ++i)
+			{
+				glNodeData[4*i+0] = (GLfloat)pointsList[i].x;
+				glNodeData[4*i+1] = (GLfloat)pointsList[i].y;
+				glNodeData[4*i+2] = (GLfloat)1.0;
+				glNodeData[4*i+3] = (GLfloat)1.0;
+			}
+		}
+		glUnmapBuffer(GL_ARRAY_BUFFER);
+	}
+
+	if (IBOId)
+	{
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBOId);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, IndexBufferSize, NULL, GL_STATIC_DRAW);
+		GLuint* glIndexData = (GLuint*)glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
+		if (glIndexData)
+		{
+			for (unsigned int i=0; i<indicesList.size(); ++i)
+			{
+				glIndexData[i] = indicesList[i];
+			}
+		}
+		glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
+	}
 }
