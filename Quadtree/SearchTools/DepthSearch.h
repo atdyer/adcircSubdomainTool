@@ -18,14 +18,13 @@ class DepthSearch
 
 	private:
 
-		/* Rectangle and depth properties */
-		float	l;
-		float	r;
-		float	b;
-		float	t;
+		float l;	/**< The left bound of the rectangle */
+		float r;	/**< The right bound of the rectangle */
+		float b;	/**< The bottom bound of the rectangle */
+		float t;	/**< The top bound of the rectangle */
 
 		/* Searching Lists */
-		std::vector< std::vector<Element*> *>	listOfElementLists;
+		std::vector< std::vector<Element*> *>	listOfElementLists;	/**< List of pointers to the vectors containing the desired Elements */
 
 		/* Search Functions */
 		void	SearchElements(branch *currBranch, int depth);
