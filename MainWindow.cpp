@@ -245,6 +245,13 @@ void MainWindow::on_selectNodeSingle_clicked()
 }
 
 
+void MainWindow::on_selectElementSingle_clicked()
+{
+	if (testDomain)
+		testDomain->UseTool(ClickToolType, ElementSelection);
+}
+
+
 void MainWindow::CheckForMemoryLeaks()
 {
 	if (GLShader::GetNumShaders() != 0)
@@ -260,6 +267,3 @@ void MainWindow::CheckForMemoryLeaks()
 		DEBUG("MEMORY LEAK: " << GLCamera::GetNumCameras() << " GLCamera objects not deleted");
 	}
 }
-
-
-

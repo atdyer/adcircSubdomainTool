@@ -114,13 +114,33 @@ Element* ClickSearch::SearchElements(leaf *currLeaf)
 {
 	if (PointIsInsideSquare(currLeaf))
 	{
+		bool itStarted = false;
+		Element* currElement = 0;
+		Element* currClosest = 0;
+		float recordDistance = 0.0;
+		float currentDistance = 0.0;
 		for (std::vector<Element*>::iterator it = currLeaf->elements.begin(); it != currLeaf->elements.end(); ++it)
 		{
-			if (PointIsInsideElement(*it))
+			currElement = *it;
+			if (!itStarted)
 			{
-				return *it;
+				itStarted = true;
+				currClosest = currElement;
+				recordDistance = Distance(currElement);
+			} else {
+				currentDistance = Distance(currElement);
+				if (currentDistance < recordDistance)
+				{
+					currClosest = currElement;
+				}
 			}
+//			if (PointIsInsideElement(*it))
+//			{
+//				return *it;
+//			}
 		}
+		DEBUG("Distance: " << recordDistance);
+		return currClosest;
 	}
 	return 0;
 }
@@ -178,14 +198,17 @@ bool ClickSearch::PointIsInsideSquare(leaf *currLeaf)
  */
 bool ClickSearch::PointIsInsideElement(Element *currElement)
 {
-	Node *p1 = currElement->n1;
-	Node *p2 = currElement->n2;
-	Node *p3 = currElement->n3;
-	float denominator = ((p2->normY - p3->normY) * (p1->normX - p3->normX) + (p3->normX - p2->normX) * (p1->normY - p3->normY));
-	float a = ((p2->normY - p3->normY) * (x - p3->normX) + (p3->normX - p2->normX) * (y - p3->normY)) / denominator;
-	float b = ((p3->normY - p1->normY) * (x - p3->normX) + (p1->normX - p3->normX) * (y - p3->normX)) / denominator;
-	float c = 1.0 - a - b;
-	return a > 0.0 && b > 0.0 && c > 0.0;
+	Node *n1 = currElement->n1;
+	Node *n2 = currElement->n2;
+	Node *n3 = currElement->n3;
+	float a = (n2->normX - n1->normX)*(y - n1->normY) - (x - n1->normX)*(n2->normY - n1->normY);
+	float b = (n3->normX - n2->normX)*(y - n2->normY) - (x - n2->normX)*(n3->normY - n2->normY);
+	float c = (n1->normX - n3->normX)*(y - n3->normY) - (x - n3->normX)*(n1->normY - n3->normY);
+
+
+	if ((a > 0 && b > 0 && c > 0) || (a < 0 && b < 0 && c < 0))
+		return true;
+	return false;
 }
 
 
@@ -200,4 +223,10 @@ bool ClickSearch::PointIsInsideElement(Element *currElement)
 float ClickSearch::Distance(Node *currNode)
 {
 	return sqrt(pow(x - currNode->normX, 2.0) + pow(y - currNode->normY, 2.0));
+}
+
+
+float ClickSearch::Distance(Element *currElement)
+{
+	return (Distance(currElement->n1) + Distance(currElement->n2) + Distance(currElement->n3)) / 3.0;
 }

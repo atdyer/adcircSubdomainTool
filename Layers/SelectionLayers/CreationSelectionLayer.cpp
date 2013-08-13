@@ -333,7 +333,12 @@ void CreationSelectionLayer::MouseRelease(QMouseEvent *event)
 {
 	if (activeToolType == ClickToolType)
 	{
-		GetSelectionFromMouseClick(event->x(), event->y());
+		if (camera)
+		{
+			float mouseX, mouseY;
+			camera->GetUnprojectedPoint(event->x(), event->y(), &mouseX, &mouseY);
+			GetSelectionFromMouseClick(mouseX, mouseY);
+		}
 	}
 	else if (activeTool)
 	{
@@ -660,9 +665,9 @@ void CreationSelectionLayer::GetSelectionFromMouseClick(float x, float y)
 			std::vector<Element*> *newList = newState->GetState();
 			std::vector<Element*> *currList = selectedState->GetState();
 
-			if (newList->size() > 0)
+			if (newList && newList->size() > 0)
 			{
-				if (currList->size() > 0)
+				if (currList && currList->size() > 0)
 				{
 					/* There are currently selected elements, so combine the lists */
 					newList->reserve(newList->size() + currList->size());
@@ -688,6 +693,8 @@ void CreationSelectionLayer::GetSelectionFromMouseClick(float x, float y)
 				/* No elements were selected, so just go ahead and delete the new list */
 				delete newState;
 			}
+		} else {
+			DEBUG("Couldn't find an Element");
 		}
 	}
 }

@@ -31,6 +31,7 @@ class ClickSearch
 		bool	PointIsInsideSquare(leaf *currLeaf);
 		bool	PointIsInsideElement(Element* currElement);
 		float	Distance(Node *currNode);
+		float	Distance(Element *currElement);
 };
 
 #endif // CLICKSEARCH_H

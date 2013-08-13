@@ -355,7 +355,14 @@ Element* TerrainLayer::GetElement(unsigned int elementNumber)
 Element* TerrainLayer::GetElement(float x, float y)
 {
 	if (quadtree)
-		return quadtree->FindElement(x, y);
+	{
+//		if (camera)
+//		{
+//			float newX, newY;
+//			camera->GetUnprojectedPoint(x, y, &newX, &newY);
+			return quadtree->FindElement(x, y);
+//		}
+	}
 	return 0;
 }
 
