@@ -43,7 +43,8 @@ SOURCES += main.cpp\
     Quadtree/SearchTools/PolygonSearch.cpp \
     Quadtree/Quadtree.cpp \
     Quadtree/SearchTools/CircleSearch.cpp \
-    Quadtree/SearchTools/RectangleSearch.cpp
+    Quadtree/SearchTools/RectangleSearch.cpp \
+    Quadtree/SearchTools/DepthSearch.cpp
 
 HEADERS  += MainWindow.h \
     OpenGL/OpenGLPanel.h \
@@ -76,7 +77,8 @@ HEADERS  += MainWindow.h \
     Quadtree/Quadtree.h \
     Quadtree/QuadtreeData.h \
     Quadtree/SearchTools/CircleSearch.h \
-    Quadtree/SearchTools/RectangleSearch.h
+    Quadtree/SearchTools/RectangleSearch.h \
+    Quadtree/SearchTools/DepthSearch.h
 
 FORMS    += MainWindow.ui \
     Dialogs/CreateProjectDialog.ui
