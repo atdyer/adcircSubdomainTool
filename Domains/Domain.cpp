@@ -103,6 +103,8 @@ void Domain::MouseClick(QMouseEvent *event)
 
 	if (currentMode == SelectionAction && selectionLayer)
 		selectionLayer->MouseClick(event);
+
+	emit UpdateGL();
 }
 
 
@@ -126,7 +128,6 @@ void Domain::MouseMove(QMouseEvent *event)
 	else if (currentMode == SelectionAction && selectionLayer)
 	{
 		selectionLayer->MouseMove(event);
-//		selectionLayer->MouseMove(newx, newy);
 	}
 	emit UpdateGL();
 
@@ -146,8 +147,6 @@ void Domain::MouseRelease(QMouseEvent *event)
 	if (currentMode == SelectionAction && selectionLayer)
 	{
 		selectionLayer->MouseRelease(event);
-//		selectionLayer->MouseRelease(oldx, oldy);
-//		currentMode = DisplayAction;
 	}
 
 	emit UpdateGL();
@@ -169,7 +168,8 @@ void Domain::KeyPress(QKeyEvent *event)
 		ToggleTerrainQuadtree();
 	else if (event->key() == Qt::Key_E)
 		UseTool(ClickToolType, ElementSelection);
-	if (selectionLayer)
+
+	if (currentMode == SelectionAction && selectionLayer)
 		selectionLayer->KeyPress(event);
 }
 

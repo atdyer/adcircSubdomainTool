@@ -56,6 +56,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
+	if (event->key() == Qt::Key_E)
+		ui->toolBox->setCurrentWidget(ui->createSubdomainPage);
 	if (testDomain)
 		testDomain->KeyPress(event);
 }

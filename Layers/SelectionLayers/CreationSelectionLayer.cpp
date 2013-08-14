@@ -322,8 +322,6 @@ void CreationSelectionLayer::UseTool(ToolType tool, SelectionType)
 
 	if (activeTool)
 		activeTool->UseTool();
-
-	DEBUG("Using tool: " << activeToolType);
 }
 
 
@@ -343,16 +341,7 @@ void CreationSelectionLayer::MouseMove(QMouseEvent *event)
 
 void CreationSelectionLayer::MouseRelease(QMouseEvent *event)
 {
-/*	if (activeToolType == ClickToolType)
-	{
-		if (camera)
-		{
-			float mouseX, mouseY;
-			camera->GetUnprojectedPoint(event->x(), event->y(), &mouseX, &mouseY);
-			GetSelectionFromMouseClick(mouseX, mouseY);
-		}
-	}
-	else*/ if (activeTool)
+	if (activeTool)
 	{
 		activeTool->MouseRelease(event);
 	}
@@ -673,56 +662,6 @@ void CreationSelectionLayer::UseState(ElementState *state)
 	/* Update the data on the GPU */
 	LoadDataToGPU();
 }
-
-
-//void CreationSelectionLayer::GetSelectionFromMouseClick(float x, float y)
-//{
-//	if (terrainLayer)
-//	{
-//		Element *selectedElement = terrainLayer->GetElement(x, y);
-//		if (selectedElement)
-//		{
-//			std::vector<Element*> list;
-//			list.push_back(selectedElement);
-//			ElementState *newState = new ElementState(list);
-
-//			/* Get pointers to new list of selected elements and current list of selected elements */
-//			std::vector<Element*> *newList = newState->GetState();
-//			std::vector<Element*> *currList = selectedState->GetState();
-
-//			if (newList && newList->size() > 0)
-//			{
-//				if (currList && currList->size() > 0)
-//				{
-//					/* There are currently selected elements, so combine the lists */
-//					newList->reserve(newList->size() + currList->size());
-//					newList->insert(newList->end(), currList->begin(), currList->end());
-
-//					/* Sort the new list */
-//					std::sort(newList->begin(), newList->end());
-
-//					/* Get rid of any duplicates in the newly created list */
-//					std::vector<Element*>::iterator it;
-//					it = std::unique(newList->begin(), newList->end());
-//					newList->resize(std::distance(newList->begin(), it));
-//				}
-//				emit Message(QString("Element #")
-//					     .append(QString::number(selectedElement->elementNumber))
-//					     .append(" selected. <b>")
-//					     .append(QString::number(newList->size()))
-//					     .append("</b> total elements selected."));
-
-//				UseNewState(newState);
-
-//			} else {
-//				/* No elements were selected, so just go ahead and delete the new list */
-//				delete newState;
-//			}
-//		} else {
-//			DEBUG("Couldn't find an Element");
-//		}
-//	}
-//}
 
 
 void CreationSelectionLayer::GetSelectionFromActiveTool()

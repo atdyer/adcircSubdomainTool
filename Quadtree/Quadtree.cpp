@@ -390,7 +390,7 @@ void Quadtree::addNode(Node *currNode, branch *currBranch)
  * @brief Adds an Element to the quadtree
  *
  * Adds an Element to the quadtree. An element is considered to be inside of a branch
- * or leaf if its node n1 is inside of the branch or leaf. Adding the Element is done
+ * or leaf if any of its Nodes are inside of the branch or leaf. Adding the Element is done
  * by recursively going down the tree based on n1 location.
  *
  * @param currElement The Element being added

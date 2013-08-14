@@ -31,8 +31,8 @@ class ClickTool : public SelectionTool
 
 	private:
 
-		TerrainLayer*	terrain;
-		GLCamera*	camera;
+		TerrainLayer*	terrain;	/**< The TerrainLayer that nodes/elements will be selected from */
+		GLCamera*	camera;		/**< The GLCamera that is used to draw the TerrainLayer */
 
 		/* Helper Functions */
 		void	InitializeGL();
@@ -41,33 +41,28 @@ class ClickTool : public SelectionTool
 		void	FindElement();
 
 		/* OpenGL Stuff */
-		bool		glLoaded;
-		bool		visible;
-		GLuint		VAOId;
-		GLuint		VBOId;
-		GLuint		IBOId;
-		SolidShader*	pointShader;
-		GLfloat		glPoint[4];
-		GLuint		glIndex;
+		bool		glLoaded;	/**< Flag that shows if the VAO/VBO/IBO have been created */
+		bool		visible;	/**< Flag that shows if the tool is currently visible */
+		GLuint		VAOId;		/**< The vertex array object ID */
+		GLuint		VBOId;		/**< The vertex buffer object ID */
+		GLuint		IBOId;		/**< The index buffer object ID */
+		SolidShader*	pointShader;	/**< The shader used to draw the selection tool */
+		GLfloat		glPoint[4];	/**< The point data to be sent to the GPU */
+		GLuint		glIndex;	/**< The index of the point data on the GPU */
 
 		/* Mouse State */
-		bool	mousePressed;
-		int	xPixel;
-		int	yPixel;
-		float	xGL;
-		float	yGL;
+		bool	mousePressed;	/**< Flag that shows if the left mouse button is pressed */
+		bool	mouseMoved;	/**< Flag that show if the mouse moved during a click */
+		int	oldX;		/**< The last x-coordinate of the mouse (in pixels) */
+		int	oldY;		/**< The last y-coordinate of the mouse (in pixels) */
+		int	xPixel;		/**< The x-coordinate of the mouse (in pixels) */
+		int	yPixel;		/**< The y-coordinate of the mouse (in pixels) */
+		float	xGL;		/**< The x-coordinate of the mouse (in GL space) */
+		float	yGL;		/**< The y-coordinate of the mouse (in GL space) */
 
 		/* Selected Nodes/Elements */
-		std::vector<Node*>	selectedNodes;
-		std::vector<Element*>	selectedElements;
-
-		/* Viewport Attributes */
-		float	w;	/**< The viewport width */
-		float	h;	/**< The viewport height */
-		float	l;	/**< The left side of the viewport */
-		float	r;	/**< The right side of the viewport */
-		float	b;	/**< The bottom of the viewport */
-		float	t;	/**< The top of the viewport */
+		std::vector<Node*>	selectedNodes;		/**< The list of currently selected Nodes */
+		std::vector<Element*>	selectedElements;	/**< The list of currently selected Elements */
 };
 
 #endif // CLICKTOOL_H

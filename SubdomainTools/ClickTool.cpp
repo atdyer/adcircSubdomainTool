@@ -1,5 +1,9 @@
 #include "ClickTool.h"
 
+
+/**
+ * @brief A constructor that initializes the tool with default values
+ */
 ClickTool::ClickTool()
 {
 	terrain = 0;
@@ -16,6 +20,9 @@ ClickTool::ClickTool()
 	glIndex = 0;
 
 	mousePressed = false;
+	mouseMoved = false;
+	oldX = 0;
+	oldY = 0;
 	xPixel = 0;
 	yPixel = 0;
 	xGL = 0.0;
@@ -23,6 +30,10 @@ ClickTool::ClickTool()
 }
 
 
+/**
+ * @brief Destructor that cleans up memory allocated by the object and deletes
+ * buffers in the OpenGL context
+ */
 ClickTool::~ClickTool()
 {
 	/* Clean up shader */
@@ -41,6 +52,12 @@ ClickTool::~ClickTool()
 }
 
 
+/**
+ * @brief Draws the clicked point
+ *
+ * Draws the clicked point.
+ *
+ */
 void ClickTool::Draw()
 {
 	if (glLoaded && visible)
@@ -60,6 +77,13 @@ void ClickTool::Draw()
 }
 
 
+/**
+ * @brief Sets the GLCamera that will be used to draw the clicked point
+ *
+ * Sets the GLCamera that will be used to draw the clicked point.
+ *
+ * @param cam The camera that will be used to draw the clicked point
+ */
 void ClickTool::SetCamera(GLCamera *cam)
 {
 	camera = cam;
@@ -68,76 +92,167 @@ void ClickTool::SetCamera(GLCamera *cam)
 }
 
 
+/**
+ * @brief Sets the TerrainLayer that selections will be made from
+ *
+ * Sets the TerrainLayer that selections will be made from.
+ *
+ * @param layer Pointer to the desired TerrainLayer
+ */
 void ClickTool::SetTerrainLayer(TerrainLayer *layer)
 {
 	terrain = layer;
 }
 
 
-void ClickTool::SetViewportSize(float w, float h)
+/**
+ * @brief Called when viewport size changes
+ *
+ * Does nothing.
+ *
+ */
+void ClickTool::SetViewportSize(float, float)
 {
-	this->w = w;
-	this->h = h;
-	this->l = -1.0*w/h;
-	this->r = 1.0*w/h;
-	this->b = -1.0;
-	this->t = 1.0;
+
 }
 
 
+/**
+ * @brief Actions that are performed when the mouse button is clicked
+ *
+ * Actions that are performed when the mouse button is clicked. Updates the
+ * coordinates of the clicked point and sends them to the GPU
+ *
+ * @param event The QMouseEvent object created by the GUI on the click
+ */
 void ClickTool::MouseClick(QMouseEvent *event)
 {
 	mousePressed = true;
+	mouseMoved = false;
 	visible = true;
-	xPixel = event->x();
-	yPixel = event->y();
+	xPixel = oldX = event->x();
+	yPixel = oldY = event->y();
 
 	UpdateCoordinates();
 
 	if (glLoaded)
 		UpdateGL();
+
+	emit Instructions(QString("Release to select Element, move to pan"));
 }
 
 
-void ClickTool::MouseMove(QMouseEvent *)
+/**
+ * @brief Actions that are performed when the mouse moves
+ *
+ * If the mouse button is pressed, the camera is panned.
+ *
+ */
+void ClickTool::MouseMove(QMouseEvent *event)
 {
+	if (mousePressed && camera)
+	{
+		visible = false;
+		mouseMoved = true;
+		xPixel = event->x();
+		yPixel = event->y();
+		camera->Pan(xPixel-oldX, yPixel-oldY);
+		oldX = xPixel;
+		oldY = yPixel;
 
+		emit Instructions(QString("Move to pan"));
+	}
 }
 
 
-void ClickTool::MouseRelease(QMouseEvent *event)
+/**
+ * @brief Actions that are performed when the left mouse button is released
+ *
+ * Actions that are performed when the left mouse button is released. Makes
+ * tool invisible and tells everyone we're finished drawing.
+ *
+ * @param event The QMouseEvent object created by the GUI on the button release
+ */
+void ClickTool::MouseRelease(QMouseEvent *)
 {
 	mousePressed = false;
 	visible = false;
-	emit ToolFinishedDrawing();
+	if (!mouseMoved)
+	{
+		emit ToolFinishedDrawing();
+	} else {
+		emit Instructions(QString("Click on any Element to select/deselect it"));
+	}
 }
 
 
+/**
+ * @brief Actions performed when the mouse wheel is used
+ *
+ * Actions performed when the mouse wheel is used. In this case, no action
+ * is required.
+ *
+ */
 void ClickTool::MouseWheel(QWheelEvent *)
 {
 
 }
 
 
+/**
+ * @brief Actions performed when a key is pressed
+ *
+ * Actions performed when a key is pressed. In this case, no action
+ * is required
+ *
+ */
 void ClickTool::KeyPress(QKeyEvent *)
 {
 
 }
 
 
+/**
+ * @brief Function called when the user wants to use to tool
+ *
+ * Function called when the user wants to use to tool. Initializes the
+ * OpenGL context if it has not already done so.
+ *
+ */
 void ClickTool::UseTool()
 {
 	if (!glLoaded)
 		InitializeGL();
+	emit Instructions(QString("Click on any Element to select/deselect it"));
 }
 
 
+/**
+ * @brief Function used to query to the tool for all Nodes that were
+ * selected in the last interaction
+ *
+ * <b> Not yet implemented </b>
+ *
+ * Function used to query to the tool for all Nodes that were
+ * selected in the last interaction.
+ *
+ * @return A vector of pointers to all selected Nodes
+ */
 std::vector<Node*> ClickTool::GetSelectedNodes()
 {
 	return selectedNodes;
 }
 
 
+/**
+ * @brief Function used to query the tool for all Elements that were
+ * selected in the last interaction
+ *
+ * Function used to query the tool for all Elements that were
+ * selected in the last interaction.
+ *
+ * @return A vector of pointers to all selected Elements
+ */
 std::vector<Element*> ClickTool::GetSelectedElements()
 {
 	FindElement();
@@ -145,6 +260,14 @@ std::vector<Element*> ClickTool::GetSelectedElements()
 }
 
 
+/**
+ * @brief Initializes this object's state on the OpenGL context
+ *
+ * Initializes this object's state on the OpenGL context by creating
+ * the Vertex Array Object, Vertex Buffer Object, and Index Buffer
+ * Object. The VBO and IBO data are sent to the OpenGL context.
+ *
+ */
 void ClickTool::InitializeGL()
 {
 	if (!glLoaded)
@@ -195,6 +318,12 @@ void ClickTool::InitializeGL()
 }
 
 
+/**
+ * @brief Transforms the pixel coordinates to OpenGL coordinates
+ *
+ * Transforms the pixel coordinates to OpenGL coordinates.
+ *
+ */
 void ClickTool::UpdateCoordinates()
 {
 	if (camera)
@@ -202,7 +331,6 @@ void ClickTool::UpdateCoordinates()
 		camera->GetUnprojectedPoint(float(xPixel), float(yPixel), &xGL, &yGL);
 		glPoint[0] = xGL;
 		glPoint[1] = yGL;
-		DEBUG("Click: " << xGL << ", " << yGL);
 	} else {
 		xGL = xPixel;
 		yGL = yPixel;
@@ -210,6 +338,14 @@ void ClickTool::UpdateCoordinates()
 }
 
 
+/**
+ * @brief Updates the x- and y-coordinates on the OpenGL context with
+ * the first two values in the glPoint array
+ *
+ * Updates the x- and y-coordinates on the OpenGL context with
+ * the first two values in the glPoint array.
+ *
+ */
 void ClickTool::UpdateGL()
 {
 	if (!glLoaded)
@@ -226,6 +362,14 @@ void ClickTool::UpdateGL()
 }
 
 
+/**
+ * @brief Searches the TerrainLayer for the clicked Element and adds it to the
+ * selectedElements list if one is found
+ *
+ * Searches the TerrainLayer for the clicked Element and adds it to the
+ * selectedElements list if one is found.
+ *
+ */
 void ClickTool::FindElement()
 {
 	if (terrain)

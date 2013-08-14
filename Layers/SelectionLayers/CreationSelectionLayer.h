@@ -124,7 +124,6 @@ class CreationSelectionLayer : public SelectionLayer
 		void	ClearRedoStack();
 		void	UseNewState(ElementState* newState);
 		void	UseState(ElementState* state);
-//		void	GetSelectionFromMouseClick(float x, float y);
 		void	GetSelectionFromActiveTool();
 
 	signals:
