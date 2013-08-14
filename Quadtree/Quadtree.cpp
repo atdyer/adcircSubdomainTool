@@ -403,10 +403,12 @@ void Quadtree::addElement(Element *currElement, branch *currBranch)
 	{
 		if (currBranch->branches[i] != 0)
 		{
-			if (nodeIsInside(currElement->n1, currBranch->branches[i]))
+			if (nodeIsInside(currElement->n1, currBranch->branches[i]) ||
+			    nodeIsInside(currElement->n2, currBranch->branches[i]) ||
+			    nodeIsInside(currElement->n3, currBranch->branches[i]))
 			{
 				addElement(currElement, currBranch->branches[i]);
-				return;
+//				return;
 			}
 		}
 	}
@@ -416,10 +418,12 @@ void Quadtree::addElement(Element *currElement, branch *currBranch)
 	{
 		if (currBranch->leaves[i] != 0)
 		{
-			if (nodeIsInside(currElement->n1, currBranch->leaves[i]))
+			if (nodeIsInside(currElement->n1, currBranch->leaves[i]) ||
+			    nodeIsInside(currElement->n2, currBranch->leaves[i]) ||
+			    nodeIsInside(currElement->n3, currBranch->leaves[i]))
 			{
 				currBranch->leaves[i]->elements.push_back(currElement);
-				return;
+//				return;
 			}
 		}
 	}

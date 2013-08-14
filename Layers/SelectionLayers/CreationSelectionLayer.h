@@ -14,6 +14,7 @@
 #include "OpenGL/Shaders/SolidShader.h"
 
 #include "SubdomainTools/SelectionTool.h"
+#include "SubdomainTools/ClickTool.h"
 #include "SubdomainTools/CircleTool.h"
 #include "SubdomainTools/RectangleTool.h"
 #include "SubdomainTools/PolygonTool.h"
@@ -88,6 +89,7 @@ class CreationSelectionLayer : public SelectionLayer
 		/* Selection Tools */
 		ToolType	activeToolType;	/**< The type of tool currently being used */
 		SelectionTool*	activeTool;	/**< The tool currently being used */
+		ClickTool*	clickTool;	/**< Tool for selecting elements one at a time */
 		CircleTool*	circleTool;	/**< Tool for selecting elements inside of a circle */
 		RectangleTool*	rectangleTool;	/**< Tool for selecting elements inside of a rectangle */
 		PolygonTool*	polygonTool;	/**< Tool for selecting elements inside of a user defined polygon */
@@ -112,6 +114,7 @@ class CreationSelectionLayer : public SelectionLayer
 		void	InitializeGL();
 
 		/* Tool Initialization Functions */
+		void	CreateClickTool();
 		void	CreateCircleTool();
 		void	CreateRectangleTool();
 		void	CreatePolygonTool();
@@ -121,7 +124,7 @@ class CreationSelectionLayer : public SelectionLayer
 		void	ClearRedoStack();
 		void	UseNewState(ElementState* newState);
 		void	UseState(ElementState* state);
-		void	GetSelectionFromMouseClick(float x, float y);
+//		void	GetSelectionFromMouseClick(float x, float y);
 		void	GetSelectionFromActiveTool();
 
 	signals:

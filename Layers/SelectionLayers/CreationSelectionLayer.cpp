@@ -11,6 +11,7 @@ CreationSelectionLayer::CreationSelectionLayer()
 {
 	activeToolType = CircleToolType;
 	activeTool = 0;
+	clickTool = 0;
 	circleTool = 0;
 	rectangleTool = 0;
 	polygonTool = 0;
@@ -28,6 +29,7 @@ CreationSelectionLayer::CreationSelectionLayer()
 	boundaryShader = 0;
 
 	mousePressed = false;
+	CreateClickTool();
 	CreateCircleTool();
 	CreateRectangleTool();
 	CreatePolygonTool();
@@ -66,6 +68,8 @@ CreationSelectionLayer::~CreationSelectionLayer()
 		glDeleteBuffers(1, &IBOId);
 
 	/* Delete all tools */
+	if (clickTool)
+		delete clickTool;
 	if (circleTool)
 		delete circleTool;
 	if (rectangleTool)
@@ -226,6 +230,8 @@ void CreationSelectionLayer::SetCamera(GLCamera *newCamera)
 		boundaryShader->SetCamera(newCamera);
 
 	/* Set the camera for the tools */
+	if (clickTool)
+		clickTool->SetCamera(newCamera);
 	if (circleTool)
 		circleTool->SetCamera(newCamera);
 	if (rectangleTool)
@@ -264,6 +270,8 @@ void CreationSelectionLayer::SetTerrainLayer(TerrainLayer *newLayer)
 
 	connect(terrainLayer, SIGNAL(finishedLoadingToGPU()), this, SLOT(TerrainDataLoaded()));
 
+	if (clickTool)
+		clickTool->SetTerrainLayer(newLayer);
 	if (circleTool)
 		circleTool->SetTerrainLayer(newLayer);
 	if (rectangleTool)
@@ -289,7 +297,9 @@ void CreationSelectionLayer::UseTool(ToolType tool, SelectionType)
 	/* If the tool hasn't been created yet, create it now */
 	if (activeToolType == ClickToolType)
 	{
-		activeTool = 0;
+		if (!clickTool)
+			CreateClickTool();
+		activeTool = clickTool;
 	}
 	else if (activeToolType == CircleToolType)
 	{
@@ -312,6 +322,8 @@ void CreationSelectionLayer::UseTool(ToolType tool, SelectionType)
 
 	if (activeTool)
 		activeTool->UseTool();
+
+	DEBUG("Using tool: " << activeToolType);
 }
 
 
@@ -331,7 +343,7 @@ void CreationSelectionLayer::MouseMove(QMouseEvent *event)
 
 void CreationSelectionLayer::MouseRelease(QMouseEvent *event)
 {
-	if (activeToolType == ClickToolType)
+/*	if (activeToolType == ClickToolType)
 	{
 		if (camera)
 		{
@@ -340,7 +352,7 @@ void CreationSelectionLayer::MouseRelease(QMouseEvent *event)
 			GetSelectionFromMouseClick(mouseX, mouseY);
 		}
 	}
-	else if (activeTool)
+	else*/ if (activeTool)
 	{
 		activeTool->MouseRelease(event);
 	}
@@ -518,6 +530,19 @@ void CreationSelectionLayer::InitializeGL()
 }
 
 
+void CreationSelectionLayer::CreateClickTool()
+{
+	if (!clickTool)
+		clickTool = new ClickTool();
+	clickTool->SetTerrainLayer(terrainLayer);
+	clickTool->SetCamera(camera);
+	connect(clickTool, SIGNAL(Message(QString)), this, SIGNAL(Message(QString)));
+	connect(clickTool, SIGNAL(Instructions(QString)), this, SIGNAL(Instructions(QString)));
+	connect(clickTool, SIGNAL(ToolFinishedDrawing()), this, SLOT(GetSelectionFromTool()));
+	connect(clickTool, SIGNAL(ToolFinishedDrawing()), this, SIGNAL(ToolFinishedDrawing()));
+}
+
+
 /**
  * @brief Creates the circle selection tool
  *
@@ -650,54 +675,54 @@ void CreationSelectionLayer::UseState(ElementState *state)
 }
 
 
-void CreationSelectionLayer::GetSelectionFromMouseClick(float x, float y)
-{
-	if (terrainLayer)
-	{
-		Element *selectedElement = terrainLayer->GetElement(x, y);
-		if (selectedElement)
-		{
-			std::vector<Element*> list;
-			list.push_back(selectedElement);
-			ElementState *newState = new ElementState(list);
+//void CreationSelectionLayer::GetSelectionFromMouseClick(float x, float y)
+//{
+//	if (terrainLayer)
+//	{
+//		Element *selectedElement = terrainLayer->GetElement(x, y);
+//		if (selectedElement)
+//		{
+//			std::vector<Element*> list;
+//			list.push_back(selectedElement);
+//			ElementState *newState = new ElementState(list);
 
-			/* Get pointers to new list of selected elements and current list of selected elements */
-			std::vector<Element*> *newList = newState->GetState();
-			std::vector<Element*> *currList = selectedState->GetState();
+//			/* Get pointers to new list of selected elements and current list of selected elements */
+//			std::vector<Element*> *newList = newState->GetState();
+//			std::vector<Element*> *currList = selectedState->GetState();
 
-			if (newList && newList->size() > 0)
-			{
-				if (currList && currList->size() > 0)
-				{
-					/* There are currently selected elements, so combine the lists */
-					newList->reserve(newList->size() + currList->size());
-					newList->insert(newList->end(), currList->begin(), currList->end());
+//			if (newList && newList->size() > 0)
+//			{
+//				if (currList && currList->size() > 0)
+//				{
+//					/* There are currently selected elements, so combine the lists */
+//					newList->reserve(newList->size() + currList->size());
+//					newList->insert(newList->end(), currList->begin(), currList->end());
 
-					/* Sort the new list */
-					std::sort(newList->begin(), newList->end());
+//					/* Sort the new list */
+//					std::sort(newList->begin(), newList->end());
 
-					/* Get rid of any duplicates in the newly created list */
-					std::vector<Element*>::iterator it;
-					it = std::unique(newList->begin(), newList->end());
-					newList->resize(std::distance(newList->begin(), it));
-				}
-				emit Message(QString("Element #")
-					     .append(QString::number(selectedElement->elementNumber))
-					     .append(" selected. <b>")
-					     .append(QString::number(newList->size()))
-					     .append("</b> total elements selected."));
+//					/* Get rid of any duplicates in the newly created list */
+//					std::vector<Element*>::iterator it;
+//					it = std::unique(newList->begin(), newList->end());
+//					newList->resize(std::distance(newList->begin(), it));
+//				}
+//				emit Message(QString("Element #")
+//					     .append(QString::number(selectedElement->elementNumber))
+//					     .append(" selected. <b>")
+//					     .append(QString::number(newList->size()))
+//					     .append("</b> total elements selected."));
 
-				UseNewState(newState);
+//				UseNewState(newState);
 
-			} else {
-				/* No elements were selected, so just go ahead and delete the new list */
-				delete newState;
-			}
-		} else {
-			DEBUG("Couldn't find an Element");
-		}
-	}
-}
+//			} else {
+//				/* No elements were selected, so just go ahead and delete the new list */
+//				delete newState;
+//			}
+//		} else {
+//			DEBUG("Couldn't find an Element");
+//		}
+//	}
+//}
 
 
 void CreationSelectionLayer::GetSelectionFromActiveTool()

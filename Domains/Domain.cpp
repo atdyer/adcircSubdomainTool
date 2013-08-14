@@ -163,6 +163,17 @@ void Domain::MouseWheel(QWheelEvent *event)
 }
 
 
+void Domain::KeyPress(QKeyEvent *event)
+{
+	if (event->key() == Qt::Key_O)
+		ToggleTerrainQuadtree();
+	else if (event->key() == Qt::Key_E)
+		UseTool(ClickToolType, ElementSelection);
+	if (selectionLayer)
+		selectionLayer->KeyPress(event);
+}
+
+
 /**
  * @brief Sets the window size used by the camera and all tools
  *

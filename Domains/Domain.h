@@ -6,6 +6,7 @@
 #include <QProgressBar>
 #include <QMouseEvent>
 #include <QWheelEvent>
+#include <QKeyEvent>
 
 #include <string>
 #include <vector>
@@ -66,6 +67,7 @@ class Domain : public QObject
 		void	MouseMove(QMouseEvent *event);
 		void	MouseRelease(QMouseEvent *event);
 		void	MouseWheel(QWheelEvent *event);
+		void	KeyPress(QKeyEvent *event);
 		void	SetWindowSize(float w, float h);
 		void	UseTool(ToolType tool, SelectionType selection);
 		void	Undo();

@@ -55,7 +55,6 @@ class MainWindow : public QMainWindow
 		void on_selectNodesCircle_clicked();
 		void on_selectNodesSquare_clicked();
 		void on_selectNodeSingle_clicked();
-
 		void on_selectElementSingle_clicked();
 
 	private:

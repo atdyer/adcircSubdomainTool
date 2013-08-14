@@ -56,9 +56,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
-	if (event->key() == Qt::Key_O)
-		if (testDomain)
-			testDomain->ToggleTerrainQuadtree();
+	if (testDomain)
+		testDomain->KeyPress(event);
 }
 
 

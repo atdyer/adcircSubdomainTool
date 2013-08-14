@@ -114,33 +114,13 @@ Element* ClickSearch::SearchElements(leaf *currLeaf)
 {
 	if (PointIsInsideSquare(currLeaf))
 	{
-		bool itStarted = false;
-		Element* currElement = 0;
-		Element* currClosest = 0;
-		float recordDistance = 0.0;
-		float currentDistance = 0.0;
 		for (std::vector<Element*>::iterator it = currLeaf->elements.begin(); it != currLeaf->elements.end(); ++it)
 		{
-			currElement = *it;
-			if (!itStarted)
+			if (PointIsInsideElement(*it))
 			{
-				itStarted = true;
-				currClosest = currElement;
-				recordDistance = Distance(currElement);
-			} else {
-				currentDistance = Distance(currElement);
-				if (currentDistance < recordDistance)
-				{
-					currClosest = currElement;
-				}
+				return *it;
 			}
-//			if (PointIsInsideElement(*it))
-//			{
-//				return *it;
-//			}
 		}
-		DEBUG("Distance: " << recordDistance);
-		return currClosest;
 	}
 	return 0;
 }
