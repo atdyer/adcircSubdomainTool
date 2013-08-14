@@ -41,6 +41,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	// Expand the project tree
 	ui->projectTree->expandAll();
 
+	/* Create the system tray icon */
+	trayIcon = 0;
+	trayIconMenu = 0;
+//	CreateSystemTrayIcon();
 
 }
 
@@ -88,7 +92,7 @@ void MainWindow::showMouseY(float newY)
 
 
 /**
- * @brief Updates the GL Panel status bar with a new number of nodes
+ * @brief Updates the GL Panel status bar with a  new number of nodes
  * @param numNodes Number of nodes
  */
 void MainWindow::showNumNodes(int numNodes)
@@ -250,6 +254,19 @@ void MainWindow::on_selectElementSingle_clicked()
 {
 	if (testDomain)
 		testDomain->UseTool(ClickToolType, ElementSelection);
+}
+
+
+void MainWindow::CreateSystemTrayIcon()
+{
+	if (!trayIcon)
+		trayIcon = new QSystemTrayIcon(this);
+	if (!trayIconMenu)
+		trayIconMenu = new QMenu(this);
+
+	trayIcon->setContextMenu(trayIconMenu);
+	trayIcon->setIcon(QIcon(":/icons/images/icons/16_16/circle.png"));
+	trayIcon->show();
 }
 
 

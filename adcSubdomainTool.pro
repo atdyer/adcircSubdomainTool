@@ -87,5 +87,14 @@ HEADERS  += MainWindow.h \
 FORMS    += MainWindow.ui \
     Dialogs/CreateProjectDialog.ui
 
+target.path = /usr/local/bin
+desktop.path = /usr/share/applications
+desktop.files += AdcircSubdomainTool.desktop
+
+INSTALLS += target desktop
+
 RESOURCES += \
     icons.qrc
+
+OTHER_FILES += \
+    AdcircSubdomainTool.desktop

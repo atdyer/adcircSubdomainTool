@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Adcirc Subdomain Modeling Tool
+Exec=/usr/local/bin/adcSubdomainTool
+Terminal=false
+Icon=accessories-text-editor
+Type=Application
+Categories=GNOME;GTK;Utility;Application;

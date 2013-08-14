@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
+  <property name="windowModality">
+   <enum>Qt::NonModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -12,6 +15,13 @@
   </property>
   <property name="windowTitle">
    <string>Adcirc Subdomain Modeling Tool</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="icons.qrc">
+    <normaloff>:/icons/images/icons/16_16/cursor.png</normaloff>:/icons/images/icons/16_16/cursor.png</iconset>
+  </property>
+  <property name="unifiedTitleAndToolBarOnMac">
+   <bool>false</bool>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -1666,7 +1676,7 @@ border-top-right-radius: 4px;
  </resources>
  <connections/>
  <buttongroups>
-  <buttongroup name="nth_PlotTypeButtonGroup"/>
   <buttongroup name="fillColorButtonGroup"/>
+  <buttongroup name="nth_PlotTypeButtonGroup"/>
  </buttongroups>
 </ui>

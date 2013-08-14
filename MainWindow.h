@@ -7,6 +7,8 @@
 #include <QLabel>
 #include <QFileDialog>
 #include <QKeyEvent>
+#include <QSystemTrayIcon>
+#include <QMenu>
 //#include <qwt_plot.h>
 
 #include "Domains/Domain.h"
@@ -61,6 +63,11 @@ class MainWindow : public QMainWindow
 
 		// The Main Window
 		Ui::MainWindow	*ui;
+
+		/* System Tray Icon */
+		QSystemTrayIcon	*trayIcon;
+		QMenu		*trayIconMenu;
+		void		CreateSystemTrayIcon();
 
 		// The status bar specific to the GLPanel
 		QStatusBar	*glStatusBar;
