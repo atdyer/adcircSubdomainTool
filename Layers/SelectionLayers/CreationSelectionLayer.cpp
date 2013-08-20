@@ -686,14 +686,16 @@ void CreationSelectionLayer::GetSelectionFromActiveTool()
 				newList->reserve(newList->size() + currList->size());
 				newList->insert(newList->end(), currList->begin(), currList->end());
 
-				/* Sort the new list */
-				std::sort(newList->begin(), newList->end());
-
-				/* Get rid of any duplicates in the newly created list */
-				std::vector<Element*>::iterator it;
-				it = std::unique(newList->begin(), newList->end());
-				newList->resize(std::distance(newList->begin(), it));
 			}
+
+			/* Sort the new list */
+			std::sort(newList->begin(), newList->end());
+
+			/* Get rid of any duplicates in the newly created list */
+			std::vector<Element*>::iterator it;
+			it = std::unique(newList->begin(), newList->end());
+			newList->resize(std::distance(newList->begin(), it));
+
 			emit Message(QString::number(newList->size() - oldNumSelected).append(" new elements selected. <b>").append(QString::number(newList->size()).append("</b> total elements selected.")));
 
 			UseNewState(newState);
