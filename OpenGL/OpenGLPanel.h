@@ -26,9 +26,9 @@ class OpenGLPanel : public QGLWidget
 
 		Domain*		activeDomain;	/**< The Domain currently being displayed */
 
-		void		initializeGL();
-		void		resizeGL(int w, int h);
-		void		paintGL();
+		void	initializeGL();
+		void	resizeGL(int w, int h);
+		void	paintGL();
 
 		// Mouse and key events
 		void	wheelEvent(QWheelEvent *event);

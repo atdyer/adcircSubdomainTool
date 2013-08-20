@@ -123,13 +123,14 @@ void Domain::MouseMove(QMouseEvent *event)
 		if (clicking)
 		{
 			Pan(dx, dy);
+			emit UpdateGL();
 		}
 	}
 	else if (currentMode == SelectionAction && selectionLayer)
 	{
 		selectionLayer->MouseMove(event);
+		emit UpdateGL();
 	}
-	emit UpdateGL();
 
 	oldx = newx;
 	oldy = newy;
@@ -574,6 +575,12 @@ unsigned int Domain::GetNumElementsSelected()
 	if (selectionLayer)
 		return selectionLayer->GetNumElementsSelected();
 	return 0;
+}
+
+
+GLCamera* Domain::GetCamera()
+{
+	return camera;
 }
 
 

@@ -1676,7 +1676,7 @@ border-top-right-radius: 4px;
  </resources>
  <connections/>
  <buttongroups>
-  <buttongroup name="fillColorButtonGroup"/>
   <buttongroup name="nth_PlotTypeButtonGroup"/>
+  <buttongroup name="fillColorButtonGroup"/>
  </buttongroups>
 </ui>

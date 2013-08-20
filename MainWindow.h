@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "Domains/Domain.h"
 
 #include <QMainWindow>
 #include <QThread>
@@ -9,9 +10,8 @@
 #include <QKeyEvent>
 #include <QSystemTrayIcon>
 #include <QMenu>
+#include <QGLFormat>
 //#include <qwt_plot.h>
-
-#include "Domains/Domain.h"
 
 namespace Ui {
 	class MainWindow;
