@@ -159,6 +159,8 @@ void Domain::MouseWheel(QWheelEvent *event)
 	if (!clicking)
 		Zoom(event->delta());
 
+	CalculateMouseCoordinates();
+
 	emit UpdateGL();
 }
 
