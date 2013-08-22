@@ -46,7 +46,8 @@ SOURCES += main.cpp\
     Quadtree/SearchTools/RectangleSearch.cpp \
     Quadtree/SearchTools/DepthSearch.cpp \
     Quadtree/SearchTools/ClickSearch.cpp \
-    SubdomainTools/ClickTool.cpp
+    SubdomainTools/ClickTool.cpp \
+    Projects/Project.cpp
 
 HEADERS  += MainWindow.h \
     OpenGL/OpenGLPanel.h \
@@ -82,7 +83,8 @@ HEADERS  += MainWindow.h \
     Quadtree/SearchTools/RectangleSearch.h \
     Quadtree/SearchTools/DepthSearch.h \
     Quadtree/SearchTools/ClickSearch.h \
-    SubdomainTools/ClickTool.h
+    SubdomainTools/ClickTool.h \
+    Projects/Project.h
 
 FORMS    += MainWindow.ui \
     Dialogs/CreateProjectDialog.ui
