@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui opengl
+QT       += core gui opengl xml
 
 include ( /usr/local/qwt-6.1.0/features/qwt.prf )
 

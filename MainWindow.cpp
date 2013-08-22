@@ -211,6 +211,7 @@ void MainWindow::on_openFileButton_clicked()
 
 void MainWindow::on_newProjectButton_clicked()
 {
+	Project testProject("/home/tristan/Desktop/testProject.spf");
 //	if (ui->GLPanel)
 //		ui->GLPanel->enterCircleSubdomainMode();
 }

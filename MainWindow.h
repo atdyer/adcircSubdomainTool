@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "Projects/Project.h"
 #include "Domains/Domain.h"
 
 #include <QMainWindow>

@@ -3,15 +3,19 @@
 
 #include <vector>
 
+#include <QObject>
 #include <QDir>
+#include <QMessageBox>
+#include <QDomDocument>
 
 #include "Domains/Domain.h"
 
-class Project
+class Project : public QObject
 {
+		Q_OBJECT
 	public:
 		Project();
-		Project(QDir projectDir);
+		Project(QString projFile);
 		~Project();
 
 		void	SetProjectDirectory(QDir newDirectory);
@@ -19,7 +23,7 @@ class Project
 		void	SetFullFort15(QDir newPath);
 		void	SetFullFort63(QDir newPath);
 
-		int	CreateNewSubdomain(QString newName);
+		unsigned int	CreateNewSubdomain(QString newName);
 
 	private:
 
@@ -27,6 +31,11 @@ class Project
 
 		Domain*			fullDomain;	/**< This project's full domain */
 		std::vector<Domain*>	subDomains;	/**< List of this project's subdomains */
+
+
+		void	ReadProjectFile(QString filePath);
+		void	ReadFullDomainInfo(QDomNodeList nodeList);
+		void	ReadSubDomainInfo(QDomNodeList nodeList);
 };
 
 #endif // PROJECT_H
