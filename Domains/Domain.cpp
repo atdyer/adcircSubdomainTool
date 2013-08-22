@@ -200,6 +200,7 @@ void Domain::UseTool(ToolType tool, SelectionType selection)
 	currentMode = SelectionAction;
 	if (selectionLayer)
 		selectionLayer->UseTool(tool, selection);
+	emit SetCursor(Qt::CrossCursor);
 }
 
 
@@ -698,4 +699,5 @@ void Domain::LoadLayerToGPU()
 void Domain::EnterDisplayMode()
 {
 	currentMode = DisplayAction;
+	emit SetCursor(Qt::ArrowCursor);
 }

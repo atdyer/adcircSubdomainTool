@@ -143,4 +143,11 @@ void OpenGLPanel::SetActiveDomain(Domain *newDomain)
 	activeDomain = newDomain;
 	activeDomain->SetWindowSize(viewportWidth, viewportHeight);
 	connect(activeDomain, SIGNAL(UpdateGL()), this, SLOT(updateGL()));
+	connect(activeDomain, SIGNAL(SetCursor(QCursor)), this, SLOT(UseCursor(QCursor)));
+}
+
+
+void OpenGLPanel::UseCursor(const QCursor &cursorType)
+{
+	setCursor(cursorType);
 }

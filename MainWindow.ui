@@ -9,15 +9,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1029</width>
-    <height>794</height>
+    <width>1236</width>
+    <height>789</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Adcirc Subdomain Modeling Tool</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="icons.qrc">
+   <iconset>
     <normaloff>:/icons/images/icons/16_16/cursor.png</normaloff>:/icons/images/icons/16_16/cursor.png</iconset>
   </property>
   <property name="unifiedTitleAndToolBarOnMac">
@@ -29,6 +29,9 @@
      <layout class="QHBoxLayout" name="topLayout">
       <item>
        <layout class="QVBoxLayout" name="leftSideLayout">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetDefaultConstraint</enum>
+        </property>
         <item>
          <layout class="QHBoxLayout" name="projectButtonsLayout">
           <item>
@@ -229,7 +232,7 @@ border-top-right-radius: 4px;
              <x>0</x>
              <y>0</y>
              <width>256</width>
-             <height>364</height>
+             <height>359</height>
             </rect>
            </property>
            <property name="styleSheet">
@@ -413,7 +416,7 @@ border-top-right-radius: 4px;
              <x>0</x>
              <y>0</y>
              <width>210</width>
-             <height>364</height>
+             <height>359</height>
             </rect>
            </property>
            <attribute name="label">
@@ -489,7 +492,17 @@ border-top-right-radius: 4px;
                 <item>
                  <widget class="QToolButton" name="selectElementSingle">
                   <property name="text">
-                   <string>...</string>
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="icons.qrc">
+                    <normaloff>:/icons/images/icons/24_24/crosshair.png</normaloff>:/icons/images/icons/24_24/crosshair.png</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>24</width>
+                    <height>24</height>
+                   </size>
                   </property>
                  </widget>
                 </item>
@@ -509,7 +522,13 @@ border-top-right-radius: 4px;
                   </property>
                   <property name="icon">
                    <iconset resource="icons.qrc">
-                    <normaloff>:/icons/images/icons/16_16/circle.png</normaloff>:/icons/images/icons/16_16/circle.png</iconset>
+                    <normaloff>:/icons/images/icons/24_24/circle.png</normaloff>:/icons/images/icons/24_24/circle.png</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>24</width>
+                    <height>24</height>
+                   </size>
                   </property>
                  </widget>
                 </item>
@@ -529,12 +548,30 @@ border-top-right-radius: 4px;
                   </property>
                   <property name="icon">
                    <iconset resource="icons.qrc">
-                    <normaloff>:/icons/images/icons/16_16/square.png</normaloff>:/icons/images/icons/16_16/square.png</iconset>
+                    <normaloff>:/icons/images/icons/24_24/square.png</normaloff>:/icons/images/icons/24_24/square.png</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>24</width>
+                    <height>24</height>
+                   </size>
                   </property>
                  </widget>
                 </item>
                 <item>
                  <widget class="QToolButton" name="selectNodeSingle">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
                   <property name="toolTip">
                    <string>Select individual elements</string>
                   </property>
@@ -549,7 +586,13 @@ border-top-right-radius: 4px;
                   </property>
                   <property name="icon">
                    <iconset resource="icons.qrc">
-                    <normaloff>:/icons/images/icons/16_16/cursor.png</normaloff>:/icons/images/icons/16_16/cursor.png</iconset>
+                    <normaloff>:/icons/images/icons/24_24/polygon.png</normaloff>:/icons/images/icons/24_24/polygon.png</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>24</width>
+                    <height>24</height>
+                   </size>
                   </property>
                  </widget>
                 </item>
@@ -595,6 +638,16 @@ border-top-right-radius: 4px;
                   <property name="text">
                    <string>...</string>
                   </property>
+                  <property name="icon">
+                   <iconset resource="icons.qrc">
+                    <normaloff>:/icons/images/icons/24_24/crosshair.png</normaloff>:/icons/images/icons/24_24/crosshair.png</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>24</width>
+                    <height>24</height>
+                   </size>
+                  </property>
                  </widget>
                 </item>
                 <item>
@@ -604,7 +657,13 @@ border-top-right-radius: 4px;
                   </property>
                   <property name="icon">
                    <iconset resource="icons.qrc">
-                    <normaloff>:/icons/images/icons/16_16/circle.png</normaloff>:/icons/images/icons/16_16/circle.png</iconset>
+                    <normaloff>:/icons/images/icons/24_24/circle.png</normaloff>:/icons/images/icons/24_24/circle.png</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>24</width>
+                    <height>24</height>
+                   </size>
                   </property>
                  </widget>
                 </item>
@@ -615,14 +674,30 @@ border-top-right-radius: 4px;
                   </property>
                   <property name="icon">
                    <iconset resource="icons.qrc">
-                    <normaloff>:/icons/images/icons/16_16/square.png</normaloff>:/icons/images/icons/16_16/square.png</iconset>
+                    <normaloff>:/icons/images/icons/24_24/square.png</normaloff>:/icons/images/icons/24_24/square.png</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>24</width>
+                    <height>24</height>
+                   </size>
                   </property>
                  </widget>
                 </item>
                 <item>
                  <widget class="QToolButton" name="deselectElementPolygon">
                   <property name="text">
-                   <string>P</string>
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="icons.qrc">
+                    <normaloff>:/icons/images/icons/24_24/polygon.png</normaloff>:/icons/images/icons/24_24/polygon.png</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>24</width>
+                    <height>24</height>
+                   </size>
                   </property>
                  </widget>
                 </item>
@@ -688,7 +763,7 @@ border-top-right-radius: 4px;
              <x>0</x>
              <y>0</y>
              <width>168</width>
-             <height>364</height>
+             <height>359</height>
             </rect>
            </property>
            <attribute name="label">
@@ -701,7 +776,7 @@ border-top-right-radius: 4px;
              <x>0</x>
              <y>0</y>
              <width>168</width>
-             <height>364</height>
+             <height>359</height>
             </rect>
            </property>
            <attribute name="label">
@@ -714,7 +789,7 @@ border-top-right-radius: 4px;
              <x>0</x>
              <y>0</y>
              <width>168</width>
-             <height>364</height>
+             <height>359</height>
             </rect>
            </property>
            <attribute name="label">
@@ -1683,7 +1758,7 @@ border-top-right-radius: 4px;
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1029</width>
+     <width>1236</width>
      <height>25</height>
     </rect>
    </property>
@@ -1746,7 +1821,7 @@ border-top-right-radius: 4px;
  </resources>
  <connections/>
  <buttongroups>
-  <buttongroup name="fillColorButtonGroup"/>
   <buttongroup name="nth_PlotTypeButtonGroup"/>
+  <buttongroup name="fillColorButtonGroup"/>
  </buttongroups>
 </ui>

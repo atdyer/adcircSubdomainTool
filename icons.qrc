@@ -1,7 +1,12 @@
 <RCC>
     <qresource prefix="/icons">
         <file>images/icons/16_16/square.png</file>
-        <file>images/icons/16_16/cursor.png</file>
         <file>images/icons/16_16/circle.png</file>
+        <file>images/icons/16_16/polygon.png</file>
+        <file>images/icons/24_24/polygon.png</file>
+        <file>images/icons/16_16/crosshair.png</file>
+        <file>images/icons/24_24/circle.png</file>
+        <file>images/icons/24_24/crosshair.png</file>
+        <file>images/icons/24_24/square.png</file>
     </qresource>
 </RCC>

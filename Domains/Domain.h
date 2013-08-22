@@ -137,10 +137,11 @@ class Domain : public QObject
 
 		void	Message(QString);
 		void	Instructions(QString);
-		void	MouseX(float);		/**< Emits the mouse x-coordinate in domain space as the mouse is moved */
-		void	MouseY(float);		/**< Emits the mouse y-coordinate in domain space as the mosue is moved */
-		void	UndoAvailable(bool);	/**< Emitted when an undo action becomes available or unavailable */
-		void	RedoAvailable(bool);	/**< Emitted when a redo action becomes available or unavailable */
+		void	MouseX(float);			/**< Emits the mouse x-coordinate in domain space as the mouse is moved */
+		void	MouseY(float);			/**< Emits the mouse y-coordinate in domain space as the mosue is moved */
+		void	UndoAvailable(bool);		/**< Emitted when an undo action becomes available or unavailable */
+		void	RedoAvailable(bool);		/**< Emitted when a redo action becomes available or unavailable */
+		void	SetCursor(const QCursor &);	/**< Emitted when the cursor needs to change */
 
 		/* Node and Element Count Pass Through Signals */
 		void	NumNodesDomain(int);		/**< Emitted when the number of nodes in the domain changes */

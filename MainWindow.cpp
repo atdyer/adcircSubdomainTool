@@ -35,8 +35,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	glStatusBar->insertWidget(1, numElementsLabel);
 	glStatusBar->insertWidget(2, numTSLabel);
 
-	// Hide the progress bar
+	// Hide the progress bar and bottom section
 	ui->progressBar->hide();
+	ui->mainTabWidget->hide();
+	ui->minimizeMainTabButton->setIcon(QIcon::fromTheme("zoom-in"));
 
 	// Expand the project tree
 	ui->projectTree->expandAll();
