@@ -5,8 +5,12 @@
 
 #include <QObject>
 #include <QDir>
+#include <QFile>
 #include <QMessageBox>
 #include <QDomDocument>
+#include <QTextStream>
+
+#include "Dialogs/CreateProjectDialog.h"
 
 #include "Domains/Domain.h"
 
@@ -51,11 +55,12 @@ class Project : public QObject
 		std::vector<Domain*>	subDomains;	/**< List of this project's subdomains */
 
 		/* Creating a new project */
-		void	CreateProjectFile(QString directory, QString filename);
+		bool	CreateProjectFile(QString directory, QString filename);
 
 		bool	ProjectFileExists(QString checkDirectory);
 		void	WarnUnableToCreateDir(QString directory);
 		void	WarnProjectAlreadyExists(QString directory);
+		void	WarnUnableToCreateFile(QString filename);
 
 		/* Opening a project */
 		void	ReadProjectFile(QString filePath);

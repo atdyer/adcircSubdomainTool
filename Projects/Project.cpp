@@ -31,7 +31,14 @@ Project::~Project()
 bool Project::CreateProject()
 {
 	/* Open up the create project dialog */
-
+	CreateProjectDialog dialog;
+	if (dialog.exec())
+	{
+		QString directory = dialog.GetProjectDirectory();
+		QString name = dialog.GetProjectName();
+		return CreateProject(directory, name);
+	}
+	return false;
 }
 
 
@@ -47,7 +54,8 @@ bool Project::CreateProject()
  */
 bool Project::CreateProject(QString directory, QString projectName)
 {
-	projectDir = directory + projectName;
+	projectDir = directory + projectName + QDir::separator();
+	projectFile = projectName + ".spf";
 
 	/* If the directory doesn't exist, try to create it */
 	if (!QDir(projectDir).exists())
@@ -67,8 +75,7 @@ bool Project::CreateProject(QString directory, QString projectName)
 	}
 
 	/* Create the new project file */
-	CreateProjectFile(projectDir, projectName);
-	return true;
+	return CreateProjectFile(projectDir, projectFile);
 }
 
 
@@ -104,10 +111,23 @@ unsigned int Project::CreateNewSubdomain(QString newName)
  *
  * @param directory The directory in which to create the new project file
  * @param filename The name to give the new project file (without extension)
+ * @return true if the file was successfully created
+ * @return false if the file could not be created
  */
-void Project::CreateProjectFile(QString directory, QString filename)
+bool Project::CreateProjectFile(QString directory, QString filename)
 {
+	QFile file (directory+filename);
+	if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+	{
+		WarnUnableToCreateFile(filename);
+		return false;
+	}
 
+	QString emptyProject ("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<adcSubdomainProject>\n</adcSubdomainProject>\n");
+	QTextStream fileOut(&file);
+	fileOut << emptyProject;
+	file.close();
+	return true;
 }
 
 
@@ -142,6 +162,22 @@ void Project::WarnUnableToCreateDir(QString directory)
 	QMessageBox::warning(parentWidget,
 			     "Adcirc Subdomain Modeling Tool",
 			     "Unable to create directory:\n" + directory,
+			     QMessageBox::Ok);
+}
+
+
+/**
+ * @brief Warns the user that we were unable to create the desired file
+ *
+ * Warns the user that we were unable to create the desired file.
+ *
+ * @param filename The file we couldn't create
+ */
+void Project::WarnUnableToCreateFile(QString filename)
+{
+	QMessageBox::warning(parentWidget,
+			     "Adcirc Subdomain Modeling Tool",
+			     "Unable to create file: " + filename,
 			     QMessageBox::Ok);
 }
 

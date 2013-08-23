@@ -3,7 +3,6 @@
 
 #include "Projects/Project.h"
 #include "Domains/Domain.h"
-#include "Dialogs/CreateProjectDialog.h"
 
 #include <QMainWindow>
 #include <QThread>
