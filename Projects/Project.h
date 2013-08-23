@@ -9,6 +9,7 @@
 #include <QMessageBox>
 #include <QDomDocument>
 #include <QTextStream>
+#include <QTreeWidget>
 
 #include "Dialogs/CreateProjectDialog.h"
 
@@ -26,15 +27,15 @@ class Project : public QObject
 {
 		Q_OBJECT
 	public:
-		Project(QWidget *parent = 0);
-		Project(QString projFile, QWidget *parent = 0);
+		Project();
 		~Project();
 
 		/* Project-wide functionality */
+		void	SetProjectTree(QTreeWidget *newTree);
 
 		/* Creating a new project */
 		bool	CreateProject();
-		bool	CreateProject(QString directory, QString projectName);
+		bool	CreateProject(QString directory, QString projName);
 
 		/* Opening a project */
 
@@ -47,25 +48,38 @@ class Project : public QObject
 
 	private:
 
-		QWidget*	parentWidget;
+		QTreeWidget*	projectTree;
+
 		QString		projectDir;
 		QString		projectFile;
+		QString		projectName;
 
 		Domain*			fullDomain;	/**< This project's full domain */
 		std::vector<Domain*>	subDomains;	/**< List of this project's subdomains */
 
+		/* Flags */
+		bool	projectOpen;
+
+		/* Project-wide functionality */
+		void	UpdateTreeDisplay();
+
 		/* Creating a new project */
 		bool	CreateProjectFile(QString directory, QString filename);
-
-		bool	ProjectFileExists(QString checkDirectory);
-		void	WarnUnableToCreateDir(QString directory);
-		void	WarnProjectAlreadyExists(QString directory);
-		void	WarnUnableToCreateFile(QString filename);
 
 		/* Opening a project */
 		void	ReadProjectFile(QString filePath);
 		void	ReadFullDomainInfo(QDomNodeList nodeList);
 		void	ReadSubDomainInfo(QDomNodeList nodeList);
+
+		/* Helper functions */
+		bool	ProjectFileExists(QString checkDirectory);
+
+		/* Warning dialogs */
+		bool	WarnProjectAlreadyOpen();
+		void	WarnUnableToCreateDir(QString directory);
+		void	WarnProjectAlreadyExists(QString directory);
+		void	WarnUnableToCreateFile(QString filename);
+
 };
 
 #endif // PROJECT_H

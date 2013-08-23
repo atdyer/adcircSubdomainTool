@@ -41,6 +41,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->minimizeMainTabButton->setIcon(QIcon::fromTheme("zoom-in"));
 
 	// Expand the project tree
+	testProject.SetProjectTree(ui->projectTree);
 	ui->projectTree->expandAll();
 
 	/* Create the system tray icon */
@@ -211,7 +212,6 @@ void MainWindow::on_openFileButton_clicked()
 
 void MainWindow::on_newProjectButton_clicked()
 {
-	Project testProject;
 	if (testProject.CreateProject())
 		DEBUG("Project successfully created");
 	else

@@ -16,6 +16,8 @@ CreateProjectDialog::CreateProjectDialog(QWidget *parent) :
 	projectDirectory = ui->projectDirectory->text();
 	projectName = ui->projectName->text();
 
+	CheckForExistingProject();
+
 	ui->projectName->selectAll();
 }
 

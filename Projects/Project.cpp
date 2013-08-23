@@ -1,43 +1,48 @@
 #include "Project.h"
 
-Project::Project(QWidget *parent) :
-	parentWidget(parent),
-	fullDomain(0)
+Project::Project() :
+	fullDomain(0),
+	projectTree(0),
+	projectOpen(false)
 {
-	fullDomain = 0;
-}
 
-
-Project::Project(QString projFile, QWidget *parent) :
-	parentWidget(parent),
-	projectFile(projFile),
-	fullDomain(0)
-{
-	ReadProjectFile(projFile);
 }
 
 
 Project::~Project()
 {
-//	if (fullDomain)
-//		delete fullDomain;
 
-//	for (unsigned int i=0; i<subDomains.size(); ++i)
-//		if (subDomains[i])
-//			delete subDomains[i];
+}
+
+
+/**
+ * @brief Sets the tree widget that is used to display project contents
+ *
+ * Sets the tree widget that is used to display project contents.
+ *
+ * @param newTree The project tree of the UI
+ */
+void Project::SetProjectTree(QTreeWidget *newTree)
+{
+	projectTree = newTree;
 }
 
 
 bool Project::CreateProject()
 {
-	/* Open up the create project dialog */
-	CreateProjectDialog dialog;
-	if (dialog.exec())
+	if (!projectOpen || WarnProjectAlreadyOpen())
 	{
-		QString directory = dialog.GetProjectDirectory();
-		QString name = dialog.GetProjectName();
-		return CreateProject(directory, name);
+		/* Open up the create project dialog */
+		CreateProjectDialog dialog;
+		dialog.setModal(true);
+		if (dialog.exec())
+		{
+			QString directory = dialog.GetProjectDirectory();
+			QString name = dialog.GetProjectName();
+			return CreateProject(directory, name);
+		}
 	}
+
 	return false;
 }
 
@@ -45,37 +50,44 @@ bool Project::CreateProject()
 /**
  * @brief Creates a project in the directory if one does not already exist
  *
- * Creates a project in the directory if one does not already exist.
+ * Creates a project in the directory if one does not already exist. A directory
+ * of the project name is created inside of the provided parent directory, as
+ * well as a project file (.spf)
  *
  * @param directory The directory in which to create the new project
  * @param filename The name to give the new project file (without extension)
  * @return true if the project was successfully created
  * @return false if the project was not created
  */
-bool Project::CreateProject(QString directory, QString projectName)
+bool Project::CreateProject(QString directory, QString projName)
 {
-	projectDir = directory + projectName + QDir::separator();
-	projectFile = projectName + ".spf";
-
-	/* If the directory doesn't exist, try to create it */
-	if (!QDir(projectDir).exists())
+	if (!projectOpen || WarnProjectAlreadyOpen())
 	{
-		if (!QDir().mkdir(projectDir))
+		projectDir = directory + projName + QDir::separator();
+		projectFile = projName + ".spf";
+		projectName = projName;
+
+		/* If the directory doesn't exist, try to create it */
+		if (!QDir(projectDir).exists())
 		{
-			WarnUnableToCreateDir(projectDir);
+			if (!QDir().mkdir(projectDir))
+			{
+				WarnUnableToCreateDir(projectDir);
+				return false;
+			}
+		}
+
+		/* Make sure there isn't already a project in the directory */
+		if (ProjectFileExists(projectDir))
+		{
+			WarnProjectAlreadyExists(projectDir);
 			return false;
 		}
-	}
 
-	/* Make sure there isn't already a project in the directory */
-	if (ProjectFileExists(projectDir))
-	{
-		WarnProjectAlreadyExists(projectDir);
-		return false;
+		/* Create the new project file */
+		return CreateProjectFile(projectDir, projectFile);
 	}
-
-	/* Create the new project file */
-	return CreateProjectFile(projectDir, projectFile);
+	return false;
 }
 
 
@@ -103,6 +115,33 @@ unsigned int Project::CreateNewSubdomain(QString newName)
 }
 
 
+void Project::UpdateTreeDisplay()
+{
+	if (projectTree)
+	{
+		projectTree->clear();
+		if (projectOpen)
+		{
+			QFont boldFont;
+			boldFont.setBold(true);
+
+			QTreeWidgetItem *treeTop = new QTreeWidgetItem(projectTree);
+			treeTop->setData(0, Qt::DisplayRole, projectName);
+			treeTop->setData(0, Qt::FontRole, boldFont);
+			treeTop->setData(0, Qt::StatusTipRole, projectName + " - " + projectDir);
+
+			QTreeWidgetItem *fullDomainTop = new QTreeWidgetItem(treeTop);
+			fullDomainTop->setData(0, Qt::DisplayRole, QString("Full Domain"));
+
+			QTreeWidgetItem *subDomainsTop = new QTreeWidgetItem(treeTop);
+			subDomainsTop->setData(0, Qt::DisplayRole, QString("Sub Domains"));
+
+			projectTree->expandAll();
+		}
+	}
+}
+
+
 /**
  * @brief Creates a project file in the provided directory if one does not already exist
  *
@@ -127,75 +166,12 @@ bool Project::CreateProjectFile(QString directory, QString filename)
 	QTextStream fileOut(&file);
 	fileOut << emptyProject;
 	file.close();
+
+	projectOpen = true;
+
+	UpdateTreeDisplay();
+
 	return true;
-}
-
-
-/**
- * @brief Checks if a project file exists in the provided directory
- *
- * Checks if a project file exists in the provided directory.
- *
- * @param checkDirectory The directory to check
- * @return true if a project file exists in the directory
- * @return false if a project file does not exist in the directory
- */
-bool Project::ProjectFileExists(QString checkDirectory)
-{
-	QStringList filters ("*.spf");
-	QDir dir (checkDirectory);
-	dir.setNameFilters(filters);
-
-	return !dir.entryList().isEmpty();
-}
-
-
-/**
- * @brief Warns the user that we were unable to create the desired directory
- *
- * Warns the user that we were unable to create the desired directory.
- *
- * @param directory The directory that we tried to create
- */
-void Project::WarnUnableToCreateDir(QString directory)
-{
-	QMessageBox::warning(parentWidget,
-			     "Adcirc Subdomain Modeling Tool",
-			     "Unable to create directory:\n" + directory,
-			     QMessageBox::Ok);
-}
-
-
-/**
- * @brief Warns the user that we were unable to create the desired file
- *
- * Warns the user that we were unable to create the desired file.
- *
- * @param filename The file we couldn't create
- */
-void Project::WarnUnableToCreateFile(QString filename)
-{
-	QMessageBox::warning(parentWidget,
-			     "Adcirc Subdomain Modeling Tool",
-			     "Unable to create file: " + filename,
-			     QMessageBox::Ok);
-}
-
-
-/**
- * @brief Warns the user that a project file already exists in the directory
- *
- * Warns the user that a project file already exists in the directory.
- *
- * @param directory The directory in which a project file already exists
- *
- */
-void Project::WarnProjectAlreadyExists(QString directory)
-{
-	QMessageBox::warning(parentWidget,
-			     "Adcirc Subdomain Modeling Tool",
-			     "A project file already exists in the following directory:\n" + directory,
-			     QMessageBox::Ok);
 }
 
 
@@ -267,4 +243,111 @@ void Project::ReadSubDomainInfo(QDomNodeList nodeList)
 			currNode = currNode.nextSibling();
 		}
 	}
+}
+
+
+/**
+ * @brief Checks if a project file exists in the provided directory
+ *
+ * Checks if a project file exists in the provided directory.
+ *
+ * @param checkDirectory The directory to check
+ * @return true if a project file exists in the directory
+ * @return false if a project file does not exist in the directory
+ */
+bool Project::ProjectFileExists(QString checkDirectory)
+{
+	QStringList filters ("*.spf");
+	QDir dir (checkDirectory);
+	dir.setNameFilters(filters);
+
+	return !dir.entryList().isEmpty();
+}
+
+
+/**
+ * @brief Warns the user that a project is currently open and asks if they would like to
+ * continue with or without saving
+ *
+ * Warns the user that a project is currently open and asks if they would like to
+ * continue with or without saving. If they choose to continue with saving, the
+ * saving will be performed here.
+ *
+ * @return true if the user would like to continue
+ * @return false if the user would not like to continue
+ */
+bool Project::WarnProjectAlreadyOpen()
+{
+	QMessageBox msgBox;
+	msgBox.setWindowTitle("Adcirc Subdomain Modeling Tool");
+	msgBox.setText("Project already open. Would you like to save and close the current project?");
+	msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Cancel | QMessageBox::Discard);
+
+	switch (msgBox.exec())
+	{
+		case QMessageBox::Save:
+			/* Save and close the project */
+			return true;
+		case QMessageBox::Cancel:
+			/* Return to the current project */
+			return false;
+		case QMessageBox::Discard:
+			/* Close the project without saving */
+			return true;
+		default:
+			/* Should never be reached */
+			return false;
+	}
+}
+
+
+/**
+ * @brief Warns the user that we were unable to create the desired directory
+ *
+ * Warns the user that we were unable to create the desired directory.
+ *
+ * @param directory The directory that we tried to create
+ */
+void Project::WarnUnableToCreateDir(QString directory)
+{
+	QMessageBox msgBox;
+	msgBox.setWindowTitle("Adcirc Subdomain Modeling Tool");
+	msgBox.setText("Unable to create directory:\n" + directory);
+	msgBox.setStandardButtons(QMessageBox::Ok);
+	msgBox.exec();
+}
+
+
+/**
+ * @brief Warns the user that we were unable to create the desired file
+ *
+ * Warns the user that we were unable to create the desired file.
+ *
+ * @param filename The file we couldn't create
+ */
+void Project::WarnUnableToCreateFile(QString filename)
+{
+	QMessageBox msgBox;
+	msgBox.setWindowTitle("Adcirc Subdomain Modeling Tool");
+	msgBox.setText("Unable to create file: " + filename);
+	msgBox.setStandardButtons(QMessageBox::Ok);
+	msgBox.exec();
+}
+
+
+/**
+ * @brief Warns the user that a project file already exists in the directory
+ *
+ * Warns the user that a project file already exists in the directory.
+ *
+ * @param directory The directory in which a project file already exists
+ *
+ */
+void Project::WarnProjectAlreadyExists(QString directory)
+{
+	QMessageBox msgBox;
+	msgBox.setWindowTitle("Adcirc Subdomain Modeling Tool");
+	msgBox.setText("A project file already exists in the following directory:\n" + directory);
+	msgBox.setStandardButtons(QMessageBox::Ok);
+	msgBox.exec();
 }

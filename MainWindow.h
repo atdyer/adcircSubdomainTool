@@ -74,6 +74,10 @@ class MainWindow : public QMainWindow
 		QStatusBar	*glStatusBar;
 		QLabel		*mouseXLabel, *mouseYLabel, *numNodesLabel, *numElementsLabel, *numTSLabel;
 
+
+		// The test Project
+		Project		testProject;
+
 		// The test Domain
 		Domain*		testDomain;
 
