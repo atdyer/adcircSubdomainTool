@@ -211,7 +211,12 @@ void MainWindow::on_openFileButton_clicked()
 
 void MainWindow::on_newProjectButton_clicked()
 {
-	Project testProject("/home/tristan/Desktop/testProject.spf");
+	CreateProjectDialog dlg;
+	if (dlg.exec())
+	{
+		DEBUG(dlg.GetProjectDirectory().toStdString() + dlg.GetProjectName().toStdString());
+	}
+//	Project testProject("/home/tristan/Desktop/testProject.spf");
 //	if (ui->GLPanel)
 //		ui->GLPanel->enterCircleSubdomainMode();
 }

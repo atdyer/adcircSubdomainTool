@@ -491,6 +491,15 @@ border-top-right-radius: 4px;
                <layout class="QHBoxLayout" name="horizontalLayout_10">
                 <item>
                  <widget class="QToolButton" name="selectElementSingle">
+                  <property name="toolTip">
+                   <string>Select individual elements</string>
+                  </property>
+                  <property name="statusTip">
+                   <string>Select individual elements</string>
+                  </property>
+                  <property name="whatsThis">
+                   <string>Select individual elements</string>
+                  </property>
                   <property name="text">
                    <string/>
                   </property>
@@ -573,13 +582,13 @@ border-top-right-radius: 4px;
                    </size>
                   </property>
                   <property name="toolTip">
-                   <string>Select individual elements</string>
+                   <string>Select elements by drawing a closed polygon</string>
                   </property>
                   <property name="statusTip">
-                   <string>Select individual elements</string>
+                   <string>Select elements by drawing a closed polygon</string>
                   </property>
                   <property name="whatsThis">
-                   <string>Select individual elements</string>
+                   <string>Select elements by drawing a closed polygon</string>
                   </property>
                   <property name="text">
                    <string/>
@@ -635,6 +644,15 @@ border-top-right-radius: 4px;
                <layout class="QHBoxLayout" name="horizontalLayout_12">
                 <item>
                  <widget class="QToolButton" name="deselectElementSingle">
+                  <property name="toolTip">
+                   <string>Deselect individual elements</string>
+                  </property>
+                  <property name="statusTip">
+                   <string>Deselect individual elements</string>
+                  </property>
+                  <property name="whatsThis">
+                   <string>Deselect individual elements</string>
+                  </property>
                   <property name="text">
                    <string>...</string>
                   </property>
@@ -652,6 +670,15 @@ border-top-right-radius: 4px;
                 </item>
                 <item>
                  <widget class="QToolButton" name="deselectElementCircle">
+                  <property name="toolTip">
+                   <string>Deselect elements by drawing a circle</string>
+                  </property>
+                  <property name="statusTip">
+                   <string>Deselect elements by drawing a circle</string>
+                  </property>
+                  <property name="whatsThis">
+                   <string>Deselect elements by drawing a circle</string>
+                  </property>
                   <property name="text">
                    <string/>
                   </property>
@@ -669,6 +696,15 @@ border-top-right-radius: 4px;
                 </item>
                 <item>
                  <widget class="QToolButton" name="deselectElementSquare">
+                  <property name="toolTip">
+                   <string>Deselect elements by drawing a square</string>
+                  </property>
+                  <property name="statusTip">
+                   <string>Deselect elements by drawing a square</string>
+                  </property>
+                  <property name="whatsThis">
+                   <string>Deselect elements by drawing a square</string>
+                  </property>
                   <property name="text">
                    <string/>
                   </property>
@@ -686,6 +722,15 @@ border-top-right-radius: 4px;
                 </item>
                 <item>
                  <widget class="QToolButton" name="deselectElementPolygon">
+                  <property name="toolTip">
+                   <string>Deselect elements by drawing a closed polygon</string>
+                  </property>
+                  <property name="statusTip">
+                   <string>Deselect elements by drawing a closed polygon</string>
+                  </property>
+                  <property name="whatsThis">
+                   <string>Deselect elements by drawing a closed polygon</string>
+                  </property>
                   <property name="text">
                    <string/>
                   </property>
@@ -1789,8 +1834,14 @@ border-top-right-radius: 4px;
      <string>Edit</string>
     </property>
    </widget>
+   <widget class="QMenu" name="menuProject">
+    <property name="title">
+     <string>Project</string>
+    </property>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
+   <addaction name="menuProject"/>
    <addaction name="menuDisplay"/>
    <addaction name="menuADCIRC"/>
    <addaction name="menuHelp"/>
