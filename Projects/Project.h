@@ -38,6 +38,7 @@ class Project : public QObject
 		bool	CreateProject(QString directory, QString projName);
 
 		/* Opening a project */
+		bool	OpenProject();
 
 		/* Editing a project */
 		void	SetFullFort14(QString newPath);
@@ -45,6 +46,10 @@ class Project : public QObject
 		void	SetFullFort63(QString newPath);
 
 		unsigned int	CreateNewSubdomain(QString newName);
+
+		/* Active domain fetching functions */
+		Domain*		GetFullDomain();
+		Domain*		GetActiveSubdomain();
 
 	private:
 
@@ -54,31 +59,43 @@ class Project : public QObject
 		QString		projectFile;
 		QString		projectName;
 
+		QDomDocument	projectData;
+
 		Domain*			fullDomain;	/**< This project's full domain */
-		std::vector<Domain*>	subDomains;	/**< List of this project's subdomains */
+		Domain*			currSubDomain;	/**< The subdomain currently being used */
+		std::vector<Domain*>	allSubDomains;	/**< List of this project's subdomains */
 
 		/* Flags */
 		bool	projectOpen;
 
 		/* Project-wide functionality */
 		void	UpdateTreeDisplay();
+		void	CreateFullDomain();
 
 		/* Creating a new project */
 		bool	CreateProjectFile(QString directory, QString filename);
 
 		/* Opening a project */
-		void	ReadProjectFile(QString filePath);
+		bool	OpenProjectDialog();
+		bool	ReadProjectFile(QString filePath);
+		void	ReadAllProjectData();
+		void	ReadFullDomainData();
+		void	ReadSubDomainData();
+
 		void	ReadFullDomainInfo(QDomNodeList nodeList);
 		void	ReadSubDomainInfo(QDomNodeList nodeList);
 
 		/* Helper functions */
 		bool	ProjectFileExists(QString checkDirectory);
+		void	SetFullDomainAttribute(QDomElement dat);
+		bool	CheckForValidFile(QString filePath);
 
 		/* Warning dialogs */
 		bool	WarnProjectAlreadyOpen();
 		void	WarnUnableToCreateDir(QString directory);
 		void	WarnProjectAlreadyExists(QString directory);
 		void	WarnUnableToCreateFile(QString filename);
+		void	WarnFileError(QString message);
 
 };
 

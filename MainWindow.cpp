@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->toolBox->setMinimumWidth(ui->projectTree->width()+6);
 
 	testDomain = 0;
+	testProject = 0;
 
 	// Create GLPanel status bar and all labels
 	glStatusBar = new QStatusBar();
@@ -41,7 +42,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->minimizeMainTabButton->setIcon(QIcon::fromTheme("zoom-in"));
 
 	// Expand the project tree
-	testProject.SetProjectTree(ui->projectTree);
 	ui->projectTree->expandAll();
 
 	/* Create the system tray icon */
@@ -55,6 +55,8 @@ MainWindow::~MainWindow()
 {
 	if (testDomain)
 		delete testDomain;
+	if (testProject)
+		delete testProject;
 	delete ui;
 
 	CheckForMemoryLeaks();
@@ -212,19 +214,27 @@ void MainWindow::on_openFileButton_clicked()
 
 void MainWindow::on_newProjectButton_clicked()
 {
-	if (testProject.CreateProject())
-		DEBUG("Project successfully created");
-	else
-		DEBUG("No project created");
+	if (!testProject)
+	{
+		testProject = new Project();
+		testProject->SetProjectTree(ui->projectTree);
+		if (testProject->CreateProject())
+			DEBUG("Project successfully created");
+		else
+			DEBUG("No project created");
+	}
 //	Project testProject("/home/tristan/Desktop/testProject.spf");
-//	if (ui->GLPanel)
-//		ui->GLPanel->enterCircleSubdomainMode();
 }
 
 void MainWindow::on_openProjectButton_clicked()
 {
-//	if (ui->GLPanel)
-//		ui->GLPanel->enterDisplayMode();
+	if (!testProject)
+	{
+		testProject = new Project();
+		testProject->SetProjectTree(ui->projectTree);
+		testProject->OpenProject();
+	}
+
 }
 
 void MainWindow::on_undoButton_clicked()

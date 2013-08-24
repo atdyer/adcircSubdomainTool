@@ -11,6 +11,6 @@ int main(int argc, char *argv[])
 
 	w.setWindowIcon(QIcon(":/cursor.png"));
 
-	
+
 	return a.exec();
 }

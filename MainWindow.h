@@ -76,7 +76,7 @@ class MainWindow : public QMainWindow
 
 
 		// The test Project
-		Project		testProject;
+		Project*	testProject;
 
 		// The test Domain
 		Domain*		testDomain;

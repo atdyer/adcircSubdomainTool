@@ -104,6 +104,7 @@ void CreateProjectDialog::OnBrowseButtonClick()
 	QFileDialog dialog(this, "Choose the Directory Where the New Project Will Be Created");
 	dialog.setFileMode(QFileDialog::Directory);
 	dialog.setDirectory(projectDirectory);
+	dialog.setModal(true);
 	if (dialog.exec())
 	{
 		selections = dialog.selectedFiles();
