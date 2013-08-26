@@ -4,11 +4,6 @@
 #include <vector>
 
 #include <QObject>
-#include <QDir>
-#include <QFile>
-#include <QMessageBox>
-#include <QDomDocument>
-#include <QTextStream>
 #include <QTreeWidget>
 
 #include "Dialogs/CreateProjectDialog.h"
@@ -36,13 +31,13 @@ class Project : public QObject
 		void	SetProjectTree(QTreeWidget *newTree);
 
 		/* Creating a new project */
-		bool	CreateProject();
-		bool	CreateProject(QString directory, QString projName);
+		void	CreateProject();
 
 		/* Opening a project */
-		bool	OpenProject();
+		void	OpenProject();
 
 		/* Editing a project */
+		bool	ProjectIsOpen();
 		void	SetFullFort14(QString newPath);
 		void	SetFullFort15(QString newPath);
 		void	SetFullFort63(QString newPath);
@@ -59,18 +54,9 @@ class Project : public QObject
 
 		ProjectFile	testProjectFile;
 
-		QString		projectDir;
-		QString		projectFile;
-		QString		projectName;
-
-		QDomDocument	projectData;
-
 		Domain*			fullDomain;	/**< This project's full domain */
 		Domain*			currSubDomain;	/**< The subdomain currently being used */
 		std::vector<Domain*>	allSubDomains;	/**< List of this project's subdomains */
-
-		/* Flags */
-		bool	projectOpen;
 
 		/* Project-wide functionality */
 		void	UpdateTreeDisplay();
@@ -80,26 +66,7 @@ class Project : public QObject
 		bool	CreateProjectFile(QString directory, QString filename);
 
 		/* Opening a project */
-		bool	OpenProjectDialog();
-		bool	ReadProjectFile(QString filePath);
-		void	ReadAllProjectData();
-		void	ReadFullDomainData();
-		void	ReadSubDomainData();
-
-		void	ReadFullDomainInfo(QDomNodeList nodeList);
-		void	ReadSubDomainInfo(QDomNodeList nodeList);
-
-		/* Helper functions */
-		bool	ProjectFileExists(QString checkDirectory);
-		void	SetFullDomainAttribute(QDomElement dat);
-		bool	CheckForValidFile(QString filePath);
-
-		/* Warning dialogs */
-		bool	WarnProjectAlreadyOpen();
-		void	WarnUnableToCreateDir(QString directory);
-		void	WarnProjectAlreadyExists(QString directory);
-		void	WarnUnableToCreateFile(QString filename);
-		void	WarnFileError(QString message);
+		void	PopulateFromProjectFile();
 
 };
 

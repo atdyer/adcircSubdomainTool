@@ -218,7 +218,8 @@ void MainWindow::on_newProjectButton_clicked()
 	{
 		testProject = new Project();
 		testProject->SetProjectTree(ui->projectTree);
-		if (testProject->CreateProject())
+		testProject->CreateProject();
+		if (testProject->ProjectIsOpen())
 			DEBUG("Project successfully created");
 		else
 			DEBUG("No project created");
@@ -232,7 +233,8 @@ void MainWindow::on_openProjectButton_clicked()
 	{
 		testProject = new Project();
 		testProject->SetProjectTree(ui->projectTree);
-		if (testProject->OpenProject())
+		testProject->OpenProject();
+		if (testProject->ProjectIsOpen())
 		{
 			testDomain = testProject->GetFullDomain();
 			testDomain->SetProgressBar(ui->progressBar);

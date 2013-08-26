@@ -6,9 +6,106 @@ ProjectFile::ProjectFile()
 }
 
 
-ProjectFile::ProjectFile(QString filePath)
+/**
+ * @brief Opens an Adcirc Subdomain Project file
+ *
+ * Once the file has been successfully opened, all ProjectFile access functions
+ * become available.
+ *
+ * Opens an Adcirc Subdomain Project file. If a project is already open,
+ * we prompt the user to either save it, discard changes, or cancel opening
+ * a new project.
+ *
+ * @param filePath The project file to open
+ */
+void ProjectFile::OpenProjectFile(QString filePath)
 {
-	fileOpen = OpenFile(filePath);
+	if (!fileOpen || WarnProjectAlreadyOpen())
+	{
+		fileOpen = OpenFile(filePath);
+	}
+}
+
+
+/**
+ * @brief Creates a project directory (and a project file within that directory) in the
+ * parent directory
+ *
+ * Creates a project directory (and a project file within that directory) in the
+ * parent directory. The newly created project file is opened and all ProjectFile
+ * access functions become available.
+ *
+ * If a project file is already open, we first prompt the user to either save,
+ * discard changes, or cancel creating a new project.
+ *
+ * @param parentDirectory The directory in which to create the project directory
+ * @param projectName The name to give both the project directory and the project file
+ */
+void ProjectFile::CreateProjectFile(QString parentDirectory, QString projectName)
+{
+	if (!fileOpen || WarnProjectAlreadyOpen())
+	{
+		/* Move into the project directory */
+		/* If the directory doesn't exist, try to create it */
+		projectDirectory = QDir(parentDirectory);
+		if (!projectDirectory.cd(projectName))
+		{
+			if (!projectDirectory.mkdir(projectName))
+			{
+				WarnFileError("Unable to create project directory");
+				return;
+			}
+			else if (!projectDirectory.cd(projectName))
+			{
+				WarnFileError("Unable to access the project directory");
+				return;
+			}
+		}
+
+		/* Make sure there isn't a project file in the directory already */
+		projectDirectory.setNameFilters(QStringList("*.spf"));
+		if (!projectDirectory.entryList().isEmpty())
+		{
+			WarnFileError(QString("A project file already exists at ").append(parentDirectory+projectName));
+			return;
+		}
+
+		/* Create the file */
+		QString filePath = projectDirectory.absolutePath() + QDir::separator() + projectName + ".spf";
+		projectFile.setFileName(filePath);
+		if (!projectFile.open(QIODevice::WriteOnly | QIODevice::Text))
+		{
+			WarnFileError(QString("Unable to open project file ").append(filePath));
+			return;
+		}
+
+		/* Write an empty project to the file */
+		QString emptyProject ("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<adcSubdomainProject>\n</adcSubdomainProject>\n");
+		QTextStream fileOut(&projectFile);
+		fileOut << emptyProject;
+		projectFile.close();
+
+		/* Open the new project to make it available for use */
+		fileOpen = OpenFile(filePath);
+	}
+}
+
+
+bool ProjectFile::ProjectIsOpen()
+{
+	return fileOpen;
+}
+
+
+QString ProjectFile::GetProjectName()
+{
+	return projectName;
+}
+
+
+QString ProjectFile::GetProjectDirectory()
+{
+	return projectDirectory.absolutePath();
 }
 
 
@@ -62,21 +159,23 @@ QString ProjectFile::GetSubDomainFort64(QString subdomainName)
 
 bool ProjectFile::OpenFile(QString filePath)
 {
-	QFile file (filePath);
+	projectFile.setFileName(filePath);
+	projectDirectory = QFileInfo(filePath).absoluteDir();
+	projectName = QFileInfo(filePath).baseName();
 
-	if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+	if (!projectFile.open(QIODevice::ReadOnly | QIODevice::Text))
 	{
 		WarnFileError(QString("Unable to open file ").append(filePath));
 		return false;
 	}
 
-	if (!setContent(&file))
+	if (!setContent(&projectFile))
 	{
 		WarnFileError("Error setting project data");
-		file.close();
+		projectFile.close();
 		return false;
 	}
-	file.close();
+	projectFile.close();
 
 	if (IsValidProjectFile())
 	{
@@ -203,6 +302,42 @@ QString ProjectFile::GetAttribute(QDomElement element, QString attributeName)
 		currentAttribute = currentAttribute.nextSibling();
 	}
 	return QString();
+}
+
+
+/**
+ * @brief Warns the user that a project is currently open and asks if they would like to
+ * continue with or without saving
+ *
+ * Warns the user that a project is currently open and asks if they would like to
+ * continue with or without saving. If they choose to continue with saving, the
+ * saving will be performed here.
+ *
+ * @return true if the user would like to continue
+ * @return false if the user would not like to continue
+ */
+bool ProjectFile::WarnProjectAlreadyOpen()
+{
+	QMessageBox msgBox;
+	msgBox.setWindowTitle("Adcirc Subdomain Modeling Tool");
+	msgBox.setText("Project already open. Would you like to save and close the current project?");
+	msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Cancel | QMessageBox::Discard);
+
+	switch (msgBox.exec())
+	{
+		case QMessageBox::Save:
+			/* Save and close the project */
+			return true;
+		case QMessageBox::Cancel:
+			/* Return to the current project */
+			return false;
+		case QMessageBox::Discard:
+			/* Close the project without saving */
+			return true;
+		default:
+			/* Should never be reached */
+			return false;
+	}
 }
 
 

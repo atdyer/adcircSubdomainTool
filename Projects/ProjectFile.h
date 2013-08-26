@@ -2,16 +2,25 @@
 #define PROJECTFILE_H
 
 #include <QDomDocument>
-#include <QFile>
 #include <QMessageBox>
+#include <QFile>
+#include <QDir>
+#include <QFileInfo>
+#include <QTextStream>
 
 class ProjectFile : public QDomDocument
 {
 	public:
 		ProjectFile();
-		ProjectFile(QString filePath);
 
-		/* Getter functions */
+		/* Open or Create a Project */
+		void	OpenProjectFile(QString filePath);
+		void	CreateProjectFile(QString parentDirectory, QString projectName);
+
+		/* Getter Functions */
+		bool	ProjectIsOpen();
+		QString GetProjectName();
+		QString GetProjectDirectory();
 		QString	GetFullDomainFort14();
 		QString GetFullDomainFort15();
 		QString	GetFullDomainFort63();
@@ -22,17 +31,21 @@ class ProjectFile : public QDomDocument
 		QString	GetSubDomainFort64(QString subdomainName);
 
 
-		/* Setter functions */
+		/* Setter Functions */
 
 	private:
 
 		bool	fileOpen;
 
+		QString projectName;
+		QFile	projectFile;
+		QDir	projectDirectory;
+
 		QDomNode	fullDomainNode;
 		QDomNodeList	subDomainNodes;
 
 
-		/* File read functions */
+		/* File Read Functions */
 		bool	OpenFile(QString filePath);
 		bool	IsValidProjectFile();
 		QString	GetFullDomainAttribute(QString attributeName);
@@ -40,10 +53,12 @@ class ProjectFile : public QDomDocument
 		QString	GetAttribute(QDomElement element, QString attributeName);
 
 
-		/* File write functions */
+		/* File Write Functions */
+
 
 
 		/* Dialogs */
+		bool	WarnProjectAlreadyOpen();
 		void	WarnFileError(QString message);
 };
 
