@@ -15,6 +15,8 @@
 
 #include "Domains/Domain.h"
 
+#include "Projects/ProjectFile.h"
+
 
 /**
  * @brief This class represents an ADCIRC Subdomain Project
@@ -54,6 +56,8 @@ class Project : public QObject
 	private:
 
 		QTreeWidget*	projectTree;
+
+		ProjectFile	testProjectFile;
 
 		QString		projectDir;
 		QString		projectFile;

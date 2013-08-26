@@ -96,10 +96,12 @@ bool Project::OpenProject()
 {
 	if (OpenProjectDialog())
 	{
-		if (ReadProjectFile(projectDir+projectFile))
-		{
-			return true;
-		}
+		testProjectFile = ProjectFile(projectDir+projectFile);
+		DEBUG(testProjectFile.GetFullDomainFort14().toStdString());
+//		if (ReadProjectFile(projectDir+projectFile))
+//		{
+//			return true;
+//		}
 	}
 	return false;
 }
