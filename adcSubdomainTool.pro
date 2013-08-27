@@ -48,7 +48,8 @@ SOURCES += main.cpp\
     Quadtree/SearchTools/ClickSearch.cpp \
     SubdomainTools/ClickTool.cpp \
     Projects/Project.cpp \
-    Projects/ProjectFile.cpp
+    Projects/ProjectFile.cpp \
+    Dialogs/DisplayOptionsDialog.cpp
 
 HEADERS  += MainWindow.h \
     OpenGL/OpenGLPanel.h \
@@ -86,10 +87,12 @@ HEADERS  += MainWindow.h \
     Quadtree/SearchTools/ClickSearch.h \
     SubdomainTools/ClickTool.h \
     Projects/Project.h \
-    Projects/ProjectFile.h
+    Projects/ProjectFile.h \
+    Dialogs/DisplayOptionsDialog.h
 
 FORMS    += MainWindow.ui \
-    Dialogs/CreateProjectDialog.ui
+    Dialogs/CreateProjectDialog.ui \
+    Dialogs/DisplayOptionsDialog.ui
 
 target.path = /usr/local/bin
 desktop.path = /usr/share/applications
