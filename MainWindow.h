@@ -47,6 +47,8 @@ class MainWindow : public QMainWindow
 
 	private slots:
 
+		void updateVisibleDomain();
+
 		// User interface event handlers
 		void on_plottingList_currentRowChanged(int currentRow);
 		void on_minimizeMainTabButton_clicked();
@@ -81,7 +83,7 @@ class MainWindow : public QMainWindow
 		// The test Domain
 		Domain*		testDomain;
 
-
+		void	ConnectNewDomain(Domain *newDomain);
 		void	CheckForMemoryLeaks();
 
 };

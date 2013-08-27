@@ -29,7 +29,7 @@ class ProjectFile : public QDomDocument
 		QString	GetSubDomainFort15(QString subdomainName);
 		QString	GetSubDomainFort63(QString subdomainName);
 		QString	GetSubDomainFort64(QString subdomainName);
-
+		QStringList GetSubDomainNames();
 
 		/* Setter Functions */
 

@@ -27,8 +27,9 @@ class Project : public QObject
 		Project();
 		~Project();
 
-		/* Project-wide functionality */
+		/* User Interface Connections */
 		void	SetProjectTree(QTreeWidget *newTree);
+		void	SetProgressBar(QProgressBar *newBar);
 
 		/* Creating a new project */
 		void	CreateProject();
@@ -44,21 +45,25 @@ class Project : public QObject
 
 		unsigned int	CreateNewSubdomain(QString newName);
 
-		/* Active domain fetching functions */
-		Domain*		GetFullDomain();
-		Domain*		GetActiveSubdomain();
+		/* Active domain fetching function */
+		Domain*		GetActiveDomain();
 
 	private:
 
 		QTreeWidget*	projectTree;
+		QProgressBar*	progressBar;
 
 		ProjectFile	testProjectFile;
 
-		Domain*			fullDomain;	/**< This project's full domain */
-		Domain*			currSubDomain;	/**< The subdomain currently being used */
-		std::vector<Domain*>	allSubDomains;	/**< List of this project's subdomains */
+		/* The visible Domain */
+		Domain*				currentDomain;	/**< The Domain the is currently visible to the user */
+
+		/* The actual Domains */
+		Domain*				fullDomain;
+		std::map<QString, Domain*>	subDomains;	/**< Map of subdomain names to the actual domain */
 
 		/* Project-wide functionality */
+		void	ConnectProjectTree();
 		void	UpdateTreeDisplay();
 		void	CreateFullDomain();
 
@@ -67,6 +72,18 @@ class Project : public QObject
 
 		/* Opening a project */
 		void	PopulateFromProjectFile();
+
+		/* Navigating within the project */
+		void	SetCurrentDomain(Domain *domain);
+		Domain *DetermineSelectedDomain(QTreeWidgetItem *item);
+
+	private slots:
+
+		void	on_ProjectTreeItemChanged(QTreeWidgetItem *item, QTreeWidgetItem*);
+
+	signals:
+
+		void	newDomainSelected();
 
 };
 

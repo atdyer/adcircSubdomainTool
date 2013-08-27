@@ -210,6 +210,18 @@ void CreationSelectionLayer::LoadDataToGPU()
 }
 
 
+void CreationSelectionLayer::SetData(QString fileLocation)
+{
+
+}
+
+
+bool CreationSelectionLayer::DataLoaded()
+{
+	return false;
+}
+
+
 /**
  * @brief Sets the camera used during drawing operations
  *

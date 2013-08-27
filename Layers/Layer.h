@@ -46,6 +46,12 @@ class Layer : public QObject
 		// Draw method
 		virtual void	Draw() = 0;
 
+		// Set data method
+		virtual void	SetData(QString fileLocation) = 0;
+
+		// Check for loaded data method
+		virtual bool	DataLoaded() = 0;
+
 		// Getter Methods
 		unsigned int		GetID();
 		static unsigned int	GetNumLayers();

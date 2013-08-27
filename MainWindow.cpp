@@ -147,6 +147,18 @@ void MainWindow::showCircleStats(float x, float y, float rad)
 }
 
 
+void MainWindow::updateVisibleDomain()
+{
+	if (testProject && testProject->ProjectIsOpen())
+	{
+		Domain *nextDomain = testProject->GetActiveDomain();
+		ConnectNewDomain(nextDomain);
+		testDomain = nextDomain;
+		ui->GLPanel->SetActiveDomain(testDomain);
+	}
+}
+
+
 /**
  * @brief Event Handler: Row is changed in the plotting tools list
  *
@@ -217,6 +229,9 @@ void MainWindow::on_newProjectButton_clicked()
 	if (!testProject)
 	{
 		testProject = new Project();
+		testProject->SetProgressBar(ui->progressBar);
+		connect(testProject, SIGNAL(newDomainSelected()), this, SLOT(updateVisibleDomain()));
+		connect(testProject, SIGNAL(newDomainSelected()), ui->GLPanel, SLOT(updateGL()));
 		testProject->SetProjectTree(ui->projectTree);
 		testProject->CreateProject();
 		if (testProject->ProjectIsOpen())
@@ -232,35 +247,38 @@ void MainWindow::on_openProjectButton_clicked()
 	if (!testProject)
 	{
 		testProject = new Project();
+		testProject->SetProgressBar(ui->progressBar);
+		connect(testProject, SIGNAL(newDomainSelected()), this, SLOT(updateVisibleDomain()));
+		connect(testProject, SIGNAL(newDomainSelected()), ui->GLPanel, SLOT(updateGL()));
 		testProject->SetProjectTree(ui->projectTree);
 		testProject->OpenProject();
-		if (testProject->ProjectIsOpen())
-		{
-			testDomain = testProject->GetFullDomain();
-			testDomain->SetProgressBar(ui->progressBar);
-			ui->GLPanel->SetActiveDomain(testDomain);
+//		if (testProject->ProjectIsOpen())
+//		{
+//			testDomain = testProject->GetFullDomain();
+//			testDomain->SetProgressBar(ui->progressBar);
+//			ui->GLPanel->SetActiveDomain(testDomain);
 
-//			testDomain->SetFort14Location(QFileDialog::getOpenFileName(this, "Open File", "/home/tristan/Desktop/", "ADCIRC Files (*.14 *.15 *.63 *.64)").toStdString());
-		//	testDomain->SetFort14Location("/home/tristan/Desktop/adcSwan/sub/fort.14");
-		//	testDomain->SetFort14Location("/home/tristan/Desktop/fort.14");
+////			testDomain->SetFort14Location(QFileDialog::getOpenFileName(this, "Open File", "/home/tristan/Desktop/", "ADCIRC Files (*.14 *.15 *.63 *.64)").toStdString());
+//		//	testDomain->SetFort14Location("/home/tristan/Desktop/adcSwan/sub/fort.14");
+//		//	testDomain->SetFort14Location("/home/tristan/Desktop/fort.14");
 
-			connect(testDomain, SIGNAL(Message(QString)), this, SLOT(displayOutput(QString)));
-			connect(testDomain, SIGNAL(Instructions(QString)), ui->statusBar, SLOT(showMessage(QString)));
-			connect(testDomain, SIGNAL(ToolFinishedDrawing()), ui->statusBar, SLOT(clearMessage()));
-			connect(testDomain, SIGNAL(MouseX(float)), this, SLOT(showMouseX(float)));
-			connect(testDomain, SIGNAL(MouseY(float)), this, SLOT(showMouseY(float)));
-			connect(testDomain, SIGNAL(CircleToolStatsSet(float,float,float)), this, SLOT(showCircleStats(float,float,float)));
-			connect(testDomain, SIGNAL(NumNodesDomain(int)), this, SLOT(showNumNodes(int)));
-			connect(testDomain, SIGNAL(NumElementsDomain(int)), this, SLOT(showNumElements(int)));
-			connect(testDomain, SIGNAL(NumNodesSelected(int)), this, SLOT(showNumSelectedNodes(int)));
-			connect(testDomain, SIGNAL(NumElementsSelected(int)), this, SLOT(showNumSelectedElements(int)));
-			connect(testDomain, SIGNAL(ToolFinishedDrawing()), glStatusBar, SLOT(clearMessage()));
-			connect(testDomain, SIGNAL(EmitMessage(QString)), this, SLOT(displayOutput(QString)));
+//			connect(testDomain, SIGNAL(Message(QString)), this, SLOT(displayOutput(QString)));
+//			connect(testDomain, SIGNAL(Instructions(QString)), ui->statusBar, SLOT(showMessage(QString)));
+//			connect(testDomain, SIGNAL(ToolFinishedDrawing()), ui->statusBar, SLOT(clearMessage()));
+//			connect(testDomain, SIGNAL(MouseX(float)), this, SLOT(showMouseX(float)));
+//			connect(testDomain, SIGNAL(MouseY(float)), this, SLOT(showMouseY(float)));
+//			connect(testDomain, SIGNAL(CircleToolStatsSet(float,float,float)), this, SLOT(showCircleStats(float,float,float)));
+//			connect(testDomain, SIGNAL(NumNodesDomain(int)), this, SLOT(showNumNodes(int)));
+//			connect(testDomain, SIGNAL(NumElementsDomain(int)), this, SLOT(showNumElements(int)));
+//			connect(testDomain, SIGNAL(NumNodesSelected(int)), this, SLOT(showNumSelectedNodes(int)));
+//			connect(testDomain, SIGNAL(NumElementsSelected(int)), this, SLOT(showNumSelectedElements(int)));
+//			connect(testDomain, SIGNAL(ToolFinishedDrawing()), glStatusBar, SLOT(clearMessage()));
+//			connect(testDomain, SIGNAL(EmitMessage(QString)), this, SLOT(displayOutput(QString)));
 
-			/* Hook up undo/redo buttons */
-			connect(testDomain, SIGNAL(UndoAvailable(bool)), ui->undoButton, SLOT(setEnabled(bool)));
-			connect(testDomain, SIGNAL(RedoAvailable(bool)), ui->redoButton, SLOT(setEnabled(bool)));
-		}
+//			/* Hook up undo/redo buttons */
+//			connect(testDomain, SIGNAL(UndoAvailable(bool)), ui->undoButton, SLOT(setEnabled(bool)));
+//			connect(testDomain, SIGNAL(RedoAvailable(bool)), ui->redoButton, SLOT(setEnabled(bool)));
+//		}
 	}
 
 }
@@ -313,6 +331,43 @@ void MainWindow::CreateSystemTrayIcon()
 	trayIcon->setContextMenu(trayIconMenu);
 	trayIcon->setIcon(QIcon(":/icons/images/icons/16_16/circle.png"));
 	trayIcon->show();
+}
+
+
+void MainWindow::ConnectNewDomain(Domain *newDomain)
+{
+	if (testDomain)
+	{
+		disconnect(testDomain, SIGNAL(Message(QString)), this, SLOT(displayOutput(QString)));
+		disconnect(testDomain, SIGNAL(Instructions(QString)), ui->statusBar, SLOT(showMessage(QString)));
+		disconnect(testDomain, SIGNAL(ToolFinishedDrawing()), ui->statusBar, SLOT(clearMessage()));
+		disconnect(testDomain, SIGNAL(MouseX(float)), this, SLOT(showMouseX(float)));
+		disconnect(testDomain, SIGNAL(MouseY(float)), this, SLOT(showMouseY(float)));
+		disconnect(testDomain, SIGNAL(CircleToolStatsSet(float,float,float)), this, SLOT(showCircleStats(float,float,float)));
+		disconnect(testDomain, SIGNAL(NumNodesDomain(int)), this, SLOT(showNumNodes(int)));
+		disconnect(testDomain, SIGNAL(NumElementsDomain(int)), this, SLOT(showNumElements(int)));
+		disconnect(testDomain, SIGNAL(NumNodesSelected(int)), this, SLOT(showNumSelectedNodes(int)));
+		disconnect(testDomain, SIGNAL(NumElementsSelected(int)), this, SLOT(showNumSelectedElements(int)));
+		disconnect(testDomain, SIGNAL(ToolFinishedDrawing()), glStatusBar, SLOT(clearMessage()));
+		disconnect(testDomain, SIGNAL(EmitMessage(QString)), this, SLOT(displayOutput(QString)));
+		disconnect(testDomain, SIGNAL(UndoAvailable(bool)), ui->undoButton, SLOT(setEnabled(bool)));
+		disconnect(testDomain, SIGNAL(RedoAvailable(bool)), ui->redoButton, SLOT(setEnabled(bool)));
+	}
+
+	connect(newDomain, SIGNAL(Message(QString)), this, SLOT(displayOutput(QString)));
+	connect(newDomain, SIGNAL(Instructions(QString)), ui->statusBar, SLOT(showMessage(QString)));
+	connect(newDomain, SIGNAL(ToolFinishedDrawing()), ui->statusBar, SLOT(clearMessage()));
+	connect(newDomain, SIGNAL(MouseX(float)), this, SLOT(showMouseX(float)));
+	connect(newDomain, SIGNAL(MouseY(float)), this, SLOT(showMouseY(float)));
+	connect(newDomain, SIGNAL(CircleToolStatsSet(float,float,float)), this, SLOT(showCircleStats(float,float,float)));
+	connect(newDomain, SIGNAL(NumNodesDomain(int)), this, SLOT(showNumNodes(int)));
+	connect(newDomain, SIGNAL(NumElementsDomain(int)), this, SLOT(showNumElements(int)));
+	connect(newDomain, SIGNAL(NumNodesSelected(int)), this, SLOT(showNumSelectedNodes(int)));
+	connect(newDomain, SIGNAL(NumElementsSelected(int)), this, SLOT(showNumSelectedElements(int)));
+	connect(newDomain, SIGNAL(ToolFinishedDrawing()), glStatusBar, SLOT(clearMessage()));
+	connect(newDomain, SIGNAL(EmitMessage(QString)), this, SLOT(displayOutput(QString)));
+	connect(newDomain, SIGNAL(UndoAvailable(bool)), ui->undoButton, SLOT(setEnabled(bool)));
+	connect(newDomain, SIGNAL(RedoAvailable(bool)), ui->redoButton, SLOT(setEnabled(bool)));
 }
 
 

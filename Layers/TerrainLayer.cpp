@@ -238,6 +238,25 @@ void TerrainLayer::LoadDataToGPU()
 }
 
 
+void TerrainLayer::SetData(QString fileLocation)
+{
+	std::ifstream testFileValid (fileLocation.toStdString().data());
+	if (testFileValid.good())
+	{
+		fort14Location = fileLocation.toStdString();
+		emit fort14Valid();
+	} else {
+		emit emitMessage("<p style='color:red'><strong>Error:</strong> fort.14 file not found.</p>");
+	}
+}
+
+
+bool TerrainLayer::DataLoaded()
+{
+	return fileLoaded;
+}
+
+
 /**
  * @brief Getter method that returns the fort.14 location
  * @return The fort.14 absolute path

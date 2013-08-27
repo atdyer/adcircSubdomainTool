@@ -86,7 +86,13 @@ Domain::~Domain()
 void Domain::Draw()
 {
 	if (terrainLayer)
+	{
+		if (!terrainLayer->DataLoaded() && !fort14Location.isEmpty())
+		{
+			LoadFort14File();
+		}
 		terrainLayer->Draw();
+	}
 	if (selectionLayer)
 		selectionLayer->Draw();
 }
@@ -259,39 +265,10 @@ void Domain::SetProgressBar(QProgressBar *newBar)
  *
  * @param newLoc The fort.14 file location
  */
-void Domain::SetFort14Location(std::string newLoc)
+void Domain::SetFort14Location(QString newLoc)
 {
-	if (!terrainLayer)
-	{
-		terrainLayer = new TerrainLayer();
-		loadingLayer = terrainLayer;
-		terrainLayer->moveToThread(layerThread);
-
-		if (progressBar)
-		{
-			connect(terrainLayer, SIGNAL(startedReadingData()), progressBar, SLOT(show()));
-			connect(terrainLayer, SIGNAL(progress(int)), progressBar, SLOT(setValue(int)));
-			connect(terrainLayer, SIGNAL(finishedReadingData()), progressBar, SLOT(hide()));
-		}
-
-		connect(terrainLayer, SIGNAL(EmitMessage(QString)), this, SIGNAL(Message(QString)));
-		connect(terrainLayer, SIGNAL(finishedReadingData()), this, SLOT(LoadLayerToGPU()));
-		connect(terrainLayer, SIGNAL(finishedLoadingToGPU()), this, SIGNAL(UpdateGL()));
-		connect(terrainLayer, SIGNAL(foundNumNodes(int)), this, SIGNAL(NumNodesDomain(int)));
-		connect(terrainLayer, SIGNAL(foundNumElements(int)), this, SIGNAL(NumElementsDomain(int)));
-
-
-		terrainLayer->SetCamera(camera);
-		terrainLayer->SetSolidOutline(SolidShaderProperties(0.2, 0.2, 0.2, 0.1));
-		terrainLayer->SetSolidFill(SolidShaderProperties(0.1, 0.8, 0.1, 1.0));
-		terrainLayer->SetSolidBoundary(SolidShaderProperties(0.0, 0.0, 0.0, 1.0));
-//		terrainLayer->SetGradientOutline(GradientShaderProperties(0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0));
-//		terrainLayer->SetGradientFill(GradientShaderProperties(0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0));
-
-		if (selectionLayer)
-			selectionLayer->SetTerrainLayer(terrainLayer);
-	}
-	terrainLayer->SetFort14Location(newLoc);
+	fort14Location = newLoc;
+	CreateTerrainLayer();
 }
 
 
@@ -396,56 +373,54 @@ void Domain::SetTerrainGradientFill(GradientShaderProperties newProperties)
 
 
 /**
- * @brief Returns the fort.14 file location being used by the terrain layer
+ * @brief Returns the fort.14 file location
  *
- * Returns the fort.14 file location being used by the terrain layer
+ * Returns the fort.14 file location
  *
- * @return The fort.14 file location being used by the terrain layer
+ * @return The fort.14 file location
  */
-std::string Domain::GetFort14Location()
+QString Domain::GetFort14Location()
 {
-	if (terrainLayer)
-		return terrainLayer->GetFort14Location();
-	return std::string("");
+	return fort14Location;
 }
 
 
 /**
  * @brief Returns the fort.15 file location
  *
- * <b>Not yet implemented. Returns an empty string</b>
+ * Returns the fort.15 file location
  *
  * @return The fort.15 file location
  */
-std::string Domain::GetFort15Location()
+QString Domain::GetFort15Location()
 {
-	return std::string("");
+	return fort15Location;
 }
 
 
 /**
  * @brief Returns the fort.63 file location
  *
- * <b>Not yet implemented. Returns an empty string</b>
+ * Returns the fort.63 file location
  *
  * @return The fort.63 file location
  */
-std::string Domain::GetFort63Location()
+QString Domain::GetFort63Location()
 {
-	return std::string("");
+	return fort63Location;
 }
 
 
 /**
  * @brief Returns the fort.64 file location
  *
- * <b>Not yet implemented. Returns an empty string</b>
+ * Returns the fort.64 file location
  *
  * @return The fort.64 file location
  */
-std::string Domain::GetFort64Location()
+QString Domain::GetFort64Location()
 {
-	return std::string("");
+	return fort64Location;
 }
 
 
@@ -600,6 +575,56 @@ void Domain::ToggleTerrainQuadtree()
 	{
 		terrainLayer->ToggleQuadtreeVisible();
 		emit UpdateGL();
+	}
+}
+
+
+void Domain::LoadFort14File()
+{
+	CreateTerrainLayer();
+	loadingLayer = terrainLayer;
+	terrainLayer->moveToThread(layerThread);
+	terrainLayer->SetData(fort14Location);
+}
+
+
+/**
+ * @brief Creates the TerrainLayer object if one does not already exist
+ *
+ * Creates the TerrainLayer object if one does not already exist. Uses default
+ * color values and connect all signals/slots. Does set the data used by the
+ * Layer.
+ *
+ */
+void Domain::CreateTerrainLayer()
+{
+	if (!terrainLayer)
+	{
+		terrainLayer = new TerrainLayer();
+
+		if (progressBar)
+		{
+			connect(terrainLayer, SIGNAL(startedReadingData()), progressBar, SLOT(show()));
+			connect(terrainLayer, SIGNAL(progress(int)), progressBar, SLOT(setValue(int)));
+			connect(terrainLayer, SIGNAL(finishedReadingData()), progressBar, SLOT(hide()));
+		}
+
+		connect(terrainLayer, SIGNAL(EmitMessage(QString)), this, SIGNAL(Message(QString)));
+		connect(terrainLayer, SIGNAL(finishedReadingData()), this, SLOT(LoadLayerToGPU()));
+		connect(terrainLayer, SIGNAL(finishedLoadingToGPU()), this, SIGNAL(UpdateGL()));
+		connect(terrainLayer, SIGNAL(foundNumNodes(int)), this, SIGNAL(NumNodesDomain(int)));
+		connect(terrainLayer, SIGNAL(foundNumElements(int)), this, SIGNAL(NumElementsDomain(int)));
+
+
+		terrainLayer->SetCamera(camera);
+		terrainLayer->SetSolidOutline(SolidShaderProperties(0.2, 0.2, 0.2, 0.1));
+		terrainLayer->SetSolidFill(SolidShaderProperties(0.1, 0.8, 0.1, 1.0));
+		terrainLayer->SetSolidBoundary(SolidShaderProperties(0.0, 0.0, 0.0, 1.0));
+//		terrainLayer->SetGradientOutline(GradientShaderProperties(0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0));
+//		terrainLayer->SetGradientFill(GradientShaderProperties(0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0));
+
+		if (selectionLayer)
+			selectionLayer->SetTerrainLayer(terrainLayer);
 	}
 }
 

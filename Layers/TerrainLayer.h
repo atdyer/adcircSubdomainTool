@@ -38,6 +38,8 @@ class TerrainLayer : public Layer
 		/* Virtual methods to override */
 		virtual void	Draw();
 		virtual void	LoadDataToGPU();
+		virtual void	SetData(QString fileLocation);
+		virtual bool	DataLoaded();
 
 		/* Getter Methods */
 		std::string		GetFort14Location();

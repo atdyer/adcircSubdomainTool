@@ -157,6 +157,26 @@ QString ProjectFile::GetSubDomainFort64(QString subdomainName)
 }
 
 
+QStringList ProjectFile::GetSubDomainNames()
+{
+	QStringList subdomainNames;
+
+	if (!subDomainNodes.isEmpty())
+	{
+		for(int i=0; i<subDomainNodes.count(); ++i)
+		{
+			if (subDomainNodes.at(i).isElement())
+			{
+				QDomElement subDomainElement = subDomainNodes.at(i).toElement();
+				subdomainNames.append(GetAttribute(subDomainElement, QString("name")));
+			}
+		}
+	}
+
+	return subdomainNames;
+}
+
+
 bool ProjectFile::OpenFile(QString filePath)
 {
 	projectFile.setFileName(filePath);
@@ -263,7 +283,7 @@ QString ProjectFile::GetSubDomainAttribute(QString subdomainName, QString attrib
 				if (subDomainNodes.at(i).isElement())
 				{
 					QDomElement subDomainElement = subDomainNodes.at(i).toElement();
-					if (subDomainElement.tagName() == subdomainName)
+					if (GetAttribute(subDomainElement, "name") == subdomainName)
 					{
 						return GetAttribute(subDomainElement, attributeName);
 					}

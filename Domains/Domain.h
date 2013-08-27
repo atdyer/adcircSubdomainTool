@@ -75,7 +75,7 @@ class Domain : public QObject
 
 		// Modification functions used to set the state of the Domain based on GUI interaction
 		void	SetProgressBar(QProgressBar* newBar);
-		void	SetFort14Location(std::string newLoc);
+		void	SetFort14Location(QString newLoc);
 		void	SetFort15Location(std::string newLoc);
 		void	SetFort63Location(std::string newLoc);
 		void	SetFort64Location(std::string newLoc);
@@ -85,10 +85,10 @@ class Domain : public QObject
 		void	SetTerrainGradientFill(GradientShaderProperties newProperties);
 
 		// Query functions used to access data used to populate the GUI
-		std::string	GetFort14Location();
-		std::string	GetFort15Location();
-		std::string	GetFort63Location();
-		std::string	GetFort64Location();
+		QString	GetFort14Location();
+		QString GetFort15Location();
+		QString GetFort63Location();
+		QString GetFort64Location();
 		SolidShaderProperties		GetTerrainSolidOutline();
 		SolidShaderProperties		GetTerrainSolidFill();
 		GradientShaderProperties	GetTerrainGradientOutline();
@@ -116,6 +116,17 @@ class Domain : public QObject
 		QThread*	layerThread;	/**< The thread on which file reading operations will execute */
 		QProgressBar*	progressBar;	/**< The progress bar that will show file reading progress */
 		Layer*		loadingLayer;	/**< Sort of a queue for the next layer that will send data to the GPU */
+
+		void	LoadFort14File();
+
+		/* Layer creation functions */
+		void	CreateTerrainLayer();
+
+		/* Domain Characteristics */
+		QString		fort14Location;
+		QString		fort15Location;
+		QString		fort63Location;
+		QString		fort64Location;
 
 		/* Mouse Clicking and Moving Stuff */
 		ActionType	currentMode;	/**< The current mode used to determine where actions are sent */

@@ -64,6 +64,8 @@ class CreationSelectionLayer : public SelectionLayer
 
 		virtual void	Draw();
 		virtual void	LoadDataToGPU();
+		virtual void	SetData(QString fileLocation);
+		virtual bool	DataLoaded();
 
 		virtual unsigned int	GetNumElementsSelected();
 
