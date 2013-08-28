@@ -66,7 +66,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QComboBox" name="comboBox">
+          <widget class="QComboBox" name="outlineShaderType">
            <item>
             <property name="text">
              <string>Solid Color</string>
@@ -89,7 +89,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QStackedWidget" name="stackedWidget">
+        <widget class="ShaderOptionsStackedWidget" name="stackedWidget">
          <widget class="QWidget" name="page"/>
          <widget class="QWidget" name="page_2"/>
         </widget>
@@ -100,6 +100,62 @@
       <attribute name="title">
        <string>Fill</string>
       </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QCheckBox" name="fillVisibleCheckBox">
+         <property name="text">
+          <string>Fill Visible</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QLabel" name="label_2">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Color Type:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="fillShaderType">
+           <item>
+            <property name="text">
+             <string>Solid Color</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Color Gradient</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="Line" name="line_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QStackedWidget" name="stackedWidget_2">
+         <widget class="QWidget" name="page_3"/>
+         <widget class="QWidget" name="page_4"/>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </widget>
    </item>
@@ -115,6 +171,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ShaderOptionsStackedWidget</class>
+   <extends>QStackedWidget</extends>
+   <header>Widgets/ShaderOptionsStackedWidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

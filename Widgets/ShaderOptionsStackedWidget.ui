@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ShaderOptionsStackedWidget</class>
+ <widget class="QStackedWidget" name="ShaderOptionsStackedWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>704</width>
+    <height>529</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>StackedWidget</string>
+  </property>
+  <widget class="QWidget" name="solidPage">
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <layout class="QVBoxLayout" name="widgetLayout" stretch=""/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="gradientPage"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -386,3 +386,9 @@ void MainWindow::CheckForMemoryLeaks()
 		DEBUG("MEMORY LEAK: " << GLCamera::GetNumCameras() << " GLCamera objects not deleted");
 	}
 }
+
+void MainWindow::on_actionColor_Options_triggered()
+{
+	DisplayOptionsDialog dlg;
+	dlg.exec();
+}

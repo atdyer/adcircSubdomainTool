@@ -49,7 +49,8 @@ SOURCES += main.cpp\
     SubdomainTools/ClickTool.cpp \
     Projects/Project.cpp \
     Projects/ProjectFile.cpp \
-    Dialogs/DisplayOptionsDialog.cpp
+    Dialogs/DisplayOptionsDialog.cpp \
+    Widgets/ShaderOptionsStackedWidget.cpp
 
 HEADERS  += MainWindow.h \
     OpenGL/OpenGLPanel.h \
@@ -88,11 +89,13 @@ HEADERS  += MainWindow.h \
     SubdomainTools/ClickTool.h \
     Projects/Project.h \
     Projects/ProjectFile.h \
-    Dialogs/DisplayOptionsDialog.h
+    Dialogs/DisplayOptionsDialog.h \
+    Widgets/ShaderOptionsStackedWidget.h
 
 FORMS    += MainWindow.ui \
     Dialogs/CreateProjectDialog.ui \
-    Dialogs/DisplayOptionsDialog.ui
+    Dialogs/DisplayOptionsDialog.ui \
+    Widgets/ShaderOptionsStackedWidget.ui
 
 target.path = /usr/local/bin
 desktop.path = /usr/share/applications

@@ -4,6 +4,8 @@
 #include "Projects/Project.h"
 #include "Domains/Domain.h"
 
+#include "Dialogs/DisplayOptionsDialog.h"
+
 #include <QMainWindow>
 #include <QThread>
 #include <QLabel>
@@ -61,6 +63,9 @@ class MainWindow : public QMainWindow
 		void on_selectNodesSquare_clicked();
 		void on_selectNodeSingle_clicked();
 		void on_selectElementSingle_clicked();
+
+		/* Menu bar actions */
+		void on_actionColor_Options_triggered();
 
 	private:
 

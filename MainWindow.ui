@@ -978,7 +978,7 @@ border-top-right-radius: 4px;
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <property name="tabsClosable">
        <bool>false</bool>
@@ -1831,6 +1831,7 @@ border-top-right-radius: 4px;
     <property name="title">
      <string>Display</string>
     </property>
+    <addaction name="actionColor_Options"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -1860,6 +1861,11 @@ border-top-right-radius: 4px;
     <string>Tutorial</string>
    </property>
   </action>
+  <action name="actionColor_Options">
+   <property name="text">
+    <string>Color Options...</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -1875,7 +1881,7 @@ border-top-right-radius: 4px;
  </resources>
  <connections/>
  <buttongroups>
-  <buttongroup name="nth_PlotTypeButtonGroup"/>
   <buttongroup name="fillColorButtonGroup"/>
+  <buttongroup name="nth_PlotTypeButtonGroup"/>
  </buttongroups>
 </ui>
