@@ -29,12 +29,10 @@ class ColorGradientFrame : public QFrame
 		int	currentHue;
 		int	currentSaturation;
 		int	currentValue;
-		int	currentAlpha;
 
 		int	minHue, maxHue;
 		int	minSat, maxSat;
 		int	minVal, maxVal;
-		int	minAlp, maxAlp;
 
 		void	BuildPixMap();
 		void	DrawCrosshair(QPainter *p, const QPoint &pt);

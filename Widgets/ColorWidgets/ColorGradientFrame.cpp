@@ -5,7 +5,6 @@ ColorGradientFrame::ColorGradientFrame(QWidget *parent) : QFrame(parent)
 	currentHue = 0;
 	currentSaturation = 0;
 	currentValue = 200;
-	currentAlpha = 255;
 
 	minHue = 0;
 	maxHue = 359;
@@ -13,11 +12,9 @@ ColorGradientFrame::ColorGradientFrame(QWidget *parent) : QFrame(parent)
 	maxSat = 255;
 	minVal = 0;
 	maxVal = 255;
-	minAlp = 0;
-	maxAlp = 255;
 
 	BuildPixMap();
-
+	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 }
 
 

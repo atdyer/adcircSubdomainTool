@@ -10,8 +10,6 @@ ShaderOptionsStackedWidget::ShaderOptionsStackedWidget(QWidget *parent) :
 	ColorGradientFrame *colorGradient = new ColorGradientFrame();
 	ui->widgetLayout->addWidget(colorGradient);
 
-	QColorDialog::getColor();
-
 //	QColorDialog *colorPicker = new QColorDialog();
 
 
