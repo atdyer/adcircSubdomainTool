@@ -418,8 +418,8 @@ border-top-right-radius: 4px;
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>210</width>
-             <height>359</height>
+             <width>158</width>
+             <height>256</height>
             </rect>
            </property>
            <attribute name="label">
@@ -810,8 +810,8 @@ border-top-right-radius: 4px;
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>168</width>
-             <height>359</height>
+             <width>100</width>
+             <height>30</height>
             </rect>
            </property>
            <attribute name="label">
@@ -823,8 +823,8 @@ border-top-right-radius: 4px;
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>168</width>
-             <height>359</height>
+             <width>100</width>
+             <height>30</height>
             </rect>
            </property>
            <attribute name="label">
@@ -836,8 +836,8 @@ border-top-right-radius: 4px;
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>168</width>
-             <height>359</height>
+             <width>100</width>
+             <height>30</height>
             </rect>
            </property>
            <attribute name="label">
@@ -1831,7 +1831,16 @@ border-top-right-radius: 4px;
     <property name="title">
      <string>Display</string>
     </property>
+    <widget class="QMenu" name="menuOther_Layers">
+     <property name="title">
+      <string>Other Layers</string>
+     </property>
+     <addaction name="actionSea_Level"/>
+     <addaction name="separator"/>
+     <addaction name="actionOtherLayerOptions"/>
+    </widget>
     <addaction name="actionColor_Options"/>
+    <addaction name="menuOther_Layers"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -1866,6 +1875,19 @@ border-top-right-radius: 4px;
     <string>Color Options...</string>
    </property>
   </action>
+  <action name="actionSea_Level">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Sea Level</string>
+   </property>
+  </action>
+  <action name="actionOtherLayerOptions">
+   <property name="text">
+    <string>Options...</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -1881,7 +1903,7 @@ border-top-right-radius: 4px;
  </resources>
  <connections/>
  <buttongroups>
-  <buttongroup name="fillColorButtonGroup"/>
   <buttongroup name="nth_PlotTypeButtonGroup"/>
+  <buttongroup name="fillColorButtonGroup"/>
  </buttongroups>
 </ui>

@@ -3,6 +3,7 @@
 
 #include <QStackedWidget>
 #include <QColorDialog>
+#include <Widgets/ColorGradientFrame.h>
 
 namespace Ui {
 	class ShaderOptionsStackedWidget;
