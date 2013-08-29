@@ -7,9 +7,7 @@ ShaderOptionsStackedWidget::ShaderOptionsStackedWidget(QWidget *parent) :
 {
 	ui->setupUi(this);
 
-	ColorGradientFrame *colorGradient = new ColorGradientFrame();
-	colorGradient->setColor(QColor::fromHsv(359, 255, 200));
-	ui->widgetLayout->addWidget(colorGradient);
+	connect(ui->colorPicker, SIGNAL(colorPicked(QColor)), ui->valueSlider, SLOT(setColor(QColor)));
 }
 
 ShaderOptionsStackedWidget::~ShaderOptionsStackedWidget()

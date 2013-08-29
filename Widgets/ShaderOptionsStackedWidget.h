@@ -4,6 +4,7 @@
 #include <QStackedWidget>
 #include <QColorDialog>
 #include <Widgets/ColorWidgets/ColorGradientFrame.h>
+#include <Widgets/ColorWidgets/ValueSlider.h>
 
 namespace Ui {
 	class ShaderOptionsStackedWidget;

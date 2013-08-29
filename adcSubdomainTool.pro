@@ -51,7 +51,8 @@ SOURCES += main.cpp\
     Projects/ProjectFile.cpp \
     Dialogs/DisplayOptionsDialog.cpp \
     Widgets/ShaderOptionsStackedWidget.cpp \
-    Widgets/ColorWidgets/ColorGradientFrame.cpp
+    Widgets/ColorWidgets/ColorGradientFrame.cpp \
+    Widgets/ColorWidgets/ValueSlider.cpp
 
 HEADERS  += MainWindow.h \
     OpenGL/OpenGLPanel.h \
@@ -93,7 +94,8 @@ HEADERS  += MainWindow.h \
     Dialogs/DisplayOptionsDialog.h \
     Widgets/ShaderOptionsStackedWidget.h \
     Widgets/ColorGradientFrame.h \
-    Widgets/ColorWidgets/ColorGradientFrame.h
+    Widgets/ColorWidgets/ColorGradientFrame.h \
+    Widgets/ColorWidgets/ValueSlider.h
 
 FORMS    += MainWindow.ui \
     Dialogs/CreateProjectDialog.ui \

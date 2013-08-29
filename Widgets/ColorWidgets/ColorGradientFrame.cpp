@@ -15,6 +15,7 @@ ColorGradientFrame::ColorGradientFrame(QWidget *parent) : QFrame(parent)
 
 	BuildPixMap();
 	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+	setFrameShape(QFrame::StyledPanel);
 }
 
 
@@ -68,7 +69,7 @@ void ColorGradientFrame::mousePressEvent(QMouseEvent *event)
 		crosshairPoint = point;
 		update();
 	} else {
-		QFrame::mouseMoveEvent(event);
+		QFrame::mousePressEvent(event);
 	}
 }
 
@@ -137,10 +138,9 @@ int ColorGradientFrame::HueFromX(int x)
 
 int ColorGradientFrame::HueToX(int hue)
 {
-	float xs = contentsRect().width()*1.0/(maxHue-minHue); // pixels per hue
+	float xs = contentsRect().width()*1.0/(maxHue-minHue);
 	float dist = hue*xs;
 	return (int)(contentsRect().width()-dist);
-//	return (int)(contentsRect().width() - (hue * contentsRect().width() * 1.0 / (maxHue - minHue)));
 }
 
 
@@ -155,7 +155,6 @@ int ColorGradientFrame::SatToY(int sat)
 	float ys = contentsRect().height()*1.0/(maxSat-minSat);
 	float dist = sat*ys;
 	return (int)(contentsRect().height() - dist);
-//	return (int)(contentsRect().height() - (sat * contentsRect().height() * 1.0 / (maxSat - minSat)));
 }
 
 
