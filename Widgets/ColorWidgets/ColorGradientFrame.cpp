@@ -18,6 +18,12 @@ ColorGradientFrame::ColorGradientFrame(QWidget *parent) : QFrame(parent)
 }
 
 
+QColor ColorGradientFrame::GetSelectedColor()
+{
+	return QColor::fromHsv(currentHue, currentSaturation, currentValue);
+}
+
+
 void ColorGradientFrame::paintEvent(QPaintEvent *)
 {
 	QPainter painter(this);
@@ -40,6 +46,7 @@ void ColorGradientFrame::resizeEvent(QResizeEvent *event)
 {
 	QFrame::resizeEvent(event);
 	BuildPixMap();
+	crosshairPoint = QPoint(HueToX(currentHue), SatToY(currentSaturation));
 	update();
 }
 
@@ -55,6 +62,8 @@ void ColorGradientFrame::mousePressEvent(QMouseEvent *event)
 		{
 			return;
 		}
+		currentHue = hue;
+		currentSaturation = sat;
 		emit colorPicked(QColor::fromHsv(hue, sat, currentValue));
 		crosshairPoint = point;
 		update();
@@ -79,6 +88,8 @@ void ColorGradientFrame::mouseMoveEvent(QMouseEvent *event)
 		{
 			return;
 		}
+		currentHue = hue;
+		currentSaturation = sat;
 		emit colorPicked(QColor::fromHsv(hue, sat, currentValue));
 		crosshairPoint = point;
 		update();
@@ -124,7 +135,39 @@ int ColorGradientFrame::HueFromX(int x)
 }
 
 
+int ColorGradientFrame::HueToX(int hue)
+{
+	float xs = contentsRect().width()*1.0/(maxHue-minHue); // pixels per hue
+	float dist = hue*xs;
+	return (int)(contentsRect().width()-dist);
+//	return (int)(contentsRect().width() - (hue * contentsRect().width() * 1.0 / (maxHue - minHue)));
+}
+
+
 int ColorGradientFrame::SatFromY(int y)
 {
 	return maxSat - y * (maxSat - minSat) / contentsRect().height();
+}
+
+
+int ColorGradientFrame::SatToY(int sat)
+{
+	float ys = contentsRect().height()*1.0/(maxSat-minSat);
+	float dist = sat*ys;
+	return (int)(contentsRect().height() - dist);
+//	return (int)(contentsRect().height() - (sat * contentsRect().height() * 1.0 / (maxSat - minSat)));
+}
+
+
+void ColorGradientFrame::setColor(const QColor &c)
+{
+	c.getHsv(&currentHue, &currentSaturation, &currentValue);
+	if (currentHue < minHue) currentHue = minHue;
+	if (currentHue > maxHue) currentHue = maxHue;
+	if (currentSaturation < minSat) currentSaturation = minSat;
+	if (currentSaturation > maxSat) currentSaturation = maxSat;
+	if (currentValue < minVal) currentValue = minVal;
+	if (currentValue > maxVal) currentValue = maxVal;
+	crosshairPoint = QPoint(HueToX(currentHue), SatToY(currentSaturation));
+	update();
 }

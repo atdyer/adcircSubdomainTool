@@ -14,6 +14,8 @@ class ColorGradientFrame : public QFrame
 	public:
 		ColorGradientFrame(QWidget *parent = 0);
 
+		QColor	GetSelectedColor();
+
 	protected:
 
 		void	paintEvent(QPaintEvent *);
@@ -37,11 +39,17 @@ class ColorGradientFrame : public QFrame
 		void	BuildPixMap();
 		void	DrawCrosshair(QPainter *p, const QPoint &pt);
 		int	HueFromX(int x);
+		int	HueToX(int hue);
 		int	SatFromY(int y);
+		int	SatToY(int sat);
 
 	signals:
 
 		void	colorPicked(QColor);
+
+	public slots:
+
+		void	setColor(const QColor &c);
 };
 
 #endif // COLORGRADIENTFRAME_H
