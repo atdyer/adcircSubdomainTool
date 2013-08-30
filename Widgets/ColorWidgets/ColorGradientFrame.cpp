@@ -153,6 +153,15 @@ int ColorGradientFrame::SatToY(int sat)
 }
 
 
+void ColorGradientFrame::setColor(const QColor &c)
+{
+	currentColor.setHsv(c.hue(), c.saturation(), c.value());
+	emit colorPicked(currentColor);
+	crosshairPoint = QPoint(HueToX(currentColor.hue()), SatToY(currentColor.saturation()));
+	update();
+}
+
+
 void ColorGradientFrame::setHue(int h)
 {
 	currentColor.setHsv(h, currentColor.saturation(), currentColor.value());

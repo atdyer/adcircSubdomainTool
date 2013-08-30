@@ -49,6 +49,7 @@ class ColorGradientFrame : public QFrame
 
 	public slots:
 
+		void	setColor(const QColor &c);
 		void	setHue(int h);
 		void	setSaturation(int s);
 		void	setValue(int v);
