@@ -8,6 +8,8 @@
 #include <QStyleOptionFrame>
 #include <QMouseEvent>
 
+#include <iostream>
+
 class ColorGradientFrame : public QFrame
 {
 		Q_OBJECT
@@ -28,9 +30,7 @@ class ColorGradientFrame : public QFrame
 		QPoint	crosshairPoint;
 		QPixmap	pixMap;
 
-		int	currentHue;
-		int	currentSaturation;
-		int	currentValue;
+		QColor	currentColor;
 
 		int	minHue, maxHue;
 		int	minSat, maxSat;
@@ -49,7 +49,10 @@ class ColorGradientFrame : public QFrame
 
 	public slots:
 
-		void	setColor(const QColor &c);
+		void	setHue(int h);
+		void	setSaturation(int s);
+		void	setValue(int v);
+		void	valueSliderChanged(int v);
 };
 
 #endif // COLORGRADIENTFRAME_H

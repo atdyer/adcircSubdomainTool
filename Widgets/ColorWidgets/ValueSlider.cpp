@@ -2,9 +2,7 @@
 
 ValueSlider::ValueSlider(QWidget *parent) : QFrame(parent)
 {
-	currentHue = 0;
-	currentSaturation = 0;
-	currentValue = 200;
+	currentColor.setHsv(0, 0, 200);
 	minHue = 0;
 	maxHue = 359;
 	minSat = 0;
@@ -15,13 +13,12 @@ ValueSlider::ValueSlider(QWidget *parent) : QFrame(parent)
 	triangleHeight = 7;
 
 	BuildPixMap();
-	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 }
 
 
-int ValueSlider::GetSelectedValue()
+QColor ValueSlider::GetCurrentColor()
 {
-	return currentValue;
+	return currentColor;
 }
 
 
@@ -47,7 +44,7 @@ void ValueSlider::resizeEvent(QResizeEvent *event)
 {
 	QFrame::resizeEvent(event);
 	BuildPixMap();
-	trianglePoint = QPoint(contentsRect().width()-triangleWidth, ValToY(currentValue));
+	trianglePoint = QPoint(contentsRect().width()-triangleWidth, ValToY(currentColor.value()));
 	update();
 }
 
@@ -62,8 +59,9 @@ void ValueSlider::mousePressEvent(QMouseEvent *event)
 		{
 			return;
 		}
-		currentValue = val;
-		emit colorPicked(QColor::fromHsv(currentHue, currentSaturation, currentValue));
+		currentColor.setHsv(currentColor.hue(), currentColor.saturation(), val);
+		emit colorPicked(currentColor);
+		emit valuePicked(currentColor.value());
 		trianglePoint = QPoint(contentsRect().width()-triangleWidth, point.y());
 		update();
 	} else {
@@ -77,7 +75,7 @@ void ValueSlider::mouseMoveEvent(QMouseEvent *event)
 	if (event->buttons() & Qt::LeftButton)
 	{
 		QPoint point = event->pos();
-		if (!contentsRect().contains(point))
+		if (!contentsRect().contains(QPoint(contentsRect().x(), point.y())))
 		{
 			return;
 		}
@@ -86,8 +84,9 @@ void ValueSlider::mouseMoveEvent(QMouseEvent *event)
 		{
 			return;
 		}
-		currentValue = val;
-		emit colorPicked(QColor::fromHsv(currentHue, currentSaturation, currentValue));
+		currentColor.setHsv(currentColor.hue(), currentColor.saturation(), val);
+		emit colorPicked(currentColor);
+		emit valuePicked(currentColor.value());
 		trianglePoint = QPoint(contentsRect().width()-triangleWidth, event->pos().y());
 		update();
 	} else {
@@ -106,7 +105,7 @@ void ValueSlider::BuildPixMap()
 		for (int x=0; x<width; ++x)
 		{
 			QColor c;
-			c.setHsv(currentHue, currentSaturation, ValFromY(y));
+			c.setHsv(currentColor.hue(), currentColor.saturation(), ValFromY(y));
 			image.setPixel(x, y, c.rgb());
 		}
 	}
@@ -148,12 +147,9 @@ int ValueSlider::ValToY(int val)
 
 void ValueSlider::setColor(const QColor &c)
 {
-	int v;
-	c.getHsv(&currentHue, &currentSaturation, &v);
-	if (currentHue < minHue) currentHue = minHue;
-	if (currentHue > maxHue) currentHue = maxHue;
-	if (currentSaturation < minSat) currentSaturation = minSat;
-	if (currentSaturation > maxSat) currentSaturation = maxSat;
+	currentColor.setHsv(c.hue(), c.saturation(), c.value());
+	trianglePoint = QPoint(contentsRect().width()-triangleWidth, ValToY(currentColor.value()));
+	emit colorPicked(currentColor);
 	BuildPixMap();
 	update();
 }

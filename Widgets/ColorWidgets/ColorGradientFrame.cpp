@@ -2,9 +2,7 @@
 
 ColorGradientFrame::ColorGradientFrame(QWidget *parent) : QFrame(parent)
 {
-	currentHue = 0;
-	currentSaturation = 0;
-	currentValue = 200;
+	currentColor.setHsv(0, 0, 200);
 
 	minHue = 0;
 	maxHue = 359;
@@ -14,14 +12,13 @@ ColorGradientFrame::ColorGradientFrame(QWidget *parent) : QFrame(parent)
 	maxVal = 255;
 
 	BuildPixMap();
-	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 	setFrameShape(QFrame::StyledPanel);
 }
 
 
 QColor ColorGradientFrame::GetSelectedColor()
 {
-	return QColor::fromHsv(currentHue, currentSaturation, currentValue);
+	return currentColor;
 }
 
 
@@ -47,7 +44,7 @@ void ColorGradientFrame::resizeEvent(QResizeEvent *event)
 {
 	QFrame::resizeEvent(event);
 	BuildPixMap();
-	crosshairPoint = QPoint(HueToX(currentHue), SatToY(currentSaturation));
+	crosshairPoint = QPoint(HueToX(currentColor.hue()), SatToY(currentColor.saturation()));
 	update();
 }
 
@@ -63,9 +60,8 @@ void ColorGradientFrame::mousePressEvent(QMouseEvent *event)
 		{
 			return;
 		}
-		currentHue = hue;
-		currentSaturation = sat;
-		emit colorPicked(QColor::fromHsv(hue, sat, currentValue));
+		currentColor.setHsv(hue, sat, currentColor.value());
+		emit colorPicked(currentColor);
 		crosshairPoint = point;
 		update();
 	} else {
@@ -89,9 +85,8 @@ void ColorGradientFrame::mouseMoveEvent(QMouseEvent *event)
 		{
 			return;
 		}
-		currentHue = hue;
-		currentSaturation = sat;
-		emit colorPicked(QColor::fromHsv(hue, sat, currentValue));
+		currentColor.setHsv(hue, sat, currentColor.value());
+		emit colorPicked(currentColor);
 		crosshairPoint = point;
 		update();
 	} else {
@@ -110,7 +105,7 @@ void ColorGradientFrame::BuildPixMap()
 		for (int x=0; x<width; ++x)
 		{
 			QColor c;
-			c.setHsv(HueFromX(x), SatFromY(y), currentValue);
+			c.setHsv(HueFromX(x), SatFromY(y), currentColor.value());
 			image.setPixel(x, y, c.rgb());
 		}
 	}
@@ -158,15 +153,37 @@ int ColorGradientFrame::SatToY(int sat)
 }
 
 
-void ColorGradientFrame::setColor(const QColor &c)
+void ColorGradientFrame::setHue(int h)
 {
-	c.getHsv(&currentHue, &currentSaturation, &currentValue);
-	if (currentHue < minHue) currentHue = minHue;
-	if (currentHue > maxHue) currentHue = maxHue;
-	if (currentSaturation < minSat) currentSaturation = minSat;
-	if (currentSaturation > maxSat) currentSaturation = maxSat;
-	if (currentValue < minVal) currentValue = minVal;
-	if (currentValue > maxVal) currentValue = maxVal;
-	crosshairPoint = QPoint(HueToX(currentHue), SatToY(currentSaturation));
+	currentColor.setHsv(h, currentColor.saturation(), currentColor.value());
+	emit colorPicked(currentColor);
+	crosshairPoint = QPoint(HueToX(currentColor.hue()), SatToY(currentColor.saturation()));
+	update();
+}
+
+
+void ColorGradientFrame::setSaturation(int s)
+{
+	currentColor.setHsv(currentColor.hue(), s, currentColor.value());
+	emit colorPicked(currentColor);
+	crosshairPoint = QPoint(HueToX(currentColor.hue()), SatToY(currentColor.saturation()));
+	update();
+}
+
+
+void ColorGradientFrame::setValue(int v)
+{
+	currentColor.setHsv(currentColor.hue(), currentColor.saturation(), v);
+	emit colorPicked(currentColor);
+	crosshairPoint = QPoint(HueToX(currentColor.hue()), SatToY(currentColor.saturation()));
+	BuildPixMap();
+	update();
+}
+
+
+void ColorGradientFrame::valueSliderChanged(int v)
+{
+	currentColor.setHsv(currentColor.hue(), currentColor.saturation(), v);
+	BuildPixMap();
 	update();
 }

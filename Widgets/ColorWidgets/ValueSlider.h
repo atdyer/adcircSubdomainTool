@@ -8,15 +8,13 @@
 #include <QStyleOptionFrame>
 #include <QMouseEvent>
 
-#include <iostream>
-
 class ValueSlider : public QFrame
 {
 		Q_OBJECT
 	public:
 		ValueSlider(QWidget *parent = 0);
 
-		int	GetSelectedValue();
+		QColor	GetCurrentColor();
 
 	protected:
 
@@ -29,10 +27,7 @@ class ValueSlider : public QFrame
 
 		QPoint	trianglePoint;
 		QPixmap	pixMap;
-
-		int	currentHue;
-		int	currentSaturation;
-		int	currentValue;
+		QColor	currentColor;
 
 		int	minHue, maxHue;
 		int	minSat, maxSat;
@@ -48,6 +43,7 @@ class ValueSlider : public QFrame
 	signals:
 
 		void	colorPicked(QColor);
+		void	valuePicked(int);
 
 	public slots:
 

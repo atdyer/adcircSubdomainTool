@@ -20,6 +20,10 @@ class ShaderOptionsStackedWidget : public QStackedWidget
 		
 	private:
 		Ui::ShaderOptionsStackedWidget *ui;
+
+	protected slots:
+
+		void	colorChanged(const QColor &c);
 };
 
 #endif // SHADEROPTIONSSTACKEDWIDGET_H
