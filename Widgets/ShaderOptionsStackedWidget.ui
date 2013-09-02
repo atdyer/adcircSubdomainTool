@@ -14,7 +14,7 @@
    <string>StackedWidget</string>
   </property>
   <property name="currentIndex">
-   <number>0</number>
+   <number>1</number>
   </property>
   <widget class="QWidget" name="solidPage">
    <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -247,7 +247,15 @@
    </layout>
   </widget>
   <widget class="QWidget" name="gradientPage">
-   <layout class="QHBoxLayout" name="horizontalLayout"/>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="TriangleSliderButton" name="pushButton">
+      <property name="text">
+       <string>PushButton</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
  </widget>
  <customwidgets>
@@ -274,6 +282,11 @@
    <extends>QWidget</extends>
    <header>Widgets/ColorWidgets/CustomColorsWidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>TriangleSliderButton</class>
+   <extends>QPushButton</extends>
+   <header>Widgets/ColorWidgets/TriangleSliderButton.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

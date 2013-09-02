@@ -8,7 +8,7 @@ ValueSlider::ValueSlider(QWidget *parent) : QFrame(parent)
 	minSat = 0;
 	maxSat = 255;
 	minVal = 0;
-	maxVal = 255;;
+	maxVal = 255;
 	triangleWidth = 10;
 	triangleHeight = 7;
 

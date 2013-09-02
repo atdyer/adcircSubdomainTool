@@ -6,6 +6,10 @@ DisplayOptionsDialog::DisplayOptionsDialog(QWidget *parent) :
 	ui(new Ui::DisplayOptionsDialog)
 {
 	ui->setupUi(this);
+
+	ui->stackedWidget->setCurrentIndex(ui->outlineShaderType->currentIndex());
+
+	connect(ui->outlineShaderType, SIGNAL(currentIndexChanged(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
 }
 
 DisplayOptionsDialog::~DisplayOptionsDialog()
