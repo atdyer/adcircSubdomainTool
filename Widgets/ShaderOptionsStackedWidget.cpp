@@ -17,6 +17,8 @@ ShaderOptionsStackedWidget::ShaderOptionsStackedWidget(QWidget *parent) :
 	connect(ui->valSpin, SIGNAL(valueChanged(int)), ui->colorPicker, SLOT(setValue(int)));
 
 	connect(ui->basicColorsWidget, SIGNAL(colorClicked(QColor)), ui->colorPicker, SLOT(setColor(QColor)));
+
+	connect(ui->addToCustomColorsButton, SIGNAL(clicked()), this, SLOT(addCurrentColorToCustomColors()));
 }
 
 ShaderOptionsStackedWidget::~ShaderOptionsStackedWidget()
@@ -41,4 +43,10 @@ void ShaderOptionsStackedWidget::colorChanged(const QColor &c)
 	ui->hueSpin->blockSignals(hue);
 	ui->satSpin->blockSignals(sat);
 	ui->valSpin->blockSignals(val);
+}
+
+
+void ShaderOptionsStackedWidget::addCurrentColorToCustomColors()
+{
+	ui->customColorsWidget->addColor(ui->colorFrame->palette().color(backgroundRole()));
 }

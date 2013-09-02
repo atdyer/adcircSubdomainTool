@@ -15,6 +15,7 @@ BasicColorsWidget::BasicColorsWidget(QWidget *parent) :
 void BasicColorsWidget::CreateLayout()
 {
 	gridLayout = new QGridLayout(this);
+	buttonGroup = new QButtonGroup(this);
 }
 
 
@@ -26,6 +27,7 @@ void BasicColorsWidget::CreateButtons()
 		for (int col=0; col<buttonsWide; ++col)
 		{
 			ColorButton *newButton = new ColorButton();
+			newButton->setCheckable(true);
 			connect(newButton, SIGNAL(clicked(QColor)), this, SIGNAL(colorClicked(QColor)));
 			int r = 0;
 			int g = 85 * (col/2);
@@ -48,6 +50,7 @@ void BasicColorsWidget::CreateButtons()
 			newButton->SetBackgroundColor(QColor::fromRgb(r, g, b));
 
 			gridLayout->addWidget(newButton, row+titleRow, col);
+			buttonGroup->addButton(newButton);
 		}
 	}
 	if (includeTitleRow)

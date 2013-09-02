@@ -24,6 +24,7 @@ class ShaderOptionsStackedWidget : public QStackedWidget
 	protected slots:
 
 		void	colorChanged(const QColor &c);
+		void	addCurrentColorToCustomColors();
 };
 
 #endif // SHADEROPTIONSSTACKEDWIDGET_H

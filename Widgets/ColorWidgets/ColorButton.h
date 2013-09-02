@@ -10,10 +10,16 @@ class ColorButton : public QToolButton
 		explicit ColorButton(QWidget *parent = 0);
 
 		void	SetBackgroundColor(QColor color);
+		void	SetRow(int newRow);
+		void	SetColumn(int newCol);
+		int	GetRow();
+		int	GetColumn();
 
 	private:
 
 		QColor	currentColor;
+		int	row;
+		int	column;
 
 	public slots:
 
@@ -22,6 +28,7 @@ class ColorButton : public QToolButton
 	signals:
 
 		void	clicked(QColor);
+		void	clicked(QColor, int, int);
 };
 
 #endif // COLORBUTTON_H

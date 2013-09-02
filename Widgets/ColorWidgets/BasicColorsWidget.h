@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QGridLayout>
 #include <QLabel>
+#include <QButtonGroup>
 #include "Widgets/ColorWidgets/ColorButton.h"
 
 class BasicColorsWidget : public QWidget
@@ -15,6 +16,7 @@ class BasicColorsWidget : public QWidget
 	private:
 
 		QGridLayout*	gridLayout;
+		QButtonGroup*	buttonGroup;
 
 		bool	includeTitleRow;
 		int	buttonsWide;
