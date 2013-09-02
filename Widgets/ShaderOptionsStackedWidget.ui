@@ -249,6 +249,16 @@
   <widget class="QWidget" name="gradientPage">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
+     <widget class="GradientSliderFrame" name="frame">
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="TriangleSliderButton" name="pushButton">
       <property name="text">
        <string>PushButton</string>
@@ -287,6 +297,12 @@
    <class>TriangleSliderButton</class>
    <extends>QPushButton</extends>
    <header>Widgets/ColorWidgets/TriangleSliderButton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>GradientSliderFrame</class>
+   <extends>QFrame</extends>
+   <header>Widgets/ColorWidgets/GradientSliderFrame.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

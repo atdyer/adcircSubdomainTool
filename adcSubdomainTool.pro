@@ -56,7 +56,8 @@ SOURCES += main.cpp\
     Widgets/ColorWidgets/BasicColorsWidget.cpp \
     Widgets/ColorWidgets/ColorButton.cpp \
     Widgets/ColorWidgets/CustomColorsWidget.cpp \
-    Widgets/ColorWidgets/TriangleSliderButton.cpp
+    Widgets/ColorWidgets/TriangleSliderButton.cpp \
+    Widgets/ColorWidgets/GradientSliderFrame.cpp
 
 HEADERS  += MainWindow.h \
     OpenGL/OpenGLPanel.h \
@@ -103,7 +104,8 @@ HEADERS  += MainWindow.h \
     Widgets/ColorWidgets/BasicColorsWidget.h \
     Widgets/ColorWidgets/ColorButton.h \
     Widgets/ColorWidgets/CustomColorsWidget.h \
-    Widgets/ColorWidgets/TriangleSliderButton.h
+    Widgets/ColorWidgets/TriangleSliderButton.h \
+    Widgets/ColorWidgets/GradientSliderFrame.h
 
 FORMS    += MainWindow.ui \
     Dialogs/CreateProjectDialog.ui \

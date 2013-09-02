@@ -8,8 +8,16 @@ TriangleSliderButton::TriangleSliderButton(QWidget *parent) :
 
 	triangleColor = QColor::fromRgb(0, 0, 0);
 
+	isRemovable = false;
+
 	setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	setFixedSize(triangleWidth, triangleHeight);
+}
+
+
+void TriangleSliderButton::SetRemovable(bool newRemovable)
+{
+	isRemovable = newRemovable;
 }
 
 
@@ -23,25 +31,6 @@ void TriangleSliderButton::SetColor(QColor newColor)
 QColor TriangleSliderButton::GetColor()
 {
 	return triangleColor;
-}
-
-
-void TriangleSliderButton::BuildTriangle()
-{
-	int width = contentsRect().width();
-	int height = contentsRect().height();
-
-	triangle.clear();
-
-	triangle << QPoint(width-1, 0);
-	if (height%2 == 1)
-	{
-		triangle << QPoint(0, (width-1)/2);
-	} else {
-		triangle << QPoint(0, width/2);
-	}
-	triangle << QPoint(width-1, height-1);
-	triangle << QPoint(width-1, 0);
 }
 
 
@@ -64,3 +53,38 @@ void TriangleSliderButton::resizeEvent(QResizeEvent *event)
 	QPushButton::resizeEvent(event);
 	BuildTriangle();
 }
+
+
+void TriangleSliderButton::contextMenuEvent(QContextMenuEvent *event)
+{
+	if (isRemovable)
+	{
+		QMenu contextMenu;
+		contextMenu.addAction("Remove Color");
+		QPoint location = mapToGlobal(event->pos());
+
+		QAction *selectedItem = contextMenu.exec(location);
+		if (selectedItem)
+			emit removeSlider();
+	}
+}
+
+
+void TriangleSliderButton::BuildTriangle()
+{
+	int width = contentsRect().width();
+	int height = contentsRect().height();
+
+	triangle.clear();
+
+	triangle << QPoint(width-1, 0);
+	if (height%2 == 1)
+	{
+		triangle << QPoint(0, (width-1)/2);
+	} else {
+		triangle << QPoint(0, width/2);
+	}
+	triangle << QPoint(width-1, height-1);
+	triangle << QPoint(width-1, 0);
+}
+
