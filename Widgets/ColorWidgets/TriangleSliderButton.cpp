@@ -1,11 +1,10 @@
 #include "TriangleSliderButton.h"
 
 TriangleSliderButton::TriangleSliderButton(QWidget *parent) :
-	QPushButton(parent)
+	QPushButton(parent),
+	triangleWidth(13),
+	triangleHeight(13)
 {
-	triangleWidth = 13;
-	triangleHeight = 13;
-
 	triangleColor = QColor::fromRgb(0, 0, 0);
 
 	isRemovable = false;
