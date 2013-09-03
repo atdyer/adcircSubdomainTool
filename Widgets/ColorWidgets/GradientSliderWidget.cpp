@@ -32,7 +32,9 @@ void GradientSliderWidget::mouseMoveEvent(QMouseEvent *event)
 			if (currentSlider)
 			{
 				currentSlider->move(sliderX, yLoc-sliderHeight/2);
-				SetSliderValue(pressedSlider, MapYToValue(yLoc));
+				float newValue = MapYToValue(yLoc);
+				SetSliderValue(pressedSlider, newValue);
+				emit sliderValueChanged(pressedSlider, newValue);
 				UpdateGradientStops();
 				update();
 			}
@@ -136,13 +138,13 @@ void GradientSliderWidget::CreateLayout()
 
 	if (initialBottomSlider)
 	{
-		SetSliderColor(initialBottomSlider, QColor::fromRgb(0, 0, 0));
+		SetSliderColor(initialBottomSlider, QColor::fromRgb(0, 255, 0));
 		SetSliderValue(initialBottomSlider, minValue);
 	}
 
 	if (initialTopSlider)
 	{
-		SetSliderColor(initialTopSlider, QColor::fromRgb(255, 255, 255));
+		SetSliderColor(initialTopSlider, QColor::fromRgb(0, 0, 255));
 		SetSliderValue(initialTopSlider, maxValue);
 	}
 }
@@ -203,7 +205,7 @@ void GradientSliderWidget::UpdateGradientStops()
 		foreach(TriangleSliderButton* slider, sliders)
 		{
 			float valuePercentage = (slider->GetValue() - minValue) / (maxValue - minValue);
-			stops << QGradientStop(valuePercentage, slider->GetColor());
+			stops << QGradientStop(1.0-valuePercentage, slider->GetColor());
 		}
 
 		gradientFrame->SetStops(stops);
@@ -214,13 +216,14 @@ void GradientSliderWidget::UpdateGradientStops()
 int GradientSliderWidget::MapValueToY(float val)
 {
 	float valuePercentage = (val - minValue) / (maxValue - minValue);
-	return (sliderTop + (int)(valuePercentage*(sliderBottom - sliderTop))) - sliderHeight/2;
+	float remainderPercentage = 1.0 - valuePercentage;
+	return (sliderTop + (int)(remainderPercentage*(sliderBottom - sliderTop))) - sliderHeight/2;
 }
 
 
 float GradientSliderWidget::MapYToValue(int y)
 {
-	float yPercentage = float(y - sliderTop) / float(sliderBottom - sliderTop);
+	float yPercentage = float(sliderBottom - y) / float(sliderBottom - sliderTop);
 	float mappedValue = minValue + yPercentage*(maxValue - minValue);
 	if (mappedValue < minValue)
 		return minValue;
@@ -239,6 +242,7 @@ bool GradientSliderWidget::YValueInRange(int y)
 void GradientSliderWidget::sliderPressed(unsigned int sliderID)
 {
 	pressedSlider = sliderID;
+	emit currentSliderChanged(sliderID, GetSliderValue(sliderID), GetSliderColor(sliderID));
 }
 
 

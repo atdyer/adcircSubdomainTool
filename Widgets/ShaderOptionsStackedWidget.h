@@ -25,6 +25,8 @@ class ShaderOptionsStackedWidget : public QStackedWidget
 
 		void	colorChanged(const QColor &c);
 		void	addCurrentColorToCustomColors();
+		void	currentSliderChanged(unsigned int sliderID, float sliderValue, QColor sliderColor);
+		void	gradientSliderValueChanged(unsigned int sliderID, float newValue);
 };
 
 #endif // SHADEROPTIONSSTACKEDWIDGET_H

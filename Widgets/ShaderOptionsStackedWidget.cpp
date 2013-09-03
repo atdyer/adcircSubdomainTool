@@ -19,6 +19,11 @@ ShaderOptionsStackedWidget::ShaderOptionsStackedWidget(QWidget *parent) :
 	connect(ui->basicColorsWidget, SIGNAL(colorClicked(QColor)), ui->colorPicker, SLOT(setColor(QColor)));
 
 	connect(ui->addToCustomColorsButton, SIGNAL(clicked()), this, SLOT(addCurrentColorToCustomColors()));
+
+	/* Set up gradient picker */
+	ui->currentColorButton->SetBackgroundColor(QColor::fromRgb(0, 0, 0));
+	connect(ui->gradientSliderWidget, SIGNAL(currentSliderChanged(uint,float,QColor)), this, SLOT(currentSliderChanged(uint,float,QColor)));
+	connect(ui->gradientSliderWidget, SIGNAL(sliderValueChanged(uint,float)), this, SLOT(gradientSliderValueChanged(uint,float)));
 }
 
 ShaderOptionsStackedWidget::~ShaderOptionsStackedWidget()
@@ -49,4 +54,17 @@ void ShaderOptionsStackedWidget::colorChanged(const QColor &c)
 void ShaderOptionsStackedWidget::addCurrentColorToCustomColors()
 {
 	ui->customColorsWidget->addColor(ui->colorFrame->palette().color(backgroundRole()));
+}
+
+
+void ShaderOptionsStackedWidget::currentSliderChanged(unsigned int sliderID, float sliderValue, QColor sliderColor)
+{
+	ui->currentValueLine->setText(QString::number(sliderValue, 'f', 4));
+	ui->currentColorButton->SetBackgroundColor(sliderColor);
+}
+
+
+void ShaderOptionsStackedWidget::gradientSliderValueChanged(unsigned int sliderID, float newValue)
+{
+	ui->currentValueLine->setText(QString::number(newValue, 'f', 4));
 }

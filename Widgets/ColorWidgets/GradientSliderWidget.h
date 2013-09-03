@@ -62,6 +62,9 @@ class GradientSliderWidget : public QWidget
 		bool	YValueInRange(int y);
 		
 	signals:
+
+		void	currentSliderChanged(unsigned int, float, QColor);
+		void	sliderValueChanged(unsigned int, float);
 		
 	public slots:
 
