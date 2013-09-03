@@ -2,9 +2,9 @@
 #define GRADIENTSLIDERWIDGET_H
 
 #include <QWidget>
-#include <QBoxLayout>
-#include <QResizeEvent>
 #include <QMap>
+#include <QLabel>
+#include <QBoxLayout>
 
 #include <iostream>
 
@@ -22,6 +22,9 @@ class GradientSliderWidget : public QWidget
 		void	mouseMoveEvent(QMouseEvent *event);
 		void	resizeEvent(QResizeEvent *event);
 
+		void	SetMinValue(float newMin);
+		void	SetMaxValue(float newMax);
+
 		void	SetSliderColor(unsigned int sliderID, QColor newColor);
 		void	SetSliderValue(unsigned int sliderID, float newValue);
 
@@ -29,6 +32,11 @@ class GradientSliderWidget : public QWidget
 		float	GetSliderValue(unsigned int sliderID);
 
 	private:
+
+		QBoxLayout*	layout;
+
+		QLabel*	minLabel;
+		QLabel*	maxLabel;
 
 		GradientSliderFrame*				gradientFrame;
 		QMap<unsigned int, TriangleSliderButton*>	sliders;
@@ -47,6 +55,7 @@ class GradientSliderWidget : public QWidget
 		unsigned int	AddSlider();
 		void		RemoveSlider(unsigned int sliderID);
 		void		PositionSliders();
+		void		UpdateGradientStops();
 
 		int	MapValueToY(float val);
 		float	MapYToValue(int y);

@@ -1,8 +1,8 @@
 #include "TriangleSliderButton.h"
 
 unsigned int	TriangleSliderButton::nextID = 1;
-int		TriangleSliderButton::sliderWidth = 13;
-int		TriangleSliderButton::sliderHeight = 13;
+int		TriangleSliderButton::sliderWidth = 17;
+int		TriangleSliderButton::sliderHeight = 17;
 
 TriangleSliderButton::TriangleSliderButton(QWidget *parent) :
 	QPushButton(parent),
@@ -15,7 +15,7 @@ TriangleSliderButton::TriangleSliderButton(QWidget *parent) :
 
 	triangleColor = QColor::fromRgb(0, 0, 0);
 
-	isRemovable = true;
+	isRemovable = false;
 
 	setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	setFixedSize(triangleWidth, triangleHeight);

@@ -2,6 +2,8 @@
 
 GradientSliderWidget::GradientSliderWidget(QWidget *parent) :
 	QWidget(parent),
+	minLabel(0),
+	maxLabel(0),
 	gradientFrame(0)
 {
 	sliderWidth = TriangleSliderButton::sliderWidth;
@@ -18,47 +20,61 @@ GradientSliderWidget::GradientSliderWidget(QWidget *parent) :
 	CreateLayout();
 }
 
-//
+
 void GradientSliderWidget::mouseMoveEvent(QMouseEvent *event)
 {
 	if (pressedSlider != 0 && sliders.contains(pressedSlider))
 	{
-		if (YValueInRange(event->y()))
+		int yLoc = event->y();
+		if (YValueInRange(yLoc))
 		{
-
 			TriangleSliderButton *currentSlider = sliders.value(pressedSlider, 0);
 			if (currentSlider)
 			{
-				std::cout << MapYToValue(event->y()) << std::endl;
-				currentSlider->move(sliderX, event->y()-sliderHeight/2);
+				currentSlider->move(sliderX, yLoc-sliderHeight/2);
+				SetSliderValue(pressedSlider, MapYToValue(yLoc));
+				UpdateGradientStops();
 				update();
 			}
 		}
 	}
 }
 
-//
+
 void GradientSliderWidget::resizeEvent(QResizeEvent *)
 {
-	int width = contentsRect().width();
-	int height = contentsRect().height();
-
-	sliderTop = sliderHeight/2;
-	sliderBottom = height-sliderHeight/2;
-	sliderX = width-sliderWidth;
-
-	std::cout << sliderTop << " - " << sliderBottom << std::endl;
-
 	if (gradientFrame)
 	{
-		gradientFrame->resize(width-sliderWidth, height-sliderHeight);
-		gradientFrame->move(0, sliderHeight/2);
+		gradientFrame->resize(gradientFrame->width()-sliderWidth, gradientFrame->height());
+		sliderTop = gradientFrame->y();
+		sliderBottom = gradientFrame->y() + gradientFrame->height();
+		sliderX = gradientFrame->x() + gradientFrame->width();
 	}
 
 	PositionSliders();
 }
 
-//
+
+void GradientSliderWidget::SetMinValue(float newMin)
+{
+	minValue = newMin;
+	if (minLabel)
+		minLabel->setText(QString("Minimum: ").append(QString::number(minValue, 'f', 4)));
+	PositionSliders();
+	UpdateGradientStops();
+}
+
+
+void GradientSliderWidget::SetMaxValue(float newMax)
+{
+	maxValue = newMax;
+	if (maxLabel)
+		maxLabel->setText(QString("Maximum: ").append(QString::number(maxValue, 'f', 4)));
+	PositionSliders();
+	UpdateGradientStops();
+}
+
+
 void GradientSliderWidget::SetSliderColor(unsigned int sliderID, QColor newColor)
 {
 	if (sliders.contains(sliderID))
@@ -68,7 +84,7 @@ void GradientSliderWidget::SetSliderColor(unsigned int sliderID, QColor newColor
 	}
 }
 
-//
+
 void GradientSliderWidget::SetSliderValue(unsigned int sliderID, float newValue)
 {
 	if (sliders.contains(sliderID))
@@ -77,7 +93,7 @@ void GradientSliderWidget::SetSliderValue(unsigned int sliderID, float newValue)
 	}
 }
 
-//
+
 QColor GradientSliderWidget::GetSliderColor(unsigned int sliderID)
 {
 	if (sliders.contains(sliderID))
@@ -87,7 +103,7 @@ QColor GradientSliderWidget::GetSliderColor(unsigned int sliderID)
 	return QColor::fromRgb(0, 0, 0);
 }
 
-//
+
 float GradientSliderWidget::GetSliderValue(unsigned int sliderID)
 {
 	if (sliders.contains(sliderID))
@@ -97,10 +113,23 @@ float GradientSliderWidget::GetSliderValue(unsigned int sliderID)
 	return 0.0;
 }
 
-//
+
 void GradientSliderWidget::CreateLayout()
 {
+	layout = new QBoxLayout(QBoxLayout::TopToBottom, this);
+
 	gradientFrame = new GradientSliderFrame(this);
+
+	maxLabel = new QLabel(QString("Maximum: ").append(QString::number(maxValue, 'f', 4)), this);
+	minLabel = new QLabel(QString("Minimum: ").append(QString::number(minValue, 'f', 4)), this);
+	maxLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
+	minLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
+	maxLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+	minLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+
+	layout->addWidget(maxLabel);
+	layout->addWidget(gradientFrame);
+	layout->addWidget(minLabel);
 
 	unsigned int initialBottomSlider = AddSlider();
 	unsigned int initialTopSlider = AddSlider();
@@ -118,7 +147,7 @@ void GradientSliderWidget::CreateLayout()
 	}
 }
 
-//
+
 unsigned int GradientSliderWidget::AddSlider()
 {
 	TriangleSliderButton *newSlider = new TriangleSliderButton(this);
@@ -135,7 +164,7 @@ unsigned int GradientSliderWidget::AddSlider()
 	return 0;
 }
 
-//
+
 void GradientSliderWidget::RemoveSlider(unsigned int sliderID)
 {
 	if (sliders.contains(sliderID))
@@ -145,7 +174,7 @@ void GradientSliderWidget::RemoveSlider(unsigned int sliderID)
 	}
 }
 
-//
+
 void GradientSliderWidget::PositionSliders()
 {
 	TriangleSliderButton* currentSlider = 0;
@@ -160,16 +189,35 @@ void GradientSliderWidget::PositionSliders()
 		}
 		++it;
 	}
+
+	UpdateGradientStops();
 }
 
-//
+
+void GradientSliderWidget::UpdateGradientStops()
+{
+	if (gradientFrame)
+	{
+		QGradientStops stops;
+
+		foreach(TriangleSliderButton* slider, sliders)
+		{
+			float valuePercentage = (slider->GetValue() - minValue) / (maxValue - minValue);
+			stops << QGradientStop(valuePercentage, slider->GetColor());
+		}
+
+		gradientFrame->SetStops(stops);
+	}
+}
+
+
 int GradientSliderWidget::MapValueToY(float val)
 {
 	float valuePercentage = (val - minValue) / (maxValue - minValue);
 	return (sliderTop + (int)(valuePercentage*(sliderBottom - sliderTop))) - sliderHeight/2;
 }
 
-//
+
 float GradientSliderWidget::MapYToValue(int y)
 {
 	float yPercentage = float(y - sliderTop) / float(sliderBottom - sliderTop);

@@ -6,6 +6,8 @@
 #include <QPainter>
 #include <QBrush>
 
+#include <iostream>
+
 class GradientSliderFrame : public QFrame
 {
 		Q_OBJECT
