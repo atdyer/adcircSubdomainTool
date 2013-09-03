@@ -1,16 +1,30 @@
 #include "TriangleSliderButton.h"
 
+unsigned int	TriangleSliderButton::nextID = 1;
+int		TriangleSliderButton::sliderWidth = 13;
+int		TriangleSliderButton::sliderHeight = 13;
+
 TriangleSliderButton::TriangleSliderButton(QWidget *parent) :
 	QPushButton(parent),
-	triangleWidth(13),
-	triangleHeight(13)
+	sliderID(nextID),
+	triangleWidth(sliderWidth),
+	triangleHeight(sliderHeight),
+	currentValue(0.0)
 {
+	++nextID;
+
 	triangleColor = QColor::fromRgb(0, 0, 0);
 
-	isRemovable = false;
+	isRemovable = true;
 
 	setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	setFixedSize(triangleWidth, triangleHeight);
+}
+
+
+unsigned int TriangleSliderButton::GetID()
+{
+	return sliderID;
 }
 
 
@@ -27,9 +41,21 @@ void TriangleSliderButton::SetColor(QColor newColor)
 }
 
 
+void TriangleSliderButton::SetValue(float newValue)
+{
+	currentValue = newValue;
+}
+
+
 QColor TriangleSliderButton::GetColor()
 {
 	return triangleColor;
+}
+
+
+float TriangleSliderButton::GetValue()
+{
+	return currentValue;
 }
 
 
@@ -51,6 +77,18 @@ void TriangleSliderButton::resizeEvent(QResizeEvent *event)
 {
 	QPushButton::resizeEvent(event);
 	BuildTriangle();
+}
+
+
+void TriangleSliderButton::mousePressEvent(QMouseEvent *)
+{
+	emit sliderPressed(sliderID);
+}
+
+
+void TriangleSliderButton::mouseReleaseEvent(QMouseEvent *)
+{
+	emit sliderReleased(sliderID);
 }
 
 

@@ -8,6 +8,7 @@ class ColorButton : public QToolButton
 		Q_OBJECT
 	public:
 		explicit ColorButton(QWidget *parent = 0);
+		~ColorButton();
 
 		void	SetBackgroundColor(QColor color);
 		void	SetRow(int newRow);

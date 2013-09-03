@@ -3,8 +3,8 @@
 
 #include <QWidget>
 #include <QBoxLayout>
-#include <QPaintEvent>
 #include <QResizeEvent>
+#include <QMap>
 
 #include <iostream>
 
@@ -19,31 +19,45 @@ class GradientSliderWidget : public QWidget
 
 	protected:
 
-		void	paintEvent(QPaintEvent *);
 		void	mouseMoveEvent(QMouseEvent *event);
 		void	resizeEvent(QResizeEvent *event);
 
+		void	SetSliderColor(unsigned int sliderID, QColor newColor);
+		void	SetSliderValue(unsigned int sliderID, float newValue);
+
+		QColor	GetSliderColor(unsigned int sliderID);
+		float	GetSliderValue(unsigned int sliderID);
+
 	private:
 
-		GradientSliderFrame*			gradientFrame;
-		std::vector<TriangleSliderButton*>	sliders;
+		GradientSliderFrame*				gradientFrame;
+		QMap<unsigned int, TriangleSliderButton*>	sliders;
 
-		int	sliderWidth;
-		int	sliderHeight;
+		int		sliderWidth;
+		int		sliderHeight;
+		int		sliderTop;
+		int		sliderBottom;
+		int		sliderX;
+		unsigned int	pressedSlider;
 
-		bool	bottomSliderClicked;
+		float	minValue;
+		float	maxValue;
 
-		TriangleSliderButton *bottomSlider;
-		TriangleSliderButton *topSlider;
+		void		CreateLayout();
+		unsigned int	AddSlider();
+		void		RemoveSlider(unsigned int sliderID);
+		void		PositionSliders();
 
-		void	CreateLayout();
+		int	MapValueToY(float val);
+		float	MapYToValue(int y);
+		bool	YValueInRange(int y);
 		
 	signals:
 		
 	public slots:
 
-		void	BottomSliderClicked();
-		
+		void	sliderPressed(unsigned int sliderID);
+		void	sliderReleased(unsigned int sliderID);
 };
 
 #endif // GRADIENTSLIDERWIDGET_H

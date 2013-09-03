@@ -9,6 +9,12 @@ ColorButton::ColorButton(QWidget *parent) :
 }
 
 
+ColorButton::~ColorButton()
+{
+
+}
+
+
 void ColorButton::SetBackgroundColor(QColor color)
 {
 	currentColor = color;
