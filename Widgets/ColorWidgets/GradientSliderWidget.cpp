@@ -21,38 +21,43 @@ GradientSliderWidget::GradientSliderWidget(QWidget *parent) :
 }
 
 
-void GradientSliderWidget::mouseMoveEvent(QMouseEvent *event)
+unsigned int GradientSliderWidget::AddSlider()
 {
-	if (pressedSlider != 0 && sliders.contains(pressedSlider))
+	TriangleSliderButton *newSlider = new TriangleSliderButton(this);
+	unsigned int newID = newSlider->GetID();
+	if (!sliders.contains(newID))
 	{
-		int yLoc = event->y();
-		if (YValueInRange(yLoc))
-		{
-			TriangleSliderButton *currentSlider = sliders.value(pressedSlider, 0);
-			if (currentSlider)
-			{
-				currentSlider->move(sliderX, yLoc-sliderHeight/2);
-				float newValue = MapYToValue(yLoc);
-				SetSliderValue(pressedSlider, newValue);
-				emit sliderValueChanged(pressedSlider, newValue);
-				UpdateGradientStops();
-				update();
-			}
-		}
+		newSlider->SetValue((minValue + maxValue) / 2.0);
+		newSlider->SetColor(QColor::fromRgb(0, 0, 0));
+		connect(newSlider, SIGNAL(sliderPressed(uint)), this, SLOT(sliderPressed(uint)));
+		connect(newSlider, SIGNAL(sliderReleased(uint)), this, SLOT(sliderReleased(uint)));
+		sliders[newID] = newSlider;
+
+		newSlider->show();
+		CheckSliderCount();
+		PositionGradientFrame();
+		PositionSliders();
+
+		emit sliderAdded(newID, newSlider->GetValue(), newSlider->GetColor());
+
+		return newID;
+	} else {
+		delete newSlider;
 	}
+
+	return 0;
 }
 
 
-void GradientSliderWidget::resizeEvent(QResizeEvent *)
+void GradientSliderWidget::RemoveSlider(unsigned int sliderID)
 {
-	if (gradientFrame)
+	if (sliders.contains(sliderID))
 	{
-		gradientFrame->resize(gradientFrame->width()-sliderWidth, gradientFrame->height());
-		sliderTop = gradientFrame->y();
-		sliderBottom = gradientFrame->y() + gradientFrame->height();
-		sliderX = gradientFrame->x() + gradientFrame->width();
+		TriangleSliderButton *currentSlider = sliders.take(sliderID);
+		delete currentSlider;
 	}
 
+	CheckSliderCount();
 	PositionSliders();
 }
 
@@ -82,6 +87,8 @@ void GradientSliderWidget::SetSliderColor(unsigned int sliderID, QColor newColor
 	if (sliders.contains(sliderID))
 	{
 		sliders.value(sliderID)->SetColor(newColor);
+		emit sliderColorChanged(sliderID, newColor);
+		UpdateGradientStops();
 		update();
 	}
 }
@@ -92,7 +99,21 @@ void GradientSliderWidget::SetSliderValue(unsigned int sliderID, float newValue)
 	if (sliders.contains(sliderID))
 	{
 		sliders.value(sliderID)->SetValue(newValue);
+		emit sliderValueChanged(sliderID, newValue);
+		UpdateGradientStops();
 	}
+}
+
+
+float GradientSliderWidget::GetMinValue()
+{
+	return minValue;
+}
+
+
+float GradientSliderWidget::GetMaxValue()
+{
+	return maxValue;
 }
 
 
@@ -116,6 +137,35 @@ float GradientSliderWidget::GetSliderValue(unsigned int sliderID)
 }
 
 
+void GradientSliderWidget::mouseMoveEvent(QMouseEvent *event)
+{
+	if (pressedSlider != 0 && sliders.contains(pressedSlider))
+	{
+		int yLoc = event->y();
+		if (YValueInRange(yLoc))
+		{
+			TriangleSliderButton *currentSlider = sliders.value(pressedSlider, 0);
+			if (currentSlider)
+			{
+				currentSlider->move(sliderX, yLoc-sliderHeight/2);
+				float newValue = MapYToValue(yLoc);
+				SetSliderValue(pressedSlider, newValue);
+				emit sliderValueChanged(pressedSlider, newValue);
+				UpdateGradientStops();
+				update();
+			}
+		}
+	}
+}
+
+
+void GradientSliderWidget::resizeEvent(QResizeEvent *)
+{
+	PositionGradientFrame();
+	PositionSliders();
+}
+
+
 void GradientSliderWidget::CreateLayout()
 {
 	layout = new QBoxLayout(QBoxLayout::TopToBottom, this);
@@ -133,47 +183,20 @@ void GradientSliderWidget::CreateLayout()
 	layout->addWidget(gradientFrame);
 	layout->addWidget(minLabel);
 
-	unsigned int initialBottomSlider = AddSlider();
-	unsigned int initialTopSlider = AddSlider();
+//	unsigned int initialBottomSlider = AddSlider();
+//	unsigned int initialTopSlider = AddSlider();
 
-	if (initialBottomSlider)
-	{
-		SetSliderColor(initialBottomSlider, QColor::fromRgb(0, 255, 0));
-		SetSliderValue(initialBottomSlider, minValue);
-	}
+//	if (initialBottomSlider)
+//	{
+//		SetSliderColor(initialBottomSlider, QColor::fromRgb(0, 255, 0));
+//		SetSliderValue(initialBottomSlider, minValue);
+//	}
 
-	if (initialTopSlider)
-	{
-		SetSliderColor(initialTopSlider, QColor::fromRgb(0, 0, 255));
-		SetSliderValue(initialTopSlider, maxValue);
-	}
-}
-
-
-unsigned int GradientSliderWidget::AddSlider()
-{
-	TriangleSliderButton *newSlider = new TriangleSliderButton(this);
-	unsigned int newID = newSlider->GetID();
-	if (!sliders.contains(newID))
-	{
-		connect(newSlider, SIGNAL(sliderPressed(uint)), this, SLOT(sliderPressed(uint)));
-		connect(newSlider, SIGNAL(sliderReleased(uint)), this, SLOT(sliderReleased(uint)));
-		sliders[newID] = newSlider;
-		return newID;
-	} else {
-		delete newSlider;
-	}
-	return 0;
-}
-
-
-void GradientSliderWidget::RemoveSlider(unsigned int sliderID)
-{
-	if (sliders.contains(sliderID))
-	{
-		TriangleSliderButton *currentSlider = sliders.take(sliderID);
-		delete currentSlider;
-	}
+//	if (initialTopSlider)
+//	{
+//		SetSliderColor(initialTopSlider, QColor::fromRgb(0, 0, 255));
+//		SetSliderValue(initialTopSlider, maxValue);
+//	}
 }
 
 
@@ -196,6 +219,18 @@ void GradientSliderWidget::PositionSliders()
 }
 
 
+void GradientSliderWidget::PositionGradientFrame()
+{
+	if (gradientFrame)
+	{
+		gradientFrame->resize(gradientFrame->width()-sliderWidth, gradientFrame->height());
+		sliderTop = gradientFrame->y();
+		sliderBottom = gradientFrame->y() + gradientFrame->height();
+		sliderX = gradientFrame->x() + gradientFrame->width();
+	}
+}
+
+
 void GradientSliderWidget::UpdateGradientStops()
 {
 	if (gradientFrame)
@@ -209,6 +244,24 @@ void GradientSliderWidget::UpdateGradientStops()
 		}
 
 		gradientFrame->SetStops(stops);
+	}
+}
+
+
+void GradientSliderWidget::CheckSliderCount()
+{
+	TriangleSliderButton *currentSlider = 0;
+	bool removable = sliders.size() <= 2 ? false : true;
+
+	QMap<unsigned int, TriangleSliderButton*>::const_iterator it = sliders.constBegin();
+	while (it != sliders.constEnd())
+	{
+		currentSlider = *it;
+		if (currentSlider)
+		{
+			currentSlider->SetRemovable(removable);
+		}
+		++it;
 	}
 }
 

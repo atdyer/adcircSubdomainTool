@@ -17,10 +17,8 @@ class GradientSliderWidget : public QWidget
 	public:
 		explicit GradientSliderWidget(QWidget *parent = 0);
 
-	protected:
-
-		void	mouseMoveEvent(QMouseEvent *event);
-		void	resizeEvent(QResizeEvent *event);
+		unsigned int	AddSlider();
+		void		RemoveSlider(unsigned int sliderID);
 
 		void	SetMinValue(float newMin);
 		void	SetMaxValue(float newMax);
@@ -28,8 +26,16 @@ class GradientSliderWidget : public QWidget
 		void	SetSliderColor(unsigned int sliderID, QColor newColor);
 		void	SetSliderValue(unsigned int sliderID, float newValue);
 
+		float	GetMinValue();
+		float	GetMaxValue();
+
 		QColor	GetSliderColor(unsigned int sliderID);
 		float	GetSliderValue(unsigned int sliderID);
+
+	protected:
+
+		void	mouseMoveEvent(QMouseEvent *event);
+		void	resizeEvent(QResizeEvent *event);
 
 	private:
 
@@ -51,11 +57,11 @@ class GradientSliderWidget : public QWidget
 		float	minValue;
 		float	maxValue;
 
-		void		CreateLayout();
-		unsigned int	AddSlider();
-		void		RemoveSlider(unsigned int sliderID);
-		void		PositionSliders();
-		void		UpdateGradientStops();
+		void	CreateLayout();
+		void	PositionSliders();
+		void	PositionGradientFrame();
+		void	UpdateGradientStops();
+		void	CheckSliderCount();
 
 		int	MapValueToY(float val);
 		float	MapYToValue(int y);
@@ -63,7 +69,9 @@ class GradientSliderWidget : public QWidget
 		
 	signals:
 
+		void	sliderAdded(unsigned int, float, QColor);
 		void	currentSliderChanged(unsigned int, float, QColor);
+		void	sliderColorChanged(unsigned int, QColor);
 		void	sliderValueChanged(unsigned int, float);
 		
 	public slots:

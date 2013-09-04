@@ -3,8 +3,11 @@
 
 #include <QStackedWidget>
 #include <QColorDialog>
+#include <QMap>
+#include <QListWidget>
 #include <Widgets/ColorWidgets/ColorGradientFrame.h>
 #include <Widgets/ColorWidgets/ValueSlider.h>
+#include <Widgets/ColorWidgets/SliderItemDelegate.h>
 
 namespace Ui {
 	class ShaderOptionsStackedWidget;
@@ -21,11 +24,21 @@ class ShaderOptionsStackedWidget : public QStackedWidget
 	private:
 		Ui::ShaderOptionsStackedWidget *ui;
 
+		QMap<unsigned int, QListWidgetItem*>	sliderListItems;
+
+		void	SetupGradientPicker();
+
 	protected slots:
 
 		void	colorChanged(const QColor &c);
 		void	addCurrentColorToCustomColors();
+
+		/* Slider slots */
+		void	addSlider();
+		void	sliderAdded(unsigned int sliderID, float sliderValue, QColor sliderColor);
+		void	removeSlider(unsigned int sliderID);
 		void	currentSliderChanged(unsigned int sliderID, float sliderValue, QColor sliderColor);
+		void	gradientSliderColorChanged(unsigned int sliderID, QColor newColor);
 		void	gradientSliderValueChanged(unsigned int sliderID, float newValue);
 };
 
