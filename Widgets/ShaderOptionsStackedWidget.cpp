@@ -97,6 +97,11 @@ void ShaderOptionsStackedWidget::colorChanged(const QColor &c)
 	ui->hueSpin->blockSignals(hue);
 	ui->satSpin->blockSignals(sat);
 	ui->valSpin->blockSignals(val);
+
+	QColor finalColor(c);
+	finalColor.setAlpha(ui->alphaSpin->text().toFloat());
+
+	emit solidColorChanged(finalColor);
 }
 
 

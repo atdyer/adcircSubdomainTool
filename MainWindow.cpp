@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	testDomain = 0;
 	testProject = 0;
+	displayOptionsDialog = 0;
 
 	// Create GLPanel status bar and all labels
 	glStatusBar = new QStatusBar();
@@ -389,6 +390,16 @@ void MainWindow::CheckForMemoryLeaks()
 
 void MainWindow::on_actionColor_Options_triggered()
 {
-	DisplayOptionsDialog dlg;
-	dlg.exec();
+	if (!displayOptionsDialog)
+	{
+		displayOptionsDialog = new DisplayOptionsDialog(this);
+
+		if (testProject)
+		{
+			connect(displayOptionsDialog, SIGNAL(domainSolidOutlineColorChanged(uint,QColor)), testProject, SLOT(setDomainSolidOutline(uint,QColor)));
+			connect(displayOptionsDialog, SIGNAL(domainSolidFillColorChanged(uint,QColor)), testProject, SLOT(setDomainSolidFill(uint,QColor)));
+		}
+	}
+
+	displayOptionsDialog->show();
 }

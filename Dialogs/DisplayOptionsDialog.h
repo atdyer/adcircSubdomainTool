@@ -17,6 +17,15 @@ class DisplayOptionsDialog : public QDialog
 		
 	private:
 		Ui::DisplayOptionsDialog *ui;
+
+	signals:
+
+		void	domainSolidOutlineColorChanged(unsigned int, QColor);
+		void	domainSolidFillColorChanged(unsigned int, QColor);
+
+	private slots:
+
+		void	solidColorChanged(QColor color);
 };
 
 #endif // DISPLAYOPTIONSDIALOG_H

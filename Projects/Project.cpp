@@ -288,3 +288,28 @@ void Project::on_ProjectTreeItemChanged(QTreeWidgetItem *item, QTreeWidgetItem *
 		SetCurrentDomain(selectedDomain);
 	}
 }
+
+
+void Project::setDomainSolidOutline(unsigned int domainID, QColor color)
+{
+	if (currentDomain)
+	{
+		currentDomain->SetTerrainSolidOutline(SolidShaderProperties(color.red()/255.0,
+									    color.green()/255.0,
+									    color.blue()/255.0,
+									    color.alpha()/255.0));
+	}
+}
+
+
+void Project::setDomainSolidFill(unsigned int domainID, QColor color)
+{
+	if (currentDomain)
+	{
+		QColor rgb = color.toRgb();
+		currentDomain->SetTerrainSolidFill(SolidShaderProperties(color.red()/255.0,
+									 color.green()/255.0,
+									 color.blue()/255.0,
+									 color.alpha()/255.0));
+	}
+}

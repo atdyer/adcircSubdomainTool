@@ -88,6 +88,9 @@ class MainWindow : public QMainWindow
 		// The test Domain
 		Domain*		testDomain;
 
+		// Dialogs
+		DisplayOptionsDialog*	displayOptionsDialog;
+
 		void	ConnectNewDomain(Domain *newDomain);
 		void	CheckForMemoryLeaks();
 

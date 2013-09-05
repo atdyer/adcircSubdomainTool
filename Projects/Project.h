@@ -81,6 +81,11 @@ class Project : public QObject
 
 		void	on_ProjectTreeItemChanged(QTreeWidgetItem *item, QTreeWidgetItem*);
 
+	public slots:
+
+		void	setDomainSolidOutline(unsigned int domainID, QColor color);
+		void	setDomainSolidFill(unsigned int domainID, QColor color);
+
 	signals:
 
 		void	newDomainSelected();

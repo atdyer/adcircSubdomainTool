@@ -89,7 +89,7 @@
         </widget>
        </item>
        <item>
-        <widget class="ShaderOptionsStackedWidget" name="stackedWidget">
+        <widget class="ShaderOptionsStackedWidget" name="outlineShaderOptions">
          <widget class="QWidget" name="page"/>
          <widget class="QWidget" name="page_2"/>
         </widget>
@@ -150,7 +150,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QStackedWidget" name="stackedWidget_2">
+        <widget class="ShaderOptionsStackedWidget" name="fillShaderOptions">
          <widget class="QWidget" name="page_3"/>
          <widget class="QWidget" name="page_4"/>
         </widget>

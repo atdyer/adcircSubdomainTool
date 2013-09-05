@@ -6,8 +6,6 @@
 
 QT       += core gui opengl xml
 
-include ( /usr/local/qwt-6.1.0/features/qwt.prf )
-
 LIBS += -lGLEW -lGLU
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets

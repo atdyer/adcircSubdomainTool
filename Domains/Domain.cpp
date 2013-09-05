@@ -324,6 +324,8 @@ void Domain::SetTerrainSolidOutline(SolidShaderProperties newProperties)
 	if (terrainLayer)
 		terrainLayer->SetSolidOutline(newProperties);
 
+	emit UpdateGL();
+
 }
 
 
@@ -339,6 +341,8 @@ void Domain::SetTerrainSolidFill(SolidShaderProperties newProperties)
 {
 	if (terrainLayer)
 		terrainLayer->SetSolidFill(newProperties);
+
+	emit UpdateGL();
 }
 
 
@@ -354,6 +358,8 @@ void Domain::SetTerrainGradientOutline(GradientShaderProperties newProperties)
 {
 	if (terrainLayer)
 		terrainLayer->SetGradientOutline(newProperties);
+
+	emit UpdateGL();
 }
 
 
@@ -369,6 +375,8 @@ void Domain::SetTerrainGradientFill(GradientShaderProperties newProperties)
 {
 	if (terrainLayer)
 		terrainLayer->SetGradientFill(newProperties);
+
+	emit UpdateGL();
 }
 
 
