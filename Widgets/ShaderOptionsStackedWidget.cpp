@@ -110,6 +110,7 @@ void ShaderOptionsStackedWidget::sliderAdded(unsigned int sliderID, float slider
 
 		newItem->setData(Qt::DisplayRole, QString::number(sliderValue));
 		newItem->setData(Qt::BackgroundRole, sliderColor);
+		newItem->setFlags(newItem->flags() | Qt::ItemIsEditable);
 //		newItem->setData(Qt::DecorationRole, newButton);
 
 //		newItem->setText(QString::number(sliderValue));

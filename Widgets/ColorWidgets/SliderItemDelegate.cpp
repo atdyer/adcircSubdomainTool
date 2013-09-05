@@ -37,17 +37,27 @@ QSize SliderItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QMo
 }
 
 
-//QWidget *SliderItemDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
-//{
-//	QLineEdit *editor = new QLineEdit(parent);
-//	return editor;
-//}
+QWidget *SliderItemDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+	QLineEdit *editor = new QLineEdit(parent);
+	return editor;
+}
 
 
-//void SliderItemDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
-//{
+void SliderItemDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
+{
+	QString currValue = index.model()->data(index, Qt::EditRole).toString();
+	QLineEdit *lineEdit = static_cast<QLineEdit*>(editor);
+	lineEdit->setText(currValue);
+}
 
-//}
+
+void SliderItemDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+	QLineEdit *lineEdit = static_cast<QLineEdit*>(editor);
+	lineEdit->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+	lineEdit->setGeometry(QRect(option.rect.x()+60, option.rect.y()+5, option.rect.width()-60, option.rect.height()-10));
+}
 
 
 //void SliderItemDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
