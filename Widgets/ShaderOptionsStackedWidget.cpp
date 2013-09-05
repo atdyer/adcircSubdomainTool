@@ -7,6 +7,8 @@ ShaderOptionsStackedWidget::ShaderOptionsStackedWidget(QWidget *parent) :
 {
 	ui->setupUi(this);
 
+	delegate = 0;
+
 	ui->colorFrame->setAutoFillBackground(true);
 
 	connect(ui->colorPicker, SIGNAL(colorPicked(QColor)), ui->valueSlider, SLOT(setColor(QColor)));
@@ -32,7 +34,11 @@ ShaderOptionsStackedWidget::~ShaderOptionsStackedWidget()
 
 void ShaderOptionsStackedWidget::SetupGradientPicker()
 {
-	ui->sliderList->setItemDelegate(new SliderItemDelegate());
+	delegate = new SliderItemDelegate();
+	delegate->SetValueRange(ui->gradientSliderWidget->GetMinValue(), ui->gradientSliderWidget->GetMaxValue());
+	connect(delegate, SIGNAL(valueChanged(int,float)), this, SLOT(sliderValueSet(int,float)));
+
+	ui->sliderList->setItemDelegate(delegate);
 	ui->currentColorButton->SetBackgroundColor(QColor::fromRgb(0, 0, 0));
 
 	connect(ui->gradientSliderWidget, SIGNAL(currentSliderChanged(uint,float,QColor)), this, SLOT(currentSliderChanged(uint,float,QColor)));
@@ -102,21 +108,21 @@ void ShaderOptionsStackedWidget::sliderAdded(unsigned int sliderID, float slider
 	if (!sliderListItems.contains(sliderID))
 	{
 		QListWidgetItem *newItem = new QListWidgetItem(ui->sliderList, 0);
-//		ColorButton *newButton = new ColorButton(this);
 
 		sliderListItems[sliderID] = newItem;
 
-//		newButton->SetBackgroundColor(sliderColor);
-
 		newItem->setData(Qt::DisplayRole, QString::number(sliderValue));
+		newItem->setData(Qt::EditRole, QString::number(sliderValue));
 		newItem->setData(Qt::BackgroundRole, sliderColor);
 		newItem->setFlags(newItem->flags() | Qt::ItemIsEditable);
-//		newItem->setData(Qt::DecorationRole, newButton);
-
-//		newItem->setText(QString::number(sliderValue));
-//		newItem->setTextAlignment(Qt::AlignRight);
-//		ui->sliderList->setItemWidget(newItem, newButton);
 	}
+}
+
+
+void ShaderOptionsStackedWidget::sliderValueSet(int row, float newValue)
+{
+	unsigned int sliderID = sliderListItems.key(ui->sliderList->item(row), 0);
+	ui->gradientSliderWidget->SetSliderValue(sliderID, newValue);
 }
 
 

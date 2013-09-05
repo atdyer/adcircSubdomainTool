@@ -3,7 +3,21 @@
 SliderItemDelegate::SliderItemDelegate(QObject *parent) :
 	QStyledItemDelegate(parent)
 {
+	minValue = 0.0;
+	maxValue = 1.0;
+}
 
+
+void SliderItemDelegate::SetValueRange(float min, float max)
+{
+	if (min <= max)
+	{
+		minValue = min;
+		maxValue = max;
+	} else {
+		minValue = max;
+		maxValue = min;
+	}
 }
 
 
@@ -60,7 +74,22 @@ void SliderItemDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptio
 }
 
 
-//void SliderItemDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
-//{
+void SliderItemDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+{
+	QLineEdit *lineEdit = static_cast<QLineEdit*>(editor);
+	QString valueString = lineEdit->text();
 
-//}
+	bool validInput = false;
+	float newValue = valueString.toFloat(&validInput);
+
+	if (validInput)
+	{
+		if (newValue <= maxValue && newValue >= minValue)
+		{
+			model->setData(index, valueString, Qt::DisplayRole);
+			model->setData(index, valueString, Qt::EditRole);
+			emit valueChanged(index.row(), newValue);
+		}
+	}
+
+}

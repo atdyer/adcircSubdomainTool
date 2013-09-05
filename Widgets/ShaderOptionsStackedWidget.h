@@ -26,7 +26,10 @@ class ShaderOptionsStackedWidget : public QStackedWidget
 
 		QMap<unsigned int, QListWidgetItem*>	sliderListItems;
 
+		SliderItemDelegate *delegate;
+
 		void	SetupGradientPicker();
+
 
 	protected slots:
 
@@ -36,6 +39,7 @@ class ShaderOptionsStackedWidget : public QStackedWidget
 		/* Slider slots */
 		void	addSlider();
 		void	sliderAdded(unsigned int sliderID, float sliderValue, QColor sliderColor);
+		void	sliderValueSet(int row, float newValue);
 		void	removeSlider(unsigned int sliderID);
 		void	currentSliderChanged(unsigned int sliderID, float sliderValue, QColor sliderColor);
 		void	gradientSliderColorChanged(unsigned int sliderID, QColor newColor);

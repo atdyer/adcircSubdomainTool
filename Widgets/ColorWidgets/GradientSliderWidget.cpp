@@ -100,7 +100,9 @@ void GradientSliderWidget::SetSliderValue(unsigned int sliderID, float newValue)
 	{
 		sliders.value(sliderID)->SetValue(newValue);
 		emit sliderValueChanged(sliderID, newValue);
+		PositionSliders();
 		UpdateGradientStops();
+		update();
 	}
 }
 
