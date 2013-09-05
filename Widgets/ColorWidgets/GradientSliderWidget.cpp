@@ -31,6 +31,8 @@ unsigned int GradientSliderWidget::AddSlider()
 		newSlider->SetColor(QColor::fromRgb(0, 0, 0));
 		connect(newSlider, SIGNAL(sliderPressed(uint)), this, SLOT(sliderPressed(uint)));
 		connect(newSlider, SIGNAL(sliderReleased(uint)), this, SLOT(sliderReleased(uint)));
+		connect(newSlider, SIGNAL(colorChanged(uint,QColor)), this, SLOT(updateGradientStops(uint,QColor)));
+		connect(newSlider, SIGNAL(removeSlider(uint)), this, SLOT(removeSlider(uint)));
 		sliders[newID] = newSlider;
 
 		newSlider->show();
@@ -55,10 +57,13 @@ void GradientSliderWidget::RemoveSlider(unsigned int sliderID)
 	{
 		TriangleSliderButton *currentSlider = sliders.take(sliderID);
 		delete currentSlider;
+		emit sliderRemoved(sliderID);
 	}
 
 	CheckSliderCount();
 	PositionSliders();
+	UpdateGradientStops();
+	update();
 }
 
 
@@ -184,21 +189,6 @@ void GradientSliderWidget::CreateLayout()
 	layout->addWidget(maxLabel);
 	layout->addWidget(gradientFrame);
 	layout->addWidget(minLabel);
-
-//	unsigned int initialBottomSlider = AddSlider();
-//	unsigned int initialTopSlider = AddSlider();
-
-//	if (initialBottomSlider)
-//	{
-//		SetSliderColor(initialBottomSlider, QColor::fromRgb(0, 255, 0));
-//		SetSliderValue(initialBottomSlider, minValue);
-//	}
-
-//	if (initialTopSlider)
-//	{
-//		SetSliderColor(initialTopSlider, QColor::fromRgb(0, 0, 255));
-//		SetSliderValue(initialTopSlider, maxValue);
-//	}
 }
 
 
@@ -265,6 +255,8 @@ void GradientSliderWidget::CheckSliderCount()
 		}
 		++it;
 	}
+
+	emit removeSliderAvailable(removable);
 }
 
 
@@ -307,5 +299,27 @@ void GradientSliderWidget::sliderReleased(unsigned int sliderID)
 	{
 		pressedSlider = 0;
 	}
+}
+
+
+void GradientSliderWidget::removeSlider(unsigned int sliderID)
+{
+	RemoveSlider(sliderID);
+}
+
+
+void GradientSliderWidget::requestNewColor(unsigned int sliderID)
+{
+	if (sliders.contains(sliderID))
+	{
+		sliders[sliderID]->requestColorChange();
+	}
+}
+
+
+void GradientSliderWidget::updateGradientStops(unsigned int sliderID, QColor newColor)
+{
+	UpdateGradientStops();
+	emit sliderColorChanged(sliderID, newColor);
 }
 

@@ -1,15 +1,15 @@
 #include "TriangleSliderButton.h"
 
 unsigned int	TriangleSliderButton::nextID = 1;
-int		TriangleSliderButton::sliderWidth = 17;
-int		TriangleSliderButton::sliderHeight = 17;
+int		TriangleSliderButton::sliderWidth = 21;
+int		TriangleSliderButton::sliderHeight = 21;
 
 TriangleSliderButton::TriangleSliderButton(QWidget *parent) :
 	QPushButton(parent),
 	sliderID(nextID),
+	currentValue(0.0),
 	triangleWidth(sliderWidth),
-	triangleHeight(sliderHeight),
-	currentValue(0.0)
+	triangleHeight(sliderHeight)
 {
 	++nextID;
 
@@ -80,30 +80,35 @@ void TriangleSliderButton::resizeEvent(QResizeEvent *event)
 }
 
 
-void TriangleSliderButton::mousePressEvent(QMouseEvent *)
+void TriangleSliderButton::mousePressEvent(QMouseEvent *event)
 {
+	lastMousePoint = event->pos();
 	emit sliderPressed(sliderID);
 }
 
 
-void TriangleSliderButton::mouseReleaseEvent(QMouseEvent *)
+void TriangleSliderButton::mouseReleaseEvent(QMouseEvent *event)
 {
 	emit sliderReleased(sliderID);
+	if (event->button() == Qt::LeftButton && event->pos() == lastMousePoint)
+	{
+		SelectNewColor();
+	}
 }
 
 
 void TriangleSliderButton::contextMenuEvent(QContextMenuEvent *event)
 {
+	QMenu contextMenu;
+	QAction *changeColorAction = contextMenu.addAction("Change Color");
+	connect(changeColorAction, SIGNAL(triggered()), this, SLOT(requestColorChange()));
 	if (isRemovable)
 	{
-		QMenu contextMenu;
-		contextMenu.addAction("Remove Color");
-		QPoint location = mapToGlobal(event->pos());
-
-		QAction *selectedItem = contextMenu.exec(location);
-		if (selectedItem)
-			emit removeSlider();
+		QAction *removeColorAction = contextMenu.addAction("Remove Slider");
+		connect(removeColorAction, SIGNAL(triggered()), this, SLOT(requestRemoval()));
 	}
+	QPoint location = mapToGlobal(event->pos());
+	contextMenu.exec(location);
 }
 
 
@@ -123,5 +128,28 @@ void TriangleSliderButton::BuildTriangle()
 	}
 	triangle << QPoint(width-1, height-1);
 	triangle << QPoint(width-1, 0);
+}
+
+
+void TriangleSliderButton::SelectNewColor()
+{
+	QColor newColor = QColorDialog::getColor(triangleColor, this, "Choose Slider Color", QColorDialog::ShowAlphaChannel);
+	if (newColor.isValid())
+	{
+		SetColor(newColor);
+		emit colorChanged(sliderID, newColor);
+	}
+}
+
+
+void TriangleSliderButton::requestColorChange()
+{
+	SelectNewColor();
+}
+
+
+void TriangleSliderButton::requestRemoval()
+{
+	emit removeSlider(sliderID);
 }
 

@@ -70,14 +70,19 @@ class GradientSliderWidget : public QWidget
 	signals:
 
 		void	sliderAdded(unsigned int, float, QColor);
+		void	sliderRemoved(unsigned int);
 		void	currentSliderChanged(unsigned int, float, QColor);
 		void	sliderColorChanged(unsigned int, QColor);
 		void	sliderValueChanged(unsigned int, float);
+		void	removeSliderAvailable(bool);
 		
 	public slots:
 
 		void	sliderPressed(unsigned int sliderID);
 		void	sliderReleased(unsigned int sliderID);
+		void	removeSlider(unsigned int sliderID);
+		void	requestNewColor(unsigned int sliderID);
+		void	updateGradientStops(unsigned int sliderID, QColor newColor);
 };
 
 #endif // GRADIENTSLIDERWIDGET_H

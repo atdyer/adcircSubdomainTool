@@ -8,6 +8,7 @@
 #include <QPaintEvent>
 #include <QMenu>
 #include <QContextMenuEvent>
+#include <QColorDialog>
 
 class TriangleSliderButton : public QPushButton
 {
@@ -47,13 +48,22 @@ class TriangleSliderButton : public QPushButton
 		int		triangleHeight;
 		bool		isRemovable;
 
+		QPoint		lastMousePoint;
+
 		void		BuildTriangle();
+		void		SelectNewColor();
 
 	signals:
 
 		void	sliderPressed(unsigned int);
 		void	sliderReleased(unsigned int);
-		void	removeSlider();
+		void	removeSlider(unsigned int);
+		void	colorChanged(unsigned int, QColor);
+
+	public slots:
+
+		void	requestColorChange();
+		void	requestRemoval();
 };
 
 #endif // TRIANGLESLIDERBUTTON_H

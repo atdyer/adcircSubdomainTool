@@ -24,6 +24,7 @@ ShaderOptionsStackedWidget::ShaderOptionsStackedWidget(QWidget *parent) :
 
 	/* Set up gradient picker */
 	SetupGradientPicker();
+	SetupSliderListContextMenu();
 }
 
 ShaderOptionsStackedWidget::~ShaderOptionsStackedWidget()
@@ -39,13 +40,16 @@ void ShaderOptionsStackedWidget::SetupGradientPicker()
 	connect(delegate, SIGNAL(valueChanged(int,float)), this, SLOT(sliderValueSet(int,float)));
 
 	ui->sliderList->setItemDelegate(delegate);
-	ui->currentColorButton->SetBackgroundColor(QColor::fromRgb(0, 0, 0));
+
 
 	connect(ui->gradientSliderWidget, SIGNAL(currentSliderChanged(uint,float,QColor)), this, SLOT(currentSliderChanged(uint,float,QColor)));
 	connect(ui->gradientSliderWidget, SIGNAL(sliderColorChanged(uint,QColor)), this, SLOT(gradientSliderColorChanged(uint,QColor)));
 	connect(ui->gradientSliderWidget, SIGNAL(sliderValueChanged(uint,float)), this, SLOT(gradientSliderValueChanged(uint,float)));
 	connect(ui->gradientSliderWidget, SIGNAL(sliderAdded(uint,float,QColor)), this, SLOT(sliderAdded(uint,float,QColor)));
+	connect(ui->gradientSliderWidget, SIGNAL(sliderRemoved(uint)), this, SLOT(removeSlider(uint)));
+	connect(ui->gradientSliderWidget, SIGNAL(removeSliderAvailable(bool)), ui->removeSliderButton, SLOT(setEnabled(bool)));
 	connect(ui->addSliderButton, SIGNAL(clicked()), this, SLOT(addSlider()));
+	connect(ui->removeSliderButton, SIGNAL(clicked()), this, SLOT(removeSlider()));
 
 	/* Add default sliders */
 	unsigned int initialBottomSlider = ui->gradientSliderWidget->AddSlider();
@@ -62,6 +66,18 @@ void ShaderOptionsStackedWidget::SetupGradientPicker()
 		ui->gradientSliderWidget->SetSliderColor(initialTopSlider, QColor::fromRgb(0, 0, 255));
 		ui->gradientSliderWidget->SetSliderValue(initialTopSlider, ui->gradientSliderWidget->GetMaxValue());
 	}
+}
+
+
+void ShaderOptionsStackedWidget::SetupSliderListContextMenu()
+{
+	QAction *valueAction = new QAction("Edit Value", 0);
+	QAction *colorAction = new QAction("Edit Color", 0);
+	connect(valueAction, SIGNAL(triggered()), this, SLOT(editCurrentSliderValue()));
+	connect(colorAction, SIGNAL(triggered()), this, SLOT(editCurrentSliderColor()));
+	ui->sliderList->addAction(valueAction);
+	ui->sliderList->addAction(colorAction);
+	ui->sliderList->setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 
 
@@ -103,6 +119,27 @@ void ShaderOptionsStackedWidget::addSlider()
 }
 
 
+void ShaderOptionsStackedWidget::removeSlider()
+{
+	QListWidgetItem *currentSlider = ui->sliderList->currentItem();
+	unsigned int sliderID = sliderListItems.key(currentSlider, 0);
+	if (sliderID)
+	{
+		ui->gradientSliderWidget->RemoveSlider(sliderID);
+	}
+}
+
+
+void ShaderOptionsStackedWidget::removeSlider(unsigned int sliderID)
+{
+	if (sliderListItems.contains(sliderID))
+	{
+		QListWidgetItem *currentSlider = sliderListItems.take(sliderID);
+		delete currentSlider;
+	}
+}
+
+
 void ShaderOptionsStackedWidget::sliderAdded(unsigned int sliderID, float sliderValue, QColor sliderColor)
 {
 	if (!sliderListItems.contains(sliderID))
@@ -126,16 +163,12 @@ void ShaderOptionsStackedWidget::sliderValueSet(int row, float newValue)
 }
 
 
-void ShaderOptionsStackedWidget::removeSlider(unsigned int sliderID)
-{
-
-}
-
-
 void ShaderOptionsStackedWidget::currentSliderChanged(unsigned int sliderID, float sliderValue, QColor sliderColor)
 {
-	ui->currentValueLine->setText(QString::number(sliderValue, 'f', 4));
-	ui->currentColorButton->SetBackgroundColor(sliderColor);
+	if (sliderListItems.contains(sliderID))
+	{
+		ui->sliderList->setCurrentItem(sliderListItems[sliderID]);
+	}
 }
 
 
@@ -151,11 +184,28 @@ void ShaderOptionsStackedWidget::gradientSliderColorChanged(unsigned int sliderI
 
 void ShaderOptionsStackedWidget::gradientSliderValueChanged(unsigned int sliderID, float newValue)
 {
-	ui->currentValueLine->setText(QString::number(newValue, 'f', 4));
 	if (sliderListItems.contains(sliderID))
 	{
 		QListWidgetItem *listItem = sliderListItems[sliderID];
 		listItem->setText(QString::number(newValue));
 		ui->sliderList->sortItems(Qt::DescendingOrder);
+	}
+}
+
+
+void ShaderOptionsStackedWidget::editCurrentSliderValue()
+{
+	QListWidgetItem *currentSlider = ui->sliderList->currentItem();
+	ui->sliderList->editItem(currentSlider);
+}
+
+
+void ShaderOptionsStackedWidget::editCurrentSliderColor()
+{
+	QListWidgetItem *currentSlider = ui->sliderList->currentItem();
+	unsigned int sliderID = sliderListItems.key(currentSlider, 0);
+	if (sliderID)
+	{
+		ui->gradientSliderWidget->requestNewColor(sliderID);
 	}
 }

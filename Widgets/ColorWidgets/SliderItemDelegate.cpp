@@ -25,17 +25,21 @@ void SliderItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
 {
 	painter->save();
 
-	if (option.state & QStyle::State_Selected)
-	{
-		painter->fillRect(option.rect, option.palette.highlight());
-	}
-
 	int width = option.rect.width();
 	int height = option.rect.height();
 
 	QString text = index.data(Qt::DisplayRole).toString();
 	QColor color = index.data(Qt::BackgroundRole).value<QColor>();
 	QRect colorRect (option.rect.x()+5, option.rect.y()+5, 50, height-10);
+
+	if (option.state & QStyle::State_Selected)
+	{
+//		QColor selectedColor (color);
+//		selectedColor.setAlpha(40);
+//		QBrush highlightBrush (selectedColor);
+//		painter->fillRect(option.rect, highlightBrush);
+		painter->drawRect(option.rect.adjusted(0, 1, -1, -1));
+	}
 
 	painter->fillRect(colorRect, color);
 	painter->drawRect(colorRect);
