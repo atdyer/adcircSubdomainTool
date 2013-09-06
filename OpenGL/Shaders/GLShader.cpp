@@ -50,7 +50,8 @@ GLShader::~GLShader()
  */
 bool GLShader::Use()
 {
-	UpdateUniforms();
+//	UpdateUniforms();
+	UpdateCameraUniform();
 	if (uniformsSet)
 	{
 		glUseProgram(programID);
@@ -99,6 +100,17 @@ unsigned int GLShader::GetID()
 unsigned int GLShader::GetNumShaders()
 {
 	return shaderCount;
+}
+
+
+void GLShader::UpdateCameraUniform()
+{
+	if (loaded && camSet)
+	{
+		glUseProgram(programID);
+		GLint MVPUniform = glGetUniformLocation(programID, "MVPMatrix");
+		glUniformMatrix4fv(MVPUniform, 1, GL_FALSE, camera->MVPMatrix.m);
+	}
 }
 
 

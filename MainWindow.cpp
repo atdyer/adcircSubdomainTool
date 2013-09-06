@@ -396,8 +396,14 @@ void MainWindow::on_actionColor_Options_triggered()
 
 		if (testProject)
 		{
-			connect(displayOptionsDialog, SIGNAL(domainSolidOutlineColorChanged(uint,QColor)), testProject, SLOT(setDomainSolidOutline(uint,QColor)));
-			connect(displayOptionsDialog, SIGNAL(domainSolidFillColorChanged(uint,QColor)), testProject, SLOT(setDomainSolidFill(uint,QColor)));
+			connect(displayOptionsDialog, SIGNAL(domainSolidOutlineColorChanged(uint,QColor)),
+				testProject, SLOT(setDomainSolidOutline(uint,QColor)));
+			connect(displayOptionsDialog, SIGNAL(domainSolidFillColorChanged(uint,QColor)),
+				testProject, SLOT(setDomainSolidFill(uint,QColor)));
+			connect(displayOptionsDialog, SIGNAL(domainGradientOutlineChanged(uint,QGradientStops)),
+				testProject, SLOT(setDomainGradientOutline(uint,QGradientStops)));
+			connect(displayOptionsDialog, SIGNAL(domainGradientFillChanged(uint,QGradientStops)),
+				testProject, SLOT(setDomainGradientFill(uint,QGradientStops)));
 		}
 	}
 

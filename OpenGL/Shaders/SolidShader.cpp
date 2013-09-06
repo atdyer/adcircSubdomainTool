@@ -60,6 +60,7 @@ void SolidShader::SetColor(float r, float g, float b, float a)
 		properties.color[2] = b;
 	if (a >= 0.0)
 		properties.color[3] = a;
+	UpdateUniforms();
 }
 
 

@@ -313,3 +313,21 @@ void Project::setDomainSolidFill(unsigned int domainID, QColor color)
 									 color.alpha()/255.0));
 	}
 }
+
+
+void Project::setDomainGradientOutline(unsigned int domainID, QGradientStops newStops)
+{
+	if (currentDomain)
+	{
+		currentDomain->SetTerrainGradientOutline(newStops);
+	}
+}
+
+
+void Project::setDomainGradientFill(unsigned int domainID, QGradientStops newStops)
+{
+	if (currentDomain)
+	{
+		currentDomain->SetTerrainGradientFill(newStops);
+	}
+}

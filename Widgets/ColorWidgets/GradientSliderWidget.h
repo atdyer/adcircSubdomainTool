@@ -75,6 +75,7 @@ class GradientSliderWidget : public QWidget
 		void	sliderColorChanged(unsigned int, QColor);
 		void	sliderValueChanged(unsigned int, float);
 		void	removeSliderAvailable(bool);
+		void	gradientStopsUpdated(const QGradientStops&);
 		
 	public slots:
 

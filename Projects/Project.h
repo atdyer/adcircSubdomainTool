@@ -85,6 +85,8 @@ class Project : public QObject
 
 		void	setDomainSolidOutline(unsigned int domainID, QColor color);
 		void	setDomainSolidFill(unsigned int domainID, QColor color);
+		void	setDomainGradientOutline(unsigned int domainID, QGradientStops newStops);
+		void	setDomainGradientFill(unsigned int domainID, QGradientStops newStops);
 
 	signals:
 

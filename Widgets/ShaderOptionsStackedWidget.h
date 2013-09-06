@@ -52,6 +52,7 @@ class ShaderOptionsStackedWidget : public QStackedWidget
 	signals:
 
 		void	solidColorChanged(QColor);
+		void	gradientChanged(QGradientStops);
 };
 
 #endif // SHADEROPTIONSSTACKEDWIDGET_H

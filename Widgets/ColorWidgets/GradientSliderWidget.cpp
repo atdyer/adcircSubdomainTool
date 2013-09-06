@@ -236,6 +236,7 @@ void GradientSliderWidget::UpdateGradientStops()
 		}
 
 		gradientFrame->SetStops(stops);
+		emit gradientStopsUpdated(stops);
 	}
 }
 

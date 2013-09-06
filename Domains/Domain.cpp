@@ -354,10 +354,10 @@ void Domain::SetTerrainSolidFill(SolidShaderProperties newProperties)
  *
  * @param newProperties The shader properties
  */
-void Domain::SetTerrainGradientOutline(GradientShaderProperties newProperties)
+void Domain::SetTerrainGradientOutline(QGradientStops newStops)
 {
 	if (terrainLayer)
-		terrainLayer->SetGradientOutline(newProperties);
+		terrainLayer->SetGradientOutline(newStops);
 
 	emit UpdateGL();
 }
@@ -371,10 +371,10 @@ void Domain::SetTerrainGradientOutline(GradientShaderProperties newProperties)
  *
  * @param newProperties The shader properties
  */
-void Domain::SetTerrainGradientFill(GradientShaderProperties newProperties)
+void Domain::SetTerrainGradientFill(QGradientStops newStops)
 {
 	if (terrainLayer)
-		terrainLayer->SetGradientFill(newProperties);
+		terrainLayer->SetGradientFill(newStops);
 
 	emit UpdateGL();
 }
@@ -475,11 +475,11 @@ SolidShaderProperties Domain::GetTerrainSolidFill()
  * @return The properties of the terrain layer's gradient outline
  * @return Default gradient outline properties if the terrain layer has not been created
  */
-GradientShaderProperties Domain::GetTerrainGradientOutline()
+QGradientStops Domain::GetTerrainGradientOutline()
 {
 	if (terrainLayer)
 		return terrainLayer->GetGradientOutline();
-	return GradientShaderProperties();
+	return QGradientStops();
 }
 
 
@@ -492,11 +492,11 @@ GradientShaderProperties Domain::GetTerrainGradientOutline()
  * @return The properties of the terrain layer's gradient fill
  * @return Default gradient fill properties if the terrain layer has not been created
  */
-GradientShaderProperties Domain::GetTerrainGradientFill()
+QGradientStops Domain::GetTerrainGradientFill()
 {
 	if (terrainLayer)
 		return terrainLayer->GetGradientFill();
-	return GradientShaderProperties();
+	return QGradientStops();
 }
 
 
@@ -626,10 +626,10 @@ void Domain::CreateTerrainLayer()
 
 		terrainLayer->SetCamera(camera);
 		terrainLayer->SetSolidOutline(SolidShaderProperties(0.2, 0.2, 0.2, 0.1));
-//		terrainLayer->SetSolidFill(SolidShaderProperties(0.1, 0.8, 0.1, 1.0));
+		terrainLayer->SetSolidFill(SolidShaderProperties(0.1, 0.8, 0.1, 1.0));
 		terrainLayer->SetSolidBoundary(SolidShaderProperties(0.0, 0.0, 0.0, 1.0));
 //		terrainLayer->SetGradientOutline(GradientShaderProperties(0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0));
-		terrainLayer->SetGradientFill(GradientShaderProperties(0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0));
+//		terrainLayer->SetGradientFill(GradientShaderProperties(0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0));
 
 		if (selectionLayer)
 			selectionLayer->SetTerrainLayer(terrainLayer);

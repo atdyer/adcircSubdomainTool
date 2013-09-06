@@ -3,48 +3,7 @@
 
 #include <string>
 #include "GLShader.h"
-
-
-/**
- * @brief A container used to hold all of the basic properties
- * of the GradientShader class
- */
-struct GradientShaderProperties
-{
-		GLfloat lowColor[4];
-		GLfloat highColor[4];
-		GLfloat heightRange[2];
-
-		GradientShaderProperties()
-		{
-			lowColor[0] = 0.0;
-			lowColor[1] = 0.0;
-			lowColor[2] = 0.0;
-			lowColor[3] = 1.0;
-			highColor[0] = 1.0;
-			highColor[1] = 1.0;
-			highColor[2] = 1.0;
-			highColor[3] = 1.0;
-			heightRange[0] = 0.0;
-			heightRange[1] = 1.0;
-		}
-
-		GradientShaderProperties(float rL, float gL, float bL, float aL,
-					 float rH, float gH, float bH, float aH,
-					 float lowVal, float highVal)
-		{
-			lowColor[0] = rL;
-			lowColor[1] = gL;
-			lowColor[2] = bL;
-			lowColor[3] = aL;
-			highColor[0] = rH;
-			highColor[1] = gH;
-			highColor[2] = bH;
-			highColor[3] = aH;
-			heightRange[0] = lowVal;
-			heightRange[1] = highVal;
-		}
-};
+#include <QGradient>
 
 
 /**
@@ -65,13 +24,11 @@ class GradientShader : public GLShader
 		GradientShader();
 
 		// Modification Functions
-		void	SetLowColor(float r, float g, float b, float a);
-		void	SetHighColor(float r, float g, float b, float a);
-		void	SetLowValue(float newLow);
-		void	SetHighValue(float newHigh);
+		void	SetGradientStops(const QGradientStops &newStops);
+		void	SetGradientRange(float lowValue, float newHigh);
 
 		// Query Functions
-		GradientShaderProperties	GetShaderProperties();
+		QGradientStops	GetGradientStops();
 
 	protected:
 
@@ -80,11 +37,17 @@ class GradientShader : public GLShader
 		std::string	fragSource;
 
 		// Shader Properties
-		GradientShaderProperties	properties;
+		QGradientStops	gradientStops;
+		float		lowValue;
+		float		highValue;
 
 		// Override virtual functions
 		void	CompileShader();
 		void	UpdateUniforms();
+
+	private:
+
+		float	GetValueFromStop(float stop);
 
 };
 

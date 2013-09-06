@@ -61,13 +61,13 @@ class TerrainLayer : public Layer
 		float			GetMaxZ();
 		float			GetUnprojectedX(float x);
 		float			GetUnprojectedY(float y);
-		SolidShaderProperties		GetSolidOutline();
-		SolidShaderProperties		GetSolidFill();
-		SolidShaderProperties		GetSolidBoundary();
-		GradientShaderProperties	GetGradientOutline();
-		GradientShaderProperties	GetGradientFill();
-		GradientShaderProperties	GetGradientBoundary();
-		GLuint				GetVBOId();
+		SolidShaderProperties	GetSolidOutline();
+		SolidShaderProperties	GetSolidFill();
+		SolidShaderProperties	GetSolidBoundary();
+		QGradientStops		GetGradientOutline();
+		QGradientStops		GetGradientFill();
+		QGradientStops		GetGradientBoundary();
+		GLuint			GetVBOId();
 
 		/* Setter Methods */
 		virtual void	SetCamera(GLCamera *newCamera);
@@ -75,9 +75,9 @@ class TerrainLayer : public Layer
 		void		SetSolidOutline(SolidShaderProperties newProperties);
 		void		SetSolidFill(SolidShaderProperties newProperties);
 		void		SetSolidBoundary(SolidShaderProperties newProperties);
-		void		SetGradientOutline(GradientShaderProperties newProperties);
-		void		SetGradientFill(GradientShaderProperties newProperties);
-		void		SetGradientBoundary(GradientShaderProperties newProperties);
+		void		SetGradientOutline(QGradientStops newStops);
+		void		SetGradientFill(QGradientStops newStops);
+		void		SetGradientBoundary(QGradientStops newStops);
 
 		/* Visibility Methods */
 		void	ToggleQuadtreeVisible();

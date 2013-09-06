@@ -22,10 +22,13 @@ class DisplayOptionsDialog : public QDialog
 
 		void	domainSolidOutlineColorChanged(unsigned int, QColor);
 		void	domainSolidFillColorChanged(unsigned int, QColor);
+		void	domainGradientOutlineChanged(unsigned int, QGradientStops);
+		void	domainGradientFillChanged(unsigned int, QGradientStops);
 
 	private slots:
 
 		void	solidColorChanged(QColor color);
+		void	gradientChanged(QGradientStops gradientStops);
 };
 
 #endif // DISPLAYOPTIONSDIALOG_H

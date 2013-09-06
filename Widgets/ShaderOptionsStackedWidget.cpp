@@ -48,6 +48,7 @@ void ShaderOptionsStackedWidget::SetupGradientPicker()
 	connect(ui->gradientSliderWidget, SIGNAL(sliderAdded(uint,float,QColor)), this, SLOT(sliderAdded(uint,float,QColor)));
 	connect(ui->gradientSliderWidget, SIGNAL(sliderRemoved(uint)), this, SLOT(removeSlider(uint)));
 	connect(ui->gradientSliderWidget, SIGNAL(removeSliderAvailable(bool)), ui->removeSliderButton, SLOT(setEnabled(bool)));
+	connect(ui->gradientSliderWidget, SIGNAL(gradientStopsUpdated(QGradientStops)), this, SIGNAL(gradientChanged(QGradientStops)));
 	connect(ui->addSliderButton, SIGNAL(clicked()), this, SLOT(addSlider()));
 	connect(ui->removeSliderButton, SIGNAL(clicked()), this, SLOT(removeSlider()));
 

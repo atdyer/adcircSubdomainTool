@@ -588,11 +588,11 @@ SolidShaderProperties TerrainLayer::GetSolidBoundary()
  *
  * @return The properties being used to draw a gradient outline
  */
-GradientShaderProperties TerrainLayer::GetGradientOutline()
+QGradientStops TerrainLayer::GetGradientOutline()
 {
 	if (gradientOutline)
-		return gradientOutline->GetShaderProperties();
-	return GradientShaderProperties();
+		return gradientOutline->GetGradientStops();
+	return QGradientStops();
 }
 
 
@@ -603,11 +603,11 @@ GradientShaderProperties TerrainLayer::GetGradientOutline()
  *
  * @return The properties being used to draw a gradient fill
  */
-GradientShaderProperties TerrainLayer::GetGradientFill()
+QGradientStops TerrainLayer::GetGradientFill()
 {
 	if (gradientFill)
-		return gradientFill->GetShaderProperties();
-	return GradientShaderProperties();
+		return gradientFill->GetGradientStops();
+	return QGradientStops();
 }
 
 
@@ -618,11 +618,11 @@ GradientShaderProperties TerrainLayer::GetGradientFill()
  *
  * @return The properties being used to draw a gradient boundary segment
  */
-GradientShaderProperties TerrainLayer::GetGradientBoundary()
+QGradientStops TerrainLayer::GetGradientBoundary()
 {
 	if (gradientBoundary)
-		return gradientBoundary->GetShaderProperties();
-	return GradientShaderProperties();
+		return gradientBoundary->GetGradientStops();
+	return QGradientStops();
 }
 
 
@@ -773,24 +773,16 @@ void TerrainLayer::SetSolidBoundary(SolidShaderProperties newProperties)
  *
  * @param newProperties The new shader properties
  */
-void TerrainLayer::SetGradientOutline(GradientShaderProperties newProperties)
+void TerrainLayer::SetGradientOutline(QGradientStops newStops)
 {
 	if (!gradientOutline)
+	{
 		gradientOutline = new GradientShader();
+		gradientOutline->SetCamera(camera);
+		gradientOutline->SetGradientRange(minZ, maxZ);
+	}
 
-	gradientOutline->SetCamera(camera);
-	gradientOutline->SetLowColor(	newProperties.lowColor[0],
-					newProperties.lowColor[1],
-					newProperties.lowColor[2],
-					newProperties.lowColor[3]);
-
-	gradientOutline->SetHighColor(	newProperties.highColor[0],
-					newProperties.highColor[1],
-					newProperties.highColor[2],
-					newProperties.highColor[3]);
-
-	gradientOutline->SetLowValue(newProperties.heightRange[0]);
-	gradientOutline->SetHighValue(newProperties.heightRange[1]);
+	gradientOutline->SetGradientStops(newStops);
 
 	outlineShader = gradientOutline;
 }
@@ -804,24 +796,16 @@ void TerrainLayer::SetGradientOutline(GradientShaderProperties newProperties)
  *
  * @param newProperties The new shader properties
  */
-void TerrainLayer::SetGradientFill(GradientShaderProperties newProperties)
+void TerrainLayer::SetGradientFill(QGradientStops newStops)
 {
 	if (!gradientFill)
+	{
 		gradientFill = new GradientShader();
+		gradientFill->SetCamera(camera);
+		gradientFill->SetGradientRange(minZ, maxZ);
+	}
 
-	gradientFill->SetCamera(camera);
-	gradientFill->SetLowColor(	newProperties.lowColor[0],
-					newProperties.lowColor[1],
-					newProperties.lowColor[2],
-					newProperties.lowColor[3]);
-
-	gradientFill->SetHighColor(	newProperties.highColor[0],
-					newProperties.highColor[1],
-					newProperties.highColor[2],
-					newProperties.highColor[3]);
-
-	gradientFill->SetLowValue(newProperties.heightRange[0]);
-	gradientFill->SetHighValue(newProperties.heightRange[1]);
+	gradientFill->SetGradientStops(newStops);
 
 	fillShader = gradientFill;
 }
@@ -835,24 +819,16 @@ void TerrainLayer::SetGradientFill(GradientShaderProperties newProperties)
  *
  * @param newProperties The new shader properties
  */
-void TerrainLayer::SetGradientBoundary(GradientShaderProperties newProperties)
+void TerrainLayer::SetGradientBoundary(QGradientStops newStops)
 {
 	if (!gradientBoundary)
+	{
 		gradientBoundary = new GradientShader();
+		gradientBoundary->SetCamera(camera);
+		gradientBoundary->SetGradientRange(minZ, maxZ);
+	}
 
-	gradientBoundary->SetCamera(camera);
-	gradientBoundary->SetLowColor(	newProperties.lowColor[0],
-					newProperties.lowColor[1],
-					newProperties.lowColor[2],
-					newProperties.lowColor[3]);
-
-	gradientBoundary->SetHighColor(	newProperties.highColor[0],
-					newProperties.highColor[1],
-					newProperties.highColor[2],
-					newProperties.highColor[3]);
-
-	gradientBoundary->SetLowValue(newProperties.heightRange[0]);
-	gradientBoundary->SetHighValue(newProperties.heightRange[1]);
+	gradientBoundary->SetGradientStops(newStops);
 
 	boundaryShader = gradientBoundary;
 }
@@ -938,18 +914,15 @@ void TerrainLayer::UpdateGradientShadersRange()
 {
 	if (gradientOutline)
 	{
-		gradientOutline->SetLowValue(minZ);
-		gradientOutline->SetHighValue(maxZ);
+		gradientOutline->SetGradientRange(minZ, maxZ);
 	}
 	if (gradientFill)
 	{
-		gradientFill->SetLowValue(minZ);
-		gradientFill->SetHighValue(maxZ);
+		gradientFill->SetGradientRange(minZ, maxZ);
 	}
 	if (gradientBoundary)
 	{
-		gradientBoundary->SetLowValue(minZ);
-		gradientBoundary->SetHighValue(maxZ);
+		gradientBoundary->SetGradientRange(minZ, maxZ);
 	}
 }
 
