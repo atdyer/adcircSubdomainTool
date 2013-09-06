@@ -75,19 +75,26 @@ void ColorGradientFrame::mouseMoveEvent(QMouseEvent *event)
 	if (event->buttons() & Qt::LeftButton)
 	{
 		QPoint point = event->pos();
-		if (!contentsRect().contains(point))
-		{
-			return;
-		}
-		int hue = HueFromX(point.x() - contentsRect().x());
-		int sat = SatFromY(point.y() - contentsRect().y());
+		QPoint newPoint = point;
+
+		if (point.x() > contentsRect().right())
+			newPoint.setX(contentsRect().right());
+		else if (point.x() < contentsRect().left())
+			newPoint.setX(contentsRect().left());
+		if (point.y() < contentsRect().top())
+			newPoint.setY(contentsRect().top());
+		else if (point.y() > contentsRect().bottom())
+			newPoint.setY(contentsRect().bottom());
+
+		int hue = HueFromX(newPoint.x() - contentsRect().x());
+		int sat = SatFromY(newPoint.y() - contentsRect().y());
 		if (hue < minHue || hue > maxHue || sat < minSat || sat > maxSat)
 		{
 			return;
 		}
 		currentColor.setHsv(hue, sat, currentColor.value());
 		emit colorPicked(currentColor);
-		crosshairPoint = point;
+		crosshairPoint = newPoint;
 		update();
 	} else {
 		QFrame::mouseMoveEvent(event);

@@ -30,6 +30,38 @@ GradientShader::GradientShader()
 			"	gl_Position = MVPMatrix*in_Position;"
 			"}";
 
+	vertexSource =	"#version 330"
+			"\n"
+			"layout(location=0) in vec4 in_Position;"
+			"out vec4 ex_Color;"
+			"uniform mat4 MVPMatrix;"
+			"uniform vec4 LowColor;"
+			"uniform vec4 HighColor;"
+			"uniform vec2 HeightRange;"
+			"void main(void)"
+			"{"
+			"	ex_Color = mix(LowColor, HighColor, smoothstep(HeightRange[0], HeightRange[1], in_Position.z));"
+			"	gl_Position = MVPMatrix*in_Position;"
+			"}";
+
+	vertexSource =	"#version 330"
+			"\n"
+			"layout(location=0) in vec4 in_Position;"
+			"out vec4 ex_Color;"
+			"uniform mat4 MVPMatrix;"
+			"uniform int stopCount;"
+			"uniform float values[10];"
+			"uniform vec4 colors[10];"
+			"void main(void)"
+			"{"
+			"	ex_Color = colors[0];"
+			"	for (int i=1; i<min(stopCount, 10); ++i)"
+			"	{"
+			"		ex_Color = mix(ex_Color, colors[i], smoothstep(values[i-1], values[i], in_Position.z));"
+			"	}"
+			"	gl_Position = MVPMatrix*in_Position;"
+			"}";
+
 	fragSource =	"#version 330"
 			"\n"
 			"in vec4 ex_Color;"
@@ -182,20 +214,27 @@ void GradientShader::UpdateUniforms()
 		glUseProgram(programID);
 
 		GLint MVPUniform = glGetUniformLocation(programID, "MVPMatrix");
-		GLint LowUniform = glGetUniformLocation(programID, "LowColor");
-		GLint HighUniform = glGetUniformLocation(programID, "HighColor");
-		GLint HeightUniform = glGetUniformLocation(programID, "HeightRange");
+		GLint StopCountUniform = glGetUniformLocation(programID, "stopCount");
+		GLint ValuesUniform = glGetUniformLocation(programID, "values");
+		GLint ColorsUniform = glGetUniformLocation(programID, "colors");
+
+		GLfloat colors[8];
+		for (int i=0; i<4; ++i)
+		{
+			colors[i] = properties.lowColor[i];
+			colors[4+i] = properties.highColor[i];
+		}
 
 		glUniformMatrix4fv(MVPUniform, 1, GL_FALSE, camera->MVPMatrix.m);
-		glUniform4fv(LowUniform, 1, properties.lowColor);
-		glUniform4fv(HighUniform, 1, properties.highColor);
-		glUniform2fv(HeightUniform, 1, properties.heightRange);
+		glUniform1i(StopCountUniform, 2);
+		glUniform1fv(ValuesUniform, 2, properties.heightRange);
+		glUniform4fv(ColorsUniform, 2, colors);
 
 		GLenum errVal = glGetError();
 		if (errVal != GL_NO_ERROR)
 		{
 			const GLubyte *errString = gluErrorString(errVal);
-			DEBUG("SolidShader OpenGL Error: " << errString);
+			DEBUG("GradientShader OpenGL Error: " << errString);
 			uniformsSet = false;
 		} else {
 			uniformsSet = true;

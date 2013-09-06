@@ -82,7 +82,7 @@ void TriangleSliderButton::resizeEvent(QResizeEvent *event)
 
 void TriangleSliderButton::mousePressEvent(QMouseEvent *event)
 {
-	lastMousePoint = event->pos();
+	lastMousePoint = event->globalPos();
 	emit sliderPressed(sliderID);
 }
 
@@ -90,7 +90,7 @@ void TriangleSliderButton::mousePressEvent(QMouseEvent *event)
 void TriangleSliderButton::mouseReleaseEvent(QMouseEvent *event)
 {
 	emit sliderReleased(sliderID);
-	if (event->button() == Qt::LeftButton && event->pos() == lastMousePoint)
+	if (event->button() == Qt::LeftButton && event->globalPos() == lastMousePoint)
 	{
 		SelectNewColor();
 	}

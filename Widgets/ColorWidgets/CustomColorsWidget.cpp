@@ -52,6 +52,7 @@ void CustomColorsWidget::CreateButtons()
 
 	QPushButton *removeColorButton = new QPushButton();
 	removeColorButton->setText("Remove From Custom Colors");
+	removeColorButton->setFixedHeight(27);
 	connect(removeColorButton, SIGNAL(clicked()), this, SLOT(removeColor()));
 	gridLayout->addWidget(removeColorButton, gridLayout->rowCount(), 0, 1, gridLayout->columnCount());
 }

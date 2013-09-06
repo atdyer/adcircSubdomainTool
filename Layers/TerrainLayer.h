@@ -143,6 +143,7 @@ class TerrainLayer : public Layer
 		GradientShader*	gradientBoundary;	/**< Shader used to draw a gradient boundary */
 
 		void	SwitchToCulledShaders();
+		void	UpdateGradientShadersRange();
 		void	CheckForLargeDomain();
 		void	UpdateVisibleElements();
 

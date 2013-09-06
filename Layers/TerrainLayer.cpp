@@ -168,7 +168,7 @@ void TerrainLayer::LoadDataToGPU()
 			{
 				glNodeData[4*i+0] = (GLfloat)nodes[i].normX;
 				glNodeData[4*i+1] = (GLfloat)nodes[i].normY;
-				glNodeData[4*i+2] = (GLfloat)nodes[i].normZ;
+				glNodeData[4*i+2] = (GLfloat)nodes[i].z;
 				glNodeData[4*i+3] = (GLfloat)1.0;
 			}
 		} else {
@@ -934,6 +934,26 @@ void TerrainLayer::SwitchToCulledShaders()
 }
 
 
+void TerrainLayer::UpdateGradientShadersRange()
+{
+	if (gradientOutline)
+	{
+		gradientOutline->SetLowValue(minZ);
+		gradientOutline->SetHighValue(maxZ);
+	}
+	if (gradientFill)
+	{
+		gradientFill->SetLowValue(minZ);
+		gradientFill->SetHighValue(maxZ);
+	}
+	if (gradientBoundary)
+	{
+		gradientBoundary->SetLowValue(minZ);
+		gradientBoundary->SetHighValue(maxZ);
+	}
+}
+
+
 /**
  * @brief Function that determines if the domain is large enough to warrant extra GPU optimizations
  *
@@ -1189,6 +1209,9 @@ unsigned int TerrainLayer::ReadNodalData(unsigned int nodeCount, std::ifstream *
 		if (totalProgress)
 			emit progress(100*(++currProgress)/totalProgress);
 	}
+
+	UpdateGradientShadersRange();
+
 	return currProgress;
 }
 
