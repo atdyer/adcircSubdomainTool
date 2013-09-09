@@ -52,13 +52,16 @@ CulledSolidShader::CulledSolidShader()
 			"	}"
 			"}";
 
-	properties.color[0] = 1.0;
-	properties.color[1] = 1.0;
-	properties.color[2] = 1.0;
-	properties.color[3] = 1.0;
+	color = QColor(1.0, 1.0, 1.0, 1.0);
 
 	CompileShader();
 	UpdateUniforms();
+}
+
+
+ShaderType CulledSolidShader::GetShaderType()
+{
+	return SolidShaderType;
 }
 
 
@@ -108,8 +111,13 @@ void CulledSolidShader::UpdateUniforms()
 		GLint MVPUniform = glGetUniformLocation(programID, "MVPMatrix");
 		GLint ColorUniform = glGetUniformLocation(programID, "ColorVector");
 
+		GLfloat currColor[4] = {color.red() / 255.0,
+					color.green() / 255.0,
+					color.blue() / 255.0,
+					color.alpha() / 255.0};
+
 		glUniformMatrix4fv(MVPUniform, 1, GL_FALSE, camera->MVPMatrix.m);
-		glUniform4fv(ColorUniform, 1, properties.color);
+		glUniform4fv(ColorUniform, 1, currColor);
 
 		GLenum errVal = glGetError();
 		if (errVal != GL_NO_ERROR)

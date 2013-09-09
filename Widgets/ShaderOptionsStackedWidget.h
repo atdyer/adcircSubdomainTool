@@ -20,6 +20,10 @@ class ShaderOptionsStackedWidget : public QStackedWidget
 	public:
 		explicit ShaderOptionsStackedWidget(QWidget *parent = 0);
 		~ShaderOptionsStackedWidget();
+
+		void	SetSolidColor(QColor newColor);
+		void	SetGradient(QGradientStops newGradient);
+		void	SetGradientRange(float lowVal, float highVal);
 		
 	private:
 		Ui::ShaderOptionsStackedWidget *ui;

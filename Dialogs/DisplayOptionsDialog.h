@@ -3,6 +3,8 @@
 
 #include <QDialog>
 
+#include "Domains/Domain.h"
+
 namespace Ui {
 	class DisplayOptionsDialog;
 }
@@ -14,16 +16,31 @@ class DisplayOptionsDialog : public QDialog
 	public:
 		explicit DisplayOptionsDialog(QWidget *parent = 0);
 		~DisplayOptionsDialog();
+
+		void	SetActiveDomain(Domain *newDomain);
 		
 	private:
 		Ui::DisplayOptionsDialog *ui;
 
+		Domain*	currentDomain;
+
+		void	DisconnectCurrentDomain();
+		void	DisplayCurrentDomainProperties();
+		void	ConnectCurrentDomain();
+
 	signals:
 
-		void	domainSolidOutlineColorChanged(unsigned int, QColor);
-		void	domainSolidFillColorChanged(unsigned int, QColor);
-		void	domainGradientOutlineChanged(unsigned int, QGradientStops);
-		void	domainGradientFillChanged(unsigned int, QGradientStops);
+		void	solidOutlineChanged(QColor);
+		void	solidFillChanged(QColor);
+		void	gradientOutlineChanged(QGradientStops);
+		void	gradientFillChanged(QGradientStops);
+
+	public slots:
+
+		void	showSolidOutlineWindow();
+		void	showSolidFillWindow();
+		void	showGradientOutlineWindow();
+		void	showGradientFillWindow();
 
 	private slots:
 

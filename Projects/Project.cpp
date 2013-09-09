@@ -1,12 +1,13 @@
 #include "Project.h"
 
 Project::Project() :
-	fullDomain(0),
-	currentDomain(0),
 	projectTree(0),
-	progressBar(0)
+	progressBar(0),
+	currentDomain(0),
+	fullDomain(0),
+	displayOptions(0)
 {
-
+	displayOptions = new DisplayOptionsDialog();
 }
 
 
@@ -22,6 +23,9 @@ Project::~Project()
 			delete currDomain;
 		}
 	}
+
+	if (displayOptions)
+		delete displayOptions;
 }
 
 
@@ -246,6 +250,10 @@ void Project::SetCurrentDomain(Domain *domain)
 	if (domain)
 	{
 		currentDomain = domain;
+		if (displayOptions)
+		{
+			displayOptions->SetActiveDomain(currentDomain);
+		}
 		emit newDomainSelected();
 	}
 }
@@ -294,10 +302,7 @@ void Project::setDomainSolidOutline(unsigned int domainID, QColor color)
 {
 	if (currentDomain)
 	{
-		currentDomain->SetTerrainSolidOutline(SolidShaderProperties(color.red()/255.0,
-									    color.green()/255.0,
-									    color.blue()/255.0,
-									    color.alpha()/255.0));
+		currentDomain->SetTerrainSolidOutline(color);
 	}
 }
 
@@ -307,10 +312,7 @@ void Project::setDomainSolidFill(unsigned int domainID, QColor color)
 	if (currentDomain)
 	{
 		QColor rgb = color.toRgb();
-		currentDomain->SetTerrainSolidFill(SolidShaderProperties(color.red()/255.0,
-									 color.green()/255.0,
-									 color.blue()/255.0,
-									 color.alpha()/255.0));
+		currentDomain->SetTerrainSolidFill(color);
 	}
 }
 
@@ -329,5 +331,15 @@ void Project::setDomainGradientFill(unsigned int domainID, QGradientStops newSto
 	if (currentDomain)
 	{
 		currentDomain->SetTerrainGradientFill(newStops);
+	}
+}
+
+
+void Project::showDisplayOptions()
+{
+	if (currentDomain && displayOptions)
+	{
+		displayOptions->SetActiveDomain(currentDomain);
+		displayOptions->show();
 	}
 }

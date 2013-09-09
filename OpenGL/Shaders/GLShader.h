@@ -4,6 +4,9 @@
 #include "OpenGL/GLCamera.h"
 
 
+enum ShaderType {NoShaderType, SolidShaderType, GradientShaderType};
+
+
 
 /**
  * @brief A virtual class that provides the functionality needed to use
@@ -34,6 +37,7 @@ class GLShader
 		// Getter Methods
 		unsigned int		GetID();
 		static unsigned int	GetNumShaders();
+		virtual ShaderType	GetShaderType() = 0;
 
 	protected:
 

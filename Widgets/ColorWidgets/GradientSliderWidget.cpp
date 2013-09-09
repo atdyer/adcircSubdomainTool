@@ -74,6 +74,7 @@ void GradientSliderWidget::SetMinValue(float newMin)
 		minLabel->setText(QString("Minimum: ").append(QString::number(minValue, 'f', 4)));
 	PositionSliders();
 	UpdateGradientStops();
+	update();
 }
 
 
@@ -84,6 +85,33 @@ void GradientSliderWidget::SetMaxValue(float newMax)
 		maxLabel->setText(QString("Maximum: ").append(QString::number(maxValue, 'f', 4)));
 	PositionSliders();
 	UpdateGradientStops();
+	update();
+}
+
+
+void GradientSliderWidget::SetGradientStops(QGradientStops newStops)
+{
+	QList<uint> keys = sliders.keys();
+	for (int i=0; i<keys.size(); ++i)
+	{
+		RemoveSlider(keys[i]);
+	}
+
+	if (newStops.size() >= 2)
+	{
+		for (int i=0; i<newStops.size(); ++i)
+		{
+			unsigned int newSlider = AddSlider();
+			SetSliderValue(newSlider, minValue + newStops[i].first * (maxValue-minValue));
+			SetSliderColor(newSlider, newStops[i].second);
+		}
+	} else {
+		CreateDefaultSliders();
+	}
+
+	PositionSliders();
+	UpdateGradientStops();
+	update();
 }
 
 
@@ -149,18 +177,26 @@ void GradientSliderWidget::mouseMoveEvent(QMouseEvent *event)
 	if (pressedSlider != 0 && sliders.contains(pressedSlider))
 	{
 		int yLoc = event->y();
-		if (YValueInRange(yLoc))
+		TriangleSliderButton *currentSlider = sliders.value(pressedSlider, 0);
+		if (currentSlider)
 		{
-			TriangleSliderButton *currentSlider = sliders.value(pressedSlider, 0);
-			if (currentSlider)
+			if (yLoc >= sliderTop)
+			{
+				currentSlider->move(sliderX, sliderTop-sliderHeight/2);
+			}
+			else if (yLoc <= sliderBottom)
+			{
+				currentSlider->move(sliderX, sliderBottom-sliderHeight/2);
+			}
+			else
 			{
 				currentSlider->move(sliderX, yLoc-sliderHeight/2);
-				float newValue = MapYToValue(yLoc);
-				SetSliderValue(pressedSlider, newValue);
-				emit sliderValueChanged(pressedSlider, newValue);
-				UpdateGradientStops();
-				update();
 			}
+			float newValue = MapYToValue(yLoc);
+			SetSliderValue(pressedSlider, newValue);
+			emit sliderValueChanged(pressedSlider, newValue);
+			UpdateGradientStops();
+			update();
 		}
 	}
 }
@@ -261,6 +297,17 @@ void GradientSliderWidget::CheckSliderCount()
 }
 
 
+void GradientSliderWidget::CreateDefaultSliders()
+{
+	unsigned int bottomSlider = AddSlider();
+	unsigned int topSlider = AddSlider();
+	SetSliderValue(bottomSlider, minValue);
+	SetSliderValue(topSlider, maxValue);
+	SetSliderColor(bottomSlider, QColor::fromRgb(0, 0, 255));
+	SetSliderColor(topSlider, QColor::fromRgb(0, 255, 0));
+}
+
+
 int GradientSliderWidget::MapValueToY(float val)
 {
 	float valuePercentage = (val - minValue) / (maxValue - minValue);
@@ -278,12 +325,6 @@ float GradientSliderWidget::MapYToValue(int y)
 	if (mappedValue > maxValue)
 		return maxValue;
 	return mappedValue;
-}
-
-
-bool GradientSliderWidget::YValueInRange(int y)
-{
-	return (y > sliderTop && y < sliderBottom);
 }
 
 

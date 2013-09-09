@@ -29,6 +29,7 @@ class GradientShader : public GLShader
 
 		// Query Functions
 		QGradientStops	GetGradientStops();
+		ShaderType	GetShaderType();
 
 	protected:
 

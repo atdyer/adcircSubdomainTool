@@ -536,6 +536,22 @@ float TerrainLayer::GetUnprojectedY(float y)
 }
 
 
+ShaderType TerrainLayer::GetOutlineShaderType()
+{
+	if (outlineShader)
+		return outlineShader->GetShaderType();
+	return NoShaderType;
+}
+
+
+ShaderType TerrainLayer::GetFillShaderType()
+{
+	if (fillShader)
+		return fillShader->GetShaderType();
+	return NoShaderType;
+}
+
+
 /**
  * @brief Returns the properties being used to draw a solid outline
  *
@@ -543,11 +559,11 @@ float TerrainLayer::GetUnprojectedY(float y)
  *
  * @return The properties being used to draw a solid outline
  */
-SolidShaderProperties TerrainLayer::GetSolidOutline()
+QColor TerrainLayer::GetSolidOutline()
 {
 	if (solidOutline)
 		return solidOutline->GetShaderProperties();
-	return SolidShaderProperties();
+	return QColor();
 }
 
 
@@ -558,11 +574,11 @@ SolidShaderProperties TerrainLayer::GetSolidOutline()
  *
  * @return The properties being used to draw a solid fill
  */
-SolidShaderProperties TerrainLayer::GetSolidFill()
+QColor TerrainLayer::GetSolidFill()
 {
 	if (solidFill)
 		return solidFill->GetShaderProperties();
-	return SolidShaderProperties();
+	return QColor();
 }
 
 
@@ -573,11 +589,11 @@ SolidShaderProperties TerrainLayer::GetSolidFill()
  *
  * @return The properties being used to draw a solid boundary segment
  */
-SolidShaderProperties TerrainLayer::GetSolidBoundary()
+QColor TerrainLayer::GetSolidBoundary()
 {
 	if (solidBoundary)
 		return solidBoundary->GetShaderProperties();
-	return SolidShaderProperties();
+	return QColor();
 }
 
 
@@ -697,7 +713,7 @@ void TerrainLayer::SetFort14Location(std::string newLocation)
  *
  * @param newProperties The new shader properties
  */
-void TerrainLayer::SetSolidOutline(SolidShaderProperties newProperties)
+void TerrainLayer::SetSolidOutline(QColor newColor)
 {
 	if (!solidOutline)
 	{
@@ -708,10 +724,7 @@ void TerrainLayer::SetSolidOutline(SolidShaderProperties newProperties)
 		solidOutline->SetCamera(camera);
 	}
 
-	solidOutline->SetColor(	newProperties.color[0],
-				newProperties.color[1],
-				newProperties.color[2],
-				newProperties.color[3]);
+	solidOutline->SetColor(newColor);
 	outlineShader = solidOutline;
 }
 
@@ -724,7 +737,7 @@ void TerrainLayer::SetSolidOutline(SolidShaderProperties newProperties)
  *
  * @param newProperties The new shader properties
  */
-void TerrainLayer::SetSolidFill(SolidShaderProperties newProperties)
+void TerrainLayer::SetSolidFill(QColor newColor)
 {
 	if (!solidFill)
 	{
@@ -735,10 +748,7 @@ void TerrainLayer::SetSolidFill(SolidShaderProperties newProperties)
 		solidFill->SetCamera(camera);
 	}
 
-	solidFill->SetColor(	newProperties.color[0],
-				newProperties.color[1],
-				newProperties.color[2],
-				newProperties.color[3]);
+	solidFill->SetColor(newColor);
 	fillShader = solidFill;
 }
 
@@ -751,16 +761,13 @@ void TerrainLayer::SetSolidFill(SolidShaderProperties newProperties)
  *
  * @param newProperties The new shader properties
  */
-void TerrainLayer::SetSolidBoundary(SolidShaderProperties newProperties)
+void TerrainLayer::SetSolidBoundary(QColor newColor)
 {
 	if (!solidBoundary)
 		solidBoundary = new SolidShader();
 
 	solidBoundary->SetCamera(camera);
-	solidBoundary->SetColor(newProperties.color[0],
-				newProperties.color[1],
-				newProperties.color[2],
-				newProperties.color[3]);
+	solidBoundary->SetColor(newColor);
 	boundaryShader = solidBoundary;
 }
 
@@ -891,7 +898,7 @@ void TerrainLayer::SwitchToCulledShaders()
 
 	if (solidOutline)
 	{
-		SolidShaderProperties currentProperties = solidOutline->GetShaderProperties();
+		QColor currentProperties = solidOutline->GetShaderProperties();
 		delete solidOutline;
 		solidOutline = 0;
 		SetSolidOutline(currentProperties);
@@ -899,7 +906,7 @@ void TerrainLayer::SwitchToCulledShaders()
 
 	if (solidFill)
 	{
-		SolidShaderProperties currentProperties = solidFill->GetShaderProperties();
+		QColor currentProperties = solidFill->GetShaderProperties();
 		delete solidFill;
 		solidFill = 0;
 		SetSolidFill(currentProperties);

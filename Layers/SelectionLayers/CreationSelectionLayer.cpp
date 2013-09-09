@@ -487,9 +487,9 @@ void CreationSelectionLayer::InitializeGL()
 		boundaryShader = new SolidShader();
 
 		/* Set the shader properties */
-		fillShader->SetColor(0.4, 0.4, 0.4, 0.4);
-		outlineShader->SetColor(0.2, 0.2, 0.2, 0.2);
-		boundaryShader->SetColor(0.0, 0.0, 0.0, 0.8);
+		fillShader->SetColor(QColor(0.4*255, 0.4*255, 0.4*255, 0.4*255));
+		outlineShader->SetColor(QColor(0.2*255, 0.2*255, 0.2*255, 0.2*255));
+		boundaryShader->SetColor(QColor(0.0*255, 0.0*255, 0.0*255, 0.8*255));
 		if (camera)
 		{
 			fillShader->SetCamera(camera);

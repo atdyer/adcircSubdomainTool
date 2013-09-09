@@ -33,6 +33,31 @@ ShaderOptionsStackedWidget::~ShaderOptionsStackedWidget()
 }
 
 
+void ShaderOptionsStackedWidget::SetSolidColor(QColor newColor)
+{
+	ui->hueSpin->setValue(newColor.hue());
+	ui->satSpin->setValue(newColor.saturation());
+	ui->valSpin->setValue(newColor.value());
+	ui->alphaSpin->setValue(newColor.alpha());
+	update();
+}
+
+
+void ShaderOptionsStackedWidget::SetGradient(QGradientStops newGradient)
+{
+	ui->gradientSliderWidget->SetGradientStops(newGradient);
+	update();
+}
+
+
+void ShaderOptionsStackedWidget::SetGradientRange(float lowVal, float highVal)
+{
+	ui->gradientSliderWidget->SetMinValue(lowVal);
+	ui->gradientSliderWidget->SetMaxValue(highVal);
+	update();
+}
+
+
 void ShaderOptionsStackedWidget::SetupGradientPicker()
 {
 	delegate = new SliderItemDelegate();

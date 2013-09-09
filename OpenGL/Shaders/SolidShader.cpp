@@ -30,10 +30,7 @@ SolidShader::SolidShader()
 			"	out_Color = ex_Color;"
 			"}";
 
-	properties.color[0] = 1.0;
-	properties.color[1] = 1.0;
-	properties.color[2] = 1.0;
-	properties.color[3] = 1.0;
+	color = QColor(1.0, 1.0, 1.0, 1.0);
 
 	CompileShader();
 	UpdateUniforms();
@@ -50,16 +47,9 @@ SolidShader::SolidShader()
  * @param b Blue value
  * @param a Alpha value
  */
-void SolidShader::SetColor(float r, float g, float b, float a)
+void SolidShader::SetColor(QColor newColor)
 {
-	if (r >= 0.0)
-		properties.color[0] = r;
-	if (g >= 0.0)
-		properties.color[1] = g;
-	if (b >= 0.0)
-		properties.color[2] = b;
-	if (a >= 0.0)
-		properties.color[3] = a;
+	color = newColor;
 	UpdateUniforms();
 }
 
@@ -71,9 +61,15 @@ void SolidShader::SetColor(float r, float g, float b, float a)
  *
  * @return The shader's properties
  */
-SolidShaderProperties SolidShader::GetShaderProperties()
+QColor SolidShader::GetShaderProperties()
 {
-	return properties;
+	return color;
+}
+
+
+ShaderType SolidShader::GetShaderType()
+{
+	return SolidShaderType;
 }
 
 
@@ -123,8 +119,13 @@ void SolidShader::UpdateUniforms()
 		if (errVal != GL_NO_ERROR)
 			DEBUG("Error getting uniform locations");
 
+		GLfloat currColor[4] = {color.red() / 255.0,
+					color.green() / 255.0,
+					color.blue() / 255.0,
+					color.alpha() / 255.0};
+
 		glUniformMatrix4fv(MVPUniform, 1, GL_FALSE, camera->MVPMatrix.m);
-		glUniform4fv(ColorUniform, 1, properties.color);
+		glUniform4fv(ColorUniform, 1, currColor);
 
 		errVal = glGetError();
 		if (errVal != GL_NO_ERROR)

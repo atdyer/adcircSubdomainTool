@@ -61,9 +61,11 @@ class TerrainLayer : public Layer
 		float			GetMaxZ();
 		float			GetUnprojectedX(float x);
 		float			GetUnprojectedY(float y);
-		SolidShaderProperties	GetSolidOutline();
-		SolidShaderProperties	GetSolidFill();
-		SolidShaderProperties	GetSolidBoundary();
+		ShaderType		GetOutlineShaderType();
+		ShaderType		GetFillShaderType();
+		QColor			GetSolidOutline();
+		QColor			GetSolidFill();
+		QColor			GetSolidBoundary();
 		QGradientStops		GetGradientOutline();
 		QGradientStops		GetGradientFill();
 		QGradientStops		GetGradientBoundary();
@@ -72,9 +74,9 @@ class TerrainLayer : public Layer
 		/* Setter Methods */
 		virtual void	SetCamera(GLCamera *newCamera);
 		void		SetFort14Location(std::string newLocation);
-		void		SetSolidOutline(SolidShaderProperties newProperties);
-		void		SetSolidFill(SolidShaderProperties newProperties);
-		void		SetSolidBoundary(SolidShaderProperties newProperties);
+		void		SetSolidOutline(QColor newColor);
+		void		SetSolidFill(QColor newColor);
+		void		SetSolidBoundary(QColor newColor);
 		void		SetGradientOutline(QGradientStops newStops);
 		void		SetGradientFill(QGradientStops newStops);
 		void		SetGradientBoundary(QGradientStops newStops);

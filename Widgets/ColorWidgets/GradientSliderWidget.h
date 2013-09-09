@@ -23,6 +23,8 @@ class GradientSliderWidget : public QWidget
 		void	SetMinValue(float newMin);
 		void	SetMaxValue(float newMax);
 
+		void	SetGradientStops(QGradientStops newStops);
+
 		void	SetSliderColor(unsigned int sliderID, QColor newColor);
 		void	SetSliderValue(unsigned int sliderID, float newValue);
 
@@ -62,10 +64,10 @@ class GradientSliderWidget : public QWidget
 		void	PositionGradientFrame();
 		void	UpdateGradientStops();
 		void	CheckSliderCount();
+		void	CreateDefaultSliders();
 
 		int	MapValueToY(float val);
 		float	MapYToValue(int y);
-		bool	YValueInRange(int y);
 		
 	signals:
 

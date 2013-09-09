@@ -79,20 +79,20 @@ class Domain : public QObject
 		void	SetFort15Location(std::string newLoc);
 		void	SetFort63Location(std::string newLoc);
 		void	SetFort64Location(std::string newLoc);
-		void	SetTerrainSolidOutline(SolidShaderProperties newProperties);
-		void	SetTerrainSolidFill(SolidShaderProperties newProperties);
-		void	SetTerrainGradientOutline(QGradientStops newStops);
-		void	SetTerrainGradientFill(QGradientStops newStops);
 
 		// Query functions used to access data used to populate the GUI
-		QString	GetFort14Location();
-		QString GetFort15Location();
-		QString GetFort63Location();
-		QString GetFort64Location();
-		SolidShaderProperties	GetTerrainSolidOutline();
-		SolidShaderProperties	GetTerrainSolidFill();
-		QGradientStops		GetTerrainGradientOutline();
-		QGradientStops		GetTerrainGradientFill();
+		QString		GetFort14Location();
+		QString		GetFort15Location();
+		QString		GetFort63Location();
+		QString		GetFort64Location();
+		float		GetTerrainMinElevation();
+		float		GetTerrainMaxElevation();
+		ShaderType	GetTerrainOutlineShaderType();
+		ShaderType	GetTerrainFillShaderType();
+		QColor		GetTerrainSolidOutline();
+		QColor		GetTerrainSolidFill();
+		QGradientStops	GetTerrainGradientOutline();
+		QGradientStops	GetTerrainGradientFill();
 		unsigned int	GetNumNodesDomain();
 		unsigned int	GetNumElementsDomain();
 		unsigned int	GetNumNodesSelected();
@@ -142,6 +142,14 @@ class Domain : public QObject
 		void		Zoom(float zoomAmount);
 		void		Pan(float dx, float dy);
 		void		CalculateMouseCoordinates();
+
+
+	public slots:
+
+		void	SetTerrainSolidOutline(QColor newColor);
+		void	SetTerrainSolidFill(QColor newColor);
+		void	SetTerrainGradientOutline(QGradientStops newStops);
+		void	SetTerrainGradientFill(QGradientStops newStops);
 
 
 	signals:

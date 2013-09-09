@@ -24,6 +24,7 @@ class CulledSolidShader : public SolidShader
 
 		// Constructor
 		CulledSolidShader();
+		virtual ShaderType	GetShaderType();
 
 	protected:
 

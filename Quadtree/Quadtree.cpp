@@ -472,7 +472,7 @@ void Quadtree::InitializeGL()
 {
 	if (!outlineShader)
 		outlineShader = new SolidShader();
-	outlineShader->SetColor(0.0, 0.0, 0.0, 1.0);
+	outlineShader->SetColor(QColor(0.0*255, 0.0*255, 0.0*255, 1.0*255));
 	outlineShader->SetCamera(camera);
 
 	if (!VAOId)

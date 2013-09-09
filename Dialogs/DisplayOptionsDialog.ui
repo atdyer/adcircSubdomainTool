@@ -6,24 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>918</width>
-    <height>554</height>
+    <width>669</width>
+    <height>549</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
-   <item>
-    <widget class="QListView" name="listView">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
-   </item>
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="sizePolicy">
@@ -35,67 +25,6 @@
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="outlineTab">
-      <attribute name="title">
-       <string>Outline</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QCheckBox" name="outlineVisibleCheckBox">
-         <property name="text">
-          <string>Outline Visible</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <item>
-          <widget class="QLabel" name="label">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Color Type:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="outlineShaderType">
-           <item>
-            <property name="text">
-             <string>Solid Color</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Gradient</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <widget class="Line" name="line">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="ShaderOptionsStackedWidget" name="outlineShaderOptions">
-         <widget class="QWidget" name="page"/>
-         <widget class="QWidget" name="page_2"/>
-        </widget>
-       </item>
-      </layout>
-     </widget>
      <widget class="QWidget" name="fillTab">
       <attribute name="title">
        <string>Fill</string>
@@ -153,6 +82,67 @@
         <widget class="ShaderOptionsStackedWidget" name="fillShaderOptions">
          <widget class="QWidget" name="page_3"/>
          <widget class="QWidget" name="page_4"/>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="outlineTab">
+      <attribute name="title">
+       <string>Outline</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QCheckBox" name="outlineVisibleCheckBox">
+         <property name="text">
+          <string>Outline Visible</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Color Type:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="outlineShaderType">
+           <item>
+            <property name="text">
+             <string>Solid Color</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Gradient</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="Line" name="line">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="ShaderOptionsStackedWidget" name="outlineShaderOptions">
+         <widget class="QWidget" name="page"/>
+         <widget class="QWidget" name="page_2"/>
         </widget>
        </item>
       </layout>

@@ -274,7 +274,7 @@ void ClickTool::InitializeGL()
 	{
 		if (!pointShader)
 			pointShader = new SolidShader();
-		pointShader->SetColor(0.0, 0.0, 0.0, 1.0);
+		pointShader->SetColor(QColor(0.0*255, 0.0*255, 0.0*255, 1.0*255));
 		pointShader->SetCamera(camera);
 
 		if (!VAOId)

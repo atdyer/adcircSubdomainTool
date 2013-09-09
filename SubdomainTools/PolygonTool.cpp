@@ -297,7 +297,7 @@ void PolygonTool::InitializeGL()
 	{
 		if (!lineShader)
 			lineShader = new SolidShader();
-		lineShader->SetColor(0.0, 0.0, 0.0, 0.5);
+		lineShader->SetColor(QColor(0.0*255, 0.0*255, 0.0*255, 0.5*255));
 		lineShader->SetCamera(camera);
 
 		if (!VAOId)

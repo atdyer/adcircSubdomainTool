@@ -7,6 +7,7 @@
 #include <QTreeWidget>
 
 #include "Dialogs/CreateProjectDialog.h"
+#include "Dialogs/DisplayOptionsDialog.h"
 
 #include "Domains/Domain.h"
 
@@ -62,6 +63,9 @@ class Project : public QObject
 		Domain*				fullDomain;
 		std::map<QString, Domain*>	subDomains;	/**< Map of subdomain names to the actual domain */
 
+		/* Dialogs */
+		DisplayOptionsDialog*	displayOptions;
+
 		/* Project-wide functionality */
 		void	ConnectProjectTree();
 		void	UpdateTreeDisplay();
@@ -87,6 +91,8 @@ class Project : public QObject
 		void	setDomainSolidFill(unsigned int domainID, QColor color);
 		void	setDomainGradientOutline(unsigned int domainID, QGradientStops newStops);
 		void	setDomainGradientFill(unsigned int domainID, QGradientStops newStops);
+
+		void	showDisplayOptions();
 
 	signals:
 

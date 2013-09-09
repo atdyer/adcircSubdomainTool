@@ -2,33 +2,8 @@
 #define SOLIDSHADER_H
 
 #include <string>
+#include <QColor>
 #include "GLShader.h"
-
-
-/**
- * @brief A container used to hold all of the basic properties
- * of the SolidShader class
- */
-struct SolidShaderProperties
-{
-		GLfloat color[4];
-
-		SolidShaderProperties()
-		{
-			color[0] = 0.0;
-			color[1] = 0.0;
-			color[2] = 0.0;
-			color[3] = 1.0;
-		}
-
-		SolidShaderProperties(float r, float g, float b, float a)
-		{
-			color[0] = r;
-			color[1] = g;
-			color[2] = b;
-			color[3] = a;
-		}
-};
 
 
 /**
@@ -45,10 +20,11 @@ class SolidShader : public GLShader
 		SolidShader();
 
 		// Modification Functions
-		void	SetColor(float r, float g, float b, float a);
+		void	SetColor(QColor newColor);
 
 		// Query Functions
-		SolidShaderProperties	GetShaderProperties();
+		QColor		GetShaderProperties();
+		ShaderType	GetShaderType();
 
 	protected:
 
@@ -57,7 +33,7 @@ class SolidShader : public GLShader
 		std::string	fragSource;
 
 		// Shader Properties
-		SolidShaderProperties	properties;
+		QColor	color;
 
 		// Override virtual functions
 		virtual void	CompileShader();

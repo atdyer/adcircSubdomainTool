@@ -68,6 +68,12 @@ QGradientStops GradientShader::GetGradientStops()
 }
 
 
+ShaderType GradientShader::GetShaderType()
+{
+	return GradientShaderType;
+}
+
+
 /**
  * @brief Compiles the shader parts and assembles them into a usable shader on the OpenGL context
  */

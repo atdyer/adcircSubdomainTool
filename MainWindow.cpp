@@ -390,22 +390,15 @@ void MainWindow::CheckForMemoryLeaks()
 
 void MainWindow::on_actionColor_Options_triggered()
 {
-	if (!displayOptionsDialog)
-	{
-		displayOptionsDialog = new DisplayOptionsDialog(this);
+//	if (!displayOptionsDialog)
+//	{
+//		displayOptionsDialog = new DisplayOptionsDialog(this);
+//	}
 
-		if (testProject)
-		{
-			connect(displayOptionsDialog, SIGNAL(domainSolidOutlineColorChanged(uint,QColor)),
-				testProject, SLOT(setDomainSolidOutline(uint,QColor)));
-			connect(displayOptionsDialog, SIGNAL(domainSolidFillColorChanged(uint,QColor)),
-				testProject, SLOT(setDomainSolidFill(uint,QColor)));
-			connect(displayOptionsDialog, SIGNAL(domainGradientOutlineChanged(uint,QGradientStops)),
-				testProject, SLOT(setDomainGradientOutline(uint,QGradientStops)));
-			connect(displayOptionsDialog, SIGNAL(domainGradientFillChanged(uint,QGradientStops)),
-				testProject, SLOT(setDomainGradientFill(uint,QGradientStops)));
-		}
+	if (testProject)
+	{
+		testProject->showDisplayOptions();
 	}
 
-	displayOptionsDialog->show();
+//	displayOptionsDialog->show();
 }

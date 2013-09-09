@@ -319,10 +319,10 @@ void Domain::SetFort64Location(std::string newLoc)
  *
  * @param newProperties The shader properties
  */
-void Domain::SetTerrainSolidOutline(SolidShaderProperties newProperties)
+void Domain::SetTerrainSolidOutline(QColor newColor)
 {
 	if (terrainLayer)
-		terrainLayer->SetSolidOutline(newProperties);
+		terrainLayer->SetSolidOutline(newColor);
 
 	emit UpdateGL();
 
@@ -337,10 +337,10 @@ void Domain::SetTerrainSolidOutline(SolidShaderProperties newProperties)
  *
  * @param newProperties The shader properties
  */
-void Domain::SetTerrainSolidFill(SolidShaderProperties newProperties)
+void Domain::SetTerrainSolidFill(QColor newColor)
 {
 	if (terrainLayer)
-		terrainLayer->SetSolidFill(newProperties);
+		terrainLayer->SetSolidFill(newColor);
 
 	emit UpdateGL();
 }
@@ -432,6 +432,38 @@ QString Domain::GetFort64Location()
 }
 
 
+float Domain::GetTerrainMinElevation()
+{
+	if (terrainLayer)
+		return terrainLayer->GetMinZ();
+	return 0.0;
+}
+
+
+float Domain::GetTerrainMaxElevation()
+{
+	if (terrainLayer)
+		return terrainLayer->GetMaxZ();
+	return 1.0;
+}
+
+
+ShaderType Domain::GetTerrainOutlineShaderType()
+{
+	if (terrainLayer)
+		return terrainLayer->GetOutlineShaderType();
+	return NoShaderType;
+}
+
+
+ShaderType Domain::GetTerrainFillShaderType()
+{
+	if (terrainLayer)
+		return terrainLayer->GetFillShaderType();
+	return NoShaderType;
+}
+
+
 /**
  * @brief Returns the properties of the terrain layer's solid outline
  *
@@ -441,11 +473,11 @@ QString Domain::GetFort64Location()
  * @return The properties of the terrain layer's solid outline
  * @return Default solid outline properties if the terrain layer has not been created
  */
-SolidShaderProperties Domain::GetTerrainSolidOutline()
+QColor Domain::GetTerrainSolidOutline()
 {
 	if (terrainLayer)
 		return terrainLayer->GetSolidOutline();
-	return SolidShaderProperties();
+	return QColor();
 }
 
 
@@ -458,11 +490,11 @@ SolidShaderProperties Domain::GetTerrainSolidOutline()
  * @return The properties of the terrain layer's solid fill
  * @return Default solid fill properties if the terrain layer has not been created
  */
-SolidShaderProperties Domain::GetTerrainSolidFill()
+QColor Domain::GetTerrainSolidFill()
 {
 	if (terrainLayer)
 		return terrainLayer->GetSolidFill();
-	return SolidShaderProperties();
+	return QColor();
 }
 
 
@@ -625,9 +657,9 @@ void Domain::CreateTerrainLayer()
 
 
 		terrainLayer->SetCamera(camera);
-		terrainLayer->SetSolidOutline(SolidShaderProperties(0.2, 0.2, 0.2, 0.1));
-		terrainLayer->SetSolidFill(SolidShaderProperties(0.1, 0.8, 0.1, 1.0));
-		terrainLayer->SetSolidBoundary(SolidShaderProperties(0.0, 0.0, 0.0, 1.0));
+		terrainLayer->SetSolidOutline(QColor(0.2*255, 0.2*255, 0.2*255, 0.1*255));
+		terrainLayer->SetSolidFill(QColor(0.1*255, 0.8*255, 0.1*255, 1.0*255));
+		terrainLayer->SetSolidBoundary(QColor(0.0*255, 0.0*255, 0.0*255, 1.0*255));
 //		terrainLayer->SetGradientOutline(GradientShaderProperties(0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0));
 //		terrainLayer->SetGradientFill(GradientShaderProperties(0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0));
 
