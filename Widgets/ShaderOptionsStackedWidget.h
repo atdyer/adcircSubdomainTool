@@ -5,9 +5,9 @@
 #include <QColorDialog>
 #include <QMap>
 #include <QListWidget>
-#include <Widgets/ColorWidgets/ColorGradientFrame.h>
-#include <Widgets/ColorWidgets/ValueSlider.h>
-#include <Widgets/ColorWidgets/SliderItemDelegate.h>
+#include "Widgets/ColorWidgets/ColorGradientFrame.h"
+#include "Widgets/ColorWidgets/ValueSlider.h"
+#include "Widgets/ColorWidgets/SliderItemDelegate.h"
 
 namespace Ui {
 	class ShaderOptionsStackedWidget;
@@ -26,6 +26,7 @@ class ShaderOptionsStackedWidget : public QStackedWidget
 		void	SetGradientRange(float lowVal, float highVal);
 		
 	private:
+
 		Ui::ShaderOptionsStackedWidget *ui;
 
 		QMap<unsigned int, QListWidgetItem*>	sliderListItems;

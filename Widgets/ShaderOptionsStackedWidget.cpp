@@ -54,6 +54,8 @@ void ShaderOptionsStackedWidget::SetGradientRange(float lowVal, float highVal)
 {
 	ui->gradientSliderWidget->SetMinValue(lowVal);
 	ui->gradientSliderWidget->SetMaxValue(highVal);
+	if (delegate)
+		delegate->SetValueRange(lowVal, highVal);
 	update();
 }
 
@@ -179,8 +181,8 @@ void ShaderOptionsStackedWidget::sliderAdded(unsigned int sliderID, float slider
 
 		sliderListItems[sliderID] = newItem;
 
-		newItem->setData(Qt::DisplayRole, QString::number(sliderValue));
-		newItem->setData(Qt::EditRole, QString::number(sliderValue));
+		newItem->setData(Qt::DisplayRole, sliderValue);
+		newItem->setData(Qt::EditRole, sliderValue);
 		newItem->setData(Qt::BackgroundRole, sliderColor);
 		newItem->setFlags(newItem->flags() | Qt::ItemIsEditable);
 	}
@@ -218,7 +220,7 @@ void ShaderOptionsStackedWidget::gradientSliderValueChanged(unsigned int sliderI
 	if (sliderListItems.contains(sliderID))
 	{
 		QListWidgetItem *listItem = sliderListItems[sliderID];
-		listItem->setText(QString::number(newValue));
+		listItem->setData(Qt::DisplayRole, newValue);
 		ui->sliderList->sortItems(Qt::DescendingOrder);
 	}
 }
