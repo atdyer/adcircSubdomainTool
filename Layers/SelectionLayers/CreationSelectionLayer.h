@@ -83,8 +83,8 @@ class CreationSelectionLayer : public SelectionLayer
 		virtual void	Undo();
 		virtual void	Redo();
 
-		void			FindBoundaries();
-		std::vector<Node*>	GetBoundaryNodes();
+		std::vector<unsigned int>	GetBoundaryNodes();
+		ElementState*			GetCurrentSelection();
 
 	private:
 

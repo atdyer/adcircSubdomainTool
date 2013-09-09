@@ -85,6 +85,7 @@ class Domain : public QObject
 		QString		GetFort15Location();
 		QString		GetFort63Location();
 		QString		GetFort64Location();
+		ElementState*	GetCurrentSelectedElements();
 		float		GetTerrainMinElevation();
 		float		GetTerrainMaxElevation();
 		ShaderType	GetTerrainOutlineShaderType();

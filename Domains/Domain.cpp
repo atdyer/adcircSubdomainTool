@@ -432,6 +432,16 @@ QString Domain::GetFort64Location()
 }
 
 
+ElementState* Domain::GetCurrentSelectedElements()
+{
+	if (selectionLayer)
+	{
+		return selectionLayer->GetCurrentSelection();
+	}
+	return 0;
+}
+
+
 float Domain::GetTerrainMinElevation()
 {
 	if (terrainLayer)

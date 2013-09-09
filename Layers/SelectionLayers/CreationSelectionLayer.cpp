@@ -436,21 +436,6 @@ void CreationSelectionLayer::Redo()
 
 
 /**
- * @brief Attempts to find the boundary of the currently selected elements
- *
- * Attempts to find the boundary of the currently selected elements. If a valid boundary is found,
- * the validBoundary flag will be set to true and the boundary will be drawn around the selection.
- * Once a valid boundary has been found, the GetBoundaryNodes function will return the current
- * list of boundary nodes.
- *
- */
-void CreationSelectionLayer::FindBoundaries()
-{
-
-}
-
-
-/**
  * @brief If a valid boundary exists, a list of the boundary Nodes will be returned.
  *
  * If a valid boundary exists, a list of the boundary Nodes will be returned. The list will
@@ -458,9 +443,15 @@ void CreationSelectionLayer::FindBoundaries()
  *
  * @return A list of boundary nodes in counter-clockwise order
  */
-std::vector<Node*> CreationSelectionLayer::GetBoundaryNodes()
+std::vector<unsigned int> CreationSelectionLayer::GetBoundaryNodes()
 {
+	return boundaryNodes;
+}
 
+
+ElementState* CreationSelectionLayer::GetCurrentSelection()
+{
+	return selectedState;
 }
 
 
