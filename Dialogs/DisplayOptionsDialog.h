@@ -18,6 +18,7 @@ class DisplayOptionsDialog : public QDialog
 		~DisplayOptionsDialog();
 
 		void	SetActiveDomain(Domain *newDomain);
+
 		
 	private:
 		Ui::DisplayOptionsDialog *ui;
@@ -34,6 +35,7 @@ class DisplayOptionsDialog : public QDialog
 		void	solidFillChanged(QColor);
 		void	gradientOutlineChanged(QGradientStops);
 		void	gradientFillChanged(QGradientStops);
+		void	updateChildrenGeometry();
 
 	public slots:
 
@@ -41,6 +43,7 @@ class DisplayOptionsDialog : public QDialog
 		void	showSolidFillWindow();
 		void	showGradientOutlineWindow();
 		void	showGradientFillWindow();
+		void	show();
 
 	private slots:
 

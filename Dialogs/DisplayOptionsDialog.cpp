@@ -10,6 +10,7 @@ DisplayOptionsDialog::DisplayOptionsDialog(QWidget *parent) :
 	currentDomain = 0;
 
 	ui->outlineShaderOptions->setCurrentIndex(ui->outlineShaderType->currentIndex());
+	ui->fillShaderOptions->setCurrentIndex(ui->fillShaderType->currentIndex());
 
 	connect(ui->outlineShaderType, SIGNAL(currentIndexChanged(int)), ui->outlineShaderOptions, SLOT(setCurrentIndex(int)));
 	connect(ui->outlineShaderOptions, SIGNAL(solidColorChanged(QColor)), this, SLOT(solidColorChanged(QColor)));
@@ -135,6 +136,13 @@ void DisplayOptionsDialog::showGradientFillWindow()
 //	ui->tabWidget->setCurrentIndex(0);
 	ui->fillShaderType->setCurrentIndex(1);
 //	ui->fillShaderOptions->setCurrentIndex(1);
+}
+
+
+void DisplayOptionsDialog::show()
+{
+	QDialog::show();
+	emit updateChildrenGeometry();
 }
 
 
