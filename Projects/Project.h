@@ -12,6 +12,7 @@
 #include "Domains/Domain.h"
 
 #include "Projects/ProjectFile.h"
+#include "Projects/IO/SubdomainCreator.h"
 
 
 /**
@@ -86,6 +87,8 @@ class Project : public QObject
 		void	on_ProjectTreeItemChanged(QTreeWidgetItem *item, QTreeWidgetItem*);
 
 	public slots:
+
+		void	createSubdomain();
 
 		void	setDomainSolidOutline(unsigned int domainID, QColor color);
 		void	setDomainSolidFill(unsigned int domainID, QColor color);

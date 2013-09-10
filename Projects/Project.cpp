@@ -298,6 +298,24 @@ void Project::on_ProjectTreeItemChanged(QTreeWidgetItem *item, QTreeWidgetItem *
 }
 
 
+void Project::createSubdomain()
+{
+	if (currentDomain)
+	{
+		SubdomainCreator subCreator;
+		subCreator.SetDomain(currentDomain);
+		subCreator.SetProjectPath(testProjectFile.GetProjectDirectory());
+		subCreator.SetSubdomainName("");
+		if (subCreator.CreateSubdomain())
+		{
+			std::cout << "It worked" << std::endl;
+		} else {
+			std::cout << "Nope" << std::endl;
+		}
+	}
+}
+
+
 void Project::setDomainSolidOutline(unsigned int domainID, QColor color)
 {
 	if (currentDomain)

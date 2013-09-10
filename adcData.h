@@ -48,6 +48,9 @@ struct Node
 		float normX;	/**< The normalized first location coordinate used for drawing operations */
 		float normY;	/**< The normalized second location coordinate used for drawing operations */
 		float normZ;	/**< The normalized third location coordinate used for drawing operations */
+		std::string xDat;
+		std::string yDat;
+		std::string zDat;
 };
 
 

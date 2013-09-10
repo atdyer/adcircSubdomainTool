@@ -1166,9 +1166,15 @@ unsigned int TerrainLayer::ReadNodalData(unsigned int nodeCount, std::ifstream *
 	for (unsigned int i=0; i<nodeCount; i++)
 	{
 		*fileStream >> currNode.nodeNumber;
-		*fileStream >> currNode.x;
-		*fileStream >> currNode.y;
-		*fileStream >> currNode.z;
+		*fileStream >> currNode.xDat;
+		*fileStream >> currNode.yDat;
+		*fileStream >> currNode.zDat;
+		currNode.x = atof(currNode.xDat.data());
+		currNode.y = atof(currNode.yDat.data());
+		currNode.z = atof(currNode.zDat.data());
+//		*fileStream >> currNode.x;
+//		*fileStream >> currNode.y;
+//		*fileStream >> currNode.z;
 
 		// Check against min/max values and flip the z-value if needed
 		if (currNode.x < minX)

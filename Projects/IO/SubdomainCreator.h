@@ -3,31 +3,71 @@
 
 #include <QString>
 #include <QDir>
+#include <QProgressBar>
+#include <QMessageBox>
+#include <QInputDialog>
+#include <QProgressDialog>
+
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+#include <vector>
+#include <map>
 
 #include "Domains/Domain.h"
 #include "SubdomainTools/BoundaryFinder.h"
+
 
 class SubdomainCreator
 {
 	public:
 		SubdomainCreator();
 
-		void	CreateSubdomain();
+		bool	CreateSubdomain();
 
 		void	SetDomain(Domain *newDomain);
-		void	SetTargetPath(QString newTarget);
+		void	SetProjectPath(QString newProjectPath);
+		void	SetSubdomainName(QString newName);
 
 
 	private:
 
-		BoundaryFinder	boundaryFinder;
-
+		/* Class Variables */
+		BoundaryFinder			boundaryFinder;
 		ElementState*			currentSelectedState;
+
+		std::vector<Element*>		selectedElements;
+		std::vector<Node*>		selectedNodes;
 		std::vector<unsigned int>	boundaryNodes;
 
-		QString	targetPath;
+		std::map<unsigned int, unsigned int>	oldToNewNodes;
+		std::map<unsigned int, unsigned int>	oldToNewElements;
 
-		void	WriteFort14File();
+		QString		projectPath;
+		QString		targetPath;
+		QString		subdomainName;
+
+
+		/* Create fort.14 steps */
+		void	GetAllRequiredData();
+		bool	PerformDataValidation();
+		bool	WriteFort14File();
+		bool	WritePy140File();
+		bool	WritePy141File();
+
+
+		/* Helper Functions */
+		void	FindUniqueNodes();
+		void	FindBoundaryNodes();
+		void	MapOldToNewNodes();
+		void	MapOldToNewElements();
+
+
+		/* Validation Functions */
+		bool	TestForValidPath();
+		bool	TestForSufficientElements();
+		bool	TestForSufficientNodes();
+		bool	TestForValidBoundary();
 
 };
 
