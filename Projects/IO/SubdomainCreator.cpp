@@ -3,6 +3,14 @@
 SubdomainCreator::SubdomainCreator()
 {
 	currentSelectedState = 0;
+	fullNumNodes = 0;
+	fullNumElements = 0;
+}
+
+
+SubdomainCreator::~SubdomainCreator()
+{
+
 }
 
 
@@ -11,7 +19,22 @@ bool SubdomainCreator::CreateSubdomain()
 	GetAllRequiredData();
 	if (PerformDataValidation())
 	{
-		return WriteFort14File();
+		if (!WriteFort14File())
+		{
+			FileWriteError("fort.14");
+			return false;
+		}
+		if (!WritePy140File())
+		{
+			FileWriteError("py.140");
+			return false;
+		}
+		if (!WritePy141File())
+		{
+			FileWriteError("py.141");
+			return false;
+		}
+		return true;
 	}
 	return false;
 }
@@ -22,6 +45,8 @@ void SubdomainCreator::SetDomain(Domain *newDomain)
 	if (newDomain)
 	{
 		currentSelectedState = newDomain->GetCurrentSelectedElements();
+		fullNumNodes = newDomain->GetNumNodesDomain();
+		fullNumElements = newDomain->GetNumElementsDomain();
 	}
 }
 
@@ -66,8 +91,10 @@ bool SubdomainCreator::PerformDataValidation()
 bool SubdomainCreator::WriteFort14File()
 {
 	// Open the file
+	QString fort14Path = targetPath;
+	fort14Path.append(QDir::separator()).append("fort.14");
 	std::ofstream fort14File;
-	fort14File.open(targetPath.append(QDir::separator()).append("fort.14").toStdString().data());
+	fort14File.open(fort14Path.toStdString().data());
 	if (fort14File.is_open())
 	{
 		// Write title line
@@ -131,13 +158,50 @@ bool SubdomainCreator::WriteFort14File()
 
 bool SubdomainCreator::WritePy140File()
 {
-
+	QString py140Path = targetPath;
+	py140Path.append(QDir::separator()).append("py.140");
+	std::ofstream py140;
+	py140.open(py140Path.toStdString().data());
+	if (py140.is_open())
+	{
+		py140 << "new old " << fullNumNodes << std::endl;
+		if (oldToNewNodes.size() != 0)
+		{
+			for (std::map<unsigned int, unsigned int>::iterator it = oldToNewNodes.begin(); it != oldToNewNodes.end(); ++it)
+			{
+				py140 << it->second << " " << it->first << std::endl;
+			}
+		}
+		py140.close();
+		return true;
+	} else {
+		std::cout << "Unable to open " << targetPath.append(QDir::separator()).append("py.140").toStdString().data() << std::endl;
+		return false;
+	}
 }
 
 
 bool SubdomainCreator::WritePy141File()
 {
-
+	QString py141Path = targetPath;
+	py141Path.append(QDir::separator()).append("py.141");
+	std::ofstream py141;
+	py141.open(py141Path.toStdString().data());
+	if (py141.is_open())
+	{
+		py141 << "new old " << fullNumElements << std::endl;
+		if (oldToNewElements.size() != 0)
+		{
+			for (std::map<unsigned int, unsigned int>::iterator it = oldToNewElements.begin(); it != oldToNewElements.end(); ++it)
+			{
+				py141 << it->second << " " << it->first << std::endl;
+			}
+		}
+		py141.close();
+		return true;
+	} else {
+		return false;
+	}
 }
 
 
@@ -190,9 +254,6 @@ void SubdomainCreator::MapOldToNewNodes()
 			{
 				skippedNodes.push_back(currNode->nodeNumber);
 			} else {
-//				std::cout << currNode->nodeNumber << std::endl;
-//				std::cout << oldToNewNodes[currNode->nodeNumber] << std::endl;
-//				std::cout << newNodeNumber << std::endl;
 				oldToNewNodes[currNode->nodeNumber] = newNodeNumber;
 				++newNodeNumber;
 			}
@@ -343,5 +404,16 @@ bool SubdomainCreator::TestForValidBoundary()
 	msgBox.setStandardButtons(QMessageBox::Ok);
 	msgBox.exec();
 	return false;
+}
+
+
+void SubdomainCreator::FileWriteError(QString fileName)
+{
+	QMessageBox msgBox;
+	msgBox.setWindowTitle("Create Subdomain");
+	msgBox.setText(fileName.prepend("Error writing file: "));
+	msgBox.setIcon(QMessageBox::Critical);
+	msgBox.setStandardButtons(QMessageBox::Ok);
+	msgBox.exec();
 }
 

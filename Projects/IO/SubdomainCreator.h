@@ -22,6 +22,7 @@ class SubdomainCreator
 {
 	public:
 		SubdomainCreator();
+		~SubdomainCreator();
 
 		bool	CreateSubdomain();
 
@@ -33,8 +34,10 @@ class SubdomainCreator
 	private:
 
 		/* Class Variables */
-		BoundaryFinder			boundaryFinder;
-		ElementState*			currentSelectedState;
+		BoundaryFinder	boundaryFinder;
+		ElementState*	currentSelectedState;
+		unsigned int	fullNumNodes;
+		unsigned int	fullNumElements;
 
 		std::vector<Element*>		selectedElements;
 		std::vector<Node*>		selectedNodes;
@@ -68,6 +71,9 @@ class SubdomainCreator
 		bool	TestForSufficientElements();
 		bool	TestForSufficientNodes();
 		bool	TestForValidBoundary();
+
+		/* Generic Message Boxes */
+		void	FileWriteError(QString fileName);
 
 };
 
