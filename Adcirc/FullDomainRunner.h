@@ -6,6 +6,7 @@
 #include "Dialogs/FullDomainRunOptionsDialog.h"
 
 #include <QString>
+#include <iostream>
 
 class FullDomainRunner
 {
@@ -13,6 +14,7 @@ class FullDomainRunner
 		FullDomainRunner();
 		~FullDomainRunner();
 
+		void	SetAdcircExecutable(QString newLoc);
 		void	SetFullDomain(Domain *newFull);
 		void	SetSubDomains(std::vector<Domain*> subDomains);
 
@@ -33,9 +35,10 @@ class FullDomainRunner
 
 		void	DisplayFullDomainOptionsDialog();
 
-		void	ExtractAllInnerBoundaryNodes();
-		void	ExtractAllOuterBoundaryNodes();
-		void	WriteFort015File();
+		bool	ExtractAllInnerBoundaryNodes();
+		bool	ExtractAllOuterBoundaryNodes();
+		bool	CheckForRequiredFiles();
+		bool	WriteFort015File();
 };
 
 #endif // FULLDOMAINRUNNER_H

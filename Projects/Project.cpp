@@ -5,7 +5,8 @@ Project::Project() :
 	progressBar(0),
 	currentDomain(0),
 	fullDomain(0),
-	displayOptions(0)
+	displayOptions(0),
+	adcircRunning(false)
 {
 	displayOptions = new DisplayOptionsDialog();
 	testProjectFile = new ProjectFile();
@@ -361,6 +362,16 @@ void Project::setDomainGradientFill(unsigned int domainID, QGradientStops newSto
 }
 
 
+void Project::showDisplayOptions()
+{
+	if (currentDomain && displayOptions)
+	{
+		displayOptions->SetActiveDomain(currentDomain);
+		displayOptions->show();
+	}
+}
+
+
 void Project::showProjectSettings()
 {
 	if (testProjectSettings)
@@ -368,11 +379,25 @@ void Project::showProjectSettings()
 }
 
 
-void Project::showDisplayOptions()
+void Project::runFullDomain()
 {
-	if (currentDomain && displayOptions)
+	if (ProjectIsOpen() && fullDomain && !adcircRunning)
 	{
-		displayOptions->SetActiveDomain(currentDomain);
-		displayOptions->show();
+		FullDomainRunner adcirc;
+		adcirc.SetAdcircExecutable(testProjectSettings->GetAdcircExecutableLocation());
+		adcirc.SetFullDomain(fullDomain);
+		if (subDomains.size() > 0)
+		{
+			std::vector<Domain*> subdomainList;
+			for (std::map<QString, Domain*>::iterator it = subDomains.begin(); it != subDomains.end(); ++it)
+			{
+				subdomainList.push_back(it->second);
+			}
+		}
+
+		if (adcirc.PrepareForFullDomainRun())
+		{
+			adcircRunning = adcirc.PerformFullDomainRun();
+		}
 	}
 }

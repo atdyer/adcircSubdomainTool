@@ -15,6 +15,8 @@
 #include "Projects/ProjectSettings.h"
 #include "Projects/IO/SubdomainCreator.h"
 
+#include "Adcirc/FullDomainRunner.h"
+
 
 /**
  * @brief This class represents an ADCIRC Subdomain Project
@@ -69,6 +71,9 @@ class Project : public QObject
 		/* Dialogs */
 		DisplayOptionsDialog*	displayOptions;
 
+		/* Flags */
+		bool	adcircRunning;
+
 		/* Project-wide functionality */
 		void	ConnectProjectTree();
 		void	UpdateTreeDisplay();
@@ -99,6 +104,8 @@ class Project : public QObject
 
 		void	showDisplayOptions();
 		void	showProjectSettings();
+
+		void	runFullDomain();
 
 	signals:
 
