@@ -59,7 +59,8 @@ SOURCES += main.cpp\
     Widgets/ColorWidgets/GradientSliderWidget.cpp \
     Widgets/ColorWidgets/SliderItemDelegate.cpp \
     Projects/IO/SubdomainCreator.cpp \
-    Projects/ProjectSettings.cpp
+    Projects/ProjectSettings.cpp \
+    Dialogs/ProjectSettingsDialog.cpp
 
 HEADERS  += MainWindow.h \
     OpenGL/OpenGLPanel.h \
@@ -111,12 +112,14 @@ HEADERS  += MainWindow.h \
     Widgets/ColorWidgets/GradientSliderWidget.h \
     Widgets/ColorWidgets/SliderItemDelegate.h \
     Projects/IO/SubdomainCreator.h \
-    Projects/ProjectSettings.h
+    Projects/ProjectSettings.h \
+    Dialogs/ProjectSettingsDialog.h
 
 FORMS    += MainWindow.ui \
     Dialogs/CreateProjectDialog.ui \
     Dialogs/DisplayOptionsDialog.ui \
-    Widgets/ShaderOptionsStackedWidget.ui
+    Widgets/ShaderOptionsStackedWidget.ui \
+    Dialogs/ProjectSettingsDialog.ui
 
 target.path = /usr/local/bin
 desktop.path = /usr/share/applications
