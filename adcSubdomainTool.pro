@@ -60,7 +60,8 @@ SOURCES += main.cpp\
     Widgets/ColorWidgets/SliderItemDelegate.cpp \
     Projects/IO/SubdomainCreator.cpp \
     Projects/ProjectSettings.cpp \
-    Dialogs/ProjectSettingsDialog.cpp
+    Dialogs/ProjectSettingsDialog.cpp \
+    Adcirc/FullDomainRunner.cpp
 
 HEADERS  += MainWindow.h \
     OpenGL/OpenGLPanel.h \
@@ -113,7 +114,8 @@ HEADERS  += MainWindow.h \
     Widgets/ColorWidgets/SliderItemDelegate.h \
     Projects/IO/SubdomainCreator.h \
     Projects/ProjectSettings.h \
-    Dialogs/ProjectSettingsDialog.h
+    Dialogs/ProjectSettingsDialog.h \
+    Adcirc/FullDomainRunner.h
 
 FORMS    += MainWindow.ui \
     Dialogs/CreateProjectDialog.ui \
