@@ -26,7 +26,13 @@ void FullDomainRunner::SetSubDomains(std::vector<Domain *> subDomains)
 
 bool FullDomainRunner::PrepareForFullDomainRun()
 {
-
+	FullDomainRunOptionsDialog dlg;
+	if (dlg.exec())
+	{
+		subdomainApproach = dlg.GetSubdomainApproach();
+		recordFrequency = dlg.GetRecordFrequency();
+		runEnvironment = dlg.GetRunEnvironment();
+	}
 }
 
 

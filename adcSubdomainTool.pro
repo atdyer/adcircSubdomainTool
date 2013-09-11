@@ -61,7 +61,8 @@ SOURCES += main.cpp\
     Projects/IO/SubdomainCreator.cpp \
     Projects/ProjectSettings.cpp \
     Dialogs/ProjectSettingsDialog.cpp \
-    Adcirc/FullDomainRunner.cpp
+    Adcirc/FullDomainRunner.cpp \
+    Dialogs/FullDomainRunOptionsDialog.cpp
 
 HEADERS  += MainWindow.h \
     OpenGL/OpenGLPanel.h \
@@ -115,13 +116,15 @@ HEADERS  += MainWindow.h \
     Projects/IO/SubdomainCreator.h \
     Projects/ProjectSettings.h \
     Dialogs/ProjectSettingsDialog.h \
-    Adcirc/FullDomainRunner.h
+    Adcirc/FullDomainRunner.h \
+    Dialogs/FullDomainRunOptionsDialog.h
 
 FORMS    += MainWindow.ui \
     Dialogs/CreateProjectDialog.ui \
     Dialogs/DisplayOptionsDialog.ui \
     Widgets/ShaderOptionsStackedWidget.ui \
-    Dialogs/ProjectSettingsDialog.ui
+    Dialogs/ProjectSettingsDialog.ui \
+    Dialogs/FullDomainRunOptionsDialog.ui
 
 target.path = /usr/local/bin
 desktop.path = /usr/share/applications

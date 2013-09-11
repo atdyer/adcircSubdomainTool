@@ -28,8 +28,8 @@ GLCamera::GLCamera()
 	window[1] = 1.0;
 	window[2] = -1.0;
 	window[3] = 1.0;
-	window[4] = -1.0;
-	window[5] = 1.0;
+	window[4] = -100000.0;
+	window[5] = 100000.0;
 
 	// Get the size of the viewport from the GL context
 	int viewport[4];
@@ -117,8 +117,8 @@ void GLCamera::SetWindowSize(float l, float r, float b, float t, float n, float 
 	window[1] = r;
 	window[2] = b;
 	window[3] = t;
-	window[4] = n;
-	window[5] = f;
+//	window[4] = n;
+//	window[5] = f;
 
 	int viewport[4];
 	glGetIntegerv(GL_VIEWPORT, viewport);

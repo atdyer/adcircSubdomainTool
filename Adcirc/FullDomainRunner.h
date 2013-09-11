@@ -3,6 +3,8 @@
 
 #include "Domains/Domain.h"
 
+#include "Dialogs/FullDomainRunOptionsDialog.h"
+
 #include <QString>
 
 class FullDomainRunner
@@ -23,6 +25,9 @@ class FullDomainRunner
 		std::vector<Domain*>	subDomains;
 		QString			adcircExecutableLocation;
 
+		int	subdomainApproach;
+		int	recordFrequency;
+		int	runEnvironment;
 		std::vector<unsigned int>	innerBoundaries;
 		std::vector<unsigned int>	outerBoundaries;
 
