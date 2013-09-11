@@ -8,6 +8,9 @@ Project::Project() :
 	displayOptions(0)
 {
 	displayOptions = new DisplayOptionsDialog();
+	testProjectFile = new ProjectFile();
+	testProjectSettings = new ProjectSettings();
+	testProjectSettings->SetProjectFile(testProjectFile);
 }
 
 
@@ -26,6 +29,11 @@ Project::~Project()
 
 	if (displayOptions)
 		delete displayOptions;
+
+	if (testProjectFile)
+		delete testProjectFile;
+	if (testProjectSettings)
+		delete testProjectSettings;
 }
 
 
@@ -53,9 +61,9 @@ void Project::CreateProject()
 {
 	CreateProjectDialog dialog;
 	dialog.setModal(true);
-	if (dialog.exec())
+	if (dialog.exec() && testProjectFile)
 	{
-		testProjectFile.CreateProjectFile(dialog.GetProjectDirectory(), dialog.GetProjectName());
+		testProjectFile->CreateProjectFile(dialog.GetProjectDirectory(), dialog.GetProjectName());
 	}
 }
 
@@ -71,14 +79,14 @@ void Project::PopulateFromProjectFile()
 			{
 				fullDomain->SetProgressBar(progressBar);
 			}
-			QString fullFort14 = testProjectFile.GetFullDomainFort14();
+			QString fullFort14 = testProjectFile->GetFullDomainFort14();
 			if (!fullFort14.isEmpty())
 			{
 				fullDomain->SetFort14Location(fullFort14);
 			}
 		}
 
-		QStringList subdomainNames = testProjectFile.GetSubDomainNames();
+		QStringList subdomainNames = testProjectFile->GetSubDomainNames();
 		for (int i=0; i<subdomainNames.count(); ++i)
 		{
 			QString currName = subdomainNames.at(i);
@@ -90,7 +98,7 @@ void Project::PopulateFromProjectFile()
 					newSubdomain->SetProgressBar(progressBar);
 				}
 				subDomains[currName] = newSubdomain;
-				QString subFort14 = testProjectFile.GetSubDomainFort14(currName);
+				QString subFort14 = testProjectFile->GetSubDomainFort14(currName);
 				if (!subFort14.isEmpty())
 				{
 					newSubdomain->SetFort14Location(subFort14);
@@ -113,7 +121,7 @@ void Project::OpenProject()
 		selections = dialog.selectedFiles();
 		if (!selections.isEmpty())
 		{
-			testProjectFile.OpenProjectFile(selections.first());
+			testProjectFile->OpenProjectFile(selections.first());
 			PopulateFromProjectFile();
 			UpdateTreeDisplay();
 		}
@@ -123,7 +131,7 @@ void Project::OpenProject()
 
 bool Project::ProjectIsOpen()
 {
-	return testProjectFile.ProjectIsOpen();
+	return testProjectFile->ProjectIsOpen();
 }
 
 
@@ -179,11 +187,11 @@ void Project::UpdateTreeDisplay()
 
 			/* The top of the tree */
 			QTreeWidgetItem *treeTop = new QTreeWidgetItem(projectTree);
-			treeTop->setData(0, Qt::DisplayRole, testProjectFile.GetProjectName());
+			treeTop->setData(0, Qt::DisplayRole, testProjectFile->GetProjectName());
 			treeTop->setData(0, Qt::FontRole, boldFont);
-			treeTop->setData(0, Qt::StatusTipRole, testProjectFile.GetProjectName() +
+			treeTop->setData(0, Qt::StatusTipRole, testProjectFile->GetProjectName() +
 					 " - " +
-					 testProjectFile.GetProjectDirectory());
+					 testProjectFile->GetProjectDirectory());
 
 			/* The full domain branch */
 			QTreeWidgetItem *fullDomainTop = new QTreeWidgetItem(treeTop);
@@ -300,11 +308,11 @@ void Project::on_ProjectTreeItemChanged(QTreeWidgetItem *item, QTreeWidgetItem *
 
 void Project::createSubdomain()
 {
-	if (currentDomain)
+	if (currentDomain && testProjectFile)
 	{
 		SubdomainCreator subCreator;
 		subCreator.SetDomain(currentDomain);
-		subCreator.SetProjectPath(testProjectFile.GetProjectDirectory());
+		subCreator.SetProjectPath(testProjectFile->GetProjectDirectory());
 		subCreator.SetSubdomainName("");
 		if (subCreator.CreateSubdomain())
 		{
@@ -350,6 +358,13 @@ void Project::setDomainGradientFill(unsigned int domainID, QGradientStops newSto
 	{
 		currentDomain->SetTerrainGradientFill(newStops);
 	}
+}
+
+
+void Project::showProjectSettings()
+{
+	if (testProjectSettings)
+		testProjectSettings->ShowProjectSettingsDialog();
 }
 
 

@@ -7,6 +7,7 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QTextStream>
+#include <QDateTime>
 
 class ProjectFile : public QDomDocument
 {
@@ -29,7 +30,9 @@ class ProjectFile : public QDomDocument
 		QString	GetSubDomainFort15(QString subdomainName);
 		QString	GetSubDomainFort63(QString subdomainName);
 		QString	GetSubDomainFort64(QString subdomainName);
-		QStringList GetSubDomainNames();
+		QString	GetADCIRCLocation();
+		QStringList	GetSubDomainNames();
+		QDateTime	GetLastFileAccess();
 
 		/* Setter Functions */
 
@@ -37,12 +40,14 @@ class ProjectFile : public QDomDocument
 
 		bool	fileOpen;
 
-		QString projectName;
-		QFile	projectFile;
-		QDir	projectDirectory;
+		QString		projectName;
+		QFile		projectFile;
+		QDir		projectDirectory;
+		QDateTime	lastModified;
 
 		QDomNode	fullDomainNode;
 		QDomNodeList	subDomainNodes;
+		QDomNode	settingsNode;
 
 
 		/* File Read Functions */
@@ -50,10 +55,12 @@ class ProjectFile : public QDomDocument
 		bool	IsValidProjectFile();
 		QString	GetFullDomainAttribute(QString attributeName);
 		QString	GetSubDomainAttribute(QString subdomainName, QString attributeName);
+		QString	GetSettingsAttribute(QString attributeName);
 		QString	GetAttribute(QDomElement element, QString attributeName);
 
 
 		/* File Write Functions */
+		void	FileModified();
 
 
 

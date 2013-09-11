@@ -3,6 +3,7 @@
 ProjectFile::ProjectFile()
 {
 	fileOpen = false;
+	FileModified();
 }
 
 
@@ -80,7 +81,7 @@ void ProjectFile::CreateProjectFile(QString parentDirectory, QString projectName
 		}
 
 		/* Write an empty project to the file */
-		QString emptyProject ("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<adcSubdomainProject>\n</adcSubdomainProject>\n");
+		QString emptyProject ("<adcSubdomainProject>\n</adcSubdomainProject>\n");
 		QTextStream fileOut(&projectFile);
 		fileOut << emptyProject;
 		projectFile.close();
@@ -157,6 +158,12 @@ QString ProjectFile::GetSubDomainFort64(QString subdomainName)
 }
 
 
+QString ProjectFile::GetADCIRCLocation()
+{
+	return GetSettingsAttribute("adcircExe");
+}
+
+
 QStringList ProjectFile::GetSubDomainNames()
 {
 	QStringList subdomainNames;
@@ -174,6 +181,12 @@ QStringList ProjectFile::GetSubDomainNames()
 	}
 
 	return subdomainNames;
+}
+
+
+QDateTime ProjectFile::GetLastFileAccess()
+{
+	return lastModified;
 }
 
 
@@ -211,9 +224,21 @@ bool ProjectFile::OpenFile(QString filePath)
 
 		subDomainNodes = documentElement().elementsByTagName("subDomain");
 
+		QDomNodeList settingsNodes = documentElement().elementsByTagName("settings");
+		if (settingsNodes.count() > 1)
+		{
+			WarnFileError("More than one settings block is defined in the project file. Using the first block");
+		}
+		else if (!settingsNodes.isEmpty())
+		{
+			settingsNode = settingsNodes.at(0);
+		}
+
 	} else {
 		return false;
 	}
+
+	FileModified();
 
 	return true;
 }
@@ -296,6 +321,16 @@ QString ProjectFile::GetSubDomainAttribute(QString subdomainName, QString attrib
 }
 
 
+QString ProjectFile::GetSettingsAttribute(QString attributeName)
+{
+	if (fileOpen)
+	{
+		return GetAttribute(settingsNode.toElement(), attributeName);
+	}
+	return QString();
+}
+
+
 /**
  * @brief Searches for an attribute in any given QDomElement
  *
@@ -322,6 +357,12 @@ QString ProjectFile::GetAttribute(QDomElement element, QString attributeName)
 		currentAttribute = currentAttribute.nextSibling();
 	}
 	return QString();
+}
+
+
+void ProjectFile::FileModified()
+{
+	lastModified = QDateTime::currentDateTime();
 }
 
 

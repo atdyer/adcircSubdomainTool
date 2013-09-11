@@ -2,6 +2,10 @@
 #define PROJECTSETTINGS_H
 
 #include "Projects/ProjectFile.h"
+#include "Dialogs/ProjectSettingsDialog.h"
+
+#include <QDateTime>
+#include <iostream>
 
 class ProjectSettings
 {
@@ -19,6 +23,7 @@ class ProjectSettings
 
 		ProjectFile*	projectFile;
 
+		QDateTime	lastDataFetch;
 		QString		adcircExecutableLocation;
 
 		void	ReadSettingsFromFile();

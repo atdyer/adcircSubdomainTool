@@ -231,8 +231,7 @@ void MainWindow::on_newProjectButton_clicked()
 	{
 		testProject = new Project();
 		testProject->SetProgressBar(ui->progressBar);
-		connect(testProject, SIGNAL(newDomainSelected()), this, SLOT(updateVisibleDomain()));
-		connect(testProject, SIGNAL(newDomainSelected()), ui->GLPanel, SLOT(updateGL()));
+		ConnectProject(testProject);
 		testProject->SetProjectTree(ui->projectTree);
 		testProject->CreateProject();
 		if (testProject->ProjectIsOpen())
@@ -248,9 +247,7 @@ void MainWindow::on_openProjectButton_clicked()
 	{
 		testProject = new Project();
 		testProject->SetProgressBar(ui->progressBar);
-		connect(testProject, SIGNAL(newDomainSelected()), this, SLOT(updateVisibleDomain()));
-		connect(testProject, SIGNAL(newDomainSelected()), ui->GLPanel, SLOT(updateGL()));
-		connect(ui->createSubdomainButton, SIGNAL(clicked()), testProject, SLOT(createSubdomain()));
+		ConnectProject(testProject);
 		testProject->SetProjectTree(ui->projectTree);
 		testProject->OpenProject();
 	}
@@ -342,6 +339,18 @@ void MainWindow::ConnectNewDomain(Domain *newDomain)
 	connect(newDomain, SIGNAL(EmitMessage(QString)), this, SLOT(displayOutput(QString)));
 	connect(newDomain, SIGNAL(UndoAvailable(bool)), ui->undoButton, SLOT(setEnabled(bool)));
 	connect(newDomain, SIGNAL(RedoAvailable(bool)), ui->redoButton, SLOT(setEnabled(bool)));
+}
+
+
+void MainWindow::ConnectProject(Project *newProject)
+{
+	if (newProject)
+	{
+		connect(newProject, SIGNAL(newDomainSelected()), this, SLOT(updateVisibleDomain()));
+		connect(newProject, SIGNAL(newDomainSelected()), ui->GLPanel, SLOT(updateGL()));
+		connect(ui->createSubdomainButton, SIGNAL(clicked()), newProject, SLOT(createSubdomain()));
+		connect(ui->actionProjectSettings, SIGNAL(triggered()), newProject, SLOT(showProjectSettings()));
+	}
 }
 
 

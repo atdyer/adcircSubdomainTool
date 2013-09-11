@@ -12,6 +12,7 @@
 #include "Domains/Domain.h"
 
 #include "Projects/ProjectFile.h"
+#include "Projects/ProjectSettings.h"
 #include "Projects/IO/SubdomainCreator.h"
 
 
@@ -55,7 +56,8 @@ class Project : public QObject
 		QTreeWidget*	projectTree;
 		QProgressBar*	progressBar;
 
-		ProjectFile	testProjectFile;
+		ProjectFile*		testProjectFile;
+		ProjectSettings*	testProjectSettings;
 
 		/* The visible Domain */
 		Domain*				currentDomain;	/**< The Domain the is currently visible to the user */
@@ -96,6 +98,7 @@ class Project : public QObject
 		void	setDomainGradientFill(unsigned int domainID, QGradientStops newStops);
 
 		void	showDisplayOptions();
+		void	showProjectSettings();
 
 	signals:
 

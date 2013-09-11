@@ -418,8 +418,8 @@ border-top-right-radius: 4px;
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>158</width>
-             <height>256</height>
+             <width>210</width>
+             <height>359</height>
             </rect>
            </property>
            <attribute name="label">
@@ -810,8 +810,8 @@ border-top-right-radius: 4px;
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>100</width>
-             <height>30</height>
+             <width>168</width>
+             <height>359</height>
             </rect>
            </property>
            <attribute name="label">
@@ -823,8 +823,8 @@ border-top-right-radius: 4px;
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>100</width>
-             <height>30</height>
+             <width>168</width>
+             <height>359</height>
             </rect>
            </property>
            <attribute name="label">
@@ -836,8 +836,8 @@ border-top-right-radius: 4px;
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>100</width>
-             <height>30</height>
+             <width>168</width>
+             <height>359</height>
             </rect>
            </property>
            <attribute name="label">
@@ -1851,6 +1851,7 @@ border-top-right-radius: 4px;
     <property name="title">
      <string>Project</string>
     </property>
+    <addaction name="actionProjectSettings"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -1888,6 +1889,11 @@ border-top-right-radius: 4px;
     <string>Options...</string>
    </property>
   </action>
+  <action name="actionProjectSettings">
+   <property name="text">
+    <string>Project Settings...</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -1903,7 +1909,7 @@ border-top-right-radius: 4px;
  </resources>
  <connections/>
  <buttongroups>
-  <buttongroup name="nth_PlotTypeButtonGroup"/>
   <buttongroup name="fillColorButtonGroup"/>
+  <buttongroup name="nth_PlotTypeButtonGroup"/>
  </buttongroups>
 </ui>

@@ -49,7 +49,7 @@ class MainWindow : public QMainWindow
 
 	private slots:
 
-		void updateVisibleDomain();
+		void	updateVisibleDomain();
 
 		// User interface event handlers
 		void on_plottingList_currentRowChanged(int currentRow);
@@ -92,6 +92,7 @@ class MainWindow : public QMainWindow
 		DisplayOptionsDialog*	displayOptionsDialog;
 
 		void	ConnectNewDomain(Domain *newDomain);
+		void	ConnectProject(Project *newProject);
 		void	CheckForMemoryLeaks();
 
 };
