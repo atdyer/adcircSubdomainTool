@@ -47,7 +47,7 @@ void ProjectSettings::ReadSettingsFromFile()
 	{
 		if (lastDataFetch.isNull() || lastDataFetch < projectFile->GetLastFileAccess())
 		{
-			adcircExecutableLocation = projectFile->GetADCIRCLocation();
+			adcircExecutableLocation = projectFile->GetAdcircLocation();
 
 			lastDataFetch = QDateTime::currentDateTime();
 		}

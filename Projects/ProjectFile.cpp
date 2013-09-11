@@ -158,7 +158,7 @@ QString ProjectFile::GetSubDomainFort64(QString subdomainName)
 }
 
 
-QString ProjectFile::GetADCIRCLocation()
+QString ProjectFile::GetAdcircLocation()
 {
 	return GetSettingsAttribute("adcircExe");
 }

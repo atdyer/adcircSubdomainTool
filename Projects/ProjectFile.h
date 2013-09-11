@@ -30,7 +30,7 @@ class ProjectFile : public QDomDocument
 		QString	GetSubDomainFort15(QString subdomainName);
 		QString	GetSubDomainFort63(QString subdomainName);
 		QString	GetSubDomainFort64(QString subdomainName);
-		QString	GetADCIRCLocation();
+		QString	GetAdcircLocation();
 		QStringList	GetSubDomainNames();
 		QDateTime	GetLastFileAccess();
 
