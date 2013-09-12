@@ -8,6 +8,7 @@
 #include "Projects/IO/FileIO/Fort015.h"
 
 #include <QString>
+#include <QMessageBox>
 #include <iostream>
 
 class FullDomainRunner
@@ -39,6 +40,7 @@ class FullDomainRunner
 		void	DisplayFullDomainOptionsDialog();
 
 		bool	CheckForRequiredFiles();
+		bool	CheckForFile(QString fileName);
 		bool	WriteFort015File();
 };
 

@@ -73,8 +73,49 @@ bool FullDomainRunner::PerformFullDomainRun()
 
 bool FullDomainRunner::CheckForRequiredFiles()
 {
+	QFile adcExe (adcircExecutableLocation);
+	QString exeName = QFileInfo(adcExe).fileName();
+
 	/* Check for fort.14, fort.15, fort.015, ln to adcirc */
+	bool fort14 = CheckForFile("fort.14");
+	bool fort15 = CheckForFile("fort.15");
+	bool fort015 = CheckForFile("fort.015");
+	bool adcirc = CheckForFile(exeName);
+
+	std::cout << fort14 << fort15 << fort015 << adcirc << adcExe.exists() << std::endl;
+
+	if (adcExe.exists() && !adcirc)
+	{
+#ifdef Q_OS_WIN32
+		adcirc = adcExe.link(fullDomainPath + QDir::separator() + exeName + ".lnk");
+#else
+		adcirc = adcExe.link(fullDomainPath + QDir::separator() + exeName);
+#endif
+	}
+
+	if (!adcirc || !fort14 || !fort15 || !fort015)
+	{
+		QString message ("Error - The following files are missing:\n");
+		message.append(adcirc ? "" : QString(fullDomainPath) + QDir::separator() + exeName + "\n");
+		message.append(fort14 ? "" : QString(fullDomainPath) + QDir::separator() + "fort.14\n");
+		message.append(fort15 ? "" : QString(fullDomainPath) + QDir::separator() + "fort.15\n");
+		message.append(fort015 ? "" : QString(fullDomainPath) + QDir::separator() + "fort.015");
+		QMessageBox dlg;
+		dlg.setWindowTitle("Run Full Domain");
+		dlg.setText(message);
+		dlg.setIcon(QMessageBox::Critical);
+		dlg.setStandardButtons(QMessageBox::Ok);
+		dlg.exec();
+		return false;
+	}
+
 	return true;
+}
+
+
+bool FullDomainRunner::CheckForFile(QString fileName)
+{
+	return QFile(fullDomainPath + QDir::separator() + fileName).exists();
 }
 
 
