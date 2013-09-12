@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <map>
+#include <set>
+#include <algorithm>
 
 #include "adcData.h"
 #include "Layers/Actions/ElementState.h"
@@ -11,6 +13,7 @@ struct Edge
 {
 		unsigned int n1;
 		unsigned int n2;
+		Edge() : n1(0), n2(0) {}
 		Edge(unsigned int first, unsigned int second)
 		{
 			if (first < second)
@@ -40,7 +43,8 @@ class BoundaryFinder
 		~BoundaryFinder();
 
 		/* The Callable Search Function */
-		std::vector<unsigned int> FindBoundaries(ElementState* ElementSelection);
+		std::vector<unsigned int> FindBoundaries(ElementState* elementSelection);
+		std::vector<unsigned int> FindInnerBoundaries(ElementState* elementSelection);
 
 	private:
 

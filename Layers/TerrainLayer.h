@@ -48,6 +48,7 @@ class TerrainLayer : public Layer
 		std::vector<Node*>	GetNodesFromCircle(float x, float y, float radius);
 		Element*		GetElement(unsigned int elementNumber);
 		Element*		GetElement(float x, float y);
+		std::vector<Element>*	GetAllElements();
 		std::vector<Element*>	GetElementsFromCircle(float x, float y, float radius);
 		std::vector<Element*>	GetElementsFromRectangle(float l, float r, float b, float t);
 		std::vector<Element*>	GetElementsFromPolygon(std::vector<Point> polyLine);

@@ -34,7 +34,10 @@ QString FullDomainRunOptionsDialog::GetAdcircExecutableLocation()
 
 int FullDomainRunOptionsDialog::GetSubdomainApproach()
 {
-	return ui->subdomainMethodSpin->currentIndex();
+	if (ui->subdomainMethodSpin->currentText() == "New Approach")
+		return 2;
+	else
+		return 1;
 }
 
 

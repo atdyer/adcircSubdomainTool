@@ -23,6 +23,94 @@ std::vector<unsigned int> BoundaryFinder::FindBoundaries(ElementState *elementSe
 }
 
 
+std::vector<unsigned int> BoundaryFinder::FindInnerBoundaries(ElementState *elementSelection)
+{
+	std::vector<unsigned int> innerBoundaryNodes;
+	if (elementSelection)
+	{
+		std::vector<Element*> *selectedElements = elementSelection->GetState();
+		std::map<Edge, int> edgeInElementCount;
+		std::map<unsigned int, std::vector<Element*> > elementsThatContainNode;
+
+		/* Make a map of the number of times every edge appears in the domain */
+		/* Make a map of the list of Elements that every node is a part of */
+		Element *currElement = 0;
+		for (std::vector<Element*>::iterator it = selectedElements->begin(); it != selectedElements->end(); ++it)
+		{
+			currElement = *it;
+			if (currElement)
+			{
+				Edge edge1 (currElement->n1->nodeNumber, currElement->n2->nodeNumber);
+				Edge edge2 (currElement->n1->nodeNumber, currElement->n3->nodeNumber);
+				Edge edge3 (currElement->n2->nodeNumber, currElement->n3->nodeNumber);
+				edgeInElementCount[edge1] += 1;
+				edgeInElementCount[edge2] += 1;
+				edgeInElementCount[edge3] += 1;
+				elementsThatContainNode[currElement->n1->nodeNumber].push_back(currElement);
+				elementsThatContainNode[currElement->n2->nodeNumber].push_back(currElement);
+				elementsThatContainNode[currElement->n3->nodeNumber].push_back(currElement);
+			} else {
+				std::cout << "WARNING: Unable to dereference element" << std::endl;
+			}
+		}
+
+		/* Make a list of the boundary nodes */
+		std::set<unsigned int> boundaryNodes;
+		for (std::map<Edge, int>::iterator it = edgeInElementCount.begin(); it != edgeInElementCount.end(); ++it)
+		{
+			if (it->second == 1)
+			{
+				if (it->first.n1 != it->first.n2)
+				{
+					boundaryNodes.insert(it->first.n1);
+					boundaryNodes.insert(it->first.n2);
+				}
+			}
+		}
+
+		/* Boundary elements are the ones that contain a boundary node */
+		/* Go through the list of boundary elements and find the nodes of those elements
+		 * that are not on the edge. These are the inner boundary nodes */
+		for (std::set<unsigned int>::iterator it=boundaryNodes.begin(); it != boundaryNodes.end(); ++it)
+		{
+			unsigned int currentNode = *it;
+			std::vector<Element*> elementsWithCurrNode = elementsThatContainNode[currentNode];
+			if (elementsWithCurrNode.size() > 0)
+			{
+				for (std::vector<Element*>::iterator eIt=elementsWithCurrNode.begin(); eIt != elementsWithCurrNode.end(); ++eIt)
+				{
+					Element *currentElement = *eIt;
+					if (currentElement)
+					{
+						if (boundaryNodes.count(currentElement->n1->nodeNumber) != 1)
+						{
+							innerBoundaryNodes.push_back(currentElement->n1->nodeNumber);
+						}
+						if (boundaryNodes.count(currentElement->n2->nodeNumber) != 1)
+						{
+							innerBoundaryNodes.push_back(currentElement->n2->nodeNumber);
+						}
+						if (boundaryNodes.count(currentElement->n3->nodeNumber) != 1)
+						{
+							innerBoundaryNodes.push_back(currentElement->n3->nodeNumber);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	if (innerBoundaryNodes.size() > 0)
+	{
+		std::sort(innerBoundaryNodes.begin(), innerBoundaryNodes.end());
+		std::vector<unsigned int>::iterator it = std::unique(innerBoundaryNodes.begin(), innerBoundaryNodes.end());
+		innerBoundaryNodes.resize(std::distance(innerBoundaryNodes.begin(), it));
+	}
+
+	return innerBoundaryNodes;
+}
+
+
 void BoundaryFinder::FindEdges(std::vector<Element *> *elements)
 {
 	for (std::vector<Element*>::iterator it = elements->begin(); it != elements->end(); ++it)

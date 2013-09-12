@@ -386,6 +386,12 @@ Element* TerrainLayer::GetElement(float x, float y)
 }
 
 
+std::vector<Element>* TerrainLayer::GetAllElements()
+{
+	return &elements;
+}
+
+
 std::vector<Element*> TerrainLayer::GetElementsFromCircle(float x, float y, float radius)
 {
 	if (quadtree)

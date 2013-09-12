@@ -75,16 +75,19 @@ class Domain : public QObject
 
 		// Modification functions used to set the state of the Domain based on GUI interaction
 		void	SetProgressBar(QProgressBar* newBar);
+		void	SetDomainPath(QString newPath);
 		void	SetFort14Location(QString newLoc);
-		void	SetFort15Location(std::string newLoc);
-		void	SetFort63Location(std::string newLoc);
-		void	SetFort64Location(std::string newLoc);
+		void	SetFort15Location(QString newLoc);
+		void	SetFort63Location(QString newLoc);
+		void	SetFort64Location(QString newLoc);
 
 		// Query functions used to access data used to populate the GUI
+		QString		GetDomainPath();
 		QString		GetFort14Location();
 		QString		GetFort15Location();
 		QString		GetFort63Location();
 		QString		GetFort64Location();
+		std::vector<Element> *GetAllElements();
 		ElementState*	GetCurrentSelectedElements();
 		float		GetTerrainMinElevation();
 		float		GetTerrainMaxElevation();
@@ -124,6 +127,7 @@ class Domain : public QObject
 		void	CreateTerrainLayer();
 
 		/* Domain Characteristics */
+		QString		domainPath;
 		QString		fort14Location;
 		QString		fort15Location;
 		QString		fort63Location;

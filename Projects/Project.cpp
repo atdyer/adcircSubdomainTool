@@ -80,9 +80,11 @@ void Project::PopulateFromProjectFile()
 			{
 				fullDomain->SetProgressBar(progressBar);
 			}
+			QString fullDomainPath = testProjectFile->GetProjectDirectory();
 			QString fullFort14 = testProjectFile->GetFullDomainFort14();
 			if (!fullFort14.isEmpty())
 			{
+				fullDomain->SetDomainPath(fullDomainPath);
 				fullDomain->SetFort14Location(fullFort14);
 			}
 		}
@@ -388,11 +390,13 @@ void Project::runFullDomain()
 		adcirc.SetFullDomain(fullDomain);
 		if (subDomains.size() > 0)
 		{
+			std::cout << "Using " << subDomains.size() << " subdomains" << std::endl;
 			std::vector<Domain*> subdomainList;
 			for (std::map<QString, Domain*>::iterator it = subDomains.begin(); it != subDomains.end(); ++it)
 			{
 				subdomainList.push_back(it->second);
 			}
+			adcirc.SetSubDomains(subdomainList);
 		}
 
 		if (adcirc.PrepareForFullDomainRun())

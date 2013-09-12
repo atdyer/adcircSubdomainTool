@@ -62,7 +62,8 @@ SOURCES += main.cpp\
     Projects/ProjectSettings.cpp \
     Dialogs/ProjectSettingsDialog.cpp \
     Adcirc/FullDomainRunner.cpp \
-    Dialogs/FullDomainRunOptionsDialog.cpp
+    Dialogs/FullDomainRunOptionsDialog.cpp \
+    Projects/IO/FileIO/Fort015.cpp
 
 HEADERS  += MainWindow.h \
     OpenGL/OpenGLPanel.h \
@@ -117,7 +118,8 @@ HEADERS  += MainWindow.h \
     Projects/ProjectSettings.h \
     Dialogs/ProjectSettingsDialog.h \
     Adcirc/FullDomainRunner.h \
-    Dialogs/FullDomainRunOptionsDialog.h
+    Dialogs/FullDomainRunOptionsDialog.h \
+    Projects/IO/FileIO/Fort015.h
 
 FORMS    += MainWindow.ui \
     Dialogs/CreateProjectDialog.ui \

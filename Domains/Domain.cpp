@@ -29,6 +29,12 @@ Domain::Domain()
 	pushedButton = Qt::LeftButton;
 	clicking = mouseMoved = false;
 
+	domainPath = "";
+	fort14Location = "";
+	fort15Location = "";
+	fort63Location = "";
+	fort64Location = "";
+
 
 
 	/***** Perform Required Initial Function Calls *****/
@@ -253,6 +259,12 @@ void Domain::SetProgressBar(QProgressBar *newBar)
 }
 
 
+void Domain::SetDomainPath(QString newPath)
+{
+	domainPath = newPath;
+}
+
+
 /**
  * @brief Sets the fort.14 file location used by the TerrainLayer
  *
@@ -279,9 +291,9 @@ void Domain::SetFort14Location(QString newLoc)
  *
  * @param newLoc The fort.15 file location
  */
-void Domain::SetFort15Location(std::string newLoc)
+void Domain::SetFort15Location(QString newLoc)
 {
-
+	fort15Location = newLoc;
 }
 
 
@@ -292,9 +304,9 @@ void Domain::SetFort15Location(std::string newLoc)
  *
  * @param newLoc The fort.63 file location
  */
-void Domain::SetFort63Location(std::string newLoc)
+void Domain::SetFort63Location(QString newLoc)
 {
-
+	fort63Location = newLoc;
 }
 
 
@@ -305,9 +317,9 @@ void Domain::SetFort63Location(std::string newLoc)
  *
  * @param newLoc The fort.64 file location
  */
-void Domain::SetFort64Location(std::string newLoc)
+void Domain::SetFort64Location(QString newLoc)
 {
-
+	fort64Location = newLoc;
 }
 
 
@@ -380,6 +392,12 @@ void Domain::SetTerrainGradientFill(QGradientStops newStops)
 }
 
 
+QString Domain::GetDomainPath()
+{
+	return domainPath;
+}
+
+
 /**
  * @brief Returns the fort.14 file location
  *
@@ -429,6 +447,12 @@ QString Domain::GetFort63Location()
 QString Domain::GetFort64Location()
 {
 	return fort64Location;
+}
+
+
+std::vector<Element>* Domain::GetAllElements()
+{
+	return terrainLayer->GetAllElements();
 }
 
 

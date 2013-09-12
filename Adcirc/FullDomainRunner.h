@@ -5,6 +5,8 @@
 
 #include "Dialogs/FullDomainRunOptionsDialog.h"
 
+#include "Projects/IO/FileIO/Fort015.h"
+
 #include <QString>
 #include <iostream>
 
@@ -16,7 +18,7 @@ class FullDomainRunner
 
 		void	SetAdcircExecutable(QString newLoc);
 		void	SetFullDomain(Domain *newFull);
-		void	SetSubDomains(std::vector<Domain*> subDomains);
+		void	SetSubDomains(std::vector<Domain*> newSubs);
 
 		bool	PrepareForFullDomainRun();
 		bool	PerformFullDomainRun();
@@ -24,6 +26,7 @@ class FullDomainRunner
 	private:
 
 		Domain*			fullDomain;
+		QString			fullDomainPath;
 		std::vector<Domain*>	subDomains;
 		QString			adcircExecutableLocation;
 
@@ -35,8 +38,6 @@ class FullDomainRunner
 
 		void	DisplayFullDomainOptionsDialog();
 
-		bool	ExtractAllInnerBoundaryNodes();
-		bool	ExtractAllOuterBoundaryNodes();
 		bool	CheckForRequiredFiles();
 		bool	WriteFort015File();
 };
