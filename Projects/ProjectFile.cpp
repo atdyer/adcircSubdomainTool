@@ -1,8 +1,29 @@
 #include "ProjectFile.h"
 
+
+const QString ProjectFile::TAG_PROJECT = "adcSubdomainProject";
+const QString ProjectFile::TAG_FULL_DOMAIN = "fullDomain";
+const QString ProjectFile::TAG_SUB_DOMAIN = "subDomain";
+const QString ProjectFile::TAG_SETTINGS = "settings";
+
+const QString ProjectFile::ATTR_NAME = "name";
+const QString ProjectFile::ATTR_DIRECTORY = "dir";
+const QString ProjectFile::ATTR_FORT015LOCATION = "fort015Loc";
+const QString ProjectFile::ATTR_FORT063LOCATION = "fort063Loc";
+const QString ProjectFile::ATTR_FORT064LOCATION = "fort064Loc";
+const QString ProjectFile::ATTR_FORT14LOCATION = "fort14Loc";
+const QString ProjectFile::ATTR_FORT15LOCATION = "fort15Loc";
+const QString ProjectFile::ATTR_FORT63LOCATION = "fort63Loc";
+const QString ProjectFile::ATTR_FORT64LOCATION = "fort64Loc";
+const QString ProjectFile::ATTR_MAXELELOCATION = "maxeleLoc";
+const QString ProjectFile::ATTR_MAXVELLOCATION = "maxvelLoc";
+const QString ProjectFile::ATTR_ADCIRCLOCATION = "adcircExe";
+const QString ProjectFile::ATTR_LASTSAVE = "savedOn";
+
+
+
 ProjectFile::ProjectFile()
 {
-	fileOpen = false;
 	FileModified();
 }
 
@@ -19,12 +40,18 @@ ProjectFile::ProjectFile()
  *
  * @param filePath The project file to open
  */
-void ProjectFile::OpenProjectFile(QString filePath)
+bool ProjectFile::OpenProjectFile(QString filePath)
 {
-	if (!fileOpen || WarnProjectAlreadyOpen())
+	std::cout << "Called" << std::endl;
+	if (!ProjectIsOpen() || WarnProjectAlreadyOpen())
 	{
-		fileOpen = OpenFile(filePath);
+		SetProjectFile(filePath);
+		OpenFileRead();
+		ReadFile();
+		CloseFile();
+		return true;
 	}
+	return false;
 }
 
 
@@ -42,9 +69,9 @@ void ProjectFile::OpenProjectFile(QString filePath)
  * @param parentDirectory The directory in which to create the project directory
  * @param projectName The name to give both the project directory and the project file
  */
-void ProjectFile::CreateProjectFile(QString parentDirectory, QString projectName)
+bool ProjectFile::CreateProjectFile(QString parentDirectory, QString projectName)
 {
-	if (!fileOpen || WarnProjectAlreadyOpen())
+	if (!ProjectIsOpen() || WarnProjectAlreadyOpen())
 	{
 		/* Move into the project directory */
 		/* If the directory doesn't exist, try to create it */
@@ -54,12 +81,12 @@ void ProjectFile::CreateProjectFile(QString parentDirectory, QString projectName
 			if (!projectDirectory.mkdir(projectName))
 			{
 				WarnFileError("Unable to create project directory");
-				return;
+				return false;
 			}
 			else if (!projectDirectory.cd(projectName))
 			{
 				WarnFileError("Unable to access the project directory");
-				return;
+				return false;
 			}
 		}
 
@@ -68,33 +95,41 @@ void ProjectFile::CreateProjectFile(QString parentDirectory, QString projectName
 		if (!projectDirectory.entryList().isEmpty())
 		{
 			WarnFileError(QString("A project file already exists at ").append(parentDirectory+projectName));
-			return;
+			return false;
 		}
 
 		/* Create the file */
-		QString filePath = projectDirectory.absolutePath() + QDir::separator() + projectName + ".spf";
-		projectFile.setFileName(filePath);
-		if (!projectFile.open(QIODevice::WriteOnly | QIODevice::Text))
+		SetProjectFile(projectDirectory.absolutePath() + QDir::separator() + projectName + ".spf");
+		if (OpenFileWrite())
 		{
-			WarnFileError(QString("Unable to open project file ").append(filePath));
-			return;
+			/* Create an empty project */
+			CreateEmptyProject();
+
+			/* Save the project file */
+			SaveFile();
+
+			/* Close the project file */
+			CloseFile();
+
+			return true;
 		}
-
-		/* Write an empty project to the file */
-		QString emptyProject ("<adcSubdomainProject>\n</adcSubdomainProject>\n");
-		QTextStream fileOut(&projectFile);
-		fileOut << emptyProject;
-		projectFile.close();
-
-		/* Open the new project to make it available for use */
-		fileOpen = OpenFile(filePath);
 	}
+	return false;
+}
+
+
+bool ProjectFile::SaveProject()
+{
+	if (OpenFileWrite())
+		if (SaveFile())
+			return CloseFile();
+	return false;
 }
 
 
 bool ProjectFile::ProjectIsOpen()
 {
-	return fileOpen;
+	return documentElement().hasAttributes() || documentElement().hasChildNodes();
 }
 
 
@@ -112,55 +147,55 @@ QString ProjectFile::GetProjectDirectory()
 
 QString ProjectFile::GetFullDomainFort14()
 {
-	return GetFullDomainAttribute("fort14Loc");
+	return GetAttribute(TAG_FULL_DOMAIN, ATTR_FORT14LOCATION);
 }
 
 
 QString ProjectFile::GetFullDomainFort15()
 {
-	return GetFullDomainAttribute("fort15Loc");
+	return GetAttribute(TAG_FULL_DOMAIN, ATTR_FORT15LOCATION);
 }
 
 
 QString ProjectFile::GetFullDomainFort63()
 {
-	return GetFullDomainAttribute("fort63Loc");
+	return GetAttribute(TAG_FULL_DOMAIN, ATTR_FORT63LOCATION);
 }
 
 
 QString ProjectFile::GetFullDomainFort64()
 {
-	return GetFullDomainAttribute("fort64Loc");
+	return GetAttribute(TAG_FULL_DOMAIN, ATTR_FORT64LOCATION);
 }
 
 
 QString ProjectFile::GetSubDomainFort14(QString subdomainName)
 {
-	return GetSubDomainAttribute(subdomainName, "fort14Loc");
+	return GetAttributeSubdomain(subdomainName, ATTR_FORT14LOCATION);
 }
 
 
 QString ProjectFile::GetSubDomainFort15(QString subdomainName)
 {
-	return GetSubDomainAttribute(subdomainName, "fort15Loc");
+	return GetAttributeSubdomain(subdomainName, ATTR_FORT15LOCATION);
 }
 
 
 QString ProjectFile::GetSubDomainFort63(QString subdomainName)
 {
-	return GetSubDomainAttribute(subdomainName, "fort63Loc");
+	return GetAttributeSubdomain(subdomainName, ATTR_FORT63LOCATION);
 }
 
 
 QString ProjectFile::GetSubDomainFort64(QString subdomainName)
 {
-	return GetSubDomainAttribute(subdomainName, "fort64Loc");
+	return GetAttributeSubdomain(subdomainName, ATTR_FORT64LOCATION);
 }
 
 
 QString ProjectFile::GetAdcircLocation()
 {
-	return GetSettingsAttribute("adcircExe");
+	return GetAttribute(TAG_SETTINGS, ATTR_ADCIRCLOCATION);
 }
 
 
@@ -168,16 +203,15 @@ QStringList ProjectFile::GetSubDomainNames()
 {
 	QStringList subdomainNames;
 
-	if (!subDomainNodes.isEmpty())
+	QDomElement currentSubdomain = documentElement().firstChildElement(TAG_SUB_DOMAIN);
+	while (!currentSubdomain.isNull())
 	{
-		for(int i=0; i<subDomainNodes.count(); ++i)
+		QDomElement subdomainNameAttribute = currentSubdomain.namedItem(ATTR_NAME).toElement();
+		if (!subdomainNameAttribute.isNull())
 		{
-			if (subDomainNodes.at(i).isElement())
-			{
-				QDomElement subDomainElement = subDomainNodes.at(i).toElement();
-				subdomainNames.append(GetAttribute(subDomainElement, QString("name")));
-			}
+			subdomainNames.append(subdomainNameAttribute.text());
 		}
+		currentSubdomain = currentSubdomain.nextSiblingElement(TAG_SUB_DOMAIN);
 	}
 
 	return subdomainNames;
@@ -190,17 +224,42 @@ QDateTime ProjectFile::GetLastFileAccess()
 }
 
 
-bool ProjectFile::OpenFile(QString filePath)
+void ProjectFile::SetProjectFile(QString filePath)
 {
 	projectFile.setFileName(filePath);
 	projectDirectory = QFileInfo(filePath).absoluteDir();
 	projectName = QFileInfo(filePath).baseName();
+}
 
+
+bool ProjectFile::OpenFileRead()
+{
 	if (!projectFile.open(QIODevice::ReadOnly | QIODevice::Text))
 	{
-		WarnFileError(QString("Unable to open file ").append(filePath));
+		std::cout << projectFile.fileName().toStdString().data() << std::endl;
+		WarnFileError(QString("Unable to open file ").append(projectFile.fileName()));
 		return false;
 	}
+
+	return true;
+}
+
+
+bool ProjectFile::OpenFileWrite()
+{
+	if (!projectFile.open(QIODevice::WriteOnly | QIODevice::Text))
+	{
+		std::cout << projectFile.fileName().toStdString().data() << std::endl;
+		WarnFileError(QString("Unable to open file ").append(projectFile.fileName()));
+		return false;
+	}
+
+	return true;
+}
+
+
+bool ProjectFile::ReadFile()
+{
 
 	if (!setContent(&projectFile))
 	{
@@ -208,153 +267,107 @@ bool ProjectFile::OpenFile(QString filePath)
 		projectFile.close();
 		return false;
 	}
-	projectFile.close();
-
-	if (IsValidProjectFile())
-	{
-		QDomNodeList fullDomainNodes = documentElement().elementsByTagName("fullDomain");
-		if (fullDomainNodes.count() > 1)
-		{
-			WarnFileError("More than one full domain is defined in the project file. Using the first defined");
-		}
-		else if (!fullDomainNodes.isEmpty())
-		{
-			fullDomainNode = fullDomainNodes.at(0);
-		}
-
-		subDomainNodes = documentElement().elementsByTagName("subDomain");
-
-		QDomNodeList settingsNodes = documentElement().elementsByTagName("settings");
-		if (settingsNodes.count() > 1)
-		{
-			WarnFileError("More than one settings block is defined in the project file. Using the first block");
-		}
-		else if (!settingsNodes.isEmpty())
-		{
-			settingsNode = settingsNodes.at(0);
-		}
-
-	} else {
-		return false;
-	}
 
 	FileModified();
-
 	return true;
 }
 
 
-/**
- * @brief Determines if the current DOM object represents a valid
- * subdomain project file
- *
- * Determines if the current DOM object represents a valid
- * subdomain project file.
- *
- * Things to check:
- * - Is the document tag "adcSubdomainProject"?
- * - Do all subdomains have unique names?
- *
- * @return true if it is a valid project file
- * @return false if it is not a valid project file
- */
-bool ProjectFile::IsValidProjectFile()
+bool ProjectFile::SaveFile()
 {
-	return documentElement().tagName() == "adcSubdomainProject";
+	QString projectText = toString(5);
+	QTextStream fileOut(&projectFile);
+	fileOut << projectText;
+	projectFile.close();
+	return true;
 }
 
 
-/**
- * @brief Searches through the Full Domain QDomNode for the given attribute name
- *
- * Searches through the Full Domain QDomNode for the given attribute name.
- *
- * @param attributeName The attribute to search for
- * @return The value of the requested attribute, if it was found
- * @return An empty string if the attribute could not be found
- */
-QString ProjectFile::GetFullDomainAttribute(QString attributeName)
+bool ProjectFile::CloseFile()
 {
-	if (fileOpen)
+	projectFile.close();
+	return true;
+}
+
+
+void ProjectFile::CreateEmptyProject()
+{
+	clear();
+	appendChild(createElement(TAG_PROJECT));
+	QDomElement lastSaveTag = createElement(ATTR_LASTSAVE);
+	lastSaveTag.appendChild(createTextNode(lastModified.toString()));
+	documentElement().appendChild(lastSaveTag);
+	QDomElement fullDomainElement = createElement(TAG_FULL_DOMAIN);
+	QDomElement subDomainElement = createElement(TAG_SUB_DOMAIN);
+	QDomElement settingsElement = createElement(TAG_SETTINGS);
+	documentElement().appendChild(fullDomainElement);
+	documentElement().appendChild(subDomainElement);
+	documentElement().appendChild(settingsElement);
+}
+
+
+QString ProjectFile::GetAttribute(QString attribute)
+{
+	QDomElement attributeElement = documentElement().namedItem(attribute).toElement();
+	if (!attributeElement.isNull())
 	{
-		if (fullDomainNode.isElement())
+		return attributeElement.text();
+	}
+	return QString();
+}
+
+
+QString ProjectFile::GetAttribute(QString tag, QString attribute)
+{
+	QDomElement tagElement = documentElement().namedItem(tag).toElement();
+	if (!tagElement.isNull())
+	{
+		QDomElement attributeElement = tagElement.namedItem(attribute).toElement();
+		if (!attributeElement.isNull())
 		{
-			return GetAttribute(fullDomainNode.toElement(), attributeName);
+			return attributeElement.text();
 		}
 	}
-
 	return QString();
 }
 
 
-/**
- * @brief Searches for the given attribute in the given subdomain
- *
- * Searches for the given attribute in the given subdomain.
- *
- * @param subdomainName The name of the subdomain to search
- * @param attributeName The name of the desired attribute
- * @return The value of the attribute, if it exists
- * @return An empty QString if the subdomain or attribute does not exist
- */
-QString ProjectFile::GetSubDomainAttribute(QString subdomainName, QString attributeName)
+QString ProjectFile::GetAttribute(QString parentTag, QString childTag, QString attribute)
 {
-	if (fileOpen)
+	QDomElement parentTagElement = documentElement().namedItem(parentTag).toElement();
+	if (!parentTagElement.isNull())
 	{
-		if (!subDomainNodes.isEmpty())
+		QDomElement childTagElement = parentTagElement.namedItem(childTag).toElement();
+		if (!childTagElement.isNull())
 		{
-			for (int i=0; i < subDomainNodes.count(); ++i)
-			{
-				if (subDomainNodes.at(i).isElement())
-				{
-					QDomElement subDomainElement = subDomainNodes.at(i).toElement();
-					if (GetAttribute(subDomainElement, "name") == subdomainName)
-					{
-						return GetAttribute(subDomainElement, attributeName);
-					}
-				}
-			}
-		}
-	}
-
-	return QString();
-}
-
-
-QString ProjectFile::GetSettingsAttribute(QString attributeName)
-{
-	if (fileOpen)
-	{
-		return GetAttribute(settingsNode.toElement(), attributeName);
-	}
-	return QString();
-}
-
-
-/**
- * @brief Searches for an attribute in any given QDomElement
- *
- * Searches for an attribute in any given QDomElement.
- *
- * @param element The QDomElement to search
- * @param attributeName The attribute to search for
- * @return The value of the attribute if it is found
- * @return An empty QString if the attribute is not found
- */
-QString ProjectFile::GetAttribute(QDomElement element, QString attributeName)
-{
-	QDomNode currentAttribute = element.firstChild();
-	while (!currentAttribute.isNull())
-	{
-		if (currentAttribute.isElement())
-		{
-			QDomElement attributeElement = currentAttribute.toElement();
-			if (attributeElement.tagName() == attributeName)
+			QDomElement attributeElement = childTagElement.namedItem(attribute).toElement();
+			if (!attributeElement.isNull())
 			{
 				return attributeElement.text();
 			}
 		}
-		currentAttribute = currentAttribute.nextSibling();
+	}
+	return QString();
+}
+
+
+QString ProjectFile::GetAttributeSubdomain(QString subdomainName, QString attribute)
+{
+	QDomElement currentSubdomain = documentElement().firstChildElement(TAG_SUB_DOMAIN);
+	while (!currentSubdomain.isNull())
+	{
+		QDomElement nameElement = currentSubdomain.namedItem(ATTR_NAME).toElement();
+		if (nameElement.text() == subdomainName)
+		{
+			QDomElement attributeElement = currentSubdomain.namedItem(attribute).toElement();
+			if (!attributeElement.isNull())
+			{
+				return attributeElement.text();
+			} else {
+				break;
+			}
+		}
+		currentSubdomain = currentSubdomain.nextSiblingElement(TAG_SUB_DOMAIN);
 	}
 	return QString();
 }

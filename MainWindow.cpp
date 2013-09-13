@@ -39,8 +39,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	// Hide the progress bar and bottom section
 	ui->progressBar->hide();
-	ui->mainTabWidget->hide();
-	ui->minimizeMainTabButton->setIcon(QIcon::fromTheme("zoom-in"));
+//	ui->mainTabWidget->hide();
+//	ui->minimizeMainTabButton->setIcon(QIcon::fromTheme("zoom-in"));
 
 	// Expand the project tree
 	ui->projectTree->expandAll();
@@ -79,7 +79,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
  */
 void MainWindow::displayOutput(QString text)
 {
-	ui->outputBox->append(text);
+//	ui->outputBox->append(text);
 }
 
 
@@ -131,13 +131,13 @@ void MainWindow::showNumTS(int numTS)
 
 
 void MainWindow::showNumSelectedNodes(int numNodes){
-	ui->subNodesCount->setText(QString::number(numNodes));
+//	ui->subNodesCount->setText(QString::number(numNodes));
 }
 
 
 void MainWindow::showNumSelectedElements(int numElements)
 {
-	ui->subElementsCount->setText(QString::number(numElements));
+//	ui->subElementsCount->setText(QString::number(numElements));
 }
 
 
@@ -169,21 +169,21 @@ void MainWindow::updateVisibleDomain()
  */
 void MainWindow::on_plottingList_currentRowChanged(int currentRow)
 {
-	if (currentRow >= 0 && currentRow + 1 < ui->plottingStack->count())
-		ui->plottingStack->setCurrentIndex(currentRow+1);
+//	if (currentRow >= 0 && currentRow + 1 < ui->plottingStack->count())
+//		ui->plottingStack->setCurrentIndex(currentRow+1);
 }
 
 
 void MainWindow::on_minimizeMainTabButton_clicked()
 {
-	if (ui->mainTabWidget->isVisible())
-	{
-		ui->mainTabWidget->hide();
-		ui->minimizeMainTabButton->setIcon(QIcon::fromTheme("zoom-in"));
-	} else {
-		ui->mainTabWidget->show();
-		ui->minimizeMainTabButton->setIcon(QIcon::fromTheme("zoom-out"));
-	}
+//	if (ui->mainTabWidget->isVisible())
+//	{
+//		ui->mainTabWidget->hide();
+//		ui->minimizeMainTabButton->setIcon(QIcon::fromTheme("zoom-in"));
+//	} else {
+//		ui->mainTabWidget->show();
+//		ui->minimizeMainTabButton->setIcon(QIcon::fromTheme("zoom-out"));
+//	}
 }
 
 

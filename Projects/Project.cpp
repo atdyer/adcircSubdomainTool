@@ -64,7 +64,11 @@ void Project::CreateProject()
 	dialog.setModal(true);
 	if (dialog.exec() && testProjectFile)
 	{
-		testProjectFile->CreateProjectFile(dialog.GetProjectDirectory(), dialog.GetProjectName());
+		if (testProjectFile->CreateProjectFile(dialog.GetProjectDirectory(), dialog.GetProjectName()))
+		{
+			PopulateFromProjectFile();
+			UpdateTreeDisplay();
+		}
 	}
 }
 
@@ -124,9 +128,11 @@ void Project::OpenProject()
 		selections = dialog.selectedFiles();
 		if (!selections.isEmpty())
 		{
-			testProjectFile->OpenProjectFile(selections.first());
-			PopulateFromProjectFile();
-			UpdateTreeDisplay();
+			if (testProjectFile->OpenProjectFile(selections.first()))
+			{
+				PopulateFromProjectFile();
+				UpdateTreeDisplay();
+			}
 		}
 	}
 }
