@@ -315,6 +315,15 @@ void Project::on_ProjectTreeItemChanged(QTreeWidgetItem *item, QTreeWidgetItem *
 }
 
 
+void Project::saveProject()
+{
+	if (testProjectFile && testProjectFile->ProjectIsOpen())
+	{
+		testProjectFile->SaveProject();
+	}
+}
+
+
 void Project::createSubdomain()
 {
 	if (currentDomain && testProjectFile)

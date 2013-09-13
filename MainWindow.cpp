@@ -349,6 +349,7 @@ void MainWindow::ConnectProject(Project *newProject)
 		connect(newProject, SIGNAL(newDomainSelected()), this, SLOT(updateVisibleDomain()));
 		connect(newProject, SIGNAL(newDomainSelected()), ui->GLPanel, SLOT(updateGL()));
 		connect(ui->createSubdomainButton, SIGNAL(clicked()), newProject, SLOT(createSubdomain()));
+		connect(ui->saveProjectButton, SIGNAL(clicked()), newProject, SLOT(saveProject()));
 		connect(ui->actionProjectSettings, SIGNAL(triggered()), newProject, SLOT(showProjectSettings()));
 		connect(ui->runFullDomainButton, SIGNAL(clicked()), newProject, SLOT(runFullDomain()));
 	}

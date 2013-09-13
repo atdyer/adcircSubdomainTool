@@ -95,6 +95,7 @@ class Project : public QObject
 
 	public slots:
 
+		void	saveProject();
 		void	createSubdomain();
 
 		void	setDomainSolidOutline(unsigned int domainID, QColor color);

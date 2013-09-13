@@ -21,24 +21,34 @@ class ProjectFile : public QDomDocument
 		bool	OpenProjectFile(QString filePath);
 		bool	CreateProjectFile(QString parentDirectory, QString projectName);
 		bool	SaveProject();
+		bool	ProjectIsOpen();
 
 		/* Getter Functions */
-		bool	ProjectIsOpen();
-		QString GetProjectName();
-		QString GetProjectDirectory();
-		QString	GetFullDomainFort14();
-		QString GetFullDomainFort15();
-		QString	GetFullDomainFort63();
-		QString	GetFullDomainFort64();
-		QString	GetSubDomainFort14(QString subdomainName);
-		QString	GetSubDomainFort15(QString subdomainName);
-		QString	GetSubDomainFort63(QString subdomainName);
-		QString	GetSubDomainFort64(QString subdomainName);
-		QString	GetAdcircLocation();
+		QString		GetProjectName();
+		QString		GetProjectDirectory();
+		QString		GetFullDomainFort14();
+		QString		GetFullDomainFort15();
+		QString		GetFullDomainFort63();
+		QString		GetFullDomainFort64();
 		QStringList	GetSubDomainNames();
+		QString		GetSubDomainFort14(QString subdomainName);
+		QString		GetSubDomainFort15(QString subdomainName);
+		QString		GetSubDomainFort63(QString subdomainName);
+		QString		GetSubDomainFort64(QString subdomainName);
+		QString		GetAdcircLocation();
 		QDateTime	GetLastFileAccess();
 
 		/* Setter Functions */
+		void	SetFullDomainFort14(QString newLoc);
+		void	SetFullDomainFort15(QString newLoc);
+		void	SetFullDomainFort63(QString newLoc);
+		void	SetFullDomainFort64(QString newLoc);
+		void	SetSubDomainName(QString oldName, QString newName);
+		void	SetSubDomainFort14(QString subDomain, QString newLoc);
+		void	SetSubDomainFort15(QString subDomain, QString newLoc);
+		void	SetSubDomainFort63(QString subDomain, QString newLoc);
+		void	SetSubDomainFort64(QString subDomain, QString newLoc);
+		void	SetAdcircLocation(QString newLoc);
 
 
 		/* Static tag strings */
@@ -69,11 +79,6 @@ class ProjectFile : public QDomDocument
 		QDir		projectDirectory;
 		QDateTime	lastModified;
 
-//		QDomNode	fullDomainNode;
-//		QDomNodeList	subDomainNodes;
-//		QDomNode	settingsNode;
-//		QDomElement	rootElement;
-
 		/* File IO Functions */
 		void	SetProjectFile(QString filePath);
 		bool	OpenFileRead();
@@ -81,25 +86,23 @@ class ProjectFile : public QDomDocument
 		bool	ReadFile();
 		bool	SaveFile();
 		bool	CloseFile();
-//		bool	IsValidProjectFile();
 
 
 		/* DOM Functions */
 		void	CreateEmptyProject();
-//		QString	GetFullDomainAttribute(QString attributeName);
-//		QString	GetSubDomainAttribute(QString subdomainName, QString attributeName);
-//		QString	GetSettingsAttribute(QString attributeName);
-//		QString	GetAttribute(QDomElement element, QString attributeName);
-
 		QString GetAttribute(QString attribute);
 		QString	GetAttribute(QString tag, QString attribute);
 		QString GetAttribute(QString parentTag, QString childTag, QString attribute);
 		QString	GetAttributeSubdomain(QString subdomainName, QString attribute);
 
+		void	SetAttribute(QString attribute, QString value);
+		void	SetAttribute(QString tag, QString attribute, QString value);
+		void	SetAttribute(QString parentTag, QString childTag, QString attribute, QString value);
+		void	SetAttributeSubdomain(QString subdomainName, QString attribute, QString value);
+
 
 		/* File Write Functions */
 		void	FileModified();
-
 
 
 		/* Dialogs */

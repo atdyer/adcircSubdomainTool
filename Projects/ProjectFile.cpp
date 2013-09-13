@@ -169,6 +169,25 @@ QString ProjectFile::GetFullDomainFort64()
 }
 
 
+QStringList ProjectFile::GetSubDomainNames()
+{
+	QStringList subdomainNames;
+
+	QDomElement currentSubdomain = documentElement().firstChildElement(TAG_SUB_DOMAIN);
+	while (!currentSubdomain.isNull())
+	{
+		QDomElement subdomainNameAttribute = currentSubdomain.namedItem(ATTR_NAME).toElement();
+		if (!subdomainNameAttribute.isNull())
+		{
+			subdomainNames.append(subdomainNameAttribute.text());
+		}
+		currentSubdomain = currentSubdomain.nextSiblingElement(TAG_SUB_DOMAIN);
+	}
+
+	return subdomainNames;
+}
+
+
 QString ProjectFile::GetSubDomainFort14(QString subdomainName)
 {
 	return GetAttributeSubdomain(subdomainName, ATTR_FORT14LOCATION);
@@ -199,28 +218,69 @@ QString ProjectFile::GetAdcircLocation()
 }
 
 
-QStringList ProjectFile::GetSubDomainNames()
-{
-	QStringList subdomainNames;
-
-	QDomElement currentSubdomain = documentElement().firstChildElement(TAG_SUB_DOMAIN);
-	while (!currentSubdomain.isNull())
-	{
-		QDomElement subdomainNameAttribute = currentSubdomain.namedItem(ATTR_NAME).toElement();
-		if (!subdomainNameAttribute.isNull())
-		{
-			subdomainNames.append(subdomainNameAttribute.text());
-		}
-		currentSubdomain = currentSubdomain.nextSiblingElement(TAG_SUB_DOMAIN);
-	}
-
-	return subdomainNames;
-}
-
-
 QDateTime ProjectFile::GetLastFileAccess()
 {
 	return lastModified;
+}
+
+
+void ProjectFile::SetFullDomainFort14(QString newLoc)
+{
+	SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT14LOCATION, newLoc);
+}
+
+
+void ProjectFile::SetFullDomainFort15(QString newLoc)
+{
+	SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT15LOCATION, newLoc);
+}
+
+
+void ProjectFile::SetFullDomainFort63(QString newLoc)
+{
+	SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT63LOCATION, newLoc);
+}
+
+
+void ProjectFile::SetFullDomainFort64(QString newLoc)
+{
+	SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT64LOCATION, newLoc);
+}
+
+
+void ProjectFile::SetSubDomainName(QString oldName, QString newName)
+{
+	SetAttributeSubdomain(oldName, ATTR_NAME, newName);
+}
+
+
+void ProjectFile::SetSubDomainFort14(QString subDomain, QString newLoc)
+{
+	SetAttributeSubdomain(subDomain, ATTR_FORT14LOCATION, newLoc);
+}
+
+
+void ProjectFile::SetSubDomainFort15(QString subDomain, QString newLoc)
+{
+	SetAttributeSubdomain(subDomain, ATTR_FORT15LOCATION, newLoc);
+}
+
+
+void ProjectFile::SetSubDomainFort63(QString subDomain, QString newLoc)
+{
+	SetAttributeSubdomain(subDomain, ATTR_FORT63LOCATION, newLoc);
+}
+
+
+void ProjectFile::SetSubDomainFort64(QString subDomain, QString newLoc)
+{
+	SetAttributeSubdomain(subDomain, ATTR_FORT64LOCATION, newLoc);
+}
+
+
+void ProjectFile::SetAdcircLocation(QString newLoc)
+{
+	SetAttribute(TAG_SETTINGS, ATTR_ADCIRCLOCATION, newLoc);
 }
 
 
@@ -275,6 +335,7 @@ bool ProjectFile::ReadFile()
 
 bool ProjectFile::SaveFile()
 {
+	FileModified();
 	QString projectText = toString(5);
 	QTextStream fileOut(&projectFile);
 	fileOut << projectText;
@@ -294,9 +355,6 @@ void ProjectFile::CreateEmptyProject()
 {
 	clear();
 	appendChild(createElement(TAG_PROJECT));
-	QDomElement lastSaveTag = createElement(ATTR_LASTSAVE);
-	lastSaveTag.appendChild(createTextNode(lastModified.toString()));
-	documentElement().appendChild(lastSaveTag);
 	QDomElement fullDomainElement = createElement(TAG_FULL_DOMAIN);
 	QDomElement subDomainElement = createElement(TAG_SUB_DOMAIN);
 	QDomElement settingsElement = createElement(TAG_SETTINGS);
@@ -363,9 +421,8 @@ QString ProjectFile::GetAttributeSubdomain(QString subdomainName, QString attrib
 			if (!attributeElement.isNull())
 			{
 				return attributeElement.text();
-			} else {
-				break;
 			}
+			break;
 		}
 		currentSubdomain = currentSubdomain.nextSiblingElement(TAG_SUB_DOMAIN);
 	}
@@ -373,9 +430,97 @@ QString ProjectFile::GetAttributeSubdomain(QString subdomainName, QString attrib
 }
 
 
+void ProjectFile::SetAttribute(QString attribute, QString value)
+{
+	QDomNode attributeNode = documentElement().namedItem(attribute);
+	if (!attributeNode.isNull())
+	{
+		documentElement().removeChild(attributeNode);
+	}
+
+	QDomElement attributeElement = createElement(attribute);
+	attributeElement.appendChild(createTextNode(value));
+	documentElement().appendChild(attributeElement);
+}
+
+
+void ProjectFile::SetAttribute(QString tag, QString attribute, QString value)
+{
+	QDomElement tagElement = documentElement().namedItem(tag).toElement();
+	if (tagElement.isNull())
+	{
+		tagElement = createElement(tag);
+		documentElement().appendChild(tagElement);
+	}
+
+	QDomNode attributeNode = tagElement.namedItem(attribute);
+	if (!attribute.isNull())
+	{
+		tagElement.removeChild(attributeNode);
+	}
+
+	QDomElement attributeElement = createElement(attribute);
+	attributeElement.appendChild(createTextNode(value));
+	tagElement.appendChild(attributeElement);
+}
+
+
+void ProjectFile::SetAttribute(QString parentTag, QString childTag, QString attribute, QString value)
+{
+	QDomElement parentTagElement = documentElement().namedItem(parentTag).toElement();
+	if (parentTagElement.isNull())
+	{
+		parentTagElement = createElement(parentTag);
+		documentElement().appendChild(parentTagElement);
+	}
+
+	QDomElement childTagElement = parentTagElement.namedItem(childTag).toElement();
+	if (childTagElement.isNull())
+	{
+		childTagElement = createElement(childTag);
+		parentTagElement.appendChild(childTagElement);
+	}
+
+	QDomNode attributeNode = childTagElement.namedItem(value);
+	if (!attributeNode.isNull())
+	{
+		childTagElement.removeChild(attributeNode);
+	}
+
+	QDomElement attributeElement = createElement(attribute);
+	attributeElement.appendChild(createTextNode(value));
+	childTagElement.appendChild(attributeElement);
+}
+
+
+void ProjectFile::SetAttributeSubdomain(QString subdomainName, QString attribute, QString value)
+{
+	QDomElement currentSubdomain = documentElement().firstChildElement(TAG_SUB_DOMAIN);
+	while (!currentSubdomain.isNull())
+	{
+		QDomElement nameElement = currentSubdomain.namedItem(ATTR_NAME).toElement();
+		if (nameElement.text() == subdomainName)
+		{
+			QDomNode attributeNode = currentSubdomain.namedItem(attribute);
+			if (!attributeNode.isNull())
+			{
+				currentSubdomain.removeChild(attributeNode);
+			}
+
+			QDomElement attributeElement = createElement(attribute);
+			attributeElement.appendChild(createTextNode(value));
+			currentSubdomain.appendChild(attributeElement);
+			break;
+		}
+		currentSubdomain = currentSubdomain.nextSiblingElement(TAG_SUB_DOMAIN);
+	}
+}
+
+
 void ProjectFile::FileModified()
 {
 	lastModified = QDateTime::currentDateTime();
+	SetAttribute(ATTR_LASTSAVE, lastModified.toString(Qt::ISODate));
 }
 
 
