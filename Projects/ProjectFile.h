@@ -39,10 +39,18 @@ class ProjectFile : public QDomDocument
 		QDateTime	GetLastFileAccess();
 
 		/* Setter Functions */
-		void	SetFullDomainFort14(QString newLoc);
-		void	SetFullDomainFort15(QString newLoc);
-		void	SetFullDomainFort63(QString newLoc);
-		void	SetFullDomainFort64(QString newLoc);
+		void	SetFullDomainFort10(QString newLoc, bool symLink);
+		void	SetFullDomainFort11(QString newLoc, bool symLink);
+		void	SetFullDomainFort13(QString newLoc, bool symLink);
+		void	SetFullDomainFort14(QString newLoc, bool symLink);
+		void	SetFullDomainFort15(QString newLoc, bool symLink);
+		void	SetFullDomainFort19(QString newLoc, bool symLink);
+		void	SetFullDomainFort20(QString newLoc, bool symLink);
+		void	SetFullDomainFort22(QString newLoc, bool symLink);
+		void	SetFullDomainFort23(QString newLoc, bool symLink);
+		void	SetFullDomainFort24(QString newLoc, bool symLink);
+		void	SetFullDomainFort63(QString newLoc, bool symLink);
+		void	SetFullDomainFort64(QString newLoc, bool symLink);
 		void	SetSubDomainName(QString oldName, QString newName);
 		void	SetSubDomainFort14(QString subDomain, QString newLoc);
 		void	SetSubDomainFort15(QString subDomain, QString newLoc);
@@ -63,8 +71,16 @@ class ProjectFile : public QDomDocument
 		static const QString	ATTR_FORT015LOCATION;
 		static const QString	ATTR_FORT063LOCATION;
 		static const QString	ATTR_FORT064LOCATION;
+		static const QString	ATTR_FORT10LOCATION;
+		static const QString	ATTR_FORT11LOCATION;
+		static const QString	ATTR_FORT13LOCATION;
 		static const QString	ATTR_FORT14LOCATION;
 		static const QString	ATTR_FORT15LOCATION;
+		static const QString	ATTR_FORT19LOCATION;
+		static const QString	ATTR_FORT20LOCATION;
+		static const QString	ATTR_FORT22LOCATION;
+		static const QString	ATTR_FORT23LOCATION;
+		static const QString	ATTR_FORT24LOCATION;
 		static const QString	ATTR_FORT63LOCATION;
 		static const QString	ATTR_FORT64LOCATION;
 		static const QString	ATTR_MAXELELOCATION;
@@ -103,11 +119,16 @@ class ProjectFile : public QDomDocument
 
 		/* File Write Functions */
 		void	FileModified();
+		bool	CheckForExistingFile(QString filename);
+		bool	CopyFile(QString oldFile, QString newDir);
+		bool	LinkFile(QString oldFile, QString newDir);
+		void	RemoveFile(QString oldFile);
 
 
 		/* Dialogs */
 		bool	WarnProjectAlreadyOpen();
 		void	WarnFileError(QString message);
+		bool	WarnFileExists(QString fileLoc);
 };
 
 #endif // PROJECTFILE_H

@@ -11,8 +11,16 @@ const QString ProjectFile::ATTR_DIRECTORY = "dir";
 const QString ProjectFile::ATTR_FORT015LOCATION = "fort015Loc";
 const QString ProjectFile::ATTR_FORT063LOCATION = "fort063Loc";
 const QString ProjectFile::ATTR_FORT064LOCATION = "fort064Loc";
+const QString ProjectFile::ATTR_FORT10LOCATION = "fort10Loc";
+const QString ProjectFile::ATTR_FORT11LOCATION = "fort11Loc";
+const QString ProjectFile::ATTR_FORT13LOCATION = "fort13Loc";
 const QString ProjectFile::ATTR_FORT14LOCATION = "fort14Loc";
 const QString ProjectFile::ATTR_FORT15LOCATION = "fort15Loc";
+const QString ProjectFile::ATTR_FORT19LOCATION = "fort19Loc";
+const QString ProjectFile::ATTR_FORT20LOCATION = "fort20Loc";
+const QString ProjectFile::ATTR_FORT22LOCATION = "fort22Loc";
+const QString ProjectFile::ATTR_FORT23LOCATION = "fort23Loc";
+const QString ProjectFile::ATTR_FORT24LOCATION = "fort24Loc";
 const QString ProjectFile::ATTR_FORT63LOCATION = "fort63Loc";
 const QString ProjectFile::ATTR_FORT64LOCATION = "fort64Loc";
 const QString ProjectFile::ATTR_MAXELELOCATION = "maxeleLoc";
@@ -224,27 +232,87 @@ QDateTime ProjectFile::GetLastFileAccess()
 }
 
 
-void ProjectFile::SetFullDomainFort14(QString newLoc)
+void ProjectFile::SetFullDomainFort10(QString newLoc, bool symLink)
 {
-	SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT14LOCATION, newLoc);
+	if (symLink ? LinkFile(newLoc, projectDirectory.absolutePath()) : CopyFile(newLoc, projectDirectory.absolutePath()))
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT10LOCATION, newLoc);
 }
 
 
-void ProjectFile::SetFullDomainFort15(QString newLoc)
+void ProjectFile::SetFullDomainFort11(QString newLoc, bool symLink)
 {
-	SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT15LOCATION, newLoc);
+	if (symLink ? LinkFile(newLoc, projectDirectory.absolutePath()) : CopyFile(newLoc, projectDirectory.absolutePath()))
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT11LOCATION, newLoc);
 }
 
 
-void ProjectFile::SetFullDomainFort63(QString newLoc)
+void ProjectFile::SetFullDomainFort13(QString newLoc, bool symLink)
 {
-	SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT63LOCATION, newLoc);
+	if (symLink ? LinkFile(newLoc, projectDirectory.absolutePath()) : CopyFile(newLoc, projectDirectory.absolutePath()))
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT13LOCATION, newLoc);
 }
 
 
-void ProjectFile::SetFullDomainFort64(QString newLoc)
+void ProjectFile::SetFullDomainFort14(QString newLoc, bool symLink)
 {
-	SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT64LOCATION, newLoc);
+	if (symLink ? LinkFile(newLoc, projectDirectory.absolutePath()) : CopyFile(newLoc, projectDirectory.absolutePath()))
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT14LOCATION, newLoc);
+}
+
+
+void ProjectFile::SetFullDomainFort15(QString newLoc, bool symLink)
+{
+	if (symLink ? LinkFile(newLoc, projectDirectory.absolutePath()) : CopyFile(newLoc, projectDirectory.absolutePath()))
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT15LOCATION, newLoc);
+}
+
+
+void ProjectFile::SetFullDomainFort19(QString newLoc, bool symLink)
+{
+	if (symLink ? LinkFile(newLoc, projectDirectory.absolutePath()) : CopyFile(newLoc, projectDirectory.absolutePath()))
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT19LOCATION, newLoc);
+}
+
+
+void ProjectFile::SetFullDomainFort20(QString newLoc, bool symLink)
+{
+	if (symLink ? LinkFile(newLoc, projectDirectory.absolutePath()) : CopyFile(newLoc, projectDirectory.absolutePath()))
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT20LOCATION, newLoc);
+}
+
+
+void ProjectFile::SetFullDomainFort22(QString newLoc, bool symLink)
+{
+	if (symLink ? LinkFile(newLoc, projectDirectory.absolutePath()) : CopyFile(newLoc, projectDirectory.absolutePath()))
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT22LOCATION, newLoc);
+}
+
+
+void ProjectFile::SetFullDomainFort23(QString newLoc, bool symLink)
+{
+	if (symLink ? LinkFile(newLoc, projectDirectory.absolutePath()) : CopyFile(newLoc, projectDirectory.absolutePath()))
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT23LOCATION, newLoc);
+}
+
+
+void ProjectFile::SetFullDomainFort24(QString newLoc, bool symLink)
+{
+	if (symLink ? LinkFile(newLoc, projectDirectory.absolutePath()) : CopyFile(newLoc, projectDirectory.absolutePath()))
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT24LOCATION, newLoc);
+}
+
+
+void ProjectFile::SetFullDomainFort63(QString newLoc, bool symLink)
+{
+	if (symLink ? LinkFile(newLoc, projectDirectory.absolutePath()) : CopyFile(newLoc, projectDirectory.absolutePath()))
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT63LOCATION, newLoc);
+}
+
+
+void ProjectFile::SetFullDomainFort64(QString newLoc, bool symLink)
+{
+	if (symLink ? LinkFile(newLoc, projectDirectory.absolutePath()) : CopyFile(newLoc, projectDirectory.absolutePath()))
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT64LOCATION, newLoc);
 }
 
 
@@ -441,6 +509,8 @@ void ProjectFile::SetAttribute(QString attribute, QString value)
 	QDomElement attributeElement = createElement(attribute);
 	attributeElement.appendChild(createTextNode(value));
 	documentElement().appendChild(attributeElement);
+
+	SaveProject();
 }
 
 
@@ -462,6 +532,8 @@ void ProjectFile::SetAttribute(QString tag, QString attribute, QString value)
 	QDomElement attributeElement = createElement(attribute);
 	attributeElement.appendChild(createTextNode(value));
 	tagElement.appendChild(attributeElement);
+
+	SaveProject();
 }
 
 
@@ -490,6 +562,8 @@ void ProjectFile::SetAttribute(QString parentTag, QString childTag, QString attr
 	QDomElement attributeElement = createElement(attribute);
 	attributeElement.appendChild(createTextNode(value));
 	childTagElement.appendChild(attributeElement);
+
+	SaveProject();
 }
 
 
@@ -514,13 +588,86 @@ void ProjectFile::SetAttributeSubdomain(QString subdomainName, QString attribute
 		}
 		currentSubdomain = currentSubdomain.nextSiblingElement(TAG_SUB_DOMAIN);
 	}
+
+	SaveProject();
 }
 
 
 void ProjectFile::FileModified()
 {
 	lastModified = QDateTime::currentDateTime();
-	SetAttribute(ATTR_LASTSAVE, lastModified.toString(Qt::ISODate));
+
+	QDomNode attributeNode = documentElement().namedItem(ATTR_LASTSAVE);
+	if (!attributeNode.isNull())
+	{
+		documentElement().removeChild(attributeNode);
+	}
+
+	QDomElement attributeElement = createElement(ATTR_LASTSAVE);
+	attributeElement.appendChild(createTextNode(lastModified.toString(Qt::ISODate)));
+	documentElement().appendChild(attributeElement);
+}
+
+
+bool ProjectFile::CheckForExistingFile(QString filename)
+{
+	return QFile(filename).exists();
+}
+
+
+bool ProjectFile::CopyFile(QString oldFile, QString newDir)
+{
+	QString newFile = newDir + QDir::separator() + QFileInfo(oldFile).fileName();
+
+	if (CheckForExistingFile(newFile))
+	{
+		if (WarnFileExists(newFile))
+		{
+			RemoveFile(newFile);
+		} else {
+			return false;
+		}
+	}
+
+	QFile file (oldFile);
+	if (file.exists())
+	{
+		return file.copy(newFile);
+	}
+	return false;
+}
+
+
+bool ProjectFile::LinkFile(QString oldFile, QString newDir)
+{
+	QString newLink = newDir + QDir::separator() + QFileInfo(oldFile).fileName();
+
+#ifdef Q_OS_WIN32
+	newLinkName.append(".lnk");
+#endif
+
+	if (CheckForExistingFile(newLink))
+	{
+		if (WarnFileExists(newLink))
+		{
+			RemoveFile(newLink);
+		} else {
+			return false;
+		}
+	}
+
+	QFile file (oldFile);
+	if (file.exists())
+	{
+		return file.link(newLink);
+	}
+	return false;
+}
+
+
+void ProjectFile::RemoveFile(QString oldFile)
+{
+	QDir().remove(oldFile);
 }
 
 
@@ -575,4 +722,10 @@ void ProjectFile::WarnFileError(QString message)
 	msgBox.setText(QString("File Error: ").append(message));
 	msgBox.setStandardButtons(QMessageBox::Ok);
 	msgBox.exec();
+}
+
+
+bool ProjectFile::WarnFileExists(QString fileLoc)
+{
+	return true;
 }

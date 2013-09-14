@@ -36,17 +36,10 @@ class Project : public QObject
 		void	SetProjectTree(QTreeWidget *newTree);
 		void	SetProgressBar(QProgressBar *newBar);
 
-		/* Creating a new project */
 		void	CreateProject();
-
-		/* Opening a project */
 		void	OpenProject();
 
-		/* Editing a project */
 		bool	ProjectIsOpen();
-		void	SetFullFort14(QString newPath);
-		void	SetFullFort15(QString newPath);
-		void	SetFullFort63(QString newPath);
 
 		unsigned int	CreateNewSubdomain(QString newName);
 

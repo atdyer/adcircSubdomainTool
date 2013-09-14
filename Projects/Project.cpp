@@ -66,6 +66,36 @@ void Project::CreateProject()
 	{
 		if (testProjectFile->CreateProjectFile(dialog.GetProjectDirectory(), dialog.GetProjectName()))
 		{
+			QString fort10Loc = dialog.GetFort10Location();
+			QString fort11Loc = dialog.GetFort11Location();
+			QString fort13Loc = dialog.GetFort13Location();
+			QString fort14Loc = dialog.GetFort14Location();
+			QString fort15Loc = dialog.GetFort15Location();
+			QString fort19Loc = dialog.GetFort19Location();
+			QString fort20Loc = dialog.GetFort20Location();
+			QString fort22Loc = dialog.GetFort22Location();
+			QString fort23Loc = dialog.GetFort23Location();
+			QString fort24Loc = dialog.GetFort24Location();
+			if (!fort10Loc.isEmpty())
+				testProjectFile->SetFullDomainFort10(fort10Loc, dialog.GetUseSymbolicLinkFort10());
+			if (!fort11Loc.isEmpty())
+				testProjectFile->SetFullDomainFort11(fort11Loc, dialog.GetUseSymbolicLinkFort11());
+			if (!fort13Loc.isEmpty())
+				testProjectFile->SetFullDomainFort13(fort13Loc, dialog.GetUseSymbolicLinkFort13());
+			if (!fort14Loc.isEmpty())
+				testProjectFile->SetFullDomainFort14(fort14Loc, dialog.GetUseSymbolicLinkFort14());
+			if (!fort15Loc.isEmpty())
+				testProjectFile->SetFullDomainFort15(fort15Loc, dialog.GetUseSymbolicLinkFort15());
+			if (!fort19Loc.isEmpty())
+				testProjectFile->SetFullDomainFort19(fort19Loc, dialog.GetUseSymbolicLinkFort19());
+			if (!fort20Loc.isEmpty())
+				testProjectFile->SetFullDomainFort20(fort20Loc, dialog.GetUseSymbolicLinkFort20());
+			if (!fort22Loc.isEmpty())
+				testProjectFile->SetFullDomainFort22(fort22Loc, dialog.GetUseSymbolicLinkFort22());
+			if (!fort23Loc.isEmpty())
+				testProjectFile->SetFullDomainFort23(fort23Loc, dialog.GetUseSymbolicLinkFort23());
+			if (!fort24Loc.isEmpty())
+				testProjectFile->SetFullDomainFort24(fort24Loc, dialog.GetUseSymbolicLinkFort24());
 			PopulateFromProjectFile();
 			UpdateTreeDisplay();
 		}
@@ -141,24 +171,6 @@ void Project::OpenProject()
 bool Project::ProjectIsOpen()
 {
 	return testProjectFile->ProjectIsOpen();
-}
-
-
-void Project::SetFullFort14(QString newPath)
-{
-
-}
-
-
-void Project::SetFullFort15(QString newPath)
-{
-
-}
-
-
-void Project::SetFullFort63(QString newPath)
-{
-
 }
 
 
