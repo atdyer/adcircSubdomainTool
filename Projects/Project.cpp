@@ -259,7 +259,7 @@ void Project::UpdateTreeDisplay()
 				}
 			}
 
-			projectTree->expandAll();
+			projectTree->expandToDepth(1);
 		}
 	}
 }
@@ -433,6 +433,7 @@ void Project::showDisplayOptions()
 	{
 		displayOptions->SetActiveDomain(currentDomain);
 		displayOptions->show();
+		displayOptions->update();
 	}
 }
 

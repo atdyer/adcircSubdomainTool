@@ -37,8 +37,6 @@ unsigned int GradientSliderWidget::AddSlider()
 
 		newSlider->show();
 		CheckSliderCount();
-		PositionGradientFrame();
-		PositionSliders();
 
 		emit sliderAdded(newID, newSlider->GetValue(), newSlider->GetColor());
 
@@ -61,9 +59,7 @@ void GradientSliderWidget::RemoveSlider(unsigned int sliderID)
 	}
 
 	CheckSliderCount();
-	PositionSliders();
 	UpdateGradientStops();
-	update();
 }
 
 
@@ -72,9 +68,8 @@ void GradientSliderWidget::SetMinValue(float newMin)
 	minValue = newMin;
 	if (minLabel)
 		minLabel->setText(QString("Minimum: ").append(QString::number(minValue, 'f', 4)));
-	PositionSliders();
 	UpdateGradientStops();
-	update();
+//	update();
 }
 
 
@@ -83,14 +78,12 @@ void GradientSliderWidget::SetMaxValue(float newMax)
 	maxValue = newMax;
 	if (maxLabel)
 		maxLabel->setText(QString("Maximum: ").append(QString::number(maxValue, 'f', 4)));
-	PositionSliders();
 	UpdateGradientStops();
-	update();
 }
 
 
 void GradientSliderWidget::SetGradientStops(QGradientStops newStops)
-{
+{	
 	QList<uint> keys = sliders.keys();
 	for (int i=0; i<keys.size(); ++i)
 	{
@@ -102,16 +95,14 @@ void GradientSliderWidget::SetGradientStops(QGradientStops newStops)
 		for (int i=0; i<newStops.size(); ++i)
 		{
 			unsigned int newSlider = AddSlider();
-			SetSliderValue(newSlider, minValue + newStops[i].first * (maxValue-minValue));
+			SetSliderValue(newSlider, minValue + (1.0-newStops[i].first) * (maxValue-minValue));
 			SetSliderColor(newSlider, newStops[i].second);
 		}
 	} else {
 		CreateDefaultSliders();
 	}
 
-	PositionSliders();
 	UpdateGradientStops();
-	update();
 }
 
 
@@ -122,7 +113,6 @@ void GradientSliderWidget::SetSliderColor(unsigned int sliderID, QColor newColor
 		sliders.value(sliderID)->SetColor(newColor);
 		emit sliderColorChanged(sliderID, newColor);
 		UpdateGradientStops();
-		update();
 	}
 }
 
@@ -133,9 +123,8 @@ void GradientSliderWidget::SetSliderValue(unsigned int sliderID, float newValue)
 	{
 		sliders.value(sliderID)->SetValue(newValue);
 		emit sliderValueChanged(sliderID, newValue);
-		PositionSliders();
 		UpdateGradientStops();
-		update();
+
 	}
 }
 
@@ -172,6 +161,15 @@ float GradientSliderWidget::GetSliderValue(unsigned int sliderID)
 }
 
 
+QGradientStops GradientSliderWidget::GetGradient()
+{
+	if (gradientFrame)
+	{
+		return gradientFrame->GetStops();
+	}
+}
+
+
 void GradientSliderWidget::mouseMoveEvent(QMouseEvent *event)
 {
 	if (pressedSlider != 0 && sliders.contains(pressedSlider))
@@ -180,32 +178,39 @@ void GradientSliderWidget::mouseMoveEvent(QMouseEvent *event)
 		TriangleSliderButton *currentSlider = sliders.value(pressedSlider, 0);
 		if (currentSlider)
 		{
-			if (yLoc >= sliderTop)
-			{
-				currentSlider->move(sliderX, sliderTop-sliderHeight/2);
-			}
-			else if (yLoc <= sliderBottom)
-			{
-				currentSlider->move(sliderX, sliderBottom-sliderHeight/2);
-			}
-			else
-			{
-				currentSlider->move(sliderX, yLoc-sliderHeight/2);
-			}
 			float newValue = MapYToValue(yLoc);
 			SetSliderValue(pressedSlider, newValue);
 			emit sliderValueChanged(pressedSlider, newValue);
 			UpdateGradientStops();
-			update();
 		}
 	}
 }
 
 
-void GradientSliderWidget::resizeEvent(QResizeEvent *)
+void GradientSliderWidget::paintEvent(QPaintEvent *event)
 {
-	PositionGradientFrame();
-	PositionSliders();
+	if (maxLabel)
+		maxLabel->move(width()/2 - maxLabel->width()/2, 0);
+	if (gradientFrame && minLabel && maxLabel)
+	{
+		gradientFrame->resize(width()-sliderWidth, height()-maxLabel->height()-minLabel->height());
+		gradientFrame->move(0, maxLabel->height());
+
+		minLabel->move(width()/2 - minLabel->width()/2, maxLabel->height()+gradientFrame->height());
+	}
+
+	TriangleSliderButton* currentSlider = 0;
+	QMap<unsigned int, TriangleSliderButton*>::const_iterator it = sliders.constBegin();
+	while (it != sliders.constEnd())
+	{
+		currentSlider = it.value();
+		if (currentSlider)
+		{
+			float currentValue = currentSlider->GetValue();
+			currentSlider->move(gradientFrame->x() + gradientFrame->width(), MapValueToY(currentValue));
+		}
+		++it;
+	}
 }
 
 
@@ -228,37 +233,6 @@ void GradientSliderWidget::CreateLayout()
 }
 
 
-void GradientSliderWidget::PositionSliders()
-{
-	TriangleSliderButton* currentSlider = 0;
-	QMap<unsigned int, TriangleSliderButton*>::const_iterator it = sliders.constBegin();
-	while (it != sliders.constEnd())
-	{
-		currentSlider = it.value();
-		if (currentSlider)
-		{
-			float currentValue = currentSlider->GetValue();
-			currentSlider->move(sliderX, MapValueToY(currentValue));
-		}
-		++it;
-	}
-
-	UpdateGradientStops();
-}
-
-
-void GradientSliderWidget::PositionGradientFrame()
-{
-	if (gradientFrame)
-	{
-		gradientFrame->resize(gradientFrame->width()-sliderWidth, gradientFrame->height());
-		sliderTop = gradientFrame->y();
-		sliderBottom = gradientFrame->y() + gradientFrame->height();
-		sliderX = gradientFrame->x() + gradientFrame->width();
-	}
-}
-
-
 void GradientSliderWidget::UpdateGradientStops()
 {
 	if (gradientFrame)
@@ -273,6 +247,7 @@ void GradientSliderWidget::UpdateGradientStops()
 
 		gradientFrame->SetStops(stops);
 		emit gradientStopsUpdated(stops);
+		update();
 	}
 }
 
@@ -312,19 +287,23 @@ int GradientSliderWidget::MapValueToY(float val)
 {
 	float valuePercentage = (val - minValue) / (maxValue - minValue);
 	float remainderPercentage = 1.0 - valuePercentage;
-	return (sliderTop + (int)(remainderPercentage*(sliderBottom - sliderTop))) - sliderHeight/2;
+	return (gradientFrame->y() + (int)(remainderPercentage*(gradientFrame->height()))) - sliderHeight/2;
 }
 
 
 float GradientSliderWidget::MapYToValue(int y)
 {
-	float yPercentage = float(sliderBottom - y) / float(sliderBottom - sliderTop);
-	float mappedValue = minValue + yPercentage*(maxValue - minValue);
-	if (mappedValue < minValue)
-		return minValue;
-	if (mappedValue > maxValue)
+	if (y < gradientFrame->y())
+	{
 		return maxValue;
-	return mappedValue;
+	}
+	if (y > gradientFrame->y() + gradientFrame->height())
+	{
+		return minValue;
+	}
+
+	float yPercentage = float (gradientFrame->y() + gradientFrame->height() - y) / float(gradientFrame->height());
+	return minValue + yPercentage*(maxValue - minValue);
 }
 
 

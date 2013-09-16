@@ -61,11 +61,13 @@ void DisplayOptionsDialog::DisplayCurrentDomainProperties()
 		ui->outlineShaderOptions->SetGradientRange(currentDomain->GetTerrainMinElevation(),
 							   currentDomain->GetTerrainMaxElevation());
 		ui->outlineShaderOptions->SetGradient(currentDomain->GetTerrainGradientOutline());
+		ui->outlineShaderOptions->update();
 
 		ui->fillShaderOptions->SetSolidColor(currentDomain->GetTerrainSolidFill());
 		ui->fillShaderOptions->SetGradientRange(currentDomain->GetTerrainMinElevation(),
 							currentDomain->GetTerrainMaxElevation());
 		ui->fillShaderOptions->SetGradient(currentDomain->GetTerrainGradientFill());
+		ui->fillShaderOptions->update();
 
 		ShaderType currentFill = currentDomain->GetTerrainFillShaderType();
 		ShaderType currentOutline = currentDomain->GetTerrainOutlineShaderType();
@@ -77,6 +79,8 @@ void DisplayOptionsDialog::DisplayCurrentDomainProperties()
 		else if (currentFill == GradientShaderType)
 		{
 			showGradientFillWindow();
+			if (currentDomain)
+				currentDomain->SetTerrainGradientFill(currentDomain->GetTerrainGradientFill());
 		}
 
 		if (currentOutline == SolidShaderType)
@@ -109,33 +113,33 @@ void DisplayOptionsDialog::ConnectCurrentDomain()
 
 void DisplayOptionsDialog::showSolidOutlineWindow()
 {
-//	ui->tabWidget->setCurrentIndex(1);
 	ui->outlineShaderType->setCurrentIndex(0);
-//	ui->outlineShaderOptions->setCurrentIndex(0);
+//	if (currentDomain)
+//		emit solidOutlineChanged(currentDomain->GetTerrainSolidOutline());
 }
 
 
 void DisplayOptionsDialog::showSolidFillWindow()
 {
-//	ui->tabWidget->setCurrentIndex(0);
 	ui->fillShaderType->setCurrentIndex(0);
-//	ui->fillShaderOptions->setCurrentIndex(0);
+//	if (currentDomain)
+//		emit solidFillChanged(currentDomain->GetTerrainSolidFill());
 }
 
 
 void DisplayOptionsDialog::showGradientOutlineWindow()
 {
-//	ui->tabWidget->setCurrentIndex(1);
 	ui->outlineShaderType->setCurrentIndex(1);
-//	ui->outlineShaderOptions->setCurrentIndex(1);
+//	if (currentDomain)
+//		emit gradientOutlineChanged(currentDomain->GetTerrainGradientOutline());
 }
 
 
 void DisplayOptionsDialog::showGradientFillWindow()
 {
-//	ui->tabWidget->setCurrentIndex(0);
 	ui->fillShaderType->setCurrentIndex(1);
-//	ui->fillShaderOptions->setCurrentIndex(1);
+//	if (currentDomain)
+//		emit gradientFillChanged(currentDomain->GetTerrainGradientFill());
 }
 
 

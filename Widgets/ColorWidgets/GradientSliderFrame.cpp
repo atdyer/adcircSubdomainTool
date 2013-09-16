@@ -16,6 +16,12 @@ void GradientSliderFrame::SetStops(const QGradientStops &stopPoints)
 }
 
 
+QGradientStops GradientSliderFrame::GetStops()
+{
+	return gradStops;
+}
+
+
 void GradientSliderFrame::paintEvent(QPaintEvent *)
 {
 	QImage img(size(), QImage::Format_RGB32);

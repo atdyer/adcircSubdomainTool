@@ -14,7 +14,8 @@ class GradientSliderFrame : public QFrame
 	public:
 		explicit GradientSliderFrame(QWidget *parent = 0);
 
-		void	SetStops(const QGradientStops & stopPoints);
+		void		SetStops(const QGradientStops & stopPoints);
+		QGradientStops	GetStops();
 
 	protected:
 

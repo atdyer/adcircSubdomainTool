@@ -39,6 +39,8 @@ class ShaderOptionsStackedWidget : public QStackedWidget
 
 	protected slots:
 
+		void	shaderTypeSelected(int type);
+
 		void	colorChanged(const QColor &c);
 		void	addCurrentColorToCustomColors();
 
@@ -58,6 +60,7 @@ class ShaderOptionsStackedWidget : public QStackedWidget
 
 		void	solidColorChanged(QColor);
 		void	gradientChanged(QGradientStops);
+
 };
 
 #endif // SHADEROPTIONSSTACKEDWIDGET_H

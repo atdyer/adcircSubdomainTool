@@ -34,10 +34,12 @@ class GradientSliderWidget : public QWidget
 		QColor	GetSliderColor(unsigned int sliderID);
 		float	GetSliderValue(unsigned int sliderID);
 
+		QGradientStops	GetGradient();
+
 	protected:
 
 		void	mouseMoveEvent(QMouseEvent *event);
-		void	resizeEvent(QResizeEvent *event);
+		void	paintEvent(QPaintEvent *event);
 
 	private:
 
@@ -60,8 +62,6 @@ class GradientSliderWidget : public QWidget
 		float	maxValue;
 
 		void	CreateLayout();
-		void	PositionSliders();
-		void	PositionGradientFrame();
 		void	UpdateGradientStops();
 		void	CheckSliderCount();
 		void	CreateDefaultSliders();

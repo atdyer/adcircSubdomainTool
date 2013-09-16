@@ -22,6 +22,8 @@ ShaderOptionsStackedWidget::ShaderOptionsStackedWidget(QWidget *parent) :
 
 	connect(ui->addToCustomColorsButton, SIGNAL(clicked()), this, SLOT(addCurrentColorToCustomColors()));
 
+	connect(this, SIGNAL(currentChanged(int)), this, SLOT(shaderTypeSelected(int)));
+
 	/* Set up gradient picker */
 	SetupGradientPicker();
 	SetupSliderListContextMenu();
@@ -46,7 +48,6 @@ void ShaderOptionsStackedWidget::SetSolidColor(QColor newColor)
 void ShaderOptionsStackedWidget::SetGradient(QGradientStops newGradient)
 {
 	ui->gradientSliderWidget->SetGradientStops(newGradient);
-	update();
 }
 
 
@@ -56,7 +57,6 @@ void ShaderOptionsStackedWidget::SetGradientRange(float lowVal, float highVal)
 	ui->gradientSliderWidget->SetMaxValue(highVal);
 	if (delegate)
 		delegate->SetValueRange(lowVal, highVal);
-	update();
 }
 
 
@@ -106,6 +106,19 @@ void ShaderOptionsStackedWidget::SetupSliderListContextMenu()
 	ui->sliderList->addAction(valueAction);
 	ui->sliderList->addAction(colorAction);
 	ui->sliderList->setContextMenuPolicy(Qt::ActionsContextMenu);
+}
+
+
+void ShaderOptionsStackedWidget::shaderTypeSelected(int type)
+{
+	if (type == 0)
+	{
+		emit solidColorChanged(QColor(ui->colorFrame->palette().color(backgroundRole())));
+	}
+	else if (type == 1)
+	{
+		emit gradientChanged(ui->gradientSliderWidget->GetGradient());
+	}
 }
 
 
