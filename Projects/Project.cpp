@@ -290,30 +290,51 @@ void Project::SetCurrentDomain(Domain *domain)
 
 Domain* Project::DetermineSelectedDomain(QTreeWidgetItem *item)
 {
-	QString itemText = item->data(0, Qt::DisplayRole).toString();
-	if (itemText == QString("Full Domain"))
+	if (item)
 	{
-		return fullDomain;
-	}
-	QTreeWidgetItem *parentItem = item->parent();
-	if (parentItem)
-	{
-		QString parentText = parentItem->data(0, Qt::DisplayRole).toString();
-		if (parentText == QString("Full Domain"))
+		QString itemText = item->data(0, Qt::DisplayRole).toString();
+		if (itemText == QString("Full Domain"))
 		{
 			return fullDomain;
 		}
-		else if (parentText == QString("Sub Domains"))
+		QTreeWidgetItem *parentItem = item->parent();
+		if (parentItem)
 		{
-			if (subDomains.count(itemText) != 0)
+			QString parentText = parentItem->data(0, Qt::DisplayRole).toString();
+			if (parentText == QString("Full Domain"))
 			{
-				return subDomains[itemText];
+				return fullDomain;
 			}
-		} else {
-			return DetermineSelectedDomain(parentItem);
+			else if (parentText == QString("Sub Domains"))
+			{
+				if (subDomains.count(itemText) != 0)
+				{
+					return subDomains[itemText];
+				}
+			} else {
+				return DetermineSelectedDomain(parentItem);
+			}
 		}
 	}
+
 	return 0;
+}
+
+
+void Project::SelectDomainInTree(QString domainName)
+{
+	if (projectTree)
+	{
+		QList<QTreeWidgetItem*> items = projectTree->findItems(domainName, Qt::MatchExactly | Qt::MatchRecursive);
+		if (items.size() > 0)
+		{
+			projectTree->setCurrentItem(items.at(0));
+		} else {
+			std::cout << "Nope" << std::endl;
+		}
+	} else {
+		std::cout << "project tree not set" << std::endl;
+	}
 }
 
 
@@ -346,9 +367,24 @@ void Project::createSubdomain()
 		subCreator.SetSubdomainName("");
 		if (subCreator.CreateSubdomain())
 		{
-			std::cout << "It worked" << std::endl;
-		} else {
-			std::cout << "Nope" << std::endl;
+			QString subdomainName = subCreator.GetSubdomainName();
+			QString fort14Path = subCreator.GetFort14Location();
+			QString py140Path = subCreator.GetPy140Location();
+			QString py141Path = subCreator.GetPy141Location();
+
+			if (testProjectFile && testProjectFile->ProjectIsOpen())
+			{
+				if (testProjectFile->AddSubdomain(subdomainName))
+				{
+					testProjectFile->SetSubDomainFort14(subdomainName, fort14Path);
+					testProjectFile->SetSubDomainPy140(subdomainName, py140Path);
+					testProjectFile->SetSubDomainPy141(subdomainName, py141Path);
+					PopulateFromProjectFile();
+					UpdateTreeDisplay();
+					emit showProjectExplorerPane();
+					SelectDomainInTree(subdomainName);
+				}
+			}
 		}
 	}
 }

@@ -81,6 +81,7 @@ class Project : public QObject
 		/* Navigating within the project */
 		void	SetCurrentDomain(Domain *domain);
 		Domain *DetermineSelectedDomain(QTreeWidgetItem *item);
+		void	SelectDomainInTree(QString domainName);
 
 	private slots:
 
@@ -104,6 +105,12 @@ class Project : public QObject
 	signals:
 
 		void	newDomainSelected();
+
+		void	showProjectExplorerPane();
+		void	showCreateSubdomainPane();
+		void	showEditSubdomainPane();
+		void	showAdcircPane();
+		void	showAnalyzeResultsPane();
 
 };
 

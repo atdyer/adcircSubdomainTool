@@ -25,6 +25,8 @@ const QString ProjectFile::ATTR_FORT63LOCATION = "fort63Loc";
 const QString ProjectFile::ATTR_FORT64LOCATION = "fort64Loc";
 const QString ProjectFile::ATTR_MAXELELOCATION = "maxeleLoc";
 const QString ProjectFile::ATTR_MAXVELLOCATION = "maxvelLoc";
+const QString ProjectFile::ATTR_PY140 = "py140Loc";
+const QString ProjectFile::ATTR_PY141 = "py141Loc";
 const QString ProjectFile::ATTR_ADCIRCLOCATION = "adcircExe";
 const QString ProjectFile::ATTR_LASTSAVE = "savedOn";
 
@@ -346,9 +348,65 @@ void ProjectFile::SetSubDomainFort64(QString subDomain, QString newLoc)
 }
 
 
+void ProjectFile::SetSubDomainPy140(QString subDomain, QString newLoc)
+{
+	SetAttributeSubdomain(subDomain, ATTR_PY140, newLoc);
+}
+
+
+void ProjectFile::SetSubDomainPy141(QString subDomain, QString newLoc)
+{
+	SetAttributeSubdomain(subDomain, ATTR_PY141, newLoc);
+}
+
+
 void ProjectFile::SetAdcircLocation(QString newLoc)
 {
 	SetAttribute(TAG_SETTINGS, ATTR_ADCIRCLOCATION, newLoc);
+}
+
+
+bool ProjectFile::AddSubdomain(QString newName)
+{
+	QDomElement currentSubdomain = documentElement().firstChildElement(TAG_SUB_DOMAIN);
+	while (!currentSubdomain.isNull())
+	{
+		QDomElement nameElement = currentSubdomain.namedItem(ATTR_NAME).toElement();
+		if (nameElement.text() == newName)
+		{
+			if (!WarnSubdomainExists(newName))
+			{
+				return false;
+			} else {
+				documentElement().removeChild(currentSubdomain);
+				break;
+			}
+		}
+
+		currentSubdomain = currentSubdomain.nextSiblingElement(TAG_SUB_DOMAIN);
+//		{
+//			QDomNode attributeNode = currentSubdomain.namedItem(attribute);
+//			if (!attributeNode.isNull())
+//			{
+//				currentSubdomain.removeChild(attributeNode);
+//			}
+
+//			QDomElement attributeElement = createElement(attribute);
+//			attributeElement.appendChild(createTextNode(value));
+//			currentSubdomain.appendChild(attributeElement);
+//			break;
+//		}
+	}
+
+	QDomElement newSubdomain = createElement(TAG_SUB_DOMAIN);
+	QDomElement newSubdomainName = createElement(ATTR_NAME);
+	documentElement().appendChild(newSubdomain);
+	newSubdomain.appendChild(newSubdomainName);
+	newSubdomainName.appendChild(createTextNode(newName));
+
+	SaveProject();
+
+	return true;
 }
 
 
@@ -727,5 +785,43 @@ void ProjectFile::WarnFileError(QString message)
 
 bool ProjectFile::WarnFileExists(QString fileLoc)
 {
-	return true;
+	QMessageBox msgBox;
+	msgBox.setWindowTitle("Adcirc Subdomain Modeling Tool");
+	msgBox.setText("The file " + fileLoc + " already exists. Would you like to overwrite it?");
+	msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+
+	switch (msgBox.exec())
+	{
+		case QMessageBox::Yes:
+			/* Overwrite the file */
+			return true;
+		case QMessageBox::No:
+			/* Do not overwrite the file */
+			return false;
+		default:
+			/* Should never be reached */
+			return false;
+	}
+}
+
+
+bool ProjectFile::WarnSubdomainExists(QString subName)
+{
+	QMessageBox msgBox;
+	msgBox.setWindowTitle("Adcirc Subdomain Modeling Tool");
+	msgBox.setText("The subdomain " + subName + " already exists. Would you like to overwrite it?");
+	msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+
+	switch (msgBox.exec())
+	{
+		case QMessageBox::Yes:
+			/* Overwrite the file */
+			return true;
+		case QMessageBox::No:
+			/* Do not overwrite the file */
+			return false;
+		default:
+			/* Should never be reached */
+			return false;
+	}
 }

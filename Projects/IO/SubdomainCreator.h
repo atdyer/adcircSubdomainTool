@@ -30,6 +30,11 @@ class SubdomainCreator
 		void	SetProjectPath(QString newProjectPath);
 		void	SetSubdomainName(QString newName);
 
+		QString	GetSubdomainName();
+		QString	GetFort14Location();
+		QString	GetPy140Location();
+		QString	GetPy141Location();
+
 
 	private:
 
@@ -49,6 +54,10 @@ class SubdomainCreator
 		QString		projectPath;
 		QString		targetPath;
 		QString		subdomainName;
+
+		QString		fort14Path;
+		QString		py140Path;
+		QString		py141Path;
 
 
 		/* Create fort.14 steps */

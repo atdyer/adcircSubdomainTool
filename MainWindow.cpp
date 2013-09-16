@@ -8,8 +8,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	ui->setupUi(this);
 
-	ui->toolBox->setCurrentIndex(0);
-	ui->toolBox->setMinimumWidth(ui->projectTree->width()+6);
+	ui->paneBox->setCurrentIndex(0);
+	ui->paneBox->setMinimumWidth(ui->projectTree->width()+6);
 
 	testDomain = 0;
 	testProject = 0;
@@ -67,7 +67,7 @@ MainWindow::~MainWindow()
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
 	if (event->key() == Qt::Key_E)
-		ui->toolBox->setCurrentWidget(ui->createSubdomainPage);
+		ui->paneBox->setCurrentWidget(ui->createSubdomainPage);
 	if (testDomain)
 		testDomain->KeyPress(event);
 }
@@ -352,6 +352,12 @@ void MainWindow::ConnectProject(Project *newProject)
 		connect(ui->saveProjectButton, SIGNAL(clicked()), newProject, SLOT(saveProject()));
 		connect(ui->actionProjectSettings, SIGNAL(triggered()), newProject, SLOT(showProjectSettings()));
 		connect(ui->runFullDomainButton, SIGNAL(clicked()), newProject, SLOT(runFullDomain()));
+
+		connect(newProject, SIGNAL(showProjectExplorerPane()), this, SLOT(showProjectExplorerPane()));
+		connect(newProject, SIGNAL(showCreateSubdomainPane()), this, SLOT(showCreateSubdomainPane()));
+		connect(newProject, SIGNAL(showEditSubdomainPane()), this, SLOT(showEditSubdomainPane()));
+		connect(newProject, SIGNAL(showAdcircPane()), this, SLOT(showAdcircPane()));
+		connect(newProject, SIGNAL(showAnalyzeResultsPane()), this, SLOT(showAnalyzeResultsPane()));
 	}
 }
 
@@ -374,15 +380,38 @@ void MainWindow::CheckForMemoryLeaks()
 
 void MainWindow::on_actionColor_Options_triggered()
 {
-//	if (!displayOptionsDialog)
-//	{
-//		displayOptionsDialog = new DisplayOptionsDialog(this);
-//	}
-
 	if (testProject)
 	{
 		testProject->showDisplayOptions();
 	}
+}
 
-//	displayOptionsDialog->show();
+
+void MainWindow::showProjectExplorerPane()
+{
+	ui->paneBox->setCurrentIndex(0);
+}
+
+
+void MainWindow::showCreateSubdomainPane()
+{
+	ui->paneBox->setCurrentIndex(1);
+}
+
+
+void MainWindow::showEditSubdomainPane()
+{
+	ui->paneBox->setCurrentIndex(2);
+}
+
+
+void MainWindow::showAdcircPane()
+{
+	ui->paneBox->setCurrentIndex(3);
+}
+
+
+void MainWindow::showAnalyzeResultsPane()
+{
+	ui->paneBox->setCurrentIndex(4);
 }

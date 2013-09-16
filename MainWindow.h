@@ -67,6 +67,13 @@ class MainWindow : public QMainWindow
 		/* Menu bar actions */
 		void on_actionColor_Options_triggered();
 
+		/* Left side pane slots */
+		void	showProjectExplorerPane();
+		void	showCreateSubdomainPane();
+		void	showEditSubdomainPane();
+		void	showAdcircPane();
+		void	showAnalyzeResultsPane();
+
 	private:
 
 		// The Main Window

@@ -5,6 +5,10 @@ SubdomainCreator::SubdomainCreator()
 	currentSelectedState = 0;
 	fullNumNodes = 0;
 	fullNumElements = 0;
+
+	fort14Path = "";
+	py140Path = "";
+	py141Path = "";
 }
 
 
@@ -63,6 +67,30 @@ void SubdomainCreator::SetSubdomainName(QString newName)
 }
 
 
+QString SubdomainCreator::GetSubdomainName()
+{
+	return subdomainName;
+}
+
+
+QString SubdomainCreator::GetFort14Location()
+{
+	return fort14Path;
+}
+
+
+QString SubdomainCreator::GetPy140Location()
+{
+	return py140Path;
+}
+
+
+QString SubdomainCreator::GetPy141Location()
+{
+	return py141Path;
+}
+
+
 void SubdomainCreator::GetAllRequiredData()
 {
 	FindUniqueNodes();
@@ -91,7 +119,7 @@ bool SubdomainCreator::PerformDataValidation()
 bool SubdomainCreator::WriteFort14File()
 {
 	// Open the file
-	QString fort14Path = targetPath;
+	fort14Path = targetPath;
 	fort14Path.append(QDir::separator()).append("fort.14");
 	std::ofstream fort14File;
 	fort14File.open(fort14Path.toStdString().data());
@@ -158,7 +186,7 @@ bool SubdomainCreator::WriteFort14File()
 
 bool SubdomainCreator::WritePy140File()
 {
-	QString py140Path = targetPath;
+	py140Path = targetPath;
 	py140Path.append(QDir::separator()).append("py.140");
 	std::ofstream py140;
 	py140.open(py140Path.toStdString().data());
@@ -183,7 +211,7 @@ bool SubdomainCreator::WritePy140File()
 
 bool SubdomainCreator::WritePy141File()
 {
-	QString py141Path = targetPath;
+	py141Path = targetPath;
 	py141Path.append(QDir::separator()).append("py.141");
 	std::ofstream py141;
 	py141.open(py141Path.toStdString().data());

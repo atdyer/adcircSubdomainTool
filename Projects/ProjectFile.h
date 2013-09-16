@@ -56,7 +56,12 @@ class ProjectFile : public QDomDocument
 		void	SetSubDomainFort15(QString subDomain, QString newLoc);
 		void	SetSubDomainFort63(QString subDomain, QString newLoc);
 		void	SetSubDomainFort64(QString subDomain, QString newLoc);
+		void	SetSubDomainPy140(QString subDomain, QString newLoc);
+		void	SetSubDomainPy141(QString subDomain, QString newLoc);
 		void	SetAdcircLocation(QString newLoc);
+
+		/* Adder Functions */
+		bool	AddSubdomain(QString newName);
 
 
 		/* Static tag strings */
@@ -85,6 +90,8 @@ class ProjectFile : public QDomDocument
 		static const QString	ATTR_FORT64LOCATION;
 		static const QString	ATTR_MAXELELOCATION;
 		static const QString	ATTR_MAXVELLOCATION;
+		static const QString	ATTR_PY140;
+		static const QString	ATTR_PY141;
 		static const QString	ATTR_ADCIRCLOCATION;
 		static const QString	ATTR_LASTSAVE;
 
@@ -129,6 +136,7 @@ class ProjectFile : public QDomDocument
 		bool	WarnProjectAlreadyOpen();
 		void	WarnFileError(QString message);
 		bool	WarnFileExists(QString fileLoc);
+		bool	WarnSubdomainExists(QString subName);
 };
 
 #endif // PROJECTFILE_H
