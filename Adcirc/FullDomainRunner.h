@@ -9,6 +9,7 @@
 
 #include <QString>
 #include <QMessageBox>
+#include <QProcess>
 #include <iostream>
 
 class FullDomainRunner
@@ -30,6 +31,8 @@ class FullDomainRunner
 		QString			fullDomainPath;
 		std::vector<Domain*>	subDomains;
 		QString			adcircExecutableLocation;
+		QString			adcircExecutableName;
+		QStringList		arguments;
 
 		int	subdomainApproach;
 		int	recordFrequency;
