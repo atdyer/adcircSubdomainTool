@@ -36,11 +36,12 @@ class Fort015
 		int	recordFrequency;
 
 		std::vector<Domain*>		subDomains;
-		std::vector<unsigned int>	innerBoundaries;
-		std::vector<unsigned int>	outerBoundaries;
+		std::set<unsigned int>		innerBoundaries;
+		std::set<unsigned int>		outerBoundaries;
 
 		bool	ExtractAllInnerBoundaryNodes();
 		bool	ExtractAllOuterBoundaryNodes();
+		bool	ExtractAllBoundaryNodes();
 };
 
 #endif // FORT015_H

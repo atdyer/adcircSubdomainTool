@@ -35,6 +35,13 @@ struct Edge
 		}
 };
 
+
+struct Boundaries
+{
+		std::set<unsigned int>	innerBoundaryNodes;
+		std::set<unsigned int>	outerBoundaryNodes;
+};
+
 class BoundaryFinder
 {
 	public:
@@ -45,6 +52,7 @@ class BoundaryFinder
 		/* The Callable Search Function */
 		std::vector<unsigned int> FindBoundaries(ElementState* elementSelection);
 		std::vector<unsigned int> FindInnerBoundaries(ElementState* elementSelection);
+		Boundaries	FindAllBoundaries(std::vector<Element> *elements);
 
 	private:
 

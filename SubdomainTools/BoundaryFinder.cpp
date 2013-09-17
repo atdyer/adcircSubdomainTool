@@ -23,6 +23,84 @@ std::vector<unsigned int> BoundaryFinder::FindBoundaries(ElementState *elementSe
 }
 
 
+Boundaries BoundaryFinder::FindAllBoundaries(std::vector<Element> *elements)
+{
+	Boundaries boundaries;
+	if (elements)
+	{
+		std::cout << "Searching " << elements->size() << " elements" << std::endl;
+
+		std::map<Edge, int> edgeInElementCount;
+		std::map<unsigned int, std::vector<Element*> > elementsThatContainNode;
+
+		Element *currElement;
+		for(std::vector<Element>::iterator it = elements->begin(); it != elements->end(); ++it)
+		{
+			currElement = &(*it);
+			if (currElement)
+			{
+				Edge edge1 (currElement->n1->nodeNumber, currElement->n2->nodeNumber);
+				Edge edge2 (currElement->n1->nodeNumber, currElement->n3->nodeNumber);
+				Edge edge3 (currElement->n2->nodeNumber, currElement->n3->nodeNumber);
+				if (edgeInElementCount.count(edge1) == 0)
+					edgeInElementCount[edge1] = 0;
+				if (edgeInElementCount.count(edge2) == 0)
+					edgeInElementCount[edge2] = 0;
+				if (edgeInElementCount.count(edge3) == 0)
+					edgeInElementCount[edge3] = 0;
+				edgeInElementCount[edge1] += 1;
+				edgeInElementCount[edge2] += 1;
+				edgeInElementCount[edge3] += 1;
+				elementsThatContainNode[currElement->n1->nodeNumber].push_back(currElement);
+				elementsThatContainNode[currElement->n2->nodeNumber].push_back(currElement);
+				elementsThatContainNode[currElement->n3->nodeNumber].push_back(currElement);
+			}
+		}
+
+		for (std::map<Edge, int>::iterator it = edgeInElementCount.begin(); it != edgeInElementCount.end(); ++it)
+		{
+			if (it->second == 1)
+			{
+				if (it->first.n1 != it->first.n2)
+				{
+					boundaries.outerBoundaryNodes.insert(it->first.n1);
+					boundaries.outerBoundaryNodes.insert(it->first.n2);
+				}
+			}
+		}
+
+		for (std::set<unsigned int>::iterator it=boundaries.outerBoundaryNodes.begin(); it != boundaries.outerBoundaryNodes.end(); ++it)
+		{
+			unsigned int currentNode = *it;
+			std::vector<Element*> elementsWithCurrNode = elementsThatContainNode[currentNode];
+			if (elementsWithCurrNode.size() > 0)
+			{
+				for (std::vector<Element*>::iterator eIt=elementsWithCurrNode.begin(); eIt != elementsWithCurrNode.end(); ++eIt)
+				{
+					Element *currentElement = *eIt;
+					if (currentElement)
+					{
+						if (boundaries.outerBoundaryNodes.count(currentElement->n1->nodeNumber) != 1)
+						{
+							boundaries.innerBoundaryNodes.insert(currentElement->n1->nodeNumber);
+						}
+						if (boundaries.outerBoundaryNodes.count(currentElement->n2->nodeNumber) != 1)
+						{
+							boundaries.innerBoundaryNodes.insert(currentElement->n2->nodeNumber);
+						}
+						if (boundaries.outerBoundaryNodes.count(currentElement->n3->nodeNumber) != 1)
+						{
+							boundaries.innerBoundaryNodes.insert(currentElement->n3->nodeNumber);
+						}
+					}
+				}
+			}
+		}
+	}
+	return boundaries;
+}
+
+
 std::vector<unsigned int> BoundaryFinder::FindInnerBoundaries(ElementState *elementSelection)
 {
 	std::vector<unsigned int> innerBoundaryNodes;

@@ -39,11 +39,12 @@ void Fort015::SetRecordFrequency(int frequency)
 
 bool Fort015::WriteFort015FullDomain()
 {
-	ExtractAllOuterBoundaryNodes();
-	if (subdomainApproach == 2)
-	{
-		ExtractAllInnerBoundaryNodes();
-	}
+	ExtractAllBoundaryNodes();
+//	ExtractAllOuterBoundaryNodes();
+//	if (subdomainApproach == 2)
+//	{
+//		ExtractAllInnerBoundaryNodes();
+//	}
 	if (!targetPath.isEmpty() &&
 	    subdomainApproach > 0 &&
 	    recordFrequency > 0)
@@ -58,12 +59,12 @@ bool Fort015::WriteFort015FullDomain()
 			fort015 << recordFrequency << "\t!NSPOOLGS" << std::endl;
 			fort015 << "0\t!enforceBN" << std::endl;
 			fort015 << outerBoundaries.size() << "\t!nobnr" << std::endl;
-			for (std::vector<unsigned int>::iterator it = outerBoundaries.begin(); it != outerBoundaries.end(); ++it)
+			for (std::set<unsigned int>::iterator it = outerBoundaries.begin(); it != outerBoundaries.end(); ++it)
 			{
 				fort015 << *it << std::endl;
 			}
 			fort015 << innerBoundaries.size() << "\t!nibnr" << std::endl;
-			for (std::vector<unsigned int>::iterator it = innerBoundaries.begin(); it != innerBoundaries.end(); ++it)
+			for (std::set<unsigned int>::iterator it = innerBoundaries.begin(); it != innerBoundaries.end(); ++it)
 			{
 				fort015 << *it << std::endl;
 			}
@@ -101,67 +102,100 @@ bool Fort015::WriteFort015Subdomain()
 
 bool Fort015::ExtractAllInnerBoundaryNodes()
 {
-	std::cout << "Extracting inner boundary nodes from " << subDomains.size() << " subdomains" << std::endl;
-	if (subDomains.size() > 0)
-	{
-		Domain *currSubdomain = 0;
-		for (std::vector<Domain*>::iterator it = subDomains.begin(); it != subDomains.end(); ++it)
-		{
-			currSubdomain = *it;
-			if (currSubdomain)
-			{
-				std::vector<unsigned int> newBoundaries = boundaryFinder.FindInnerBoundaries(currSubdomain->GetCurrentSelectedElements());
-				std::cout << "Found " << newBoundaries.size() << " new inner boundary nodes" << std::endl;
-				innerBoundaries.insert(innerBoundaries.end(), newBoundaries.begin(), newBoundaries.end());
-			}
-		}
-		if (innerBoundaries.size() > 0)
-		{
-			/* Sort the list */
-			std::sort(innerBoundaries.begin(), innerBoundaries.end());
+//	std::cout << "Extracting inner boundary nodes from " << subDomains.size() << " subdomains" << std::endl;
+//	if (subDomains.size() > 0)
+//	{
+//		Domain *currSubdomain = 0;
+//		for (std::vector<Domain*>::iterator it = subDomains.begin(); it != subDomains.end(); ++it)
+//		{
+//			currSubdomain = *it;
+//			if (currSubdomain)
+//			{
+//				std::vector<unsigned int> newBoundaries = boundaryFinder.FindInnerBoundaries(currSubdomain->GetCurrentSelectedElements());
+//				std::cout << "Found " << newBoundaries.size() << " new inner boundary nodes" << std::endl;
+//				innerBoundaries.insert(innerBoundaries.end(), newBoundaries.begin(), newBoundaries.end());
+//			}
+//		}
+//		if (innerBoundaries.size() > 0)
+//		{
+//			/* Sort the list */
+//			std::sort(innerBoundaries.begin(), innerBoundaries.end());
 
-			/* Remove duplicates */
-			std::vector<unsigned int>::iterator it;
-			it = std::unique(innerBoundaries.begin(), innerBoundaries.end());
-			innerBoundaries.resize(std::distance(innerBoundaries.begin(), it));
-			return true;
-		} else {
-			return false;
-		}
-	}
-	return false;
+//			/* Remove duplicates */
+//			std::vector<unsigned int>::iterator it;
+//			it = std::unique(innerBoundaries.begin(), innerBoundaries.end());
+//			innerBoundaries.resize(std::distance(innerBoundaries.begin(), it));
+//			return true;
+//		} else {
+//			return false;
+//		}
+//	}
+//	return false;
 }
 
 
 bool Fort015::ExtractAllOuterBoundaryNodes()
 {
-	std::cout << "Extracting outer boundary nodes from " << subDomains.size() << " subdomains" << std::endl;
+//	std::cout << "Extracting outer boundary nodes from " << subDomains.size() << " subdomains" << std::endl;
+//	if (subDomains.size() > 0)
+//	{
+//		Domain *currSubdomain = 0;
+//		for (std::vector<Domain*>::iterator it = subDomains.begin(); it != subDomains.end(); ++it)
+//		{
+//			currSubdomain = *it;
+//			if (currSubdomain)
+//			{
+//				std::vector<unsigned int> newBoundaries = boundaryFinder.FindBoundaries(currSubdomain->GetCurrentSelectedElements());
+//				std::cout << "Found " << newBoundaries.size() << " new outer boundary nodes" << std::endl;
+//				outerBoundaries.insert(outerBoundaries.end(), newBoundaries.begin(), newBoundaries.end());
+//			}
+//		}
+//		if (outerBoundaries.size() > 0)
+//		{
+//			/* Sort the list */
+//			std::sort(outerBoundaries.begin(), outerBoundaries.end());
+
+//			/* Remove duplicates */
+//			std::vector<unsigned int>::iterator it;
+//			it = std::unique(outerBoundaries.begin(), outerBoundaries.end());
+//			outerBoundaries.resize(std::distance(outerBoundaries.begin(), it));
+//			return true;
+//		} else {
+//			return false;
+//		}
+//	}
+//	return false;
+}
+
+
+bool Fort015::ExtractAllBoundaryNodes()
+{
+	std::cout << "Extracting all boundary nodes from " << subDomains.size() << " subdomains" << std::endl;
+	innerBoundaries.clear();
+	outerBoundaries.clear();
 	if (subDomains.size() > 0)
 	{
 		Domain *currSubdomain = 0;
-		for (std::vector<Domain*>::iterator it = subDomains.begin(); it != subDomains.end(); ++it)
+		for (std::vector<Domain*>::iterator it=subDomains.begin(); it != subDomains.end(); ++it)
 		{
 			currSubdomain = *it;
 			if (currSubdomain)
 			{
-				std::vector<unsigned int> newBoundaries = boundaryFinder.FindBoundaries(currSubdomain->GetCurrentSelectedElements());
-				std::cout << "Found " << newBoundaries.size() << " new outer boundary nodes" << std::endl;
-				outerBoundaries.insert(outerBoundaries.end(), newBoundaries.begin(), newBoundaries.end());
+				Boundaries currBoundaries = boundaryFinder.FindAllBoundaries(currSubdomain->GetAllElements());
+				std::cout << "Found " << currBoundaries.innerBoundaryNodes.size() << " inner boundary nodes and " <<
+					     currBoundaries.outerBoundaryNodes.size() << " outer boundary nodes" << std::endl;
+				if (currBoundaries.innerBoundaryNodes.size() > 0)
+					innerBoundaries.insert(currBoundaries.innerBoundaryNodes.begin(), currBoundaries.innerBoundaryNodes.end());
+				if (currBoundaries.outerBoundaryNodes.size() > 0)
+					outerBoundaries.insert(currBoundaries.outerBoundaryNodes.begin(), currBoundaries.outerBoundaryNodes.end());
+			} else {
+				return false;
 			}
 		}
-		if (outerBoundaries.size() > 0)
-		{
-			/* Sort the list */
-			std::sort(outerBoundaries.begin(), outerBoundaries.end());
-
-			/* Remove duplicates */
-			std::vector<unsigned int>::iterator it;
-			it = std::unique(outerBoundaries.begin(), outerBoundaries.end());
-			outerBoundaries.resize(std::distance(outerBoundaries.begin(), it));
-			return true;
-		} else {
+		if (innerBoundaries.size() == 0)
 			return false;
-		}
+		if (outerBoundaries.size() == 0)
+			return false;
 	}
-	return false;
+	return true;
 }
