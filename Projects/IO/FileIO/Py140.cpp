@@ -88,6 +88,28 @@ void Py140::WriteFile()
 }
 
 
+std::vector<unsigned int> Py140::GetOld()
+{
+	std::vector<unsigned int> oldNodes;
+	for (std::map<unsigned int, unsigned int>::iterator it=oldToNewNodes.begin(); it != oldToNewNodes.end(); ++it)
+	{
+		oldNodes.push_back(it->first);
+	}
+	return oldNodes;
+}
+
+
+std::vector<unsigned int> Py140::GetNew()
+{
+	std::vector<unsigned int> newNodes;
+	for (std::map<unsigned int, unsigned int>::iterator it=newToOldNodes.begin(); it != newToOldNodes.end(); ++it)
+	{
+		newNodes.push_back(it->first);
+	}
+	return newNodes;
+}
+
+
 std::map<unsigned int, unsigned int> Py140::GetOldToNew()
 {
 	return oldToNewNodes;

@@ -25,6 +25,8 @@ class Py140
 		void	ReadFile();
 		void	WriteFile();
 
+		std::vector<unsigned int>		GetOld();
+		std::vector<unsigned int>		GetNew();
 		std::map<unsigned int, unsigned int>	GetOldToNew();
 		std::map<unsigned int, unsigned int>	GetNewToOld();
 		std::vector<unsigned int>		ConvertNewToOld(std::vector<unsigned int> newList);
