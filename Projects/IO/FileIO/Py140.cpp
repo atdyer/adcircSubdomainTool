@@ -7,6 +7,14 @@ Py140::Py140()
 }
 
 
+Py140::Py140(QString py140Path)
+{
+	filePath = py140Path;
+	numFullNodes = 0;
+	ReadFile();
+}
+
+
 Py140::~Py140()
 {
 
@@ -111,6 +119,28 @@ std::vector<unsigned int> Py140::ConvertOldToNew(std::vector<unsigned int> oldLi
 		newList.push_back(oldToNewNodes[*it]);
 	}
 	return newList;
+}
+
+
+std::set<unsigned int> Py140::ConvertNewToOld(std::set<unsigned int> newSet)
+{
+	std::set<unsigned int> oldSet;
+	for (std::set<unsigned int>::iterator it = newSet.begin(); it != newSet.end(); ++it)
+	{
+		oldSet.insert(newToOldNodes[*it]);
+	}
+	return oldSet;
+}
+
+
+std::set<unsigned int> Py140::ConvertOldToNew(std::set<unsigned int> oldSet)
+{
+	std::set<unsigned int> newSet;
+	for (std::set<unsigned int>::iterator it = oldSet.begin(); it != oldSet.end(); ++it)
+	{
+		newSet.insert(oldToNewNodes[*it]);
+	}
+	return newSet;
 }
 
 

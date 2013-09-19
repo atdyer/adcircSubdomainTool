@@ -222,6 +222,18 @@ QString ProjectFile::GetSubDomainFort64(QString subdomainName)
 }
 
 
+QString ProjectFile::GetSubDomainPy140(QString subdomainName)
+{
+	return GetAttributeSubdomain(subdomainName, ATTR_PY140);
+}
+
+
+QString ProjectFile::GetSubDomainPy141(QString subdomainName)
+{
+	return GetAttributeSubdomain(subdomainName, ATTR_PY141);
+}
+
+
 QString ProjectFile::GetAdcircLocation()
 {
 	return GetAttribute(TAG_SETTINGS, ATTR_ADCIRCLOCATION);

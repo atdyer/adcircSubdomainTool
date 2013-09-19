@@ -34,6 +34,7 @@ Domain::Domain()
 	fort15Location = "";
 	fort63Location = "";
 	fort64Location = "";
+	py140Location = "";
 
 
 
@@ -323,6 +324,12 @@ void Domain::SetFort64Location(QString newLoc)
 }
 
 
+void Domain::SetPy140Location(QString newLoc)
+{
+	py140Location = newLoc;
+}
+
+
 /**
  * @brief Sets the properties used to draw a solid outline in the terrain layer
  *
@@ -447,6 +454,12 @@ QString Domain::GetFort63Location()
 QString Domain::GetFort64Location()
 {
 	return fort64Location;
+}
+
+
+QString Domain::GetPy140Location()
+{
+	return py140Location;
 }
 
 

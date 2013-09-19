@@ -182,6 +182,11 @@ bool Fort015::ExtractAllBoundaryNodes()
 			if (currSubdomain)
 			{
 				Boundaries currBoundaries = boundaryFinder.FindAllBoundaries(currSubdomain->GetAllElements());
+
+				Py140 currPy140 (currSubdomain->GetPy140Location());
+				currBoundaries.innerBoundaryNodes = currPy140.ConvertNewToOld(currBoundaries.innerBoundaryNodes);
+				currBoundaries.outerBoundaryNodes = currPy140.ConvertNewToOld(currBoundaries.outerBoundaryNodes);
+
 				std::cout << "Found " << currBoundaries.innerBoundaryNodes.size() << " inner boundary nodes and " <<
 					     currBoundaries.outerBoundaryNodes.size() << " outer boundary nodes" << std::endl;
 				if (currBoundaries.innerBoundaryNodes.size() > 0)
@@ -197,5 +202,6 @@ bool Fort015::ExtractAllBoundaryNodes()
 		if (outerBoundaries.size() == 0)
 			return false;
 	}
+
 	return true;
 }

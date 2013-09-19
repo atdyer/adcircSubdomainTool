@@ -136,9 +136,14 @@ void Project::PopulateFromProjectFile()
 				}
 				subDomains[currName] = newSubdomain;
 				QString subFort14 = testProjectFile->GetSubDomainFort14(currName);
+				QString subPy140 = testProjectFile->GetSubDomainPy140(currName);
 				if (!subFort14.isEmpty())
 				{
 					newSubdomain->SetFort14Location(subFort14);
+				}
+				if (!subPy140.isEmpty())
+				{
+					newSubdomain->SetPy140Location(subPy140);
 				}
 			}
 		}
@@ -256,6 +261,15 @@ void Project::UpdateTreeDisplay()
 						currSubFort14->setData(0, Qt::DisplayRole, QString("fort.14"));
 						currSubFort14->setData(0, Qt::StatusTipRole, fort14Loc);
 					}
+
+					QString py140Loc = currDomain->GetPy140Location();
+					if (!py140Loc.isEmpty())
+					{
+						QTreeWidgetItem *currSubPy140 = new QTreeWidgetItem(currDomainTop);
+						currSubPy140->setIcon(0, QIcon::fromTheme("text-x-generic"));
+						currSubPy140->setData(0, Qt::DisplayRole, QString("py.140"));
+						currSubPy140->setData(0, Qt::StatusTipRole, py140Loc);
+					}
 				}
 			}
 
@@ -371,6 +385,8 @@ void Project::createSubdomain()
 			QString fort14Path = subCreator.GetFort14Location();
 			QString py140Path = subCreator.GetPy140Location();
 			QString py141Path = subCreator.GetPy141Location();
+
+			currentDomain->SetPy140Location(py140Path);
 
 			if (testProjectFile && testProjectFile->ProjectIsOpen())
 			{

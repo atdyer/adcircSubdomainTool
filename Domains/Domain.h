@@ -80,6 +80,7 @@ class Domain : public QObject
 		void	SetFort15Location(QString newLoc);
 		void	SetFort63Location(QString newLoc);
 		void	SetFort64Location(QString newLoc);
+		void	SetPy140Location(QString newLoc);
 
 		// Query functions used to access data used to populate the GUI
 		QString		GetDomainPath();
@@ -87,6 +88,7 @@ class Domain : public QObject
 		QString		GetFort15Location();
 		QString		GetFort63Location();
 		QString		GetFort64Location();
+		QString		GetPy140Location();
 		std::vector<Element> *GetAllElements();
 		ElementState*	GetCurrentSelectedElements();
 		float		GetTerrainMinElevation();
@@ -132,6 +134,7 @@ class Domain : public QObject
 		QString		fort15Location;
 		QString		fort63Location;
 		QString		fort64Location;
+		QString		py140Location;
 
 		/* Mouse Clicking and Moving Stuff */
 		ActionType	currentMode;	/**< The current mode used to determine where actions are sent */

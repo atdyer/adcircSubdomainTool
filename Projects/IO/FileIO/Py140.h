@@ -3,6 +3,7 @@
 
 #include <map>
 #include <vector>
+#include <set>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -14,6 +15,7 @@ class Py140
 {
 	public:
 		Py140();
+		Py140(QString py140Path);
 		~Py140();
 
 		void	SetFilePath(QString newPath);
@@ -27,6 +29,8 @@ class Py140
 		std::map<unsigned int, unsigned int>	GetNewToOld();
 		std::vector<unsigned int>		ConvertNewToOld(std::vector<unsigned int> newList);
 		std::vector<unsigned int>		ConvertOldToNew(std::vector<unsigned int> oldList);
+		std::set<unsigned int>			ConvertNewToOld(std::set<unsigned int> newSet);
+		std::set<unsigned int>			ConvertOldToNew(std::set<unsigned int> oldSet);
 		unsigned int				ConvertNewToOld(unsigned int newNum);
 		unsigned int				ConvertOldToNew(unsigned int oldNum);
 
