@@ -66,7 +66,8 @@ SOURCES += main.cpp\
     Projects/IO/FileIO/Fort015.cpp \
     Projects/IO/FileIO/Fort066.cpp \
     Projects/IO/FileIO/Py140.cpp \
-    Projects/IO/FileIO/Py141.cpp
+    Projects/IO/FileIO/Py141.cpp \
+    Projects/IO/FileIO/Fort020.cpp
 
 HEADERS  += MainWindow.h \
     OpenGL/OpenGLPanel.h \
@@ -125,7 +126,8 @@ HEADERS  += MainWindow.h \
     Projects/IO/FileIO/Fort015.h \
     Projects/IO/FileIO/Fort066.h \
     Projects/IO/FileIO/Py140.h \
-    Projects/IO/FileIO/Py141.h
+    Projects/IO/FileIO/Py141.h \
+    Projects/IO/FileIO/Fort020.h
 
 FORMS    += MainWindow.ui \
     Dialogs/CreateProjectDialog.ui \

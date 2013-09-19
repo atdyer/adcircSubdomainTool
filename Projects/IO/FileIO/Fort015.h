@@ -40,8 +40,6 @@ class Fort015
 		std::set<unsigned int>		innerBoundaries;
 		std::set<unsigned int>		outerBoundaries;
 
-		bool	ExtractAllInnerBoundaryNodes();
-		bool	ExtractAllOuterBoundaryNodes();
 		bool	ExtractAllBoundaryNodes();
 };
 

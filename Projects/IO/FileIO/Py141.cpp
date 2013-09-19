@@ -7,6 +7,14 @@ Py141::Py141()
 }
 
 
+Py141::Py141(QString py141Path)
+{
+	filePath = py141Path;
+	numFullElements = 0;
+	ReadFile();
+}
+
+
 Py141::~Py141()
 {
 
@@ -111,6 +119,28 @@ std::vector<unsigned int> Py141::ConvertOldToNew(std::vector<unsigned int> oldLi
 		newList.push_back(oldToNewElements[*it]);
 	}
 	return newList;
+}
+
+
+std::set<unsigned int> Py141::ConvertNewToOld(std::set<unsigned int> newSet)
+{
+	std::set<unsigned int> oldSet;
+	for (std::set<unsigned int>::iterator it = newSet.begin(); it != newSet.end(); ++it)
+	{
+		oldSet.insert(newToOldElements[*it]);
+	}
+	return oldSet;
+}
+
+
+std::set<unsigned int> Py141::ConvertOldToNew(std::set<unsigned int> oldSet)
+{
+	std::set<unsigned int> newSet;
+	for (std::set<unsigned int>::iterator it = oldSet.begin(); it != oldSet.end(); ++it)
+	{
+		newSet.insert(oldToNewElements[*it]);
+	}
+	return newSet;
 }
 
 
