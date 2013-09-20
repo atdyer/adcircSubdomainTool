@@ -1,19 +1,14 @@
 #include "BNList14.h"
 
-BNList14::BNList14()
+BNList14::BNList14(Domain *parent) :
+	parentDomain(parent),
+	projectFile(0),
+	fileLoc(""),
+	numInnerNodes(0),
+	numOuterNodes(0),
+	innerNodes(),
+	outerNodes()
 {
-	fileLoc = "";
-	numInnerNodes = 0;
-	numOuterNodes = 0;
-}
-
-
-BNList14::BNList14(QString newLoc)
-{
-	fileLoc = newLoc;
-	numInnerNodes = 0;
-	numOuterNodes = 0;
-	ReadFile();
 }
 
 
@@ -74,6 +69,15 @@ unsigned int BNList14::GetNumInnerBoundaryNodes()
 unsigned int BNList14::GetNumOuterBoundaryNodes()
 {
 	return numOuterNodes;
+}
+
+
+void BNList14::GetFilePath()
+{
+	if (parentDomain)
+	{
+		/* Get the file path from the parent domain's parent project's project file */
+	}
 }
 
 

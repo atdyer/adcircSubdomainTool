@@ -31,6 +31,7 @@ class ProjectFile : public QDomDocument
 		QString		GetFullDomainFort63();
 		QString		GetFullDomainFort64();
 		QStringList	GetSubDomainNames();
+		QString		GetSubDomainBNList(QString subdomainName);
 		QString		GetSubDomainFort14(QString subdomainName);
 		QString		GetSubDomainFort15(QString subdomainName);
 		QString		GetSubDomainFort63(QString subdomainName);
@@ -54,6 +55,7 @@ class ProjectFile : public QDomDocument
 		void	SetFullDomainFort63(QString newLoc, bool symLink);
 		void	SetFullDomainFort64(QString newLoc, bool symLink);
 		void	SetSubDomainName(QString oldName, QString newName);
+		void	SetSubDomainBNList(QString subDomain, QString newLoc);
 		void	SetSubDomainFort14(QString subDomain, QString newLoc);
 		void	SetSubDomainFort15(QString subDomain, QString newLoc);
 		void	SetSubDomainFort63(QString subDomain, QString newLoc);
@@ -75,6 +77,7 @@ class ProjectFile : public QDomDocument
 		/* Static attribute strings */
 		static const QString	ATTR_NAME;
 		static const QString	ATTR_DIRECTORY;
+		static const QString	ATTR_BNLISTLOCATION;
 		static const QString	ATTR_FORT015LOCATION;
 		static const QString	ATTR_FORT063LOCATION;
 		static const QString	ATTR_FORT064LOCATION;

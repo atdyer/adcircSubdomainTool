@@ -15,6 +15,7 @@
 Domain::Domain()
 {
 	/***** Perform Initializations *****/
+	projectFile = 0;
 	camera = new GLCamera();
 
 	terrainLayer = 0;
@@ -34,6 +35,7 @@ Domain::Domain()
 	fort15Location = "";
 	fort63Location = "";
 	fort64Location = "";
+	bnListLocation = "";
 	py140Location = "";
 
 
@@ -324,6 +326,12 @@ void Domain::SetFort64Location(QString newLoc)
 }
 
 
+void Domain::SetBNListLocation(QString newLoc)
+{
+	bnListLocation = newLoc;
+}
+
+
 void Domain::SetPy140Location(QString newLoc)
 {
 	py140Location = newLoc;
@@ -454,6 +462,12 @@ QString Domain::GetFort63Location()
 QString Domain::GetFort64Location()
 {
 	return fort64Location;
+}
+
+
+QString Domain::GetBNListLocation()
+{
+	return bnListLocation;
 }
 
 

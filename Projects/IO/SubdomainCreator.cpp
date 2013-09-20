@@ -7,6 +7,7 @@ SubdomainCreator::SubdomainCreator()
 	fullNumElements = 0;
 
 	fort14Path = "";
+	bnListPath = "";
 	py140Path = "";
 	py141Path = "";
 }
@@ -26,6 +27,11 @@ bool SubdomainCreator::CreateSubdomain()
 		if (!WriteFort14File())
 		{
 			FileWriteError("fort.14");
+			return false;
+		}
+		if (!WriteBNListFile())
+		{
+			FileWriteError("bnlist.14");
 			return false;
 		}
 		if (!WritePy140File())
@@ -76,6 +82,12 @@ QString SubdomainCreator::GetSubdomainName()
 QString SubdomainCreator::GetFort14Location()
 {
 	return fort14Path;
+}
+
+
+QString SubdomainCreator::GetBNListLocation()
+{
+	return bnListPath;
 }
 
 
@@ -181,6 +193,17 @@ bool SubdomainCreator::WriteFort14File()
 	} else {
 		return false;
 	}
+}
+
+
+bool SubdomainCreator::WriteBNListFile()
+{
+//	bnListPath = targetPath;
+//	bnListPath.append(QDir::separator()).append("bnlist.14");
+//	BNList14 bnList;
+//	bnList.SetFilePath(bnListPath);
+//	bnList.SetInnerBoundaryNodes();
+	return true;
 }
 
 

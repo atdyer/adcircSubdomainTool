@@ -13,8 +13,8 @@ class Fort020
 
 		void	SetFilePath(QString newLoc);
 
-		void	WriteInfoLines(std::string allLines);
-		void	WriteTimestep(std::string allLines);
+		void	WriteInfoLines(QString allLines);
+		void	WriteTimestep(QString allLines);
 
 	private:
 

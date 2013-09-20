@@ -20,6 +20,8 @@
 #include "OpenGL/Shaders/SolidShader.h"
 #include "OpenGL/Shaders/GradientShader.h"
 
+#include "Projects/ProjectFile.h"
+
 
 /**
  * @brief This class is used to represent an ADCIRC domain (either a full or subdomain).
@@ -80,6 +82,7 @@ class Domain : public QObject
 		void	SetFort15Location(QString newLoc);
 		void	SetFort63Location(QString newLoc);
 		void	SetFort64Location(QString newLoc);
+		void	SetBNListLocation(QString newLoc);
 		void	SetPy140Location(QString newLoc);
 
 		// Query functions used to access data used to populate the GUI
@@ -88,6 +91,7 @@ class Domain : public QObject
 		QString		GetFort15Location();
 		QString		GetFort63Location();
 		QString		GetFort64Location();
+		QString		GetBNListLocation();
 		QString		GetPy140Location();
 		std::vector<Element> *GetAllElements();
 		ElementState*	GetCurrentSelectedElements();
@@ -110,6 +114,8 @@ class Domain : public QObject
 
 
 	private:
+
+		ProjectFile*	projectFile;
 
 		// Camera
 		GLCamera*	camera;		/**< The camera used for all drawing operations (except the selection layer)*/
@@ -134,6 +140,7 @@ class Domain : public QObject
 		QString		fort15Location;
 		QString		fort63Location;
 		QString		fort64Location;
+		QString		bnListLocation;
 		QString		py140Location;
 
 		/* Mouse Clicking and Moving Stuff */

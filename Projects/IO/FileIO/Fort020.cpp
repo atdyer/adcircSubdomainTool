@@ -23,4 +23,16 @@ void Fort020::SetFilePath(QString newLoc)
 }
 
 
+void Fort020::WriteInfoLines(QString allLines)
+{
+
+}
+
+
+void Fort020::WriteTimestep(QString allLines)
+{
+
+}
+
+
 

@@ -16,6 +16,7 @@
 
 #include "Domains/Domain.h"
 #include "SubdomainTools/BoundaryFinder.h"
+#include "Projects/IO/FileIO/BNList14.h"
 
 
 class SubdomainCreator
@@ -32,6 +33,7 @@ class SubdomainCreator
 
 		QString	GetSubdomainName();
 		QString	GetFort14Location();
+		QString	GetBNListLocation();
 		QString	GetPy140Location();
 		QString	GetPy141Location();
 
@@ -56,6 +58,7 @@ class SubdomainCreator
 		QString		subdomainName;
 
 		QString		fort14Path;
+		QString		bnListPath;
 		QString		py140Path;
 		QString		py141Path;
 
@@ -64,6 +67,7 @@ class SubdomainCreator
 		void	GetAllRequiredData();
 		bool	PerformDataValidation();
 		bool	WriteFort14File();
+		bool	WriteBNListFile();
 		bool	WritePy140File();
 		bool	WritePy141File();
 

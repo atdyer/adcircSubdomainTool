@@ -5,13 +5,18 @@
 #include <fstream>
 #include <sstream>
 
+#include <QObject>
 #include <QString>
 
-class BNList14
+#include "Domains/Domain.h"
+#include "Projects/Project.h"
+#include "Projects/ProjectFile.h"
+
+class BNList14 : QObject
 {
+		Q_OBJECT
 	public:
-		BNList14();
-		BNList14(QString newLoc);
+		BNList14(Domain *parent=0);
 
 		void	SetFilePath(QString newLoc);
 		void	SetInnerBoundaryNodes(std::vector<unsigned int> newNodes);
@@ -25,6 +30,9 @@ class BNList14
 
 	private:
 
+		Domain*		parentDomain;
+		ProjectFile*	projectFile;
+
 		QString	fileLoc;
 
 		unsigned int	numInnerNodes;
@@ -32,6 +40,7 @@ class BNList14
 		std::vector<unsigned int>	innerNodes;
 		std::vector<unsigned int>	outerNodes;
 
+		void	GetFilePath();
 		void	ReadFile();
 };
 

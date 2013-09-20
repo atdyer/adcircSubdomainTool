@@ -8,6 +8,7 @@ const QString ProjectFile::TAG_SETTINGS = "settings";
 
 const QString ProjectFile::ATTR_NAME = "name";
 const QString ProjectFile::ATTR_DIRECTORY = "dir";
+const QString ProjectFile::ATTR_BNLISTLOCATION = "bnListLoc";
 const QString ProjectFile::ATTR_FORT015LOCATION = "fort015Loc";
 const QString ProjectFile::ATTR_FORT063LOCATION = "fort063Loc";
 const QString ProjectFile::ATTR_FORT064LOCATION = "fort064Loc";
@@ -198,6 +199,12 @@ QStringList ProjectFile::GetSubDomainNames()
 }
 
 
+QString ProjectFile::GetSubDomainBNList(QString subdomainName)
+{
+	return GetAttributeSubdomain(subdomainName, ATTR_BNLISTLOCATION);
+}
+
+
 QString ProjectFile::GetSubDomainFort14(QString subdomainName)
 {
 	return GetAttributeSubdomain(subdomainName, ATTR_FORT14LOCATION);
@@ -333,6 +340,12 @@ void ProjectFile::SetFullDomainFort64(QString newLoc, bool symLink)
 void ProjectFile::SetSubDomainName(QString oldName, QString newName)
 {
 	SetAttributeSubdomain(oldName, ATTR_NAME, newName);
+}
+
+
+void ProjectFile::SetSubDomainBNList(QString subDomain, QString newLoc)
+{
+	SetAttributeSubdomain(subDomain, ATTR_BNLISTLOCATION, newLoc);
 }
 
 
