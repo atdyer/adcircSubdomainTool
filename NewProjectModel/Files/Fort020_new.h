@@ -10,7 +10,6 @@ class Fort020_new : public QObject
 		Q_OBJECT
 	public:
 		explicit Fort020_new(QObject *parent=0);
-		Fort020_new(ProjectFile_new *projectFile, QObject *parent=0);
 		Fort020_new(QString domainName, ProjectFile_new *projectFile, QObject *parent=0);
 
 	private:

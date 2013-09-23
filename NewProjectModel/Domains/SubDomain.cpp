@@ -20,7 +20,7 @@ SubDomain::SubDomain(QObject *parent) :
 	py140(0),
 	py141(0)
 {
-	CreateAllFiles();
+
 }
 
 
@@ -43,7 +43,7 @@ SubDomain::SubDomain(QString domainName, ProjectFile_new *projectFile, QObject *
 	py140(0),
 	py141(0)
 {
-
+	CreateAllFiles();
 }
 
 

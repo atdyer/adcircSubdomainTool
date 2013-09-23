@@ -8,14 +8,6 @@ Py141_new::Py141_new(QObject *parent) :
 }
 
 
-Py141_new::Py141_new(ProjectFile_new *projectFile, QObject *parent) :
-	QObject(parent),
-	domainName(),
-	projectFile(projectFile)
-{
-}
-
-
 Py141_new::Py141_new(QString domainName, ProjectFile_new *projectFile, QObject *parent) :
 	QObject(parent),
 	domainName(domainName),

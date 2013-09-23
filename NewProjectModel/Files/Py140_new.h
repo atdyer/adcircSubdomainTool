@@ -10,7 +10,6 @@ class Py140_new : public QObject
 		Q_OBJECT
 	public:
 		explicit Py140_new(QObject *parent=0);
-		Py140_new(ProjectFile_new *projectFile, QObject *parent=0);
 		Py140_new(QString domainName, ProjectFile_new *projectFile, QObject *parent=0);
 
 	private:

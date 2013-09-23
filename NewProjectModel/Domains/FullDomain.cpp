@@ -33,7 +33,7 @@ FullDomain::FullDomain(ProjectFile_new *projectFile, QObject *parent) :
 	maxvel(0),
 	projectFile(projectFile)
 {
-
+	CreateAllFiles();
 }
 
 

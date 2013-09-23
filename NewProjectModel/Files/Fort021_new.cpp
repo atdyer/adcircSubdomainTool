@@ -8,14 +8,6 @@ Fort021_new::Fort021_new(QObject *parent) :
 }
 
 
-Fort021_new::Fort021_new(ProjectFile_new *projectFile, QObject *parent) :
-	QObject(parent),
-	domainName(),
-	projectFile(projectFile)
-{
-}
-
-
 Fort021_new::Fort021_new(QString domainName, ProjectFile_new *projectFile, QObject *parent) :
 	QObject(parent),
 	domainName(domainName),
