@@ -1,10 +1,22 @@
 #ifndef FORT22_new_H
 #define FORT22_new_H
 
-class Fort22_new
+#include <QObject>
+
+#include "NewProjectModel/Files/ProjectFile_new.h"
+
+class Fort22_new : public QObject
 {
+		Q_OBJECT
 	public:
-		Fort22_new();
+		explicit Fort22_new(QObject *parent=0);
+		Fort22_new(ProjectFile_new *projectFile, QObject *parent=0);
+		Fort22_new(QString domainName, ProjectFile_new *projectFile, QObject *parent=0);
+
+	private:
+
+		QString			domainName;
+		ProjectFile_new*	projectFile;
 };
 
 #endif // FORT22_new_H

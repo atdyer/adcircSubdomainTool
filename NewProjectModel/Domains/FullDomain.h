@@ -1,17 +1,48 @@
 #ifndef FULLDOMAIN_H
 #define FULLDOMAIN_H
 
-#include "NewProjectModel/Project_new.h"
-#include "NewProjectModel/Domains/Domain_new.h"
+#include <iostream>
 
-class FullDomain : Domain_new
+#include <QObject>
+
+#include "NewProjectModel/Files/Fort14_new.h"
+#include "NewProjectModel/Files/Fort15_new.h"
+#include "NewProjectModel/Files/Fort22_new.h"
+#include "NewProjectModel/Files/Fort63_new.h"
+#include "NewProjectModel/Files/Fort64_new.h"
+#include "NewProjectModel/Files/Fort015_new.h"
+#include "NewProjectModel/Files/Fort066_new.h"
+#include "NewProjectModel/Files/Fort067_new.h"
+#include "NewProjectModel/Files/Maxele63_new.h"
+#include "NewProjectModel/Files/Maxvel63_new.h"
+#include "NewProjectModel/Files/ProjectFile_new.h"
+
+
+class FullDomain : public QObject
 {
+		Q_OBJECT
 	public:
-		FullDomain(Project_new *parentProject);
+		explicit FullDomain(QObject *parent=0);
+		FullDomain(ProjectFile_new *projectFile, QObject *parent=0);
+		~FullDomain();
 
 	private:
 
-		Project_new*	parent;
+		Fort14_new*		fort14;
+		Fort15_new*		fort15;
+		Fort22_new*		fort22;
+		Fort63_new*		fort63;
+		Fort64_new*		fort64;
+		Fort015_new*		fort015;
+		Fort066_new*		fort066;
+		Fort067_new*		fort067;
+		Maxele63_new*		maxele;
+		Maxvel63_new*		maxvel;
+		ProjectFile_new*	projectFile;
+
+
+		void	CreateAllFiles();
+
 };
 
 #endif // FULLDOMAIN_H

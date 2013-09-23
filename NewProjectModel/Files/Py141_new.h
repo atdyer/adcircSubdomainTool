@@ -1,10 +1,22 @@
 #ifndef PY141_new_H
 #define PY141_new_H
 
-class Py141_new
+#include <QObject>
+
+#include "NewProjectModel/Files/ProjectFile_new.h"
+
+class Py141_new : public QObject
 {
+		Q_OBJECT
 	public:
-		Py141_new();
+		explicit Py141_new(QObject *parent=0);
+		Py141_new(ProjectFile_new *projectFile, QObject *parent=0);
+		Py141_new(QString domainName, ProjectFile_new *projectFile, QObject *parent=0);
+
+	private:
+
+		QString			domainName;
+		ProjectFile_new*	projectFile;
 };
 
 #endif // PY141_new_H

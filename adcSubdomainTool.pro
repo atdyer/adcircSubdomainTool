@@ -73,7 +73,6 @@ SOURCES += main.cpp\
     NewProjectModel/Domains/SubDomain.cpp \
     NewProjectModel/Project_new.cpp \
     NewProjectModel/Files/Maxvel63_new.cpp \
-    NewProjectModel/Domains/Domain_new.cpp \
     NewProjectModel/Files/Maxele63_new.cpp \
     NewProjectModel/Files/Fort64_new.cpp \
     NewProjectModel/Files/Fort63_new.cpp \
@@ -87,7 +86,10 @@ SOURCES += main.cpp\
     NewProjectModel/Files/Fort14_new.cpp \
     NewProjectModel/Files/Fort020_new.cpp \
     NewProjectModel/Files/BNList14_new.cpp \
-    NewProjectModel/Files/Fort022_new.cpp
+    NewProjectModel/Files/Fort022_new.cpp \
+    NewProjectModel/Files/Fort015_new.cpp \
+    NewProjectModel/Files/Fort066_new.cpp \
+    NewProjectModel/Files/Fort067_new.cpp
 
 HEADERS  += MainWindow.h \
     OpenGL/OpenGLPanel.h \
@@ -153,7 +155,6 @@ HEADERS  += MainWindow.h \
     NewProjectModel/Domains/SubDomain.h \
     NewProjectModel/Project_new.h \
     NewProjectModel/Files/Maxvel63_new.h \
-    NewProjectModel/Domains/Domain_new.h \
     NewProjectModel/Files/Maxele63_new.h \
     NewProjectModel/Files/Fort64_new.h \
     NewProjectModel/Files/Fort63_new.h \
@@ -167,7 +168,10 @@ HEADERS  += MainWindow.h \
     NewProjectModel/Files/Fort14_new.h \
     NewProjectModel/Files/Fort020_new.h \
     NewProjectModel/Files/BNList14_new.h \
-    NewProjectModel/Files/Fort022_new.h
+    NewProjectModel/Files/Fort022_new.h \
+    NewProjectModel/Files/Fort015_new.h \
+    NewProjectModel/Files/Fort066_new.h \
+    NewProjectModel/Files/Fort067_new.h
 
 FORMS    += MainWindow.ui \
     Dialogs/CreateProjectDialog.ui \
