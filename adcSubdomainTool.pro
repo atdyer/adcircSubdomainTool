@@ -68,7 +68,26 @@ SOURCES += main.cpp\
     Projects/IO/FileIO/Py140.cpp \
     Projects/IO/FileIO/Py141.cpp \
     Projects/IO/FileIO/Fort020.cpp \
-    Projects/IO/FileIO/BNList14.cpp
+    Projects/IO/FileIO/BNList14.cpp \
+    NewProjectModel/Domains/FullDomain.cpp \
+    NewProjectModel/Domains/SubDomain.cpp \
+    NewProjectModel/Project_new.cpp \
+    NewProjectModel/Files/Maxvel63_new.cpp \
+    NewProjectModel/Domains/Domain_new.cpp \
+    NewProjectModel/Files/Maxele63_new.cpp \
+    NewProjectModel/Files/Fort64_new.cpp \
+    NewProjectModel/Files/Fort63_new.cpp \
+    NewProjectModel/Files/Py141_new.cpp \
+    NewProjectModel/Files/Py140_new.cpp \
+    NewProjectModel/Files/Fort22_new.cpp \
+    NewProjectModel/Files/Fort021_new.cpp \
+    NewProjectModel/Files/Fort15_new.cpp \
+    NewProjectModel/ProjectSettings_new.cpp \
+    NewProjectModel/Files/ProjectFile_new.cpp \
+    NewProjectModel/Files/Fort14_new.cpp \
+    NewProjectModel/Files/Fort020_new.cpp \
+    NewProjectModel/Files/BNList14_new.cpp \
+    NewProjectModel/Files/Fort022_new.cpp
 
 HEADERS  += MainWindow.h \
     OpenGL/OpenGLPanel.h \
@@ -129,7 +148,26 @@ HEADERS  += MainWindow.h \
     Projects/IO/FileIO/Py140.h \
     Projects/IO/FileIO/Py141.h \
     Projects/IO/FileIO/Fort020.h \
-    Projects/IO/FileIO/BNList14.h
+    Projects/IO/FileIO/BNList14.h \
+    NewProjectModel/Domains/FullDomain.h \
+    NewProjectModel/Domains/SubDomain.h \
+    NewProjectModel/Project_new.h \
+    NewProjectModel/Files/Maxvel63_new.h \
+    NewProjectModel/Domains/Domain_new.h \
+    NewProjectModel/Files/Maxele63_new.h \
+    NewProjectModel/Files/Fort64_new.h \
+    NewProjectModel/Files/Fort63_new.h \
+    NewProjectModel/Files/Py141_new.h \
+    NewProjectModel/Files/Py140_new.h \
+    NewProjectModel/Files/Fort22_new.h \
+    NewProjectModel/Files/Fort021_new.h \
+    NewProjectModel/Files/Fort15_new.h \
+    NewProjectModel/ProjectSettings_new.h \
+    NewProjectModel/Files/ProjectFile_new.h \
+    NewProjectModel/Files/Fort14_new.h \
+    NewProjectModel/Files/Fort020_new.h \
+    NewProjectModel/Files/BNList14_new.h \
+    NewProjectModel/Files/Fort022_new.h
 
 FORMS    += MainWindow.ui \
     Dialogs/CreateProjectDialog.ui \
