@@ -2,6 +2,8 @@
 #define BNLIST14_new_H
 
 #include <QObject>
+#include <QDir>
+#include <QFile>
 
 #include <vector>
 #include <fstream>
@@ -16,8 +18,6 @@ class BNList14_new : public QObject
 		explicit BNList14_new(QObject *parent=0);
 		BNList14_new(QString domainName, ProjectFile_new *projectFile, QObject *parent=0);
 
-		void	CreateFile(QString filePath);
-		void	OpenFile();
 		void	SetInnerBoundaryNodes(std::vector<unsigned int> newNodes);
 		void	SetOuterBoundaryNodes(std::vector<unsigned int> newNodes);
 		void	SaveFile();
@@ -35,7 +35,7 @@ class BNList14_new : public QObject
 		std::vector<unsigned int>	outerNodes;
 		ProjectFile_new*		projectFile;
 
-		void	ReadFile(QString fileLocation);
+		void	ReadFile();
 };
 
 #endif // BNLIST14_new_H

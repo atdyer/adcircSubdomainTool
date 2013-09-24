@@ -1,14 +1,13 @@
 #include "ProjectFile_new.h"
 
-
-const QString ProjectFile_new::TAG_PROJECT = "adcSubdomainProject";
 const QString ProjectFile_new::TAG_FULL_DOMAIN = "fullDomain";
-const QString ProjectFile_new::TAG_SUB_DOMAIN = "subDomain";
+const QString ProjectFile_new::TAG_PROJECT = "adcSubdomainProject";
 const QString ProjectFile_new::TAG_SETTINGS = "settings";
+const QString ProjectFile_new::TAG_SUB_DOMAIN = "subDomain";
 
-const QString ProjectFile_new::ATTR_NAME = "name";
-const QString ProjectFile_new::ATTR_DIRECTORY = "dir";
+const QString ProjectFile_new::ATTR_ADCIRCLOCATION = "adcircExe";
 const QString ProjectFile_new::ATTR_BNLISTLOCATION = "bnListLoc";
+const QString ProjectFile_new::ATTR_DIRECTORY = "dir";
 const QString ProjectFile_new::ATTR_FORT015LOCATION = "fort015Loc";
 const QString ProjectFile_new::ATTR_FORT063LOCATION = "fort063Loc";
 const QString ProjectFile_new::ATTR_FORT064LOCATION = "fort064Loc";
@@ -24,13 +23,12 @@ const QString ProjectFile_new::ATTR_FORT23LOCATION = "fort23Loc";
 const QString ProjectFile_new::ATTR_FORT24LOCATION = "fort24Loc";
 const QString ProjectFile_new::ATTR_FORT63LOCATION = "fort63Loc";
 const QString ProjectFile_new::ATTR_FORT64LOCATION = "fort64Loc";
+const QString ProjectFile_new::ATTR_LASTSAVE = "savedOn";
 const QString ProjectFile_new::ATTR_MAXELELOCATION = "maxeleLoc";
 const QString ProjectFile_new::ATTR_MAXVELLOCATION = "maxvelLoc";
+const QString ProjectFile_new::ATTR_NAME = "name";
 const QString ProjectFile_new::ATTR_PY140 = "py140Loc";
 const QString ProjectFile_new::ATTR_PY141 = "py141Loc";
-const QString ProjectFile_new::ATTR_ADCIRCLOCATION = "adcircExe";
-const QString ProjectFile_new::ATTR_LASTSAVE = "savedOn";
-
 
 
 ProjectFile_new::ProjectFile_new()
@@ -144,15 +142,15 @@ bool ProjectFile_new::ProjectIsOpen()
 }
 
 
-QString ProjectFile_new::GetProjectName()
+QString ProjectFile_new::GetAdcircLocation()
 {
-	return projectName;
+	return GetAttribute(TAG_SETTINGS, ATTR_ADCIRCLOCATION);
 }
 
 
-QString ProjectFile_new::GetProjectDirectory()
+QString ProjectFile_new::GetFullDomainDirectory()
 {
-	return projectDirectory.absolutePath();
+	return GetAttribute(TAG_FULL_DOMAIN, ATTR_DIRECTORY);
 }
 
 
@@ -180,28 +178,33 @@ QString ProjectFile_new::GetFullDomainFort64()
 }
 
 
-QStringList ProjectFile_new::GetSubDomainNames()
+QDateTime ProjectFile_new::GetLastFileAccess()
 {
-	QStringList subdomainNames;
+	return lastModified;
+}
 
-	QDomElement currentSubdomain = documentElement().firstChildElement(TAG_SUB_DOMAIN);
-	while (!currentSubdomain.isNull())
-	{
-		QDomElement subdomainNameAttribute = currentSubdomain.namedItem(ATTR_NAME).toElement();
-		if (!subdomainNameAttribute.isNull())
-		{
-			subdomainNames.append(subdomainNameAttribute.text());
-		}
-		currentSubdomain = currentSubdomain.nextSiblingElement(TAG_SUB_DOMAIN);
-	}
 
-	return subdomainNames;
+QString ProjectFile_new::GetProjectDirectory()
+{
+	return projectDirectory.absolutePath();
+}
+
+
+QString ProjectFile_new::GetProjectName()
+{
+	return projectName;
 }
 
 
 QString ProjectFile_new::GetSubDomainBNList(QString subdomainName)
 {
 	return GetAttributeSubdomain(subdomainName, ATTR_BNLISTLOCATION);
+}
+
+
+QString ProjectFile_new::GetSubDomainDirectory(QString subdomainName)
+{
+	return GetAttributeSubdomain(subdomainName, ATTR_DIRECTORY);
 }
 
 
@@ -229,6 +232,25 @@ QString ProjectFile_new::GetSubDomainFort64(QString subdomainName)
 }
 
 
+QStringList ProjectFile_new::GetSubDomainNames()
+{
+	QStringList subdomainNames;
+
+	QDomElement currentSubdomain = documentElement().firstChildElement(TAG_SUB_DOMAIN);
+	while (!currentSubdomain.isNull())
+	{
+		QDomElement subdomainNameAttribute = currentSubdomain.namedItem(ATTR_NAME).toElement();
+		if (!subdomainNameAttribute.isNull())
+		{
+			subdomainNames.append(subdomainNameAttribute.text());
+		}
+		currentSubdomain = currentSubdomain.nextSiblingElement(TAG_SUB_DOMAIN);
+	}
+
+	return subdomainNames;
+}
+
+
 QString ProjectFile_new::GetSubDomainPy140(QString subdomainName)
 {
 	return GetAttributeSubdomain(subdomainName, ATTR_PY140);
@@ -241,15 +263,15 @@ QString ProjectFile_new::GetSubDomainPy141(QString subdomainName)
 }
 
 
-QString ProjectFile_new::GetAdcircLocation()
+void ProjectFile_new::SetAdcircLocation(QString newLoc)
 {
-	return GetAttribute(TAG_SETTINGS, ATTR_ADCIRCLOCATION);
+	SetAttribute(TAG_SETTINGS, ATTR_ADCIRCLOCATION, newLoc);
 }
 
 
-QDateTime ProjectFile_new::GetLastFileAccess()
+void ProjectFile_new::SetFullDomainDirectory(QString newLoc)
 {
-	return lastModified;
+	SetAttribute(TAG_FULL_DOMAIN, ATTR_DIRECTORY, newLoc);
 }
 
 
@@ -337,15 +359,15 @@ void ProjectFile_new::SetFullDomainFort64(QString newLoc, bool symLink)
 }
 
 
-void ProjectFile_new::SetSubDomainName(QString oldName, QString newName)
-{
-	SetAttributeSubdomain(oldName, ATTR_NAME, newName);
-}
-
-
 void ProjectFile_new::SetSubDomainBNList(QString subDomain, QString newLoc)
 {
 	SetAttributeSubdomain(subDomain, ATTR_BNLISTLOCATION, newLoc);
+}
+
+
+void ProjectFile_new::SetSubDomainDirectory(QString subDomain, QString newLoc)
+{
+	SetAttributeSubdomain(subDomain, ATTR_DIRECTORY, newLoc);
 }
 
 
@@ -373,6 +395,12 @@ void ProjectFile_new::SetSubDomainFort64(QString subDomain, QString newLoc)
 }
 
 
+void ProjectFile_new::SetSubDomainName(QString oldName, QString newName)
+{
+	SetAttributeSubdomain(oldName, ATTR_NAME, newName);
+}
+
+
 void ProjectFile_new::SetSubDomainPy140(QString subDomain, QString newLoc)
 {
 	SetAttributeSubdomain(subDomain, ATTR_PY140, newLoc);
@@ -382,12 +410,6 @@ void ProjectFile_new::SetSubDomainPy140(QString subDomain, QString newLoc)
 void ProjectFile_new::SetSubDomainPy141(QString subDomain, QString newLoc)
 {
 	SetAttributeSubdomain(subDomain, ATTR_PY141, newLoc);
-}
-
-
-void ProjectFile_new::SetAdcircLocation(QString newLoc)
-{
-	SetAttribute(TAG_SETTINGS, ATTR_ADCIRCLOCATION, newLoc);
 }
 
 
