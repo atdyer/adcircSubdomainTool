@@ -5,6 +5,7 @@
 
 #include <vector>
 #include <map>
+#include <istream>
 #include <fstream>
 #include <sstream>
 
@@ -36,6 +37,8 @@ class Py140_new : public QObject
 
 		std::map<unsigned int, unsigned int>	newToOldNodes;
 		std::map<unsigned int, unsigned int>	oldToNewNodes;
+
+		void	ReadFile();
 };
 
 #endif // PY140_new_H

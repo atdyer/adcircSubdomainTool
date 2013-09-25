@@ -8,9 +8,6 @@ const QString ProjectFile_new::TAG_SUB_DOMAIN = "subDomain";
 const QString ProjectFile_new::ATTR_ADCIRCLOCATION = "adcircExe";
 const QString ProjectFile_new::ATTR_BNLISTLOCATION = "bnListLoc";
 const QString ProjectFile_new::ATTR_DIRECTORY = "dir";
-const QString ProjectFile_new::ATTR_FORT015LOCATION = "fort015Loc";
-const QString ProjectFile_new::ATTR_FORT063LOCATION = "fort063Loc";
-const QString ProjectFile_new::ATTR_FORT064LOCATION = "fort064Loc";
 const QString ProjectFile_new::ATTR_FORT10LOCATION = "fort10Loc";
 const QString ProjectFile_new::ATTR_FORT11LOCATION = "fort11Loc";
 const QString ProjectFile_new::ATTR_FORT13LOCATION = "fort13Loc";
@@ -23,6 +20,9 @@ const QString ProjectFile_new::ATTR_FORT23LOCATION = "fort23Loc";
 const QString ProjectFile_new::ATTR_FORT24LOCATION = "fort24Loc";
 const QString ProjectFile_new::ATTR_FORT63LOCATION = "fort63Loc";
 const QString ProjectFile_new::ATTR_FORT64LOCATION = "fort64Loc";
+const QString ProjectFile_new::ATTR_FORT015LOCATION = "fort015Loc";
+const QString ProjectFile_new::ATTR_FORT066LOCATION = "fort066Loc";
+const QString ProjectFile_new::ATTR_FORT067LOCATION = "fort067Loc";
 const QString ProjectFile_new::ATTR_LASTSAVE = "savedOn";
 const QString ProjectFile_new::ATTR_MAXELELOCATION = "maxeleLoc";
 const QString ProjectFile_new::ATTR_MAXVELLOCATION = "maxvelLoc";
@@ -175,6 +175,24 @@ QString ProjectFile_new::GetFullDomainFort63()
 QString ProjectFile_new::GetFullDomainFort64()
 {
 	return GetAttribute(TAG_FULL_DOMAIN, ATTR_FORT64LOCATION);
+}
+
+
+QString ProjectFile_new::GetFullDomainFort015()
+{
+	return GetAttribute(TAG_FULL_DOMAIN, ATTR_FORT015LOCATION);
+}
+
+
+QString ProjectFile_new::GetFullDomainFort066()
+{
+	return GetAttribute(TAG_FULL_DOMAIN, ATTR_FORT066LOCATION);
+}
+
+
+QString ProjectFile_new::GetFullDomainFort067()
+{
+	return GetAttribute(TAG_FULL_DOMAIN, ATTR_FORT067LOCATION);
 }
 
 
@@ -356,6 +374,24 @@ void ProjectFile_new::SetFullDomainFort64(QString newLoc, bool symLink)
 {
 	if (symLink ? LinkFile(newLoc, projectDirectory.absolutePath()) : CopyFile(newLoc, projectDirectory.absolutePath()))
 		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT64LOCATION, newLoc);
+}
+
+
+void ProjectFile_new::SetFullDomainFort015(QString newLoc)
+{
+	SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT015LOCATION, newLoc);
+}
+
+
+void ProjectFile_new::SetFullDomainFort066(QString newLoc)
+{
+	SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT066LOCATION, newLoc);
+}
+
+
+void ProjectFile_new::SetFullDomainFort067(QString newLoc)
+{
+	SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT067LOCATION, newLoc);
 }
 
 

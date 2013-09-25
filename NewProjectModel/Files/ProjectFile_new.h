@@ -29,6 +29,9 @@ class ProjectFile_new : public QDomDocument
 		QString		GetFullDomainFort15();
 		QString		GetFullDomainFort63();
 		QString		GetFullDomainFort64();
+		QString		GetFullDomainFort015();
+		QString		GetFullDomainFort066();
+		QString		GetFullDomainFort067();
 		QDateTime	GetLastFileAccess();
 		QString		GetProjectDirectory();
 		QString		GetProjectName();
@@ -57,6 +60,9 @@ class ProjectFile_new : public QDomDocument
 		void	SetFullDomainFort24(QString newLoc, bool symLink);
 		void	SetFullDomainFort63(QString newLoc, bool symLink);
 		void	SetFullDomainFort64(QString newLoc, bool symLink);
+		void	SetFullDomainFort015(QString newLoc);
+		void	SetFullDomainFort066(QString newLoc);
+		void	SetFullDomainFort067(QString newLoc);
 		void	SetSubDomainBNList(QString subDomain, QString newLoc);
 		void	SetSubDomainDirectory(QString subDomain, QString newLoc);
 		void	SetSubDomainFort14(QString subDomain, QString newLoc);
@@ -81,9 +87,6 @@ class ProjectFile_new : public QDomDocument
 		static const QString	ATTR_ADCIRCLOCATION;
 		static const QString	ATTR_BNLISTLOCATION;
 		static const QString	ATTR_DIRECTORY;
-		static const QString	ATTR_FORT015LOCATION;
-		static const QString	ATTR_FORT063LOCATION;
-		static const QString	ATTR_FORT064LOCATION;
 		static const QString	ATTR_FORT10LOCATION;
 		static const QString	ATTR_FORT11LOCATION;
 		static const QString	ATTR_FORT13LOCATION;
@@ -96,6 +99,9 @@ class ProjectFile_new : public QDomDocument
 		static const QString	ATTR_FORT24LOCATION;
 		static const QString	ATTR_FORT63LOCATION;
 		static const QString	ATTR_FORT64LOCATION;
+		static const QString	ATTR_FORT015LOCATION;
+		static const QString	ATTR_FORT066LOCATION;
+		static const QString	ATTR_FORT067LOCATION;
 		static const QString	ATTR_LASTSAVE;
 		static const QString	ATTR_MAXELELOCATION;
 		static const QString	ATTR_MAXVELLOCATION;

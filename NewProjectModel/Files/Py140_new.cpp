@@ -34,18 +34,6 @@ Py140_new::Py140_new(QString domainName, ProjectFile_new *projectFile, QObject *
 }
 
 
-std::map<unsigned int, unsigned int> Py140_new::GetNewToOld()
-{
-	return newToOldNodes;
-}
-
-
-std::map<unsigned int, unsigned int> Py140_new::GetOldToNew()
-{
-	return oldToNewNodes;
-}
-
-
 void Py140_new::SaveFile()
 {
 	if (projectFile && !domainName.isEmpty())
@@ -99,12 +87,16 @@ void Py140_new::SetOldToNew(std::map<unsigned int, unsigned int> newMap)
 
 unsigned int Py140_new::ConvertNewToOld(unsigned int newNum)
 {
+	if (!newToOldNodes.size())
+		ReadFile();
 	return newToOldNodes[newNum];
 }
 
 
 std::vector<unsigned int> Py140_new::ConvertNewToOld(std::vector<unsigned int> newVector)
 {
+	if (!newToOldNodes.size())
+		ReadFile();
 	std::vector<unsigned int> oldVals;
 	for (std::vector<unsigned int>::iterator it = newVector.begin(); it != newVector.end(); ++it)
 	{
@@ -116,12 +108,16 @@ std::vector<unsigned int> Py140_new::ConvertNewToOld(std::vector<unsigned int> n
 
 unsigned int Py140_new::ConvertOldToNew(unsigned int oldNum)
 {
+	if (!oldToNewNodes.size())
+		ReadFile();
 	return oldToNewNodes[oldNum];
 }
 
 
 std::vector<unsigned int> Py140_new::ConvertOldToNew(std::vector<unsigned int> oldVector)
 {
+	if (!oldToNewNodes.size())
+		ReadFile();
 	std::vector<unsigned int> newVals;
 	for (std::vector<unsigned int>::iterator it = oldVector.begin(); it != oldVector.end(); ++it)
 	{
@@ -138,4 +134,45 @@ QString	Py140_new::GetFilePath()
 		return projectFile->GetSubDomainPy140(domainName);
 	}
 	return QString();
+}
+
+
+std::map<unsigned int, unsigned int> Py140_new::GetNewToOld()
+{
+	if (!newToOldNodes.size())
+		ReadFile();
+	return newToOldNodes;
+}
+
+
+std::map<unsigned int, unsigned int> Py140_new::GetOldToNew()
+{
+	if (!oldToNewNodes.size())
+		ReadFile();
+	return oldToNewNodes;
+}
+
+
+void Py140_new::ReadFile()
+{
+	if (projectFile && !domainName.isEmpty())
+	{
+		QString targetFile = projectFile->GetSubDomainPy140(domainName);
+		std::ifstream file (targetFile.toStdString().data());
+		if (file.is_open())
+		{
+			newToOldNodes.clear();
+			oldToNewNodes.clear();
+			std::string line;
+			std::getline(file, line);
+			int currOld, currNew;
+			while (std::getline(file, line))
+			{
+				std::stringstream(line) >> currNew >> currOld;
+				newToOldNodes[currNew] = currOld;
+				oldToNewNodes[currOld] = currNew;
+			}
+			file.close();
+		}
+	}
 }

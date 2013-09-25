@@ -13,6 +13,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = adcSubdomainTool
 TEMPLATE = app
 
+QMAKE_CXXFLAGS += -O2
+
 
 SOURCES += main.cpp\
         MainWindow.cpp \
