@@ -252,6 +252,12 @@ QString ProjectFile_new::GetSubDomainFort64(QString subdomainName)
 }
 
 
+QString ProjectFile_new::GetSubDomainFort015(QString subdomainName)
+{
+	return GetAttributeSubdomain(subdomainName, ATTR_FORT015LOCATION);
+}
+
+
 QString ProjectFile_new::GetSubDomainFort020(QString subdomainName)
 {
 	return GetAttributeSubdomain(subdomainName, ATTR_FORT020LOCATION);
@@ -442,6 +448,12 @@ void ProjectFile_new::SetSubDomainFort63(QString subDomain, QString newLoc)
 void ProjectFile_new::SetSubDomainFort64(QString subDomain, QString newLoc)
 {
 	SetAttributeSubdomain(subDomain, ATTR_FORT64LOCATION, newLoc);
+}
+
+
+void ProjectFile_new::SetSubDomainFort015(QString subDomain, QString newLoc)
+{
+	SetAttributeSubdomain(subDomain, ATTR_FORT015LOCATION, newLoc);
 }
 
 
