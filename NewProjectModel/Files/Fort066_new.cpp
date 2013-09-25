@@ -81,6 +81,7 @@ std::map<unsigned int, std::string> Fort066_new::GetNextTimestep()
 			currentData[currNode] = "\t" + line1 + "\n" + line2 + "\n";
 		}
 	}
+	++currTS;
 	return currentData;
 }
 
