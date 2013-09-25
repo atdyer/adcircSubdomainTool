@@ -21,6 +21,8 @@ const QString ProjectFile_new::ATTR_FORT24LOCATION = "fort24Loc";
 const QString ProjectFile_new::ATTR_FORT63LOCATION = "fort63Loc";
 const QString ProjectFile_new::ATTR_FORT64LOCATION = "fort64Loc";
 const QString ProjectFile_new::ATTR_FORT015LOCATION = "fort015Loc";
+const QString ProjectFile_new::ATTR_FORT020LOCATION = "fort020Loc";
+const QString ProjectFile_new::ATTR_FORT021LOCATION = "fort021Loc";
 const QString ProjectFile_new::ATTR_FORT066LOCATION = "fort066Loc";
 const QString ProjectFile_new::ATTR_FORT067LOCATION = "fort067Loc";
 const QString ProjectFile_new::ATTR_LASTSAVE = "savedOn";
@@ -250,6 +252,18 @@ QString ProjectFile_new::GetSubDomainFort64(QString subdomainName)
 }
 
 
+QString ProjectFile_new::GetSubDomainFort020(QString subdomainName)
+{
+	return GetAttributeSubdomain(subdomainName, ATTR_FORT020LOCATION);
+}
+
+
+QString ProjectFile_new::GetSubDomainFort021(QString subdomainName)
+{
+	return GetAttributeSubdomain(subdomainName, ATTR_FORT021LOCATION);
+}
+
+
 QStringList ProjectFile_new::GetSubDomainNames()
 {
 	QStringList subdomainNames;
@@ -428,6 +442,18 @@ void ProjectFile_new::SetSubDomainFort63(QString subDomain, QString newLoc)
 void ProjectFile_new::SetSubDomainFort64(QString subDomain, QString newLoc)
 {
 	SetAttributeSubdomain(subDomain, ATTR_FORT64LOCATION, newLoc);
+}
+
+
+void ProjectFile_new::SetSubDomainFort020(QString subDomain, QString newLoc)
+{
+	SetAttributeSubdomain(subDomain, ATTR_FORT020LOCATION, newLoc);
+}
+
+
+void ProjectFile_new::SetSubDomainFort021(QString subDomain, QString newLoc)
+{
+	SetAttributeSubdomain(subDomain, ATTR_FORT021LOCATION, newLoc);
 }
 
 

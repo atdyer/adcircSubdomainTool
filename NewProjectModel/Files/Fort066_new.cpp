@@ -75,10 +75,10 @@ std::map<unsigned int, std::string> Fort066_new::GetNextTimestep()
 		currentData[0] = tsLine;
 		for (int i=0; i<numNodes; ++i)
 		{
-			file >> currNode;
 			std::getline(file, line1);
 			std::getline(file, line2);
-			currentData[currNode] = "\t" + line1 + "\n" + line2 + "\n";
+			std::stringstream(line1) >> currNode;
+			currentData[currNode] = line1 + "\n" + line2 + "\n";
 		}
 	}
 	++currTS;

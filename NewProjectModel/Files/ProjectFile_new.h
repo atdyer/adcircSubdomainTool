@@ -41,6 +41,8 @@ class ProjectFile_new : public QDomDocument
 		QString		GetSubDomainFort15(QString subdomainName);
 		QString		GetSubDomainFort63(QString subdomainName);
 		QString		GetSubDomainFort64(QString subdomainName);
+		QString		GetSubDomainFort020(QString subdomainName);
+		QString		GetSubDomainFort021(QString subdomainName);
 		QStringList	GetSubDomainNames();
 		QString		GetSubDomainPy140(QString subdomainName);
 		QString		GetSubDomainPy141(QString subdomainName);
@@ -69,6 +71,8 @@ class ProjectFile_new : public QDomDocument
 		void	SetSubDomainFort15(QString subDomain, QString newLoc);
 		void	SetSubDomainFort63(QString subDomain, QString newLoc);
 		void	SetSubDomainFort64(QString subDomain, QString newLoc);
+		void	SetSubDomainFort020(QString subDomain, QString newLoc);
+		void	SetSubDomainFort021(QString subDomain, QString newLoc);
 		void	SetSubDomainName(QString oldName, QString newName);
 		void	SetSubDomainPy140(QString subDomain, QString newLoc);
 		void	SetSubDomainPy141(QString subDomain, QString newLoc);
@@ -100,6 +104,8 @@ class ProjectFile_new : public QDomDocument
 		static const QString	ATTR_FORT63LOCATION;
 		static const QString	ATTR_FORT64LOCATION;
 		static const QString	ATTR_FORT015LOCATION;
+		static const QString	ATTR_FORT020LOCATION;
+		static const QString	ATTR_FORT021LOCATION;
 		static const QString	ATTR_FORT066LOCATION;
 		static const QString	ATTR_FORT067LOCATION;
 		static const QString	ATTR_LASTSAVE;
