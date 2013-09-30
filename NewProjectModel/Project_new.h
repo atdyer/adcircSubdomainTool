@@ -5,8 +5,11 @@
 #include <QObject>
 #include <QProgressBar>
 #include <QTreeWidget>
+#include <QInputDialog>
 
 #include <vector>
+
+#include "Adcirc/SubdomainCreator_new.h"
 
 #include "Dialogs/CreateProjectDialog.h"
 
@@ -17,7 +20,7 @@
 
 
 
-class Project_new : QObject
+class Project_new : public QObject
 {
 		Q_OBJECT
 	public:
@@ -42,6 +45,15 @@ class Project_new : QObject
 		void	CreateProjectFile();
 		void	OpenProjectFile(QString filePath);
 		void	PopulateProjectTree();
+
+	public slots:
+
+		void	CreateNewSubdomain();
+		void	EditProjectSettings();
+		void	RunFullDomain();
+		void	RunSubdomain(QString subdomain);
+		void	SaveProject();
+
 
 };
 

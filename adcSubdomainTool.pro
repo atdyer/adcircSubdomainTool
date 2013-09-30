@@ -91,7 +91,9 @@ SOURCES += main.cpp\
     NewProjectModel/Files/Fort022_new.cpp \
     NewProjectModel/Files/Fort015_new.cpp \
     NewProjectModel/Files/Fort066_new.cpp \
-    NewProjectModel/Files/Fort067_new.cpp
+    NewProjectModel/Files/Fort067_new.cpp \
+    Adcirc/SubdomainCreator_new.cpp \
+    Adcirc/SubdomainRunner.cpp
 
 HEADERS  += MainWindow.h \
     OpenGL/OpenGLPanel.h \
@@ -173,7 +175,9 @@ HEADERS  += MainWindow.h \
     NewProjectModel/Files/Fort022_new.h \
     NewProjectModel/Files/Fort015_new.h \
     NewProjectModel/Files/Fort066_new.h \
-    NewProjectModel/Files/Fort067_new.h
+    NewProjectModel/Files/Fort067_new.h \
+    Adcirc/SubdomainCreator_new.h \
+    Adcirc/SubdomainRunner.h
 
 FORMS    += MainWindow.ui \
     Dialogs/CreateProjectDialog.ui \

@@ -46,3 +46,87 @@ Fort14_new::~Fort14_new()
 {
 
 }
+
+
+void Fort14_new::Draw()
+{
+
+}
+
+
+ShaderType Fort14_new::GetFillShaderType()
+{
+
+}
+
+
+QGradientStops Fort14_new::GetGradientBoundaryColors()
+{
+
+}
+
+
+QGradientStops Fort14_new::GetGradientFillColors()
+{
+
+}
+
+
+QGradientStops Fort14_new::GetGradientOutlineColors()
+{
+
+}
+
+
+ShaderType Fort14_new::GetOutlineShaderType()
+{
+
+}
+
+
+QColor Fort14_new::GetSolidBoundaryColor()
+{
+
+}
+
+
+QColor Fort14_new::GetSolidFillColor()
+{
+
+}
+
+
+QColor Fort14_new::GetSolidOutlineColor()
+{
+
+}
+
+
+void Fort14_new::SetGradientFillColors(QGradientStops newStops)
+{
+
+}
+
+
+void Fort14_new::SetGradientOutlineColors(QGradientStops newStops)
+{
+
+}
+
+
+void Fort14_new::SetSolidBoundaryColor(QColor newColor)
+{
+
+}
+
+
+void Fort14_new::SetSolidFillColor(QColor newColor)
+{
+
+}
+
+
+void Fort14_new::SetSolidOutlineColor(QColor newColor)
+{
+
+}

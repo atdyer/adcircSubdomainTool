@@ -228,11 +228,7 @@ void MainWindow::on_openFileButton_clicked()
 
 void MainWindow::on_newProjectButton_clicked()
 {
-	if (newProject)
-		delete newProject;
-	newProject = new Project_new(this);
-	newProject->SetProgressBar(ui->progressBar);
-	newProject->SetProjectTree(ui->projectTree);
+	CreateProjectNew(true);
 //	if (!testProject)
 //	{
 //		testProject = new Project();
@@ -249,23 +245,7 @@ void MainWindow::on_newProjectButton_clicked()
 
 void MainWindow::on_openProjectButton_clicked()
 {
-	QStringList selections;
-	QFileDialog dialog(0, "Open an ADCIRC Subdomain Project", QDir::homePath());
-	dialog.setModal(true);
-	dialog.setNameFilter("ADCIRC Subdomain Projects (*.spf)");
-	dialog.setFileMode(QFileDialog::ExistingFile);
-	if (dialog.exec())
-	{
-		selections = dialog.selectedFiles();
-		if (!selections.isEmpty())
-		{
-			if (newProject)
-				delete newProject;
-			newProject = new Project_new(selections.first(), this);
-			newProject->SetProgressBar(ui->progressBar);
-			newProject->SetProjectTree(ui->projectTree);
-		}
-	}
+	CreateProjectNew(false);
 //	if (!testProject)
 //	{
 //		testProject = new Project();
@@ -382,6 +362,37 @@ void MainWindow::ConnectProject(Project *newProject)
 		connect(newProject, SIGNAL(showAdcircPane()), this, SLOT(showAdcircPane()));
 		connect(newProject, SIGNAL(showAnalyzeResultsPane()), this, SLOT(showAnalyzeResultsPane()));
 	}
+}
+
+
+void MainWindow::CreateProjectNew(bool newProjectFile)
+{
+	if (newProject)
+		delete newProject;
+
+	if (newProjectFile)
+	{
+		newProject = new Project_new(this);
+	} else {
+		QStringList selections;
+		QFileDialog dialog(0, "Open an ADCIRC Subdomain Project", QDir::homePath());
+		dialog.setModal(true);
+		dialog.setNameFilter("ADCIRC Subdomain Projects (*.spf)");
+		dialog.setFileMode(QFileDialog::ExistingFile);
+		if (dialog.exec())
+		{
+			selections = dialog.selectedFiles();
+			if (!selections.isEmpty())
+			{
+				newProject = new Project_new(selections.first(), this);
+			}
+		}
+	}
+
+	newProject->SetProgressBar(ui->progressBar);
+	newProject->SetProjectTree(ui->projectTree);
+
+	connect(ui->createSubdomainButton, SIGNAL(clicked()), newProject, SLOT(CreateNewSubdomain()));
 }
 
 

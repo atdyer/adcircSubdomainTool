@@ -331,3 +331,53 @@ void Project_new::PopulateProjectTree()
 		projectTree->expandAll();
 	}
 }
+
+
+void Project_new::CreateNewSubdomain()
+{
+	if (fullDomain && projectFile)
+	{
+		bool ok;
+		QString newName = QInputDialog::getText(0,
+							"Create Subdomain",
+							"Please enter a name for the new subdomain: ",
+							QLineEdit::Normal,
+							"",
+							&ok);
+		if (ok && !newName.isEmpty())
+		{
+			SubdomainCreator_new creator;
+			SubDomain *newSubdomain = creator.CreateSubdomain(newName, projectFile, fullDomain);
+			if (newSubdomain)
+			{
+				newSubdomain->setParent(this);
+				subDomains.push_back(newSubdomain);
+				PopulateProjectTree();
+			}
+		}
+	}
+}
+
+
+void Project_new::EditProjectSettings()
+{
+
+}
+
+
+void Project_new::RunFullDomain()
+{
+
+}
+
+
+void Project_new::RunSubdomain(QString subdomain)
+{
+
+}
+
+
+void Project_new::SaveProject()
+{
+
+}

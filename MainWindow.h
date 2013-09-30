@@ -103,6 +103,7 @@ class MainWindow : public QMainWindow
 
 		void	ConnectNewDomain(Domain *newDomain);
 		void	ConnectProject(Project *newProject);
+		void	CreateProjectNew(bool newProjectFile); // Create the new project object and connect
 		void	CheckForMemoryLeaks();
 
 };
