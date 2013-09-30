@@ -2,9 +2,11 @@
 #define MAINWINDOW_H
 
 #include "Projects/Project.h"
+#include "NewProjectModel/Project_new.h"
 #include "Domains/Domain.h"
 
 #include "Dialogs/DisplayOptionsDialog.h"
+#include "Dialogs/CreateProjectDialog.h"
 
 #include <QMainWindow>
 #include <QThread>
@@ -91,6 +93,7 @@ class MainWindow : public QMainWindow
 
 		// The test Project
 		Project*	testProject;
+		Project_new*	newProject;
 
 		// The test Domain
 		Domain*		testDomain;

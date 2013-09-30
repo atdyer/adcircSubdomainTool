@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	testDomain = 0;
 	testProject = 0;
+	newProject = 0;
 	displayOptionsDialog = 0;
 
 	// Create GLPanel status bar and all labels
@@ -227,30 +228,52 @@ void MainWindow::on_openFileButton_clicked()
 
 void MainWindow::on_newProjectButton_clicked()
 {
-	if (!testProject)
-	{
-		testProject = new Project();
-		testProject->SetProgressBar(ui->progressBar);
-		ConnectProject(testProject);
-		testProject->SetProjectTree(ui->projectTree);
-		testProject->CreateProject();
-		if (testProject->ProjectIsOpen())
-			DEBUG("Project successfully created");
-		else
-			DEBUG("No project created");
-	}
+	if (newProject)
+		delete newProject;
+	newProject = new Project_new(this);
+	newProject->SetProgressBar(ui->progressBar);
+	newProject->SetProjectTree(ui->projectTree);
+//	if (!testProject)
+//	{
+//		testProject = new Project();
+//		testProject->SetProgressBar(ui->progressBar);
+//		ConnectProject(testProject);
+//		testProject->SetProjectTree(ui->projectTree);
+//		testProject->CreateProject();
+//		if (testProject->ProjectIsOpen())
+//			DEBUG("Project successfully created");
+//		else
+//			DEBUG("No project created");
+//	}
 }
 
 void MainWindow::on_openProjectButton_clicked()
 {
-	if (!testProject)
+	QStringList selections;
+	QFileDialog dialog(0, "Open an ADCIRC Subdomain Project", QDir::homePath());
+	dialog.setModal(true);
+	dialog.setNameFilter("ADCIRC Subdomain Projects (*.spf)");
+	dialog.setFileMode(QFileDialog::ExistingFile);
+	if (dialog.exec())
 	{
-		testProject = new Project();
-		testProject->SetProgressBar(ui->progressBar);
-		ConnectProject(testProject);
-		testProject->SetProjectTree(ui->projectTree);
-		testProject->OpenProject();
+		selections = dialog.selectedFiles();
+		if (!selections.isEmpty())
+		{
+			if (newProject)
+				delete newProject;
+			newProject = new Project_new(selections.first(), this);
+			newProject->SetProgressBar(ui->progressBar);
+			newProject->SetProjectTree(ui->projectTree);
+		}
 	}
+//	if (!testProject)
+//	{
+//		testProject = new Project();
+//		testProject->SetProgressBar(ui->progressBar);
+//		ConnectProject(testProject);
+//		testProject->SetProjectTree(ui->projectTree);
+//		testProject->OpenProject();
+//	}
 
 }
 
