@@ -18,7 +18,7 @@ class SubdomainCreator_new
 		SubdomainCreator_new();
 		~SubdomainCreator_new();
 
-		bool CreateSubdomain(QString newName, ProjectFile_new *projFile, FullDomain *fDomain);
+		bool	CreateSubdomain(QString newName, ProjectFile_new *projFile, FullDomain *fDomain);
 
 	private:
 

@@ -2,6 +2,7 @@
 #define BOUNDARYSEARCH_H
 
 #include <set>
+#include <map>
 #include <vector>
 
 #include "adcData.h"
@@ -47,12 +48,8 @@ class BoundarySearch
 	public:
 		BoundarySearch();
 
-		std::vector<unsigned int>	FindInnerBoundaries(std::vector<Element> *elements);
-		std::vector<unsigned int>	FindInnerBoundaries(std::vector<Element*> elements);
-		std::vector<unsigned int>	FindOuterBoundaries(std::vector<Element> *elements);
-		std::vector<unsigned int>	FindOuterBoundaries(std::vector<Element*> elements);
-		Boundaries			FindAllBoundaries(std::vector<Element> *elements);
-		Boundaries			FindAllBoundaries(std::vector<Element*> elements);
+		Boundaries	FindBoundaries(std::vector<Element> *elements);
+		Boundaries	FindBoundaries(std::vector<Element*> elements);
 };
 
 #endif // BOUNDARYSEARCH_H

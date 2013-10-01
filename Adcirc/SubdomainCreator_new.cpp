@@ -57,7 +57,7 @@ void SubdomainCreator_new::FindBoundaries()
 	if (bnList && py140)
 	{
 		BoundarySearch boundarySearch;
-		Boundaries selectedBoundaries = boundarySearch.FindAllBoundaries(selectedElements);
+		Boundaries selectedBoundaries = boundarySearch.FindBoundaries(selectedElements);
 
 		std::vector<unsigned int> innerBoundaries;
 		std::vector<unsigned int> outerBoundaries;
