@@ -2,6 +2,7 @@
 #define FULLDOMAIN_H
 
 #include <iostream>
+#include <vector>
 
 #include <QObject>
 
@@ -25,6 +26,8 @@ class FullDomain : public QObject
 		explicit FullDomain(QObject *parent=0);
 		FullDomain(ProjectFile_new *projectFile, QObject *parent=0);
 		~FullDomain();
+
+		std::vector<Element*>	GetSelectedElements();
 
 	private:
 

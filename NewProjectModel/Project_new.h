@@ -41,10 +41,11 @@ class Project_new : public QObject
 		QProgressBar*		progressBar;
 		QTreeWidget*		projectTree;
 
-		void	CreateAllSubdomains();
-		void	CreateProjectFile();
-		void	OpenProjectFile(QString filePath);
-		void	PopulateProjectTree();
+		SubDomain*	BuildSubdomain(QString subdomainName);
+		void		CreateAllSubdomains();
+		void		CreateProjectFile();
+		void		OpenProjectFile(QString filePath);
+		void		PopulateProjectTree();
 
 	public slots:
 

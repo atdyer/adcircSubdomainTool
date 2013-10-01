@@ -44,6 +44,14 @@ void Project_new::SetProjectTree(QTreeWidget *newTree)
 }
 
 
+SubDomain* Project_new::BuildSubdomain(QString subdomainName)
+{
+	SubDomain *newSubdomain = new SubDomain(subdomainName, projectFile, this);
+	subDomains.push_back(newSubdomain);
+	return newSubdomain;
+}
+
+
 void Project_new::CreateAllSubdomains()
 {
 	if (projectFile)
@@ -51,7 +59,7 @@ void Project_new::CreateAllSubdomains()
 		QStringList subdomainNames = projectFile->GetSubDomainNames();
 		for (int i = 0; i<subdomainNames.size(); ++i)
 		{
-			subDomains.push_back(new SubDomain(subdomainNames.at(i), projectFile, this));
+			BuildSubdomain(subdomainNames.at(i));
 		}
 	}
 }
@@ -347,11 +355,10 @@ void Project_new::CreateNewSubdomain()
 		if (ok && !newName.isEmpty())
 		{
 			SubdomainCreator_new creator;
-			SubDomain *newSubdomain = creator.CreateSubdomain(newName, projectFile, fullDomain);
+			bool newSubdomain = creator.CreateSubdomain(newName, projectFile, fullDomain);
 			if (newSubdomain)
 			{
-				newSubdomain->setParent(this);
-				subDomains.push_back(newSubdomain);
+				BuildSubdomain(newName);
 				PopulateProjectTree();
 			}
 		}

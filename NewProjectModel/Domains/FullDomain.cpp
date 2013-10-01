@@ -43,6 +43,12 @@ FullDomain::~FullDomain()
 }
 
 
+std::vector<Element*> FullDomain::GetSelectedElements()
+{
+
+}
+
+
 void FullDomain::CreateAllFiles()
 {
 	fort14 = new Fort14_new(projectFile, this);

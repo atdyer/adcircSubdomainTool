@@ -25,6 +25,7 @@ class Fort14_new : public QObject
 		QGradientStops	GetGradientFillColors();
 		QGradientStops	GetGradientOutlineColors();
 		ShaderType	GetOutlineShaderType();
+
 		QColor		GetSolidBoundaryColor();
 		QColor		GetSolidFillColor();
 		QColor		GetSolidOutlineColor();
@@ -39,6 +40,8 @@ class Fort14_new : public QObject
 
 		QString			domainName;
 		ProjectFile_new*	projectFile;
+
+
 };
 
 #endif // FORT14_new_H
