@@ -33,13 +33,12 @@ class Project_new : public QObject
 
 	private:
 
-		ProjectFile_new*	projectFile;
-
 		FullDomain*		fullDomain;
+		QProgressBar*		progressBar;
+		ProjectFile_new*	projectFile;
+		QTreeWidget*		projectTree;
 		std::vector<SubDomain*>	subDomains;
 
-		QProgressBar*		progressBar;
-		QTreeWidget*		projectTree;
 
 		SubDomain*	BuildSubdomain(QString subdomainName);
 		void		CreateAllSubdomains();

@@ -2,12 +2,15 @@
 #define FORT14_new_H
 
 #include <QObject>
+#include <QThread>
 
 #include "NewProjectModel/Files/ProjectFile_new.h"
 
 #include "OpenGL/Shaders/GLShader.h"
 #include "OpenGL/Shaders/GradientShader.h"
 #include "OpenGL/Shaders/SolidShader.h"
+
+#include "Quadtree/Quadtree.h"
 
 class Fort14_new : public QObject
 {
@@ -20,26 +23,46 @@ class Fort14_new : public QObject
 
 		void	Draw();
 
-		ShaderType	GetFillShaderType();
-		QGradientStops	GetGradientBoundaryColors();
-		QGradientStops	GetGradientFillColors();
-		QGradientStops	GetGradientOutlineColors();
-		ShaderType	GetOutlineShaderType();
+		std::vector<Element>*	GetElements();
+		ShaderType		GetFillShaderType();
+		QGradientStops		GetGradientBoundaryColors();
+		QGradientStops		GetGradientFillColors();
+		QGradientStops		GetGradientOutlineColors();
+		float			GetMaxX();
+		float			GetMaxY();
+		float			GetMaxZ();
+		float			GetMinX();
+		float			GetMinY();
+		float			GetMinZ();
+		ShaderType		GetOutlineShaderType();
+		float			GetUnprojectedX(float x);
+		float			GetUnprojectedY(float y);
 
-		QColor		GetSolidBoundaryColor();
-		QColor		GetSolidFillColor();
-		QColor		GetSolidOutlineColor();
+		std::vector<Element*>	GetSelectedElements();
+		QColor			GetSolidBoundaryColor();
+		QColor			GetSolidFillColor();
+		QColor			GetSolidOutlineColor();
 
-		void		SetGradientFillColors(QGradientStops newStops);
-		void		SetGradientOutlineColors(QGradientStops newStops);
-		void		SetSolidBoundaryColor(QColor newColor);
-		void		SetSolidFillColor(QColor newColor);
-		void		SetSolidOutlineColor(QColor newColor);
+		void			SetGradientFillColors(QGradientStops newStops);
+		void			SetGradientOutlineColors(QGradientStops newStops);
+		void			SetSolidBoundaryColor(QColor newColor);
+		void			SetSolidFillColor(QColor newColor);
+		void			SetSolidOutlineColor(QColor newColor);
 
 	private:
 
 		QString			domainName;
+		std::vector<Element>	elements;
+		std::vector<Node>	nodes;
 		ProjectFile_new*	projectFile;
+		Quadtree*		quadtree;
+
+	public slots:
+
+		void	SelectCircle(int x, int y, int radius);
+		void	SelectPoint(int x, int y);
+		void	SelectPolygon(std::vector<Point> polyLine);
+		void	SelectRectangle(int l, int r, int b, int t);
 
 
 };

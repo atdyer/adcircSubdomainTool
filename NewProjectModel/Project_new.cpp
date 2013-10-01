@@ -2,11 +2,11 @@
 
 Project_new::Project_new(QObject *parent) :
 	QObject(parent),
-	projectFile(0),
 	fullDomain(0),
-	subDomains(),
 	progressBar(0),
-	projectTree(0)
+	projectFile(0),
+	projectTree(0),
+	subDomains()
 {
 	CreateProjectFile();
 }
@@ -14,11 +14,11 @@ Project_new::Project_new(QObject *parent) :
 
 Project_new::Project_new(QString projectFile, QObject *parent) :
 	QObject(parent),
-	projectFile(0),
 	fullDomain(0),
-	subDomains(),
 	progressBar(0),
-	projectTree(0)
+	projectFile(0),
+	projectTree(0),
+	subDomains()
 {
 	OpenProjectFile(projectFile);
 }
