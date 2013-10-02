@@ -94,7 +94,8 @@ SOURCES += main.cpp\
     NewProjectModel/Files/Fort067_new.cpp \
     Adcirc/SubdomainCreator_new.cpp \
     Adcirc/SubdomainRunner.cpp \
-    SubdomainTools/BoundarySearch.cpp
+    SubdomainTools/BoundarySearch.cpp \
+    NewProjectModel/Files/Workers/Fort14Reader.cpp
 
 HEADERS  += MainWindow.h \
     OpenGL/OpenGLPanel.h \
@@ -179,7 +180,8 @@ HEADERS  += MainWindow.h \
     NewProjectModel/Files/Fort067_new.h \
     Adcirc/SubdomainCreator_new.h \
     Adcirc/SubdomainRunner.h \
-    SubdomainTools/BoundarySearch.h
+    SubdomainTools/BoundarySearch.h \
+    NewProjectModel/Files/Workers/Fort14Reader.h
 
 FORMS    += MainWindow.ui \
     Dialogs/CreateProjectDialog.ui \

@@ -5,6 +5,7 @@
 #include <vector>
 
 #include <QObject>
+#include <QProgressBar>
 
 #include "NewProjectModel/Files/Fort14_new.h"
 #include "NewProjectModel/Files/Fort15_new.h"
@@ -28,6 +29,8 @@ class FullDomain : public QObject
 		~FullDomain();
 
 		std::vector<Element*>	GetSelectedElements();
+
+		void			SetProgressBar(QProgressBar *newBar);
 
 	private:
 

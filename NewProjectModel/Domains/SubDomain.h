@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include <QObject>
+#include <QProgressBar>
 
 #include "NewProjectModel/Files/BNList14_new.h"
 #include "NewProjectModel/Files/Fort14_new.h"
@@ -28,6 +29,8 @@ class SubDomain : public QObject
 		explicit SubDomain(QObject *parent=0);
 		SubDomain(QString domainName, ProjectFile_new *projectFile, QObject *parent=0);
 		~SubDomain();
+
+		void	SetProgressBar(QProgressBar *newBar);
 
 	private:
 

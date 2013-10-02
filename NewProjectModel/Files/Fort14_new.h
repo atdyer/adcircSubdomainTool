@@ -2,9 +2,11 @@
 #define FORT14_new_H
 
 #include <QObject>
+#include <QProgressBar>
 #include <QThread>
 
 #include "NewProjectModel/Files/ProjectFile_new.h"
+#include "NewProjectModel/Files/Workers/Fort14Reader.h"
 
 #include "OpenGL/Shaders/GLShader.h"
 #include "OpenGL/Shaders/GradientShader.h"
@@ -24,6 +26,7 @@ class Fort14_new : public QObject
 		void	Draw();
 
 		std::vector<Element>*	GetElements();
+		QString			GetFilePath();
 		ShaderType		GetFillShaderType();
 		QGradientStops		GetGradientBoundaryColors();
 		QGradientStops		GetGradientFillColors();
@@ -45,6 +48,7 @@ class Fort14_new : public QObject
 
 		void			SetGradientFillColors(QGradientStops newStops);
 		void			SetGradientOutlineColors(QGradientStops newStops);
+		void			SetProgressBar(QProgressBar *newBar);
 		void			SetSolidBoundaryColor(QColor newColor);
 		void			SetSolidFillColor(QColor newColor);
 		void			SetSolidOutlineColor(QColor newColor);
@@ -54,15 +58,22 @@ class Fort14_new : public QObject
 		QString			domainName;
 		std::vector<Element>	elements;
 		std::vector<Node>	nodes;
+		QProgressBar*		progressBar;
 		ProjectFile_new*	projectFile;
 		Quadtree*		quadtree;
+		bool			readingLock;
+
+		void	ReadFile();
 
 	public slots:
 
+		void	Progress(int percent);
+		void	LockFile();
 		void	SelectCircle(int x, int y, int radius);
 		void	SelectPoint(int x, int y);
 		void	SelectPolygon(std::vector<Point> polyLine);
 		void	SelectRectangle(int l, int r, int b, int t);
+		void	UnlockFile();
 
 
 };

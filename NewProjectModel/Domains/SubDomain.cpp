@@ -53,6 +53,13 @@ SubDomain::~SubDomain()
 }
 
 
+void SubDomain::SetProgressBar(QProgressBar *newBar)
+{
+	if (fort14)
+		fort14->SetProgressBar(newBar);
+}
+
+
 void SubDomain::CreateAllFiles()
 {
 	bnList = new BNList14_new(domainName, projectFile, this);

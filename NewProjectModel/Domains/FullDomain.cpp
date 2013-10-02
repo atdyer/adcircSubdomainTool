@@ -49,6 +49,13 @@ std::vector<Element*> FullDomain::GetSelectedElements()
 }
 
 
+void FullDomain::SetProgressBar(QProgressBar *newBar)
+{
+	if (fort14)
+		fort14->SetProgressBar(newBar);
+}
+
+
 void FullDomain::CreateAllFiles()
 {
 	fort14 = new Fort14_new(projectFile, this);

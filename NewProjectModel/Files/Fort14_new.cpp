@@ -9,8 +9,10 @@ Fort14_new::Fort14_new(QObject *parent) :
 	domainName(),
 	elements(),
 	nodes(),
+	progressBar(0),
 	projectFile(0),
-	quadtree(0)
+	quadtree(0),
+	readingLock(false)
 {
 
 }
@@ -26,10 +28,12 @@ Fort14_new::Fort14_new(ProjectFile_new *projectFile, QObject *parent) :
 	domainName(),
 	elements(),
 	nodes(),
+	progressBar(0),
 	projectFile(projectFile),
-	quadtree(0)
+	quadtree(0),
+	readingLock(false)
 {
-
+	ReadFile();
 }
 
 /**
@@ -43,8 +47,10 @@ Fort14_new::Fort14_new(QString domainName, ProjectFile_new *projectFile, QObject
 	domainName(domainName),
 	elements(),
 	nodes(),
+	progressBar(0),
 	projectFile(projectFile),
-	quadtree(0)
+	quadtree(0),
+	readingLock(false)
 {
 
 }
@@ -66,6 +72,23 @@ void Fort14_new::Draw()
 std::vector<Element>* Fort14_new::GetElements()
 {
 
+}
+
+
+QString Fort14_new::GetFilePath()
+{
+	if (projectFile)
+	{
+		if (domainName.isEmpty())
+		{
+			return projectFile->GetFullDomainFort14();
+		}
+		else
+		{
+			return projectFile->GetSubDomainFort14(domainName);
+		}
+	}
+	return QString();
 }
 
 
@@ -147,7 +170,7 @@ float Fort14_new::GetUnprojectedY(float y)
 }
 
 
-std::vector<Element*>	Fort14_new::GetSelectedElements()
+std::vector<Element*> Fort14_new::GetSelectedElements()
 {
 
 }
@@ -183,6 +206,13 @@ void Fort14_new::SetGradientOutlineColors(QGradientStops newStops)
 }
 
 
+void Fort14_new::SetProgressBar(QProgressBar *newBar)
+{
+	progressBar = newBar;
+//	ReadFile();
+}
+
+
 void Fort14_new::SetSolidBoundaryColor(QColor newColor)
 {
 
@@ -198,6 +228,59 @@ void Fort14_new::SetSolidFillColor(QColor newColor)
 void Fort14_new::SetSolidOutlineColor(QColor newColor)
 {
 
+}
+
+
+void Fort14_new::ReadFile()
+{
+	if (!readingLock)
+	{
+		std::cout << "Launching from thread: " << this->thread() << std::endl;
+		QString filePath = GetFilePath();
+		if (QFile(filePath).exists())
+		{
+			QThread *thread = new QThread();
+			Fort14Reader *worker = new Fort14Reader(filePath, &nodes, &elements);
+
+			worker->moveToThread(thread);
+			connect(thread, SIGNAL(started()), worker, SLOT(ReadFile()));
+			connect(worker, SIGNAL(Progress(int)), this, SLOT(Progress(int)));
+			connect(worker, SIGNAL(FinishedReading()), this, SLOT(UnlockFile()));
+			connect(worker, SIGNAL(FinishedReading()), thread, SLOT(quit()));
+			connect(worker, SIGNAL(FinishedReading()), worker, SLOT(deleteLater()));
+			connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+
+			if (progressBar)
+			{
+				connect(worker, SIGNAL(StartedReading()), progressBar, SLOT(show()));
+				connect(worker, SIGNAL(FinishedReading()), progressBar, SLOT(hide()));
+			}
+
+			LockFile();
+			thread->start();
+		}
+	}
+}
+
+
+void Fort14_new::Progress(int percent)
+{
+	if (progressBar)
+	{
+		progressBar->setValue(percent);
+		if (percent == 100)
+		{
+			progressBar->reset();
+		}
+	}
+}
+
+
+void Fort14_new::LockFile()
+{
+	std::cout << "\n-----\nLocking file.\nNode Count: " << nodes.size() << "\nElement Count: " << elements.size() <<
+		     "\n-----" << std::endl;
+	readingLock = true;
 }
 
 
@@ -222,4 +305,12 @@ void Fort14_new::SelectPolygon(std::vector<Point> polyLine)
 void Fort14_new::SelectRectangle(int l, int r, int b, int t)
 {
 
+}
+
+
+void Fort14_new::UnlockFile()
+{
+	std::cout << "\n-----\nUnlocking file.\nNode Count: " << nodes.size() << "\nElement Count: " << elements.size() <<
+		     "\n-----" << std::endl;
+	readingLock = false;
 }

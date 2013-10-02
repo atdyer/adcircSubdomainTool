@@ -34,6 +34,17 @@ Project_new::~Project_new()
 void Project_new::SetProgressBar(QProgressBar *newBar)
 {
 	progressBar = newBar;
+
+	if (fullDomain)
+		fullDomain->SetProgressBar(newBar);
+
+	SubDomain *currDomain = 0;
+	for (std::vector<SubDomain*>::iterator it = subDomains.begin(); it != subDomains.end(); ++it)
+	{
+		currDomain = *it;
+		if (currDomain)
+			currDomain->SetProgressBar(newBar);
+	}
 }
 
 
@@ -47,6 +58,10 @@ void Project_new::SetProjectTree(QTreeWidget *newTree)
 SubDomain* Project_new::BuildSubdomain(QString subdomainName)
 {
 	SubDomain *newSubdomain = new SubDomain(subdomainName, projectFile, this);
+
+	if (progressBar)
+		newSubdomain->SetProgressBar(progressBar);
+
 	subDomains.push_back(newSubdomain);
 	return newSubdomain;
 }
