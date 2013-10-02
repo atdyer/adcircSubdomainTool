@@ -8,6 +8,12 @@ Fort14_new::Fort14_new(QObject *parent) :
 	QObject(parent),
 	domainName(),
 	elements(),
+	maxX(0.0),
+	maxY(0.0),
+	maxZ(0.0),
+	minX(0.0),
+	minY(0.0),
+	minZ(0.0),
 	nodes(),
 	progressBar(0),
 	projectFile(0),
@@ -27,6 +33,12 @@ Fort14_new::Fort14_new(ProjectFile_new *projectFile, QObject *parent) :
 	QObject(parent),
 	domainName(),
 	elements(),
+	maxX(0.0),
+	maxY(0.0),
+	maxZ(0.0),
+	minX(0.0),
+	minY(0.0),
+	minZ(0.0),
 	nodes(),
 	progressBar(0),
 	projectFile(projectFile),
@@ -46,6 +58,12 @@ Fort14_new::Fort14_new(QString domainName, ProjectFile_new *projectFile, QObject
 	QObject(parent),
 	domainName(domainName),
 	elements(),
+	maxX(0.0),
+	maxY(0.0),
+	maxZ(0.0),
+	minX(0.0),
+	minY(0.0),
+	minZ(0.0),
 	nodes(),
 	progressBar(0),
 	projectFile(projectFile),
@@ -242,45 +260,33 @@ void Fort14_new::ReadFile()
 			QThread *thread = new QThread();
 			Fort14Reader *worker = new Fort14Reader(filePath, &nodes, &elements);
 
+			// Move to thread and prepare to start reading
 			worker->moveToThread(thread);
 			connect(thread, SIGNAL(started()), worker, SLOT(ReadFile()));
-			connect(worker, SIGNAL(Progress(int)), this, SLOT(Progress(int)));
-			connect(worker, SIGNAL(FinishedReading()), this, SLOT(UnlockFile()));
-			connect(worker, SIGNAL(FinishedReading()), thread, SLOT(quit()));
-			connect(worker, SIGNAL(FinishedReading()), worker, SLOT(deleteLater()));
-			connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
 
+
+			// Hook up signals that communicate data between threads
 			if (progressBar)
 			{
 				connect(worker, SIGNAL(StartedReading()), progressBar, SLOT(show()));
 				connect(worker, SIGNAL(FinishedReading()), progressBar, SLOT(hide()));
 			}
+			connect(worker, SIGNAL(Progress(int)), this, SLOT(Progress(int)));
+			connect(worker, SIGNAL(FoundDomainBounds(float,float,float,float,float,float)),
+				this, SLOT(SetDomainBounds(float,float,float,float,float,float)));
+
+
+
+			// Hook up finishing signals
+			connect(worker, SIGNAL(FinishedReading()), this, SLOT(UnlockFile()));
+			connect(worker, SIGNAL(FinishedReading()), thread, SLOT(quit()));
+			connect(worker, SIGNAL(FinishedReading()), worker, SLOT(deleteLater()));
+			connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
 
 			LockFile();
 			thread->start();
 		}
 	}
-}
-
-
-void Fort14_new::Progress(int percent)
-{
-	if (progressBar)
-	{
-		progressBar->setValue(percent);
-		if (percent == 100)
-		{
-			progressBar->reset();
-		}
-	}
-}
-
-
-void Fort14_new::LockFile()
-{
-	std::cout << "\n-----\nLocking file.\nNode Count: " << nodes.size() << "\nElement Count: " << elements.size() <<
-		     "\n-----" << std::endl;
-	readingLock = true;
 }
 
 
@@ -305,6 +311,38 @@ void Fort14_new::SelectPolygon(std::vector<Point> polyLine)
 void Fort14_new::SelectRectangle(int l, int r, int b, int t)
 {
 
+}
+
+
+void Fort14_new::LockFile()
+{
+	std::cout << "\n-----\nLocking file.\nNode Count: " << nodes.size() << "\nElement Count: " << elements.size() <<
+		     "\n-----" << std::endl;
+	readingLock = true;
+}
+
+
+void Fort14_new::Progress(int percent)
+{
+	if (progressBar)
+	{
+		progressBar->setValue(percent);
+		if (percent == 100)
+		{
+			progressBar->reset();
+		}
+	}
+}
+
+
+void Fort14_new::SetDomainBounds(float minX, float minY, float minZ, float maxX, float maxY, float maxZ)
+{
+	this->minX = minX;
+	this->minY = minY;
+	this->minZ = minZ;
+	this->maxX = maxX;
+	this->maxY = maxY;
+	this->maxZ = maxZ;
 }
 
 
