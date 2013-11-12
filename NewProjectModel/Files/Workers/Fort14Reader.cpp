@@ -194,6 +194,7 @@ bool Fort14Reader::ReadNodalData(int numNodes, std::ifstream *fileStream)
 					       currNode.zDat;
 		currNode.x = atof(currNode.xDat.data());
 		currNode.y = atof(currNode.yDat.data());
+		currNode.z = atof(currNode.zDat.data());
 
 		if (currNode.x < minX)
 			minX = currNode.x;
@@ -203,6 +204,7 @@ bool Fort14Reader::ReadNodalData(int numNodes, std::ifstream *fileStream)
 			minY = currNode.y;
 		else if (currNode.y > maxY)
 			maxY = currNode.y;
+		currNode.z *= -1.0;
 		if (currNode.z < minZ)
 			minZ = currNode.z;
 		else if (currNode.z > maxZ)

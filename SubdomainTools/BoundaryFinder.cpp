@@ -379,3 +379,220 @@ Boundaries BoundaryFinder::RecursiveBoundarySearch(Boundaries boundaryNodes, std
 
 	return boundaryNodes;
 }
+
+
+Boundaries BoundaryFinder::NewBoundarySearch(std::vector<Element*> elements)
+{
+	Boundaries boundaryNodes;
+
+	if (elements.size())
+	{
+		std::map<Edge, int> edgeInElementCount;
+		std::map<unsigned int, std::vector<Element*> > elementsThatContainNode;
+
+		/*
+		 * Count the number of times each Edge appears. Edges that appear only once are on
+		 * the boundary. Also create a map of node numbers to the elements that contain them
+		 * for use in finding inner boundary nodes.
+		 */
+		Element *currElement;
+		for (std::vector<Element*>::iterator it = elements.begin(); it != elements.end(); ++it)
+		{
+			currElement = *it;
+			if (currElement)
+			{
+				Edge edge1 (currElement->n1->nodeNumber, currElement->n2->nodeNumber);
+				Edge edge2 (currElement->n1->nodeNumber, currElement->n3->nodeNumber);
+				Edge edge3 (currElement->n2->nodeNumber, currElement->n3->nodeNumber);
+				if (edgeInElementCount.count(edge1) == 0)
+					edgeInElementCount[edge1] = 0;
+				if (edgeInElementCount.count(edge2) == 0)
+					edgeInElementCount[edge2] = 0;
+				if (edgeInElementCount.count(edge3) == 0)
+					edgeInElementCount[edge3] = 0;
+				edgeInElementCount[edge1] += 1;
+				edgeInElementCount[edge2] += 1;
+				edgeInElementCount[edge3] += 1;
+				elementsThatContainNode[currElement->n1->nodeNumber].push_back(currElement);
+				elementsThatContainNode[currElement->n2->nodeNumber].push_back(currElement);
+				elementsThatContainNode[currElement->n3->nodeNumber].push_back(currElement);
+			}
+		}
+
+
+		/*
+		 * Create an adjacency table for nodes that fall on the outer boundary
+		 */
+		std::map<unsigned int, AdjacentNodes> sortingTable;
+		for (std::map<Edge, int>::iterator it = edgeInElementCount.begin(); it != edgeInElementCount.end(); ++it)
+		{
+			if (it->second == 1)
+			{
+				unsigned int n1 = it->first.n1;
+				unsigned int n2 = it->first.n2;
+				if (n1 != n2)
+				{
+					boundaryNodes.outerBoundaryNodes.insert(n1);
+					boundaryNodes.outerBoundaryNodes.insert(n2);
+					/*			     */
+
+					if (sortingTable[n1].n1 == 0)
+						sortingTable[n1].n1 = n2;
+					else
+						sortingTable[n1].n2 = n2;
+
+					if (sortingTable[n2].n1 == 0)
+						sortingTable[n2].n1 = n1;
+					else
+						sortingTable[n2].n2 = n1;
+				}
+			}
+		}
+
+		/*
+		 * Step through the adjacency table, starting with the first node in the table
+		 */
+		int maxCount = sortingTable.size();
+		int currCount = 0;
+
+		unsigned int firstNode = sortingTable.begin()->first;
+		unsigned int lastNode = 0;
+		unsigned int currNode = firstNode;
+		unsigned int nextNode = sortingTable[currNode].n1;
+		while (currCount < maxCount)
+		{
+			/* Node stuff */
+			boundaryNodes.orderedOuterBoundaryNodes.push_back(currNode);
+
+			if (nextNode == firstNode)
+				break;
+
+			++currCount;
+			lastNode = currNode;
+			currNode = nextNode;
+			if (sortingTable[currNode].n1 != lastNode)
+				nextNode = sortingTable[currNode].n1;
+			else
+				nextNode = sortingTable[currNode].n2;
+		}
+
+
+		std::vector<Element*> orderedBoundaryElements;
+
+		/* Add the first element (the one that contains the first two outer boundary nodes */
+		unsigned int n1 = boundaryNodes.orderedOuterBoundaryNodes.at(0);
+		unsigned int n2 = boundaryNodes.orderedOuterBoundaryNodes.at(1);
+		for (std::vector<Element*>::iterator n1Elements = elementsThatContainNode[n1].begin();
+		     n1Elements != elementsThatContainNode[n1].end();
+		     ++n1Elements)
+		{
+			for (std::vector<Element*>::iterator n2Elements = elementsThatContainNode[n2].begin();
+			     n2Elements != elementsThatContainNode[n2].end();
+			     ++n2Elements)
+			{
+				if (*n1Elements == *n2Elements)
+				{
+					orderedBoundaryElements.push_back(*n1Elements);
+				}
+			}
+		}
+
+		Element *lastElement;
+		std::vector<Element*> elementsWithCurrOBN;
+		for (std::vector<unsigned int>::iterator currOBN = boundaryNodes.orderedOuterBoundaryNodes.begin()+1;
+		     currOBN != boundaryNodes.orderedOuterBoundaryNodes.end();
+		     ++currOBN)
+		{
+			lastElement = orderedBoundaryElements.back();
+
+			elementsWithCurrOBN = elementsThatContainNode[*currOBN];
+			int numElementsToAdd = elementsWithCurrOBN.size()-1;
+			int numElementsAdded = 0;
+
+			for (unsigned int i=0; i<elementsWithCurrOBN.size(); ++i)
+			{
+				if (elementsWithCurrOBN[i])
+				{
+					int commonNodeCount = 0;
+					if ((lastElement->n1->nodeNumber == elementsWithCurrOBN[i]->n1->nodeNumber) ||
+					    (lastElement->n1->nodeNumber == elementsWithCurrOBN[i]->n2->nodeNumber) ||
+					    (lastElement->n1->nodeNumber == elementsWithCurrOBN[i]->n3->nodeNumber))
+						++commonNodeCount;
+					if ((lastElement->n2->nodeNumber == elementsWithCurrOBN[i]->n1->nodeNumber) ||
+					    (lastElement->n2->nodeNumber == elementsWithCurrOBN[i]->n2->nodeNumber) ||
+					    (lastElement->n2->nodeNumber == elementsWithCurrOBN[i]->n3->nodeNumber))
+						++commonNodeCount;
+					if ((lastElement->n3->nodeNumber == elementsWithCurrOBN[i]->n1->nodeNumber) ||
+					    (lastElement->n3->nodeNumber == elementsWithCurrOBN[i]->n2->nodeNumber) ||
+					    (lastElement->n3->nodeNumber == elementsWithCurrOBN[i]->n3->nodeNumber))
+						++commonNodeCount;
+
+					if (commonNodeCount == 3)
+					{
+						elementsWithCurrOBN[i] = 0;
+					}
+				}
+			}
+
+			while (numElementsAdded < numElementsToAdd)
+			{
+				for (unsigned int i=0; i<elementsWithCurrOBN.size(); ++i)
+				{
+					if (elementsWithCurrOBN[i])
+					{
+						int commonNodeCount = 0;
+						if ((lastElement->n1->nodeNumber == elementsWithCurrOBN[i]->n1->nodeNumber) ||
+						    (lastElement->n1->nodeNumber == elementsWithCurrOBN[i]->n2->nodeNumber) ||
+						    (lastElement->n1->nodeNumber == elementsWithCurrOBN[i]->n3->nodeNumber))
+							++commonNodeCount;
+						if ((lastElement->n2->nodeNumber == elementsWithCurrOBN[i]->n1->nodeNumber) ||
+						    (lastElement->n2->nodeNumber == elementsWithCurrOBN[i]->n2->nodeNumber) ||
+						    (lastElement->n2->nodeNumber == elementsWithCurrOBN[i]->n3->nodeNumber))
+							++commonNodeCount;
+						if ((lastElement->n3->nodeNumber == elementsWithCurrOBN[i]->n1->nodeNumber) ||
+						    (lastElement->n3->nodeNumber == elementsWithCurrOBN[i]->n2->nodeNumber) ||
+						    (lastElement->n3->nodeNumber == elementsWithCurrOBN[i]->n3->nodeNumber))
+							++commonNodeCount;
+
+						if (commonNodeCount == 2)
+						{
+							orderedBoundaryElements.push_back(elementsWithCurrOBN[i]);
+							lastElement = orderedBoundaryElements.back();
+							elementsWithCurrOBN[i] = 0;
+							++numElementsAdded;
+						}
+					}
+				}
+			}
+		}
+
+		unsigned int n3;
+		for (std::vector<Element*>::iterator currOuterElement = orderedBoundaryElements.begin();
+		     currOuterElement != orderedBoundaryElements.end();
+		     ++currOuterElement)
+		{
+			n1 = (*currOuterElement)->n1->nodeNumber;
+			n2 = (*currOuterElement)->n2->nodeNumber;
+			n3 = (*currOuterElement)->n3->nodeNumber;
+			if (!boundaryNodes.orderedInnerBoundaryNodes.size())
+			{
+				if (!boundaryNodes.outerBoundaryNodes.count(n1))
+					boundaryNodes.orderedInnerBoundaryNodes.push_back(n1);
+				if (!boundaryNodes.outerBoundaryNodes.count(n2))
+					boundaryNodes.orderedInnerBoundaryNodes.push_back(n2);
+				if (!boundaryNodes.outerBoundaryNodes.count(n3))
+					boundaryNodes.orderedInnerBoundaryNodes.push_back(n3);
+			} else {
+				lastNode = boundaryNodes.orderedInnerBoundaryNodes.back();
+				if (!boundaryNodes.outerBoundaryNodes.count(n1) && (n1 != lastNode))
+					boundaryNodes.orderedInnerBoundaryNodes.push_back(n1);
+				if (!boundaryNodes.outerBoundaryNodes.count(n2) && (n2 != lastNode))
+					boundaryNodes.orderedInnerBoundaryNodes.push_back(n2);
+				if (!boundaryNodes.outerBoundaryNodes.count(n3) && (n3 != lastNode))
+					boundaryNodes.orderedInnerBoundaryNodes.push_back(n3);
+			}
+		}
+
+		return boundaryNodes;
+	}
+}

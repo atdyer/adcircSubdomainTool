@@ -76,6 +76,8 @@ FullDomain* Project_new::BuildFullDomain()
 
 	connect(newFullDomain, SIGNAL(mouseX(float)), this, SIGNAL(mouseX(float)));
 	connect(newFullDomain, SIGNAL(mouseY(float)), this, SIGNAL(mouseY(float)));
+	connect(newFullDomain, SIGNAL(undoAvailable(bool)), this, SIGNAL(undoAvailable(bool)));
+	connect(newFullDomain, SIGNAL(redoAvailable(bool)), this, SIGNAL(redoAvailable(bool)));
 
 	return newFullDomain;
 }
@@ -87,6 +89,8 @@ SubDomain* Project_new::BuildSubdomain(QString subdomainName)
 
 	connect(newSubdomain, SIGNAL(mouseX(float)), this, SIGNAL(mouseX(float)));
 	connect(newSubdomain, SIGNAL(mouseY(float)), this, SIGNAL(mouseY(float)));
+	connect(newSubdomain, SIGNAL(undoAvailable(bool)), this, SIGNAL(undoAvailable(bool)));
+	connect(newSubdomain, SIGNAL(redoAvailable(bool)), this, SIGNAL(redoAvailable(bool)));
 
 	if (progressBar)
 		newSubdomain->SetProgressBar(progressBar);
@@ -430,6 +434,9 @@ void Project_new::SetVisibleDomain(Domain_new *newDomain)
 		visibleDomain = newDomain;
 		if (glPanel)
 			glPanel->SetActiveDomainNew(visibleDomain);
+
+		emit undoAvailable(visibleDomain->UndoAvailable());
+		emit redoAvailable(visibleDomain->RedoAvailable());
 	}
 }
 
@@ -465,6 +472,13 @@ void Project_new::EditProjectSettings()
 }
 
 
+void Project_new::Redo()
+{
+	if (visibleDomain)
+		visibleDomain->Redo();
+}
+
+
 void Project_new::RunFullDomain()
 {
 
@@ -487,6 +501,34 @@ void Project_new::SelectFullDomainCircleElements()
 {
 	if (fullDomain)
 		fullDomain->UseTool(CircleToolType, ElementSelection);
+}
+
+
+void Project_new::SelectFullDomainClickElements()
+{
+	if (fullDomain)
+		fullDomain->UseTool(ClickToolType, ElementSelection);
+}
+
+
+void Project_new::SelectFullDomainPolygonElements()
+{
+	if (fullDomain)
+		fullDomain->UseTool(PolygonToolType, ElementSelection);
+}
+
+
+void Project_new::SelectFullDomainRectangleElements()
+{
+	if (fullDomain)
+		fullDomain->UseTool(RectangleToolType, ElementSelection);
+}
+
+
+void Project_new::Undo()
+{
+	if (visibleDomain)
+		visibleDomain->Undo();
 }
 
 

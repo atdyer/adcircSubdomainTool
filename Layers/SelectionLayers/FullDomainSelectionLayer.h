@@ -42,7 +42,9 @@ class FullDomainSelectionLayer : public SelectionLayer
 		virtual void	WindowSizeChanged(float w, float h);
 
 		virtual void	Undo();
+		virtual bool	GetUndoAvailable();
 		virtual void	Redo();
+		virtual bool	GetRedoAvailable();
 
 	private:
 

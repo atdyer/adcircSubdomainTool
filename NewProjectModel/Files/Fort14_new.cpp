@@ -467,7 +467,11 @@ void Fort14_new::SetSolidOutlineColor(QColor newColor)
 
 void Fort14_new::CreateDefaultShaders()
 {
-	SetSolidFillColor(QColor(0.1*255, 0.8*255, 0.1*255, 1.0*255));
+//	SetSolidFillColor(QColor(0.1*255, 0.8*255, 0.1*255, 1.0*255));
+	QGradientStops defaultStops;
+	defaultStops << QGradientStop(0.0, QColor(0.1*255, 0.8*255, 0.1*255, 1.0*255));
+	defaultStops << QGradientStop(1.0, QColor(0, 102, 0, 255));
+	SetGradientFillColors(defaultStops);
 	SetSolidOutlineColor(QColor(0.2*255, 0.2*255, 0.2*255, 0.1*255));
 }
 
@@ -689,4 +693,11 @@ void Fort14_new::SetDomainBounds(float minX, float minY, float minZ, float maxX,
 	this->midX = minX + (maxX - minX) / 2.0;
 	this->midY = minY + (maxY - minY) / 2.0;
 	this->max = fmax(maxX-minX, maxY-minY);
+
+	if (gradientBoundary)
+		gradientBoundary->SetGradientRange(minZ, maxZ);
+	if (gradientFill)
+		gradientFill->SetGradientRange(minZ, maxZ);
+	if (gradientOutline)
+		gradientOutline->SetGradientRange(minZ, maxZ);
 }

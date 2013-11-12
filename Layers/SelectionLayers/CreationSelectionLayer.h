@@ -81,7 +81,9 @@ class CreationSelectionLayer : public SelectionLayer
 		void	WindowSizeChanged(float w, float h);
 
 		virtual void	Undo();
+		virtual bool	GetUndoAvailable();
 		virtual void	Redo();
+		virtual bool	GetRedoAvailable();
 
 		std::vector<unsigned int>	GetBoundaryNodes();
 		ElementState*			GetCurrentSelection();

@@ -58,11 +58,17 @@ class Project_new : public QObject
 
 		void	CreateNewSubdomain();
 		void	EditProjectSettings();
+		void	Redo();
 		void	RunFullDomain();
 		void	RunSubdomain(QString subdomain);
 		void	SaveProject();
 
 		void	SelectFullDomainCircleElements();
+		void	SelectFullDomainClickElements();
+		void	SelectFullDomainPolygonElements();
+		void	SelectFullDomainRectangleElements();
+
+		void	Undo();
 
 	private slots:
 
@@ -72,6 +78,9 @@ class Project_new : public QObject
 
 		void	mouseX(float);
 		void	mouseY(float);
+		void	undoAvailable(bool);
+		void	redoAvailable(bool);
+
 
 };
 

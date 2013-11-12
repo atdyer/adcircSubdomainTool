@@ -388,6 +388,8 @@ void MainWindow::CreateProjectNew(bool newProjectFile)
 			{
 				newProject = new Project_new(selections.first(), this);
 			}
+		} else {
+			return;
 		}
 	}
 
@@ -400,10 +402,18 @@ void MainWindow::CreateProjectNew(bool newProjectFile)
 
 	/* Selection Tools */
 	connect(ui->selectNodesCircle, SIGNAL(clicked()), newProject, SLOT(SelectFullDomainCircleElements()));
+	connect(ui->selectElementSingle, SIGNAL(clicked()), newProject, SLOT(SelectFullDomainClickElements()));
+	connect(ui->selectNodeSingle, SIGNAL(clicked()), newProject, SLOT(SelectFullDomainPolygonElements()));
+	connect(ui->selectNodesSquare, SIGNAL(clicked()), newProject, SLOT(SelectFullDomainRectangleElements()));
+
+	connect(ui->undoButton, SIGNAL(clicked()), newProject, SLOT(Undo()));
+	connect(ui->redoButton, SIGNAL(clicked()), newProject, SLOT(Redo()));
 
 	/* U/I Updates */
 	connect(newProject, SIGNAL(mouseX(float)), this, SLOT(showMouseX(float)));
 	connect(newProject, SIGNAL(mouseY(float)), this, SLOT(showMouseY(float)));
+	connect(newProject, SIGNAL(undoAvailable(bool)), ui->undoButton, SLOT(setEnabled(bool)));
+	connect(newProject, SIGNAL(redoAvailable(bool)), ui->redoButton, SLOT(setEnabled(bool)));
 }
 
 

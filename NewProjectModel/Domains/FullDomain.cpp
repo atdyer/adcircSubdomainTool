@@ -18,6 +18,8 @@ FullDomain::FullDomain(ProjectFile_new *projectFile, QObject *parent) :
 	selectionLayer->SetCamera(camera);
 
 	connect(selectionLayer, SIGNAL(ToolFinishedDrawing()), this, SLOT(EnterDisplayMode()));
+	connect(selectionLayer, SIGNAL(UndoAvailable(bool)), this, SIGNAL(undoAvailable(bool)));
+	connect(selectionLayer, SIGNAL(RedoAvailable(bool)), this, SIGNAL(redoAvailable(bool)));
 }
 
 

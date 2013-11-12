@@ -414,6 +414,12 @@ void CreationSelectionLayer::Undo()
 }
 
 
+bool CreationSelectionLayer::GetUndoAvailable()
+{
+	return !undoStack.empty();
+}
+
+
 /**
  * @brief Redoes the last undone selection or deselection
  *
@@ -432,6 +438,12 @@ void CreationSelectionLayer::Redo()
 		if (redoStack.empty())
 			emit RedoAvailable(false);
 	}
+}
+
+
+bool CreationSelectionLayer::GetRedoAvailable()
+{
+	return !redoStack.empty();
 }
 
 

@@ -30,10 +30,15 @@ class Domain_new : public QObject
 		void	MouseWheel(QWheelEvent *event);
 		void	KeyPress(QKeyEvent *event);
 
+		void	Redo();
+		bool	RedoAvailable();
+
 		void	SetCamera(GLCamera *newCam);
 		void	SetProgressBar(QProgressBar* newBar);
 		void	SetWindowSize(float w, float h);
 
+		void	Undo();
+		bool	UndoAvailable();
 		void	UseTool(ToolType tool, SelectionType selection);
 
 	protected:
@@ -68,6 +73,8 @@ class Domain_new : public QObject
 		void	setCursor(const QCursor &);
 		void	mouseX(float);
 		void	mouseY(float);
+		void	undoAvailable(bool);
+		void	redoAvailable(bool);
 		
 	public slots:
 

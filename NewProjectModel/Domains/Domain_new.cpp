@@ -123,6 +123,22 @@ void Domain_new::KeyPress(QKeyEvent *event)
 }
 
 
+void Domain_new::Redo()
+{
+	if (selectionLayer)
+		selectionLayer->Redo();
+	emit updateGL();
+}
+
+
+bool Domain_new::RedoAvailable()
+{
+	if (selectionLayer)
+		return selectionLayer->GetRedoAvailable();
+	return false;
+}
+
+
 void Domain_new::SetCamera(GLCamera *newCam)
 {
 	camera = newCam;
@@ -145,6 +161,22 @@ void Domain_new::SetWindowSize(float w, float h)
 
 	if (selectionLayer)
 		selectionLayer->WindowSizeChanged(w, h);
+}
+
+
+void Domain_new::Undo()
+{
+	if (selectionLayer)
+		selectionLayer->Undo();
+	emit updateGL();
+}
+
+
+bool Domain_new::UndoAvailable()
+{
+	if (selectionLayer)
+		return selectionLayer->GetUndoAvailable();
+	return false;
 }
 
 

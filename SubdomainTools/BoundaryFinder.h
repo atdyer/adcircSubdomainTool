@@ -66,6 +66,7 @@ class BoundaryFinder
 		std::vector<unsigned int> FindInnerBoundaries(ElementState* elementSelection);
 		Boundaries	FindAllBoundaries(std::vector<Element> *elements);
 		Boundaries	FindOrderedBoundaries(std::vector<Element*> elements);
+		Boundaries	NewBoundarySearch(std::vector<Element*> elements);
 
 	private:
 
