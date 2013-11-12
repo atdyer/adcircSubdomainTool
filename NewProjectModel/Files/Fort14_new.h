@@ -25,6 +25,12 @@ class Fort14_new : public QObject
 
 		void	Draw();
 
+		Element*		FindElement(float xGL, float yGL);
+		std::vector<Element*>	FindElementsInCircle(float x, float y, float radius);
+		std::vector<Element*>	FindElementsInRectangle(float l, float r, float b, float t);
+		std::vector<Element*>	FindElementsInPolygon(std::vector<Point> polyLine);
+
+		ShaderType		GetBoundaryShaderType();
 		std::vector<Element>*	GetElements();
 		QString			GetFilePath();
 		ShaderType		GetFillShaderType();
@@ -46,6 +52,8 @@ class Fort14_new : public QObject
 		QColor			GetSolidFillColor();
 		QColor			GetSolidOutlineColor();
 
+		void			SetCamera(GLCamera *camera);
+		void			SetGradientBoundaryColors(QGradientStops newStops);
 		void			SetGradientFillColors(QGradientStops newStops);
 		void			SetGradientOutlineColors(QGradientStops newStops);
 		void			SetProgressBar(QProgressBar *newBar);
@@ -55,21 +63,52 @@ class Fort14_new : public QObject
 
 	private:
 
-		QString			domainName;
-		std::vector<Element>	elements;
-		float			maxX;
-		float			maxY;
-		float			maxZ;
-		float			minX;
-		float			minY;
-		float			minZ;
-		std::vector<Node>	nodes;
-		QProgressBar*		progressBar;
-		ProjectFile_new*	projectFile;
-		Quadtree*		quadtree;
-		bool			readingLock;
+		QString				domainName;
+		std::vector<Element>		elements;
+		std::vector<std::vector<unsigned int> >	elevationBoundaries;
+		std::vector<std::vector<unsigned int> >	flowBoundaries;
+		float				max;
+		float				maxX;
+		float				maxY;
+		float				maxZ;
+		float				midX;
+		float				midY;
+		float				minX;
+		float				minY;
+		float				minZ;
+		std::vector<Node>		nodes;
+		unsigned int			numElements;
+		unsigned int			numNodes;
+		QProgressBar*			progressBar;
+		ProjectFile_new*		projectFile;
+		Quadtree*			quadtree;
+		bool				readingLock;
 
+		/* OpenGL */
+		bool		glLoaded;
+		GLCamera*	camera;
+		GLShader*	outlineShader;
+		GLShader*	fillShader;
+		GLShader*	boundaryShader;
+		SolidShader*	solidOutline;
+		SolidShader*	solidFill;
+		SolidShader*	solidBoundary;
+		GradientShader*	gradientOutline;
+		GradientShader* gradientFill;
+		GradientShader*	gradientBoundary;
+		GLuint		VAOId;
+		GLuint		VBOId;
+		GLuint		IBOId;
+
+		void	CreateDefaultShaders();
+		void	LoadGL();
+		void	PopulateQuadtree();
 		void	ReadFile();
+		void	UnlockFile();
+
+	signals:
+
+		void	DataLoadedToGPU(GLuint);
 
 	public slots:
 
@@ -80,10 +119,11 @@ class Fort14_new : public QObject
 
 	protected slots:
 
+		void	FinishedReading();
 		void	LockFile();
 		void	Progress(int percent);
 		void	SetDomainBounds(float minX, float minY, float minZ, float maxX, float maxY, float maxZ);
-		void	UnlockFile();
+
 
 
 };

@@ -4,6 +4,8 @@
 #include "Layers/Layer.h"
 #include "Layers/TerrainLayer.h"
 
+#include "NewProjectModel/Files/Fort14_new.h"
+
 #include "OpenGL/GLCamera.h"
 
 #include <QObject>
@@ -32,7 +34,7 @@ class SelectionLayer : public Layer
 		Q_OBJECT
 	public:
 
-		SelectionLayer();
+		SelectionLayer(QObject *parent=0);
 
 		virtual void	Draw() = 0;
 		virtual void	LoadDataToGPU() = 0;
@@ -41,7 +43,6 @@ class SelectionLayer : public Layer
 		virtual unsigned int	GetNumElementsSelected();
 
 		virtual void	SetCamera(GLCamera *newCamera) = 0;
-		virtual void	SetTerrainLayer(TerrainLayer* newLayer) = 0;
 		virtual void	UseTool(ToolType tool, SelectionType selection) = 0;
 
 		virtual void	MouseClick(QMouseEvent *event) = 0;
@@ -55,9 +56,6 @@ class SelectionLayer : public Layer
 		virtual void	Redo() = 0;
 
 	protected:
-
-		/* Layers */
-		TerrainLayer*	terrainLayer;	/**< The Terrain Layer that the selections are taken from */
 
 		/* OpenGL Variables */
 		bool		glLoaded;	/**< Flag that shows if the OpenGL context has been initialized */

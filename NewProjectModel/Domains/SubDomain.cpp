@@ -1,34 +1,10 @@
 #include "SubDomain.h"
 
 
-SubDomain::SubDomain(QObject *parent) :
-	QObject(parent),
-	bnList(0),
-	domainName(),
-	fort14(0),
-	fort15(0),
-	fort22(0),
-	fort63(0),
-	fort64(0),
-	fort015(0),
-	fort020(0),
-	fort021(0),
-	fort022(0),
-	maxele(0),
-	maxvel(0),
-	projectFile(0),
-	py140(0),
-	py141(0)
-{
-
-}
-
-
 SubDomain::SubDomain(QString domainName, ProjectFile_new *projectFile, QObject *parent) :
-	QObject(parent),
+	Domain_new(projectFile, parent),
 	bnList(0),
 	domainName(domainName),
-	fort14(0),
 	fort15(0),
 	fort22(0),
 	fort63(0),
@@ -39,7 +15,6 @@ SubDomain::SubDomain(QString domainName, ProjectFile_new *projectFile, QObject *
 	fort022(0),
 	maxele(0),
 	maxvel(0),
-	projectFile(projectFile),
 	py140(0),
 	py141(0)
 {
@@ -53,10 +28,15 @@ SubDomain::~SubDomain()
 }
 
 
-void SubDomain::SetProgressBar(QProgressBar *newBar)
+bool SubDomain::IsFullDomain()
 {
-	if (fort14)
-		fort14->SetProgressBar(newBar);
+	return false;
+}
+
+
+QString SubDomain::GetDomainName()
+{
+	return domainName;
 }
 
 
@@ -76,4 +56,6 @@ void SubDomain::CreateAllFiles()
 	maxvel = new Maxvel63_new(domainName, projectFile, this);
 	py140 = new Py140_new(domainName, projectFile, this);
 	py141 = new Py141_new(domainName, projectFile, this);
+
+	fort14->SetCamera(camera);
 }

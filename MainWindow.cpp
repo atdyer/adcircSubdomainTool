@@ -59,6 +59,8 @@ MainWindow::~MainWindow()
 //		delete testDomain;
 	if (testProject)
 		delete testProject;
+	if (newProject)
+		delete newProject;
 	delete ui;
 
 	CheckForMemoryLeaks();
@@ -389,6 +391,7 @@ void MainWindow::CreateProjectNew(bool newProjectFile)
 		}
 	}
 
+	newProject->SetOpenGLPanel(ui->GLPanel);
 	newProject->SetProgressBar(ui->progressBar);
 	newProject->SetProjectTree(ui->projectTree);
 

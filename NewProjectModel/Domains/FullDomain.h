@@ -7,6 +7,8 @@
 #include <QObject>
 #include <QProgressBar>
 
+#include "NewProjectModel/Domains/Domain_new.h"
+
 #include "NewProjectModel/Files/Fort14_new.h"
 #include "NewProjectModel/Files/Fort15_new.h"
 #include "NewProjectModel/Files/Fort22_new.h"
@@ -19,22 +21,21 @@
 #include "NewProjectModel/Files/Maxvel63_new.h"
 #include "NewProjectModel/Files/ProjectFile_new.h"
 
+#include "OpenGL/GLCamera.h"
 
-class FullDomain : public QObject
+
+class FullDomain : public Domain_new
 {
-		Q_OBJECT
 	public:
-		explicit FullDomain(QObject *parent=0);
 		FullDomain(ProjectFile_new *projectFile, QObject *parent=0);
 		~FullDomain();
 
-		std::vector<Element*>	GetSelectedElements();
+		virtual bool	IsFullDomain();
 
-		void			SetProgressBar(QProgressBar *newBar);
+		std::vector<Element*>	GetSelectedElements();
 
 	private:
 
-		Fort14_new*		fort14;
 		Fort15_new*		fort15;
 		Fort22_new*		fort22;
 		Fort63_new*		fort63;
@@ -44,8 +45,6 @@ class FullDomain : public QObject
 		Fort067_new*		fort067;
 		Maxele63_new*		maxele;
 		Maxvel63_new*		maxvel;
-		ProjectFile_new*	projectFile;
-
 
 		void	CreateAllFiles();
 

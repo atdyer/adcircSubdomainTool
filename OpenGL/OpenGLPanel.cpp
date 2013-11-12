@@ -9,6 +9,7 @@ OpenGLPanel::OpenGLPanel(QWidget *parent) :
 	setMouseTracking(true);
 
 	activeDomain = 0;
+	activeNewDomain = 0;
 
 	viewportWidth = 0.0;
 	viewportHeight = 0.0;
@@ -45,7 +46,7 @@ void OpenGLPanel::initializeGL()
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glPointSize(5);
+	glPointSize(10);
 	glEnable(GL_POINT_SMOOTH);
 	glEnable(GL_LINE_SMOOTH);
 }
@@ -65,6 +66,8 @@ void OpenGLPanel::resizeGL(int w, int h)
 
 	if (activeDomain)
 		activeDomain->SetWindowSize(w, h);
+	if (activeNewDomain)
+		activeNewDomain->SetWindowSize(w, h);
 }
 
 
@@ -77,6 +80,8 @@ void OpenGLPanel::paintGL()
 
 	if (activeDomain)
 		activeDomain->Draw();
+	if (activeNewDomain)
+		activeNewDomain->Draw();
 }
 
 
@@ -88,6 +93,8 @@ void OpenGLPanel::wheelEvent(QWheelEvent *event)
 {
 	if (activeDomain)
 		activeDomain->MouseWheel(event);
+	if (activeNewDomain)
+		activeNewDomain->MouseWheel(event);
 }
 
 
@@ -99,6 +106,8 @@ void OpenGLPanel::mousePressEvent(QMouseEvent *event)
 {
 	if (activeDomain)
 		activeDomain->MouseClick(event);
+	if (activeNewDomain)
+		activeNewDomain->MouseClick(event);
 }
 
 
@@ -110,6 +119,8 @@ void OpenGLPanel::mouseMoveEvent(QMouseEvent *event)
 {
 	if (activeDomain)
 		activeDomain->MouseMove(event);
+	if (activeNewDomain)
+		activeNewDomain->MouseMove(event);
 }
 
 
@@ -121,6 +132,8 @@ void OpenGLPanel::mouseReleaseEvent(QMouseEvent *event)
 {
 	if (activeDomain)
 		activeDomain->MouseRelease(event);
+	if (activeNewDomain)
+		activeNewDomain->MouseRelease(event);
 }
 
 
@@ -144,6 +157,21 @@ void OpenGLPanel::SetActiveDomain(Domain *newDomain)
 	activeDomain->SetWindowSize(viewportWidth, viewportHeight);
 	connect(activeDomain, SIGNAL(UpdateGL()), this, SLOT(updateGL()));
 	connect(activeDomain, SIGNAL(SetCursor(QCursor)), this, SLOT(UseCursor(QCursor)));
+}
+
+
+void OpenGLPanel::SetActiveDomainNew(Domain_new *newDomain)
+{
+	if (activeNewDomain)
+	{
+		disconnect(activeNewDomain, SIGNAL(updateGL()), this, SLOT(updateGL()));
+	}
+
+	activeNewDomain = newDomain;
+	activeNewDomain->SetWindowSize(viewportWidth, viewportHeight);
+	connect(activeNewDomain, SIGNAL(updateGL()), this, SLOT(updateGL()));
+	connect(activeNewDomain, SIGNAL(setCursor(QCursor)), this, SLOT(UseCursor(QCursor)));
+	updateGL();
 }
 
 

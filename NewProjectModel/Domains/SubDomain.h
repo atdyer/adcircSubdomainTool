@@ -6,6 +6,8 @@
 #include <QObject>
 #include <QProgressBar>
 
+#include "NewProjectModel/Domains/Domain_new.h"
+
 #include "NewProjectModel/Files/BNList14_new.h"
 #include "NewProjectModel/Files/Fort14_new.h"
 #include "NewProjectModel/Files/Fort15_new.h"
@@ -22,21 +24,22 @@
 #include "NewProjectModel/Files/Py140_new.h"
 #include "NewProjectModel/Files/Py141_new.h"
 
-class SubDomain : public QObject
+#include "OpenGL/GLCamera.h"
+
+class SubDomain : public Domain_new
 {
-		Q_OBJECT
 	public:
-		explicit SubDomain(QObject *parent=0);
 		SubDomain(QString domainName, ProjectFile_new *projectFile, QObject *parent=0);
 		~SubDomain();
 
-		void	SetProgressBar(QProgressBar *newBar);
+		virtual bool	IsFullDomain();
+
+		QString	GetDomainName();
 
 	private:
 
 		BNList14_new*		bnList;
 		QString			domainName;
-		Fort14_new*		fort14;
 		Fort15_new*		fort15;
 		Fort22_new*		fort22;
 		Fort63_new*		fort63;
@@ -47,10 +50,8 @@ class SubDomain : public QObject
 		Fort022_new*		fort022;
 		Maxele63_new*		maxele;
 		Maxvel63_new*		maxvel;
-		ProjectFile_new*	projectFile;
 		Py140_new*		py140;
 		Py141_new*		py141;
-
 
 		void	CreateAllFiles();
 

@@ -7,18 +7,15 @@
  * Initializes all variables to default values.
  *
  */
-SelectionLayer::SelectionLayer()
+SelectionLayer::SelectionLayer(QObject *parent) :
+	Layer(parent),
+	glLoaded(false),
+	camera(0),
+	VAOId(0),
+	VBOId(0),
+	IBOId(0),
+	mousePressed(false)
 {
-	terrainLayer = 0;
-
-	// No OpenGL stuff created  yet
-	glLoaded = false;
-	camera = 0;
-	VAOId = 0;
-	VBOId = 0;
-	IBOId = 0;
-
-	mousePressed = false;
 }
 
 

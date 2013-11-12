@@ -6,6 +6,7 @@
  */
 ClickTool::ClickTool()
 {
+	fort14 = 0;
 	terrain = 0;
 	camera = 0;
 
@@ -89,6 +90,12 @@ void ClickTool::SetCamera(GLCamera *cam)
 	camera = cam;
 	if (pointShader)
 		pointShader->SetCamera(cam);
+}
+
+
+void ClickTool::SetFort14(Fort14_new *newFort14)
+{
+	fort14 = newFort14;
 }
 
 
@@ -376,6 +383,13 @@ void ClickTool::FindElement()
 	{
 		selectedElements.clear();
 		Element* selectedElement = terrain->GetElement(xGL, yGL);
+		if (selectedElement)
+			selectedElements.push_back(selectedElement);
+	}
+	else if (fort14)
+	{
+		selectedElements.clear();
+		Element* selectedElement = fort14->FindElement(xGL, yGL);
 		if (selectedElement)
 			selectedElements.push_back(selectedElement);
 	}

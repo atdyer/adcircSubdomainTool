@@ -1,27 +1,8 @@
 #include "FullDomain.h"
 
 
-FullDomain::FullDomain(QObject *parent) :
-	QObject(parent),
-	fort14(0),
-	fort15(0),
-	fort22(0),
-	fort63(0),
-	fort64(0),
-	fort015(0),
-	fort066(0),
-	fort067(0),
-	maxele(0),
-	maxvel(0),
-	projectFile(0)
-{
-
-}
-
-
 FullDomain::FullDomain(ProjectFile_new *projectFile, QObject *parent) :
-	QObject(parent),
-	fort14(0),
+	Domain_new(projectFile, parent),
 	fort15(0),
 	fort22(0),
 	fort63(0),
@@ -30,8 +11,7 @@ FullDomain::FullDomain(ProjectFile_new *projectFile, QObject *parent) :
 	fort066(0),
 	fort067(0),
 	maxele(0),
-	maxvel(0),
-	projectFile(projectFile)
+	maxvel(0)
 {
 	CreateAllFiles();
 }
@@ -43,18 +23,16 @@ FullDomain::~FullDomain()
 }
 
 
+bool FullDomain::IsFullDomain()
+{
+	return true;
+}
+
+
 std::vector<Element*> FullDomain::GetSelectedElements()
 {
 
 }
-
-
-void FullDomain::SetProgressBar(QProgressBar *newBar)
-{
-	if (fort14)
-		fort14->SetProgressBar(newBar);
-}
-
 
 void FullDomain::CreateAllFiles()
 {
@@ -68,4 +46,6 @@ void FullDomain::CreateAllFiles()
 	fort067 = new Fort067_new(projectFile, this);
 	maxele = new Maxele63_new(projectFile, this);
 	maxvel = new Maxvel63_new(projectFile, this);
+
+	fort14->SetCamera(camera);
 }

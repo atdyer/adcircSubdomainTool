@@ -70,7 +70,7 @@ class CreationSelectionLayer : public SelectionLayer
 		virtual unsigned int	GetNumElementsSelected();
 
 		virtual void	SetCamera(GLCamera *newCamera);
-		virtual void	SetTerrainLayer(TerrainLayer* newLayer);
+		void	SetTerrainLayer(TerrainLayer* newLayer);
 		virtual void	UseTool(ToolType tool, SelectionType selection);
 
 		void	MouseClick(QMouseEvent *event);
@@ -87,6 +87,10 @@ class CreationSelectionLayer : public SelectionLayer
 		ElementState*			GetCurrentSelection();
 
 	private:
+
+		/* Layers */
+		TerrainLayer*	terrainLayer;	/**< The Terrain Layer that the selections are taken from */
+
 
 		/* Selection Tools */
 		ToolType	activeToolType;	/**< The type of tool currently being used */

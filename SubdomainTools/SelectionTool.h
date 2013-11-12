@@ -11,6 +11,8 @@
 #include "OpenGL/GLCamera.h"
 #include "Layers/TerrainLayer.h"
 
+#include "NewProjectModel/Files/Fort14_new.h"
+
 
 /**
  * @brief A virtual class that provides all basic functionality needed for a
@@ -30,6 +32,7 @@ class SelectionTool : public QObject
 
 		virtual void	Draw() = 0;
 		virtual void	SetCamera(GLCamera *cam) = 0;
+		virtual void	SetFort14(Fort14_new *newFort14) = 0;
 		virtual void	SetTerrainLayer(TerrainLayer *layer) = 0;
 		virtual void	SetViewportSize(float w, float h) = 0;
 

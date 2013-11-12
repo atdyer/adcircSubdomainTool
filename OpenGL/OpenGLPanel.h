@@ -9,6 +9,8 @@
 #include "SubdomainTools/CircleTool.h"
 #include "Domains/Domain.h"
 
+#include "NewProjectModel/Domains/Domain_new.h"
+
 /**
  * @brief This is a custom widget that is used specifically for drawing Domain objects
  *
@@ -21,10 +23,12 @@ class OpenGLPanel : public QGLWidget
 	public:
 		explicit	OpenGLPanel(QWidget *parent = 0);
 		void		SetActiveDomain(Domain* newDomain);
+		void		SetActiveDomainNew(Domain_new* newDomain);
 
 	protected:
 
 		Domain*		activeDomain;	/**< The Domain currently being displayed */
+		Domain_new*	activeNewDomain;
 
 		void	initializeGL();
 		void	resizeGL(int w, int h);

@@ -10,6 +10,7 @@
  */
 PolygonTool::PolygonTool()
 {
+	fort14 = 0;
 	terrain = 0;
 	camera = 0;
 
@@ -100,6 +101,12 @@ void PolygonTool::SetCamera(GLCamera *cam)
 	camera = cam;
 	if (lineShader)
 		lineShader->SetCamera(camera);
+}
+
+
+void PolygonTool::SetFort14(Fort14_new *newFort14)
+{
+	fort14 = newFort14;
 }
 
 
@@ -278,6 +285,10 @@ std::vector<Element*> PolygonTool::GetSelectedElements()
 	if (terrain)
 	{
 		selectedElements = terrain->GetElementsFromPolygon(pointsList);
+	}
+	else if (fort14)
+	{
+		selectedElements = fort14->FindElementsInPolygon(pointsList);
 	}
 	return selectedElements;
 }

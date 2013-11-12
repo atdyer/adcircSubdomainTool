@@ -1075,7 +1075,7 @@ void TerrainLayer::readFort14()
 			// Organize the data in a quadtree
 			if (!quadtree)
 			{
-				quadtree = new Quadtree(nodes, elements, 50, (minX-midX)/max, (maxX-midX)/max, (minY-midY)/max, (maxY-midY)/max);
+				quadtree = new Quadtree(nodes, elements, 2, (minX-midX)/max, (maxX-midX)/max, (minY-midY)/max, (maxY-midY)/max);
 				quadtree->SetCamera(camera);
 			}
 

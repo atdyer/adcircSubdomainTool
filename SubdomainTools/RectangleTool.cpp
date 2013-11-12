@@ -12,6 +12,7 @@
  */
 RectangleTool::RectangleTool()
 {
+	fort14 = 0;
 	terrain = 0;
 	camera = 0;
 
@@ -133,6 +134,12 @@ void RectangleTool::SetCamera(GLCamera *cam)
 	camera = cam;
 	if (fillShader)
 		fillShader->SetCamera(camera);
+}
+
+
+void RectangleTool::SetFort14(Fort14_new *newFort14)
+{
+	fort14 = newFort14;
 }
 
 
@@ -414,6 +421,11 @@ void RectangleTool::SetFirstCorner(int newX, int newY)
 	{
 		firstCornerDomain[0] = terrain->GetUnprojectedX(firstCornerNormal[0]);
 		firstCornerDomain[1] = terrain->GetUnprojectedY(firstCornerNormal[1]);
+	}
+	else if (fort14)
+	{
+		firstCornerDomain[0] = fort14->GetUnprojectedX(firstCornerNormal[0]);
+		firstCornerDomain[1] = fort14->GetUnprojectedY(firstCornerNormal[1]);
 	} else {
 		DEBUG("Rectangle Tool: No Terrain");
 	}
@@ -445,6 +457,12 @@ void RectangleTool::SetSecondCorner(int newX, int newY)
 		secondCornerDomain[0] = terrain->GetUnprojectedX(secondCornerNormal[0]);
 		secondCornerDomain[1] = terrain->GetUnprojectedY(secondCornerNormal[1]);
 		emit RectangleStatsSet(fabs(secondCornerDomain[0] - firstCornerDomain[0]), fabs(secondCornerDomain[1] - firstCornerDomain[1]));
+	}
+	else if (fort14)
+	{
+		secondCornerDomain[0] = fort14->GetUnprojectedX(secondCornerNormal[0]);
+		secondCornerDomain[1] = fort14->GetUnprojectedY(secondCornerNormal[1]);
+		emit RectangleStatsSet(fabs(secondCornerDomain[0] - firstCornerDomain[0]), fabs(secondCornerDomain[1] - firstCornerDomain[1]));
 	} else {
 		DEBUG("Rectangle Tool: No Terrain");
 	}
@@ -467,6 +485,10 @@ void RectangleTool::FindElements()
 	if (terrain)
 	{
 		selectedElements = terrain->GetElementsFromRectangle(vertexPoints[0][0], vertexPoints[3][0], vertexPoints[0][1], vertexPoints[3][1]);
+	}
+	else if (fort14)
+	{
+		selectedElements = fort14->FindElementsInRectangle(vertexPoints[0][0], vertexPoints[3][0], vertexPoints[0][1], vertexPoints[3][1]);
 	}
 }
 

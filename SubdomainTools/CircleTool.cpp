@@ -10,6 +10,7 @@
  */
 CircleTool::CircleTool()
 {
+	fort14 = 0;
 	terrain = 0;
 	camera = 0;
 
@@ -91,6 +92,12 @@ void CircleTool::Draw()
 void CircleTool::SetCamera(GLCamera *cam)
 {
 	camera = cam;
+}
+
+
+void CircleTool::SetFort14(Fort14_new *newFort14)
+{
+	fort14 = newFort14;
 }
 
 
@@ -291,6 +298,11 @@ void CircleTool::SetCenter(int newX, int newY)
 	{
 		xDomain = terrain->GetUnprojectedX(xNormal);
 		yDomain = terrain->GetUnprojectedY(yNormal);
+	}
+	else if (fort14)
+	{
+		xDomain = fort14->GetUnprojectedX(xNormal);
+		yDomain = fort14->GetUnprojectedY(yNormal);
 	} else {
 		DEBUG("Circle Tool: No Terrain");
 	}
@@ -323,6 +335,11 @@ void CircleTool::SetRadiusPoint(int newX, int newY)
 		edgeXDomain = terrain->GetUnprojectedX(edgeXNormal);
 		edgeYDomain = terrain->GetUnprojectedY(edgeYNormal);
 	}
+	else if (fort14)
+	{
+		edgeXDomain = fort14->GetUnprojectedX(edgeXNormal);
+		edgeYDomain = fort14->GetUnprojectedY(edgeYNormal);
+	}
 
 	radPixel = Distance(xPixel, yPixel, edgeXPixel, edgeYPixel);
 	radNormal = Distance(xNormal, yNormal, edgeXNormal, edgeYNormal);
@@ -345,6 +362,10 @@ void CircleTool::FindElements()
 	if (terrain)
 	{
 		selectedElements = terrain->GetElementsFromCircle(xNormal, yNormal, radNormal);
+	}
+	else if (fort14)
+	{
+		selectedElements = fort14->FindElementsInCircle(xNormal, yNormal, radNormal);
 	}
 }
 

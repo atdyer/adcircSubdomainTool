@@ -26,6 +26,7 @@ class CircleTool : public SelectionTool
 
 		void	Draw();
 		void	SetCamera(GLCamera* cam);
+		void	SetFort14(Fort14_new *newFort14);
 		void	SetTerrainLayer(TerrainLayer *layer);
 		void	SetViewportSize(float w, float h);
 
@@ -42,6 +43,7 @@ class CircleTool : public SelectionTool
 
 	private:
 
+		Fort14_new*	fort14;
 		TerrainLayer*	terrain;	/**< The TerrainLayer that nodes/elements will be selected from */
 		GLCamera*	camera;		/**< The GLCamera that is being used to draw the TerrainLayer */
 

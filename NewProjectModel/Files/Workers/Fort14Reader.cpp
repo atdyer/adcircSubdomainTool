@@ -1,14 +1,26 @@
 #include "Fort14Reader.h"
 
-Fort14Reader::Fort14Reader(QString fileLoc, std::vector<Node> *nodeList, std::vector<Element> *elementList, std::vector<unsigned int> *boundaryList, Quadtree *quadtree, bool normalize, QObject *parent) :
+Fort14Reader::Fort14Reader(QString fileLoc,
+			   std::vector<Node> *nodeList,
+			   std::vector<Element> *elementList,
+			   std::vector<std::vector<unsigned int> > *elevationBoundaryList,
+			   std::vector<std::vector<unsigned int> > *flowBoundaryList,
+			   bool normalize,
+			   QObject *parent) :
 	QObject(parent),
-	boundaryNodes(boundaryList),
 	currProgress(0),
 	elements(elementList),
+	elevationBoundaries(elevationBoundaryList),
+	flowBoundaries(flowBoundaryList),
 	fullProgress(0),
+	maxX(-99999.0),
+	maxY(-99999.0),
+	maxZ(-99999.0),
+	minX(99999.0),
+	minY(99999.0),
+	minZ(99999.0),
 	nodes(nodeList),
 	normalizeCoordinates(normalize),
-	quadtree(quadtree),
 	targetFile(fileLoc)
 {
 
@@ -23,6 +35,8 @@ Fort14Reader::~Fort14Reader()
 
 void Fort14Reader::ReadFile()
 {
+	std::cout << "Reading on thread: " << this->thread() << std::endl;
+
 	emit StartedReading();
 
 	std::ifstream fort14 (targetFile.toStdString().data());
@@ -39,11 +53,10 @@ void Fort14Reader::ReadFile()
 		std::getline(fort14, line);
 		std::stringstream(line) >> numElements >> numNodes;
 
+		fullProgress = numNodes + numElements;
+
 		nodes->reserve(numNodes);
 		elements->reserve(numElements);
-
-		currProgress = 0;
-		fullProgress = 3*numNodes + 2*numElements;
 
 		if (ReadNodalData(numNodes, &fort14))
 		{
@@ -54,7 +67,7 @@ void Fort14Reader::ReadFile()
 				{
 					NormalizeCoordinates();
 				}
-				PopulateQuadtree();
+				emit FinishedReading();
 			}
 		}
 	}
@@ -65,35 +78,79 @@ void Fort14Reader::ReadFile()
 
 Node* Fort14Reader::GetNode(unsigned int nodeNumber)
 {
-	if (nodes.size() > 0 && nodeNumber <= nodes.size() && nodeNumber == nodes[nodeNumber-1].nodeNumber)
-		return &nodes[nodeNumber-1];
+	if (nodes->size() > 0 && nodeNumber <= nodes->size() && nodeNumber == (*nodes)[nodeNumber-1].nodeNumber)
+		return &(*nodes)[nodeNumber-1];
 	else
-		for (unsigned int i=0; i<nodes.size(); i++)
-			if (nodes[i].nodeNumber == nodeNumber)
-				return &nodes[i];
+		for (unsigned int i=0; i<nodes->size(); i++)
+			if ((*nodes)[i].nodeNumber == nodeNumber)
+				return &(*nodes)[i];
 	return 0;
 }
 
 
 void Fort14Reader::NormalizeCoordinates()
 {
-
-}
-
-
-void Fort14Reader::PopulateQuadtree()
-{
-
+	float midX = minX + (maxX - minX) / 2.0;
+	float midY = minY + (maxY - minY) / 2.0;
+	float max = fmax(maxX-minX, maxY-minY);
+	for (std::vector<Node>::iterator currNode = (*nodes).begin(); currNode != (*nodes).end(); ++currNode)
+	{
+		(*currNode).normX = ((*currNode).x - midX)/max;
+		(*currNode).normY = ((*currNode).y - midY)/max;
+		(*currNode).normZ = (*currNode).z / (maxZ-minZ);
+	}
 }
 
 
 void Fort14Reader::ReadBoundaries(std::ifstream *fileStream)
 {
-	if (boundaryNodes)
+	int numEleBoundaries, numFlowBoundaries;
+	int numEleNodes, numFlowNodes;
+	int numSegmentNodes;
+	unsigned int currNode;
+	std::string currLine;
+	std::getline(*fileStream, currLine);
+	std::getline(*fileStream, currLine);
+	std::stringstream(currLine) >> numEleBoundaries;
+	std::getline(*fileStream, currLine);
+	std::stringstream(currLine) >> numEleNodes;
+
+	for (int i=0; i<numEleBoundaries; ++i)
 	{
-		std::string line;
-		int numSegments, numBoundaryNodes;
-		std::getline(*fileStream, line);
+		std::getline(*fileStream, currLine);
+		std::stringstream(currLine) >> numSegmentNodes;
+
+		std::vector<unsigned int> currSegment;
+		for (int j=0; j<numSegmentNodes; ++j)
+		{
+			std::getline(*fileStream, currLine);
+			std::stringstream(currLine) >> currNode;
+			currSegment.push_back(currNode);
+		}
+		elevationBoundaries->push_back(currSegment);
+	}
+
+	std::getline(*fileStream, currLine);
+	std::getline(*fileStream, currLine);
+	std::stringstream(currLine) >> numFlowBoundaries;
+	std::getline(*fileStream, currLine);
+	std::stringstream(currLine) >> numFlowNodes;
+
+	for (int i=0; i<numFlowBoundaries; ++i)
+	{
+		unsigned int boundaryType;
+		std::getline(*fileStream, currLine);
+		std::stringstream(currLine) >> numSegmentNodes >> boundaryType;
+
+		std::vector<unsigned int> currSegment;
+		currSegment.push_back(boundaryType);
+		for (int j=0; j<numSegmentNodes; ++j)
+		{
+			std::getline(*fileStream, currLine);
+			std::stringstream(currLine) >> currNode;
+			currSegment.push_back(currNode);
+		}
+		flowBoundaries->push_back(currSegment);
 	}
 }
 
@@ -101,39 +158,42 @@ void Fort14Reader::ReadBoundaries(std::ifstream *fileStream)
 bool Fort14Reader::ReadElementalData(int numElements, std::ifstream *fileStream)
 {
 	Element currElement;
-	unsigned int trash, currNodeNumber;
+	unsigned int trash, n1, n2, n3;
+	std::string currLine;
 	for (int i=0; i<numElements; ++i)
 	{
-		*fileStream >> currElement.elementNumber;
-		*fileStream >> trash;
-		*fileStream >> currNodeNumber;
-		currElement.n1 = GetNode(currNodeNumber);
-		*fileStream >> currNodeNumber;
-		currElement.n2 = GetNode(currNodeNumber);
-		*fileStream >> currNodeNumber;
-		currElement.n3 = GetNode(currNodeNumber);
+		std::getline(*fileStream, currLine);
+		std::stringstream(currLine) >> currElement.elementNumber >>
+					       trash >>
+					       n1 >>
+					       n2 >>
+					       n3;
+		currElement.n1 = GetNode(n1);
+		currElement.n2 = GetNode(n2);
+		currElement.n3 = GetNode(n3);
 		elements->push_back(currElement);
 		emit Progress(100*(++currProgress)/fullProgress);
 	}
+	return true;
 }
 
 
 bool Fort14Reader::ReadNodalData(int numNodes, std::ifstream *fileStream)
-{
-	float minX, minY, minZ, maxX, maxY, maxZ;
+{	
 	minX = minY = minZ = 99999.0;
-	maxX = maxY = maxZ = -99999.0;
+	maxX = maxY = maxZ -99999.0;
 
 	Node currNode;
+	std::string currLine;
 	for (int i=0; i<numNodes; ++i)
 	{
-		*fileStream >> currNode.nodeNumber;
-		*fileStream >> currNode.xDat;
-		*fileStream >> currNode.yDat;
-		*fileStream >> currNode.zDat;
+		std::getline(*fileStream, currLine);
+		std::stringstream(currLine) >> currNode.nodeNumber >>
+					       currNode.xDat >>
+					       currNode.yDat >>
+					       currNode.zDat;
 		currNode.x = atof(currNode.xDat.data());
 		currNode.y = atof(currNode.yDat.data());
-		currNode.z = -1.0*atof(currNode.zDat.data());
 
 		if (currNode.x < minX)
 			minX = currNode.x;
@@ -151,6 +211,10 @@ bool Fort14Reader::ReadNodalData(int numNodes, std::ifstream *fileStream)
 		nodes->push_back(currNode);
 		emit Progress(100*(++currProgress)/fullProgress);
 	}
+
+	emit FoundDomainBounds(minX, minY, minZ, maxX, maxY, maxZ);
+
+	return true;
 }
 
 

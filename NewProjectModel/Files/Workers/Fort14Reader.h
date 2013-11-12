@@ -18,8 +18,8 @@ class Fort14Reader : public QObject
 		explicit Fort14Reader(QString fileLoc,
 				      std::vector<Node> *nodeList,
 				      std::vector<Element> *elementList,
-				      std::vector<unsigned int> *boundaryList,
-				      Quadtree *quadtree,
+				      std::vector<std::vector<unsigned int> > *elevationBoundaryList,
+				      std::vector<std::vector<unsigned int> > *flowBoundaryList,
 				      bool normalize,
 				      QObject *parent = 0);
 		~Fort14Reader();
@@ -37,18 +37,23 @@ class Fort14Reader : public QObject
 
 	private:
 
-		std::vector<unsigned int>	boundaryNodes;
-		int				currProgress;
-		std::vector<Element>*		elements;
-		int				fullProgress;
-		std::vector<Node>*		nodes;
-		bool				normalizeCoordinates;
-		Quadtree*			quadtree;
-		QString				targetFile;
+		int					currProgress;
+		std::vector<Element>*			elements;
+		std::vector<std::vector<unsigned int> > *elevationBoundaries;
+		std::vector<std::vector<unsigned int> > *flowBoundaries;
+		int					fullProgress;
+		float					maxX;
+		float					maxY;
+		float					maxZ;
+		float					minX;
+		float					minY;
+		float					minZ;
+		std::vector<Node>*			nodes;
+		bool					normalizeCoordinates;
+		QString					targetFile;
 
 		Node*	GetNode(unsigned int nodeNumber);
 		void	NormalizeCoordinates();
-		void	PopulateQuadtree();
 		void	ReadBoundaries(std::ifstream *fileStream);
 		bool	ReadElementalData(int numElements, std::ifstream *fileStream);
 		bool	ReadNodalData(int numNodes, std::ifstream *fileStream);

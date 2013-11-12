@@ -3,10 +3,12 @@
 Project_new::Project_new(QObject *parent) :
 	QObject(parent),
 	fullDomain(0),
+	glPanel(0),
 	progressBar(0),
 	projectFile(0),
 	projectTree(0),
-	subDomains()
+	subDomains(),
+	visibleDomain(0)
 {
 	CreateProjectFile();
 }
@@ -15,10 +17,12 @@ Project_new::Project_new(QObject *parent) :
 Project_new::Project_new(QString projectFile, QObject *parent) :
 	QObject(parent),
 	fullDomain(0),
+	glPanel(0),
 	progressBar(0),
 	projectFile(0),
 	projectTree(0),
-	subDomains()
+	subDomains(),
+	visibleDomain(0)
 {
 	OpenProjectFile(projectFile);
 }
@@ -28,6 +32,12 @@ Project_new::~Project_new()
 {
 	if (projectFile)
 		delete projectFile;
+}
+
+
+void Project_new::SetOpenGLPanel(OpenGLPanel *newPanel)
+{
+	glPanel = newPanel;
 }
 
 
@@ -50,8 +60,13 @@ void Project_new::SetProgressBar(QProgressBar *newBar)
 
 void Project_new::SetProjectTree(QTreeWidget *newTree)
 {
-	projectTree = newTree;
-	PopulateProjectTree();
+	if (newTree)
+	{
+		projectTree = newTree;
+		PopulateProjectTree();
+		connect(projectTree, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
+			this, SLOT(ProjectTreeItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
+	}
 }
 
 
@@ -125,6 +140,44 @@ void Project_new::CreateProjectFile()
 			}
 		}
 	}
+}
+
+
+Domain_new* Project_new::DetermineSelectedDomain(QTreeWidgetItem *item)
+{
+	if (item)
+	{
+		QString itemText = item->data(0, Qt::DisplayRole).toString();
+		if (itemText == QString("Full Domain"))
+		{
+			return fullDomain;
+		}
+		QTreeWidgetItem *parentItem = item->parent();
+		if (parentItem)
+		{
+			QString parentText = parentItem->data(0, Qt::DisplayRole).toString();
+			if (parentText == QString("Full Domain"))
+			{
+				return fullDomain;
+			}
+			else if (parentText == QString("Sub Domains"))
+			{
+				for (std::vector<SubDomain*>::iterator currSub = subDomains.begin();
+				     currSub != subDomains.end();
+				     ++currSub)
+				{
+					if ((*currSub)->GetDomainName() == itemText)
+						return *currSub;
+				}
+			}
+			else
+			{
+					return DetermineSelectedDomain(parentItem);
+			}
+		}
+	}
+
+	return 0;
 }
 
 
@@ -356,6 +409,17 @@ void Project_new::PopulateProjectTree()
 }
 
 
+void Project_new::SetVisibleDomain(Domain_new *newDomain)
+{
+	if (newDomain)
+	{
+		visibleDomain = newDomain;
+		if (glPanel)
+			glPanel->SetActiveDomainNew(visibleDomain);
+	}
+}
+
+
 void Project_new::CreateNewSubdomain()
 {
 	if (fullDomain && projectFile)
@@ -402,4 +466,14 @@ void Project_new::RunSubdomain(QString subdomain)
 void Project_new::SaveProject()
 {
 
+}
+
+
+void Project_new::ProjectTreeItemChanged(QTreeWidgetItem *item, QTreeWidgetItem *)
+{
+	Domain_new *selectedDomain = DetermineSelectedDomain(item);
+	if (selectedDomain && selectedDomain != visibleDomain)
+	{
+		SetVisibleDomain(selectedDomain);
+	}
 }

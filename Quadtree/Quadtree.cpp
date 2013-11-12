@@ -59,6 +59,7 @@ Quadtree::Quadtree(std::vector<Node> nodes, std::vector<Element> elements, int s
 	camera = 0;
 
 	// Create the root branch
+	std::cout << "Creating quadtree: " << minX << ", " << maxX << ", " << minY << ", " << maxY << std::endl;
 	root = newBranch(minX, maxX, minY, maxY);
 
 	if (binSize > 0)
