@@ -9,6 +9,8 @@
 
 #include "NewProjectModel/Domains/Domain_new.h"
 
+#include "Layers/SelectionLayers/FullDomainSelectionLayer.h"
+
 #include "NewProjectModel/Files/Fort14_new.h"
 #include "NewProjectModel/Files/Fort15_new.h"
 #include "NewProjectModel/Files/Fort22_new.h"
@@ -26,6 +28,7 @@
 
 class FullDomain : public Domain_new
 {
+		Q_OBJECT
 	public:
 		FullDomain(ProjectFile_new *projectFile, QObject *parent=0);
 		~FullDomain();

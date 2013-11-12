@@ -34,6 +34,8 @@ class Domain_new : public QObject
 		void	SetProgressBar(QProgressBar* newBar);
 		void	SetWindowSize(float w, float h);
 
+		void	UseTool(ToolType tool, SelectionType selection);
+
 	protected:
 
 		GLCamera*		camera;
@@ -73,6 +75,10 @@ class Domain_new : public QObject
 		void	SetTerrainSolidFill(QColor newColor);
 		void	SetTerrainGradientOutline(QGradientStops newStops);
 		void	SetTerrainGradientFill(QGradientStops newStops);
+
+	private slots:
+
+		void	EnterDisplayMode();
 		
 };
 

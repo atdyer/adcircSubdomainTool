@@ -45,6 +45,7 @@ class Project_new : public QObject
 		Domain_new*		visibleDomain;
 
 
+		FullDomain*	BuildFullDomain();
 		SubDomain*	BuildSubdomain(QString subdomainName);
 		void		CreateAllSubdomains();
 		void		CreateProjectFile();
@@ -61,9 +62,16 @@ class Project_new : public QObject
 		void	RunSubdomain(QString subdomain);
 		void	SaveProject();
 
+		void	SelectFullDomainCircleElements();
+
 	private slots:
 
 		void	ProjectTreeItemChanged(QTreeWidgetItem *item, QTreeWidgetItem*);
+
+	signals:
+
+		void	mouseX(float);
+		void	mouseY(float);
 
 };
 

@@ -70,9 +70,23 @@ void Project_new::SetProjectTree(QTreeWidget *newTree)
 }
 
 
+FullDomain* Project_new::BuildFullDomain()
+{
+	FullDomain *newFullDomain = new FullDomain(projectFile, this);
+
+	connect(newFullDomain, SIGNAL(mouseX(float)), this, SIGNAL(mouseX(float)));
+	connect(newFullDomain, SIGNAL(mouseY(float)), this, SIGNAL(mouseY(float)));
+
+	return newFullDomain;
+}
+
+
 SubDomain* Project_new::BuildSubdomain(QString subdomainName)
 {
 	SubDomain *newSubdomain = new SubDomain(subdomainName, projectFile, this);
+
+	connect(newSubdomain, SIGNAL(mouseX(float)), this, SIGNAL(mouseX(float)));
+	connect(newSubdomain, SIGNAL(mouseY(float)), this, SIGNAL(mouseY(float)));
 
 	if (progressBar)
 		newSubdomain->SetProgressBar(progressBar);
@@ -191,7 +205,7 @@ void Project_new::OpenProjectFile(QString filePath)
 			delete projectFile;
 			projectFile = 0;
 		} else {
-			fullDomain = new FullDomain(projectFile, this);
+			fullDomain = BuildFullDomain();
 			CreateAllSubdomains();
 		}
 	}
@@ -466,6 +480,13 @@ void Project_new::RunSubdomain(QString subdomain)
 void Project_new::SaveProject()
 {
 
+}
+
+
+void Project_new::SelectFullDomainCircleElements()
+{
+	if (fullDomain)
+		fullDomain->UseTool(CircleToolType, ElementSelection);
 }
 
 

@@ -189,6 +189,13 @@ std::vector<unsigned int> BoundaryFinder::FindInnerBoundaries(ElementState *elem
 }
 
 
+Boundaries BoundaryFinder::FindOrderedBoundaries(std::vector<Element *> elements)
+{
+	Boundaries boundaryNodes;
+	return RecursiveBoundarySearch(boundaryNodes, elements, true);
+}
+
+
 void BoundaryFinder::FindEdges(std::vector<Element *> *elements)
 {
 	for (std::vector<Element*>::iterator it = elements->begin(); it != elements->end(); ++it)
@@ -245,4 +252,130 @@ void BoundaryFinder::CreateEdgesList()
 			firstNode = secondNode;
 		}
 	}
+}
+
+
+Boundaries BoundaryFinder::RecursiveBoundarySearch(Boundaries boundaryNodes, std::vector<Element *> elements, bool recurse)
+{
+	if (elements.size())
+	{
+		std::map<Edge, int> edgeInElementCount;
+		std::map<unsigned int, std::vector<Element*> > elementsThatContainNode;
+
+		/*
+		 * Count the number of times each Edge appears. Edges that appear only once are on
+		 * the boundary. Also create a map of node numbers to the elements that contain them
+		 * for use in finding inner boundary nodes.
+		 */
+		Element *currElement;
+		for (std::vector<Element*>::iterator it = elements.begin(); it != elements.end(); ++it)
+		{
+			currElement = *it;
+			if (currElement)
+			{
+				Edge edge1 (currElement->n1->nodeNumber, currElement->n2->nodeNumber);
+				Edge edge2 (currElement->n1->nodeNumber, currElement->n3->nodeNumber);
+				Edge edge3 (currElement->n2->nodeNumber, currElement->n3->nodeNumber);
+				if (edgeInElementCount.count(edge1) == 0)
+					edgeInElementCount[edge1] = 0;
+				if (edgeInElementCount.count(edge2) == 0)
+					edgeInElementCount[edge2] = 0;
+				if (edgeInElementCount.count(edge3) == 0)
+					edgeInElementCount[edge3] = 0;
+				edgeInElementCount[edge1] += 1;
+				edgeInElementCount[edge2] += 1;
+				edgeInElementCount[edge3] += 1;
+				elementsThatContainNode[currElement->n1->nodeNumber].push_back(currElement);
+				elementsThatContainNode[currElement->n2->nodeNumber].push_back(currElement);
+				elementsThatContainNode[currElement->n3->nodeNumber].push_back(currElement);
+			}
+		}
+
+
+		/*
+		 * Create an adjacency table for nodes that fall on the outer boundary
+		 */
+		std::map<unsigned int, AdjacentNodes> sortingTable;
+		for (std::map<Edge, int>::iterator it = edgeInElementCount.begin(); it != edgeInElementCount.end(); ++it)
+		{
+			if (it->second == 1)
+			{
+				unsigned int n1 = it->first.n1;
+				unsigned int n2 = it->first.n2;
+				if (n1 != n2)
+				{
+					if (recurse)
+					{
+						boundaryNodes.outerBoundaryNodes.insert(n1);
+						boundaryNodes.outerBoundaryNodes.insert(n2);
+					} else {
+						boundaryNodes.innerBoundaryNodes.insert(n1);
+						boundaryNodes.innerBoundaryNodes.insert(n2);
+					}
+
+					if (sortingTable[n1].n1 == 0)
+						sortingTable[n1].n1 = n2;
+					else
+						sortingTable[n1].n2 = n2;
+
+					if (sortingTable[n2].n1 == 0)
+						sortingTable[n2].n1 = n1;
+					else
+						sortingTable[n2].n2 = n1;
+				}
+			}
+		}
+
+		/*
+		 * Step through the adjacency table, starting with the first node in the table
+		 */
+		int maxCount = sortingTable.size();
+		int currCount = 0;
+
+		unsigned int firstNode = sortingTable.begin()->first;
+		unsigned int lastNode = 0;
+		unsigned int currNode = firstNode;
+		unsigned int nextNode = sortingTable[currNode].n1;
+		while (currCount < maxCount)
+		{
+			if (recurse)
+				boundaryNodes.orderedOuterBoundaryNodes.push_back(currNode);
+			else
+				boundaryNodes.orderedInnerBoundaryNodes.push_back(currNode);
+
+			if (nextNode == firstNode)
+				break;
+
+			++currCount;
+			lastNode = currNode;
+			currNode = nextNode;
+			if (sortingTable[currNode].n1 != lastNode)
+				nextNode = sortingTable[currNode].n1;
+			else
+				nextNode = sortingTable[currNode].n2;
+		}
+
+
+		if (recurse)
+		{
+			/*
+			 * Create a new set of elements, removing all elements that contain an outer boundary node
+			 */
+			std::vector<Element*> innerElements;
+			for (std::vector<Element*>::iterator it = elements.begin(); it != elements.end(); ++it)
+			{
+				Element *currElement = *it;
+				if (boundaryNodes.outerBoundaryNodes.count(currElement->n1->nodeNumber) == 0 &&
+				    boundaryNodes.outerBoundaryNodes.count(currElement->n2->nodeNumber) == 0 &&
+				    boundaryNodes.outerBoundaryNodes.count(currElement->n3->nodeNumber) == 0)
+				{
+					innerElements.push_back(currElement);
+				}
+			}
+
+			return RecursiveBoundarySearch(boundaryNodes, innerElements, false);
+		}
+	}
+
+	return boundaryNodes;
 }

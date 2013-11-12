@@ -395,7 +395,15 @@ void MainWindow::CreateProjectNew(bool newProjectFile)
 	newProject->SetProgressBar(ui->progressBar);
 	newProject->SetProjectTree(ui->projectTree);
 
+	/* Subdomain Creation */
 	connect(ui->createSubdomainButton, SIGNAL(clicked()), newProject, SLOT(CreateNewSubdomain()));
+
+	/* Selection Tools */
+	connect(ui->selectNodesCircle, SIGNAL(clicked()), newProject, SLOT(SelectFullDomainCircleElements()));
+
+	/* U/I Updates */
+	connect(newProject, SIGNAL(mouseX(float)), this, SLOT(showMouseX(float)));
+	connect(newProject, SIGNAL(mouseY(float)), this, SLOT(showMouseY(float)));
 }
 
 

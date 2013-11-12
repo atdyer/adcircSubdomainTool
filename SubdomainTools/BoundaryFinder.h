@@ -35,12 +35,22 @@ struct Edge
 		}
 };
 
+struct AdjacentNodes
+		{
+				unsigned int	n1;
+				unsigned int	n2;
+				AdjacentNodes() : n1(0), n2(0) {}
+
+		};
+
 #ifndef BOUNDARIES
 #define BOUNDARIES
 struct Boundaries
 {
 		std::set<unsigned int>	innerBoundaryNodes;
 		std::set<unsigned int>	outerBoundaryNodes;
+		std::vector<unsigned int> orderedInnerBoundaryNodes;
+		std::vector<unsigned int> orderedOuterBoundaryNodes;
 };
 #endif
 
@@ -55,6 +65,7 @@ class BoundaryFinder
 		std::vector<unsigned int> FindBoundaries(ElementState* elementSelection);
 		std::vector<unsigned int> FindInnerBoundaries(ElementState* elementSelection);
 		Boundaries	FindAllBoundaries(std::vector<Element> *elements);
+		Boundaries	FindOrderedBoundaries(std::vector<Element*> elements);
 
 	private:
 
@@ -62,8 +73,9 @@ class BoundaryFinder
 		std::map<unsigned int, std::vector<unsigned int> >	nodeAdjacency;
 		std::vector<unsigned int>				edgesList;
 
-		void	FindEdges(std::vector<Element*>* elements);
-		void	CreateEdgesList();
+		void		FindEdges(std::vector<Element*>* elements);
+		void		CreateEdgesList();
+		Boundaries	RecursiveBoundarySearch(Boundaries boundaryNodes, std::vector<Element*> elements, bool recurse);
 
 };
 

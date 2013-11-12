@@ -21,6 +21,10 @@ FullDomainSelectionLayer::FullDomainSelectionLayer(Fort14_new *fort14, QObject *
 	outerBoundaryShader(0)
 {
 	AttachToFort14();
+	CreateClickTool();
+	CreateCircleTool();
+	CreateRectangleTool();
+	CreatePolygonTool();
 }
 
 
@@ -42,6 +46,15 @@ FullDomainSelectionLayer::~FullDomainSelectionLayer()
 
 	ClearUndoStack();
 	ClearRedoStack();
+
+	if (outlineShader)
+		delete outlineShader;
+	if (fillShader)
+		delete fillShader;
+	if (innerBoundaryShader)
+		delete innerBoundaryShader;
+	if (outerBoundaryShader)
+		delete outerBoundaryShader;
 }
 
 
@@ -70,9 +83,9 @@ void FullDomainSelectionLayer::Draw()
 		if (outerBoundaryShader && outerBoundaryNodes.size())
 		{
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			glLineWidth(3.0);
+			glLineWidth(6.0);
 			if (outerBoundaryShader->Use())
-				glDrawElements(GL_LINE_STRIP, outerBoundaryNodes.size(), GL_UNSIGNED_INT,
+				glDrawElements(GL_LINE_LOOP, outerBoundaryNodes.size(), GL_UNSIGNED_INT,
 					       (GLvoid*)(0 + sizeof(GLuint)*numElements*3));
 			glLineWidth(1.0);
 		}
@@ -82,8 +95,8 @@ void FullDomainSelectionLayer::Draw()
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			glLineWidth(3.0);
 			if (innerBoundaryShader->Use())
-				glDrawElements(GL_LINE_STRIP, innerBoundaryNodes.size(), GL_UNSIGNED_INT,
-					       (GLvoid*)(0 + sizeof(GLuint)*numElements*3 + outerBoundaryNodes.size()));
+				glDrawElements(GL_LINE_LOOP, innerBoundaryNodes.size(), GL_UNSIGNED_INT,
+					       (GLvoid*)(0 + sizeof(GLuint)*(numElements*3 + outerBoundaryNodes.size())));
 			glLineWidth(1.0);
 		}
 
@@ -166,6 +179,18 @@ void FullDomainSelectionLayer::LoadDataToGPU()
 		emit Refreshed();
 		emit NumElementsSelected(currSelection->size());
 	}
+}
+
+
+void FullDomainSelectionLayer::SetData(QString fileLocation)
+{
+
+}
+
+
+bool FullDomainSelectionLayer::DataLoaded()
+{
+	return false;
 }
 
 
@@ -359,16 +384,19 @@ void FullDomainSelectionLayer::InitializeGL()
 		outlineShader = new SolidShader();
 		fillShader = new SolidShader();
 		outerBoundaryShader = new SolidShader();
+		innerBoundaryShader = new SolidShader();
 
 		/* Set the shader properties */
 		fillShader->SetColor(QColor(0.4*255, 0.4*255, 0.4*255, 0.4*255));
 		outlineShader->SetColor(QColor(0.2*255, 0.2*255, 0.2*255, 0.2*255));
 		outerBoundaryShader->SetColor(QColor(0.0*255, 0.0*255, 0.0*255, 0.8*255));
+		innerBoundaryShader->SetColor(QColor(0.0*255, 0.0*255, 0.0*255, 0.5*255));
 		if (camera)
 		{
 			fillShader->SetCamera(camera);
 			outlineShader->SetCamera(camera);
 			outerBoundaryShader->SetCamera(camera);
+			innerBoundaryShader->SetCamera(camera);
 		}
 
 		glGenVertexArrays(1, &VAOId);
@@ -481,7 +509,13 @@ void FullDomainSelectionLayer::UseState(ElementState *state)
 	selectedState = state;
 
 	/* Find the boundary */
-//	boundaryNodes = boundaryFinder->FindBoundaries(selectedState);
+	if (!boundaryFinder)
+	{
+		boundaryFinder = new BoundaryFinder();
+	}
+	Boundaries boundaryNodes = boundaryFinder->FindOrderedBoundaries(*selectedState->GetState());
+	outerBoundaryNodes = boundaryNodes.orderedOuterBoundaryNodes;
+	innerBoundaryNodes = boundaryNodes.orderedInnerBoundaryNodes;
 
 	/* Update the data on the GPU */
 	LoadDataToGPU();
@@ -535,5 +569,13 @@ void FullDomainSelectionLayer::GetSelectionFromActiveTool()
 void FullDomainSelectionLayer::UseVBOId(GLuint newVBO)
 {
 	VBOId = newVBO;
+}
+
+
+void FullDomainSelectionLayer::GetSelectionFromTool()
+{
+	std::cout << "Getting selection" << std::endl;
+	GetSelectionFromActiveTool();
+	activeTool = 0;
 }
 

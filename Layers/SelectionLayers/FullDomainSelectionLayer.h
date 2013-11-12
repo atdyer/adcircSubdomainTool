@@ -18,12 +18,15 @@
 
 class FullDomainSelectionLayer : public SelectionLayer
 {
+		Q_OBJECT
 	public:
 		FullDomainSelectionLayer(Fort14_new *fort14, QObject *parent=0);
 		~FullDomainSelectionLayer();
 
 		virtual void	Draw();
 		virtual void	LoadDataToGPU();
+		virtual void	SetData(QString fileLocation);
+		virtual bool	DataLoaded();
 
 		virtual unsigned int	GetNumNodesSelected();
 		virtual unsigned int	GetNumElementsSelected();
@@ -91,6 +94,7 @@ class FullDomainSelectionLayer : public SelectionLayer
 	private slots:
 
 		void	UseVBOId(GLuint newVBO);
+		void	GetSelectionFromTool();
 };
 
 #endif // FULLDOMAINSELECTIONLAYER_H

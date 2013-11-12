@@ -32,6 +32,9 @@ void Domain_new::Draw()
 {
 	if (fort14)
 		fort14->Draw();
+
+	if (selectionLayer)
+		selectionLayer->Draw();
 }
 
 
@@ -139,6 +142,18 @@ void Domain_new::SetWindowSize(float w, float h)
 {
 	if (camera)
 		camera->SetWindowSize(-1.0*w/h, 1.0*w/h, -1.0, 1.0, -1000.0, 1000.0);
+
+	if (selectionLayer)
+		selectionLayer->WindowSizeChanged(w, h);
+}
+
+
+void Domain_new::UseTool(ToolType tool, SelectionType selection)
+{
+	currentMode = SelectionAction;
+	if (selectionLayer)
+		selectionLayer->UseTool(tool, selection);
+	emit setCursor(Qt::CrossCursor);
 }
 
 
@@ -214,5 +229,12 @@ void Domain_new::SetTerrainGradientFill(QGradientStops newStops)
 		fort14->SetGradientFillColors(newStops);
 
 	emit updateGL();
+}
+
+
+void Domain_new::EnterDisplayMode()
+{
+	currentMode = DisplayAction;
+	emit setCursor(Qt::ArrowCursor);
 }
 

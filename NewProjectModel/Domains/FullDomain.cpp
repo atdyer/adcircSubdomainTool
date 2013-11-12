@@ -14,6 +14,10 @@ FullDomain::FullDomain(ProjectFile_new *projectFile, QObject *parent) :
 	maxvel(0)
 {
 	CreateAllFiles();
+	selectionLayer = new FullDomainSelectionLayer(fort14, this);
+	selectionLayer->SetCamera(camera);
+
+	connect(selectionLayer, SIGNAL(ToolFinishedDrawing()), this, SLOT(EnterDisplayMode()));
 }
 
 
