@@ -369,6 +369,27 @@ bool FullDomainSelectionLayer::GetRedoAvailable()
 }
 
 
+std::vector<unsigned int> FullDomainSelectionLayer::GetInnerBoundaryNodes()
+{
+	return innerBoundaryNodes;
+}
+
+
+std::vector<unsigned int> FullDomainSelectionLayer::GetOuterBoundaryNodes()
+{
+	return outerBoundaryNodes;
+}
+
+
+std::vector<Element*> FullDomainSelectionLayer::GetSelectedElements()
+{
+	if (selectedState)
+		return *selectedState->GetState();
+	std::vector<Element*> noselection;
+	return noselection;
+}
+
+
 void FullDomainSelectionLayer::AttachToFort14()
 {
 	connect(fort14, SIGNAL(DataLoadedToGPU(GLuint)), this, SLOT(UseVBOId(GLuint)));
@@ -543,6 +564,11 @@ void FullDomainSelectionLayer::UseState(ElementState *state)
 	Boundaries boundaryNodes = boundaryFinder->NewBoundarySearch(*selectedState->GetState());
 	outerBoundaryNodes = boundaryNodes.orderedOuterBoundaryNodes;
 	innerBoundaryNodes = boundaryNodes.orderedInnerBoundaryNodes;
+
+	emit NumNodesSelected(boundaryNodes.numNodes);
+	emit NumElementsSelected(boundaryNodes.numElements);
+	emit MaxSelectedZ(boundaryNodes.maxZ);
+	emit MinSelectedZ(boundaryNodes.minZ);
 
 	/* Update the data on the GPU */
 	LoadDataToGPU();

@@ -20,6 +20,7 @@ class BNList14_new : public QObject
 
 		void	SetInnerBoundaryNodes(std::vector<unsigned int> newNodes);
 		void	SetOuterBoundaryNodes(std::vector<unsigned int> newNodes);
+		void	SetSubdomainVersion(int v);
 		void	SaveFile();
 
 		QString				GetFilePath();
@@ -27,6 +28,7 @@ class BNList14_new : public QObject
 		std::vector<unsigned int>	GetOuterBoundaryNodes();
 		unsigned int			GetNumInnerBoundaryNodes();
 		unsigned int			GetNumOuterBoundaryNodes();
+		int				GetSubdomainVersion();
 
 	private:
 
@@ -34,6 +36,8 @@ class BNList14_new : public QObject
 		std::vector<unsigned int>	innerNodes;
 		std::vector<unsigned int>	outerNodes;
 		ProjectFile_new*		projectFile;
+		QString				targetFile;
+		int				version;
 
 		void	ReadFile();
 };

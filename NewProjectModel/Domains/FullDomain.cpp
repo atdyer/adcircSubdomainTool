@@ -3,6 +3,7 @@
 
 FullDomain::FullDomain(ProjectFile_new *projectFile, QObject *parent) :
 	Domain_new(projectFile, parent),
+	selectionLayerFullDomain(0),
 	fort15(0),
 	fort22(0),
 	fort63(0),
@@ -14,12 +15,17 @@ FullDomain::FullDomain(ProjectFile_new *projectFile, QObject *parent) :
 	maxvel(0)
 {
 	CreateAllFiles();
-	selectionLayer = new FullDomainSelectionLayer(fort14, this);
+	selectionLayerFullDomain = new FullDomainSelectionLayer(fort14, this);
+	selectionLayer = selectionLayerFullDomain;
 	selectionLayer->SetCamera(camera);
 
 	connect(selectionLayer, SIGNAL(ToolFinishedDrawing()), this, SLOT(EnterDisplayMode()));
 	connect(selectionLayer, SIGNAL(UndoAvailable(bool)), this, SIGNAL(undoAvailable(bool)));
 	connect(selectionLayer, SIGNAL(RedoAvailable(bool)), this, SIGNAL(redoAvailable(bool)));
+	connect(selectionLayer, SIGNAL(NumElementsSelected(int)), this, SIGNAL(numElementsSelected(int)));
+	connect(selectionLayer, SIGNAL(NumNodesSelected(int)), this, SIGNAL(numNodesSelected(int)));
+	connect(selectionLayer, SIGNAL(MaxSelectedZ(float)), this, SIGNAL(maxSelectedZ(float)));
+	connect(selectionLayer, SIGNAL(MinSelectedZ(float)), this, SIGNAL(minSelectedZ(float)));
 }
 
 
@@ -35,9 +41,21 @@ bool FullDomain::IsFullDomain()
 }
 
 
+std::vector<unsigned int> FullDomain::GetInnerBoundaryNodes()
+{
+	return selectionLayerFullDomain->GetInnerBoundaryNodes();
+}
+
+
+std::vector<unsigned int> FullDomain::GetOuterBoundaryNodes()
+{
+	return selectionLayerFullDomain->GetOuterBoundaryNodes();
+}
+
+
 std::vector<Element*> FullDomain::GetSelectedElements()
 {
-
+	return selectionLayerFullDomain->GetSelectedElements();
 }
 
 void FullDomain::CreateAllFiles()

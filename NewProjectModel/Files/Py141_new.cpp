@@ -1,9 +1,14 @@
 #include "Py141_new.h"
 
+
+/*
+ * Default constructor
+ */
 Py141_new::Py141_new(QObject *parent) :
 	QObject(parent),
 	domainName(),
 	projectFile(0),
+	targetFile(),
 	newToOldElements(),
 	oldToNewElements()
 {
@@ -11,16 +16,20 @@ Py141_new::Py141_new(QObject *parent) :
 }
 
 
+/*
+ * Subdomain constructor
+ */
 Py141_new::Py141_new(QString domainName, ProjectFile_new *projectFile, QObject *parent) :
 	QObject(parent),
 	domainName(domainName),
 	projectFile(projectFile),
+	targetFile(),
 	newToOldElements(),
 	oldToNewElements()
 {
 	if (projectFile && !domainName.isEmpty())
 	{
-		QString targetFile = projectFile->GetSubDomainPy141(domainName);
+		targetFile = projectFile->GetSubDomainPy141(domainName);
 		if (targetFile.isEmpty())
 		{
 			QString targetDirectory = projectFile->GetSubDomainDirectory(domainName);
@@ -28,7 +37,11 @@ Py141_new::Py141_new(QString domainName, ProjectFile_new *projectFile, QObject *
 			{
 				targetFile = targetDirectory + QDir::separator() + "py.141";
 				projectFile->SetSubDomainPy141(domainName, targetFile);
+			} else {
+				// Throw a warning that the subdomain directory doesn't exist
 			}
+		} else {
+			ReadFile();
 		}
 	}
 }
@@ -53,6 +66,7 @@ void Py141_new::SaveFile()
 		} else {
 			std::cout << "Unable to write py.141: " << projectFile->GetSubDomainPy141(domainName).toStdString() << std::endl;
 		}
+		projectFile->SetSubDomainPy141(domainName, targetFile);
 	}
 }
 

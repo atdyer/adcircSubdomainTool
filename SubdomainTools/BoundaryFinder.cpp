@@ -385,6 +385,11 @@ Boundaries BoundaryFinder::NewBoundarySearch(std::vector<Element*> elements)
 {
 	Boundaries boundaryNodes;
 
+	boundaryNodes.numElements = elements.size();
+	boundaryNodes.numNodes = 0;
+	boundaryNodes.minZ = 99999.0;
+	boundaryNodes.maxZ = -99999.0;
+
 	if (elements.size())
 	{
 		std::map<Edge, int> edgeInElementCount;
@@ -416,8 +421,23 @@ Boundaries BoundaryFinder::NewBoundarySearch(std::vector<Element*> elements)
 				elementsThatContainNode[currElement->n1->nodeNumber].push_back(currElement);
 				elementsThatContainNode[currElement->n2->nodeNumber].push_back(currElement);
 				elementsThatContainNode[currElement->n3->nodeNumber].push_back(currElement);
+
+				if (currElement->n1->z < boundaryNodes.minZ)
+					boundaryNodes.minZ = currElement->n1->z;
+				else if (currElement->n1->z > boundaryNodes.maxZ)
+					boundaryNodes.maxZ = currElement->n1->z;
+				if (currElement->n2->z < boundaryNodes.minZ)
+					boundaryNodes.minZ = currElement->n2->z;
+				else if (currElement->n2->z > boundaryNodes.maxZ)
+					boundaryNodes.maxZ = currElement->n2->z;
+				if (currElement->n3->z < boundaryNodes.minZ)
+					boundaryNodes.minZ = currElement->n3->z;
+				else if (currElement->n3->z > boundaryNodes.maxZ)
+					boundaryNodes.maxZ = currElement->n3->z;
 			}
 		}
+
+		boundaryNodes.numNodes = elementsThatContainNode.size();
 
 
 		/*

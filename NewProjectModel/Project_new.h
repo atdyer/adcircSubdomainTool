@@ -76,10 +76,14 @@ class Project_new : public QObject
 
 	signals:
 
+		void	maxSelectedZ(float);
+		void	minSelectedZ(float);
 		void	mouseX(float);
 		void	mouseY(float);
-		void	undoAvailable(bool);
+		void	numElementsSelected(int);
+		void	numNodesSelected(int);
 		void	redoAvailable(bool);
+		void	undoAvailable(bool);
 
 
 };

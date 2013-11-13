@@ -298,7 +298,7 @@ border-top-right-radius: 4px;
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>210</width>
+             <width>293</width>
              <height>563</height>
             </rect>
            </property>
@@ -665,13 +665,19 @@ border-top-right-radius: 4px;
                <layout class="QGridLayout" name="gridLayout">
                 <item row="2" column="0">
                  <widget class="QLabel" name="label_8">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="text">
                    <string>Min Elevation:</string>
                   </property>
                  </widget>
                 </item>
                 <item row="1" column="1">
-                 <widget class="QLabel" name="label_7">
+                 <widget class="QLabel" name="createNumElementsSelected">
                   <property name="text">
                    <string>0</string>
                   </property>
@@ -682,6 +688,12 @@ border-top-right-radius: 4px;
                 </item>
                 <item row="1" column="0">
                  <widget class="QLabel" name="label_4">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="text">
                    <string>Elements:</string>
                   </property>
@@ -689,13 +701,19 @@ border-top-right-radius: 4px;
                 </item>
                 <item row="0" column="0">
                  <widget class="QLabel" name="label_5">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="text">
                    <string>Nodes:</string>
                   </property>
                  </widget>
                 </item>
                 <item row="0" column="1">
-                 <widget class="QLabel" name="label_6">
+                 <widget class="QLabel" name="createNumNodesSelected">
                   <property name="text">
                    <string>0</string>
                   </property>
@@ -706,13 +724,19 @@ border-top-right-radius: 4px;
                 </item>
                 <item row="3" column="0">
                  <widget class="QLabel" name="label_9">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="text">
                    <string>Max Elevation:</string>
                   </property>
                  </widget>
                 </item>
                 <item row="2" column="1">
-                 <widget class="QLabel" name="label_10">
+                 <widget class="QLabel" name="createMinElevation">
                   <property name="text">
                    <string>0.0</string>
                   </property>
@@ -722,7 +746,7 @@ border-top-right-radius: 4px;
                  </widget>
                 </item>
                 <item row="3" column="1">
-                 <widget class="QLabel" name="label_11">
+                 <widget class="QLabel" name="createMaxElevation">
                   <property name="text">
                    <string>0.0</string>
                   </property>

@@ -18,7 +18,12 @@ class SubdomainCreator_new
 		SubdomainCreator_new();
 		~SubdomainCreator_new();
 
-		bool	CreateSubdomain(QString newName, ProjectFile_new *projFile, FullDomain *fDomain);
+		bool	CreateSubdomain(QString newName,
+					ProjectFile_new *projFile,
+					QString targetDir,
+					FullDomain *fDomain,
+					int version,
+					int recordFrequency);
 
 	private:
 
@@ -26,6 +31,8 @@ class SubdomainCreator_new
 		Fort015_new*				fort015Full;
 		Fort015_new*				fort015Sub;
 		FullDomain*				fullDomain;
+		std::vector<unsigned int>		innerBoundaryNodes;
+		std::vector<unsigned int>		outerBoundaryNodes;
 		Py140_new*				py140;
 		Py141_new*				py141;
 		ProjectFile_new*			projectFile;
@@ -33,11 +40,14 @@ class SubdomainCreator_new
 		std::vector<Node*>			selectedNodes;
 		QString					subdomainName;
 
-		void	FindBoundaries();
+		bool	CheckForExistingSubdomainFiles(QString targetDir);
+		void	FindBoundaries(int version);
 		void	FindUniqueNodes();
 		void	MapOldToNewElements();
 		void	MapOldToNewNodes();
 		bool	WriteFort14();
+
+		bool	WarnSubdomainFilesExist(QString targetDir);
 };
 
 #endif // SUBDOMAINCREATOR_NEW_H

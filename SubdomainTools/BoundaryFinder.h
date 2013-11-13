@@ -51,6 +51,10 @@ struct Boundaries
 		std::set<unsigned int>	outerBoundaryNodes;
 		std::vector<unsigned int> orderedInnerBoundaryNodes;
 		std::vector<unsigned int> orderedOuterBoundaryNodes;
+		unsigned int		numNodes;
+		unsigned int		numElements;
+		float			minZ;
+		float			maxZ;
 };
 #endif
 

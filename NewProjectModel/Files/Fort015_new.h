@@ -17,7 +17,7 @@ class Fort015_new : public QObject
 		explicit Fort015_new(QObject *parent=0);
 		Fort015_new(ProjectFile_new *projectFile, QObject *parent=0);
 		Fort015_new(QString domainName, ProjectFile_new *projectFile, QObject *parent=0);
-		Fort015_new(QString domainName, ProjectFile_new *projectFile, QString targetDir, QObject *parent=0);
+//		Fort015_new(QString domainName, ProjectFile_new *projectFile, QString targetDir, QObject *parent=0);
 
 //		void	AddInnerBoundaryNodes(std::vector<unsigned int> newNodes);
 //		void	AddOuterBoundaryNodes(std::vector<unsigned int> newNodes);

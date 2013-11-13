@@ -3,20 +3,27 @@
 BNList14_new::BNList14_new(QObject *parent) :
 	QObject(parent),
 	domainName(),
-	projectFile(0)
+	innerNodes(),
+	outerNodes(),
+	projectFile(0),
+	targetFile(),
+	version(0)
 {
-
 }
 
 
 BNList14_new::BNList14_new(QString domainName, ProjectFile_new *projectFile, QObject *parent) :
 	QObject(parent),
 	domainName(domainName),
-	projectFile(projectFile)
+	innerNodes(),
+	outerNodes(),
+	projectFile(projectFile),
+	targetFile(),
+	version(0)
 {
 	if (projectFile && !domainName.isEmpty())
 	{
-		QString targetFile = projectFile->GetSubDomainBNList(domainName);
+		targetFile = projectFile->GetSubDomainBNList(domainName);
 		if (targetFile.isEmpty())
 		{
 			QString targetDirectory = projectFile->GetSubDomainDirectory(domainName);
@@ -24,7 +31,11 @@ BNList14_new::BNList14_new(QString domainName, ProjectFile_new *projectFile, QOb
 			{
 				targetFile = targetDirectory + QDir::separator() + "bnlist.14";
 				projectFile->SetSubDomainBNList(domainName, targetFile);
+			} else {
+				// Throw a warning that the subdomain directory doesn't exist
 			}
+		} else {
+			ReadFile();
 		}
 	}
 }
@@ -42,25 +53,50 @@ void BNList14_new::SetOuterBoundaryNodes(std::vector<unsigned int> newNodes)
 }
 
 
+void BNList14_new::SetSubdomainVersion(int v)
+{
+	version = v;
+}
+
+
 void BNList14_new::SaveFile()
 {
 	if (projectFile && !domainName.isNull())
 	{
-		std::ofstream file (projectFile->GetSubDomainBNList(domainName).toStdString().data());
+		std::ofstream file (targetFile.toStdString().data());
 		if (file.is_open())
 		{
-			file << "0\t!cbn\n";
-			file << outerNodes.size() << "\t!obn\n";
-			for (std::vector<unsigned int>::iterator it = outerNodes.begin(); it != outerNodes.end(); ++it)
+			if (version == 1)
 			{
-				file << *it << "\n";
+				file << outerNodes.size() << "\t!cbn\n";
+				for (std::vector<unsigned int>::iterator it = outerNodes.begin(); it != outerNodes.end(); ++it)
+				{
+					file << *it << "\n";
+				}
+				file << "0\t!obn\n";
+				file << "0\t!ibn\n";
 			}
-			file << innerNodes.size() << "\t!ibn\n";
-			for (std::vector<unsigned int>::iterator it = innerNodes.begin(); it != innerNodes.end(); ++it)
+			else if (version == 2)
 			{
-				file << *it << "\n";
+				file << "0\t!cbn\n";
+				file << outerNodes.size() << "\t!obn\n";
+				for (std::vector<unsigned int>::iterator it = outerNodes.begin(); it != outerNodes.end(); ++it)
+				{
+					file << *it << "\n";
+				}
+				file << innerNodes.size() << "\t!ibn\n";
+				for (std::vector<unsigned int>::iterator it = innerNodes.begin(); it != innerNodes.end(); ++it)
+				{
+					file << *it << "\n";
+				}
+			}
+			else
+			{
+				// Throw warning that version isn't set
 			}
 			file.close();
+
+			projectFile->SetSubDomainBNList(domainName, targetFile);
 		}
 	}
 }
@@ -78,16 +114,16 @@ QString BNList14_new::GetFilePath()
 
 std::vector<unsigned int> BNList14_new::GetInnerBoundaryNodes()
 {
-	if (!innerNodes.size())
-		ReadFile();
+//	if (!innerNodes.size())
+//		ReadFile();
 	return innerNodes;
 }
 
 
 std::vector<unsigned int> BNList14_new::GetOuterBoundaryNodes()
 {
-	if (!outerNodes.size())
-		ReadFile();
+//	if (!outerNodes.size())
+//		ReadFile();
 	return outerNodes;
 }
 
@@ -108,10 +144,10 @@ void BNList14_new::ReadFile()
 {
 	if (projectFile && !domainName.isEmpty())
 	{
-		QString fileLocation = projectFile->GetSubDomainBNList(domainName);
-		std::ifstream file (fileLocation.toStdString().data());
+		std::ifstream file (targetFile.toStdString().data());
 		if (file.is_open())
 		{
+			int cbn = 0;
 			int numOuterNodes = 0;
 			int numInnerNodes = 0;
 			int i=0;
@@ -119,24 +155,42 @@ void BNList14_new::ReadFile()
 			outerNodes.clear();
 			std::string line;
 			std::getline(file, line);
-			std::getline(file, line);
-			std::stringstream(line) >> numOuterNodes;
-			unsigned int currNodeNum = 0;
-			while (i < numOuterNodes)
+			std::stringstream(line) >> cbn;
+
+			if (cbn == 0)
 			{
-				file >> currNodeNum;
-				outerNodes.push_back(currNodeNum);
-				++i;
+				version = 2;
+				std::getline(file, line);
+				std::stringstream(line) >> numOuterNodes;
+				unsigned int currNodeNum = 0;
+				while (i < numOuterNodes)
+				{
+					file >> currNodeNum;
+					outerNodes.push_back(currNodeNum);
+					++i;
+				}
+				std::getline(file, line);
+				std::getline(file, line);
+				std::stringstream(line) >> numInnerNodes;
+				i = 0;
+				while (i < numInnerNodes)
+				{
+					file >> currNodeNum;
+					innerNodes.push_back(currNodeNum);
+					++i;
+				}
+			} else {
+				version = 1;
+				numOuterNodes = cbn;
+				unsigned int currNodeNum = 0;
+				while (i<numOuterNodes)
+				{
+					file >> currNodeNum;
+					outerNodes.push_back(currNodeNum);
+					++i;
+				}
 			}
-			std::getline(file, line);
-			std::stringstream(line) >> numInnerNodes;
-			i = 0;
-			while (i < numInnerNodes)
-			{
-				file >> currNodeNum;
-				innerNodes.push_back(currNodeNum);
-				++i;
-			}
+
 			file.close();
 		}
 	}

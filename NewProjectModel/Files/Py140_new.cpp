@@ -1,9 +1,14 @@
 #include "Py140_new.h"
 
+
+/*
+ * Default constructor
+ */
 Py140_new::Py140_new(QObject *parent) :
 	QObject(parent),
 	domainName(),
 	projectFile(0),
+	targetFile(),
 	newToOldNodes(),
 	oldToNewNodes()
 {
@@ -11,16 +16,20 @@ Py140_new::Py140_new(QObject *parent) :
 }
 
 
+/*
+ * Subdomain constructor
+ */
 Py140_new::Py140_new(QString domainName, ProjectFile_new *projectFile, QObject *parent) :
 	QObject(parent),
 	domainName(domainName),
 	projectFile(projectFile),
+	targetFile(),
 	newToOldNodes(),
 	oldToNewNodes()
 {
 	if (projectFile && !domainName.isEmpty())
 	{
-		QString targetFile = projectFile->GetSubDomainPy140(domainName);
+		targetFile = projectFile->GetSubDomainPy140(domainName);
 		if (targetFile.isEmpty())
 		{
 			QString targetDirectory = projectFile->GetSubDomainDirectory(domainName);
@@ -28,7 +37,11 @@ Py140_new::Py140_new(QString domainName, ProjectFile_new *projectFile, QObject *
 			{
 				targetFile = targetDirectory + QDir::separator() + "py.140";
 				projectFile->SetSubDomainPy140(domainName, targetFile);
+			} else {
+				// Throw a warning that the subdomain directory doesn't exist
 			}
+		} else {
+			ReadFile();
 		}
 	}
 }
@@ -53,6 +66,7 @@ void Py140_new::SaveFile()
 		} else {
 			std::cout << "Unable to write py.140: " << projectFile->GetSubDomainPy140(domainName).toStdString() << std::endl;
 		}
+		projectFile->SetSubDomainPy140(domainName, targetFile);
 	}
 }
 
@@ -150,6 +164,14 @@ std::map<unsigned int, unsigned int> Py140_new::GetOldToNew()
 	if (!oldToNewNodes.size())
 		ReadFile();
 	return oldToNewNodes;
+}
+
+
+bool Py140_new::HasOldNode(unsigned int nodeNum)
+{
+	if (oldToNewNodes.count(nodeNum))
+		return true;
+	return false;
 }
 
 

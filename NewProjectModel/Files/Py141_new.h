@@ -34,6 +34,7 @@ class Py141_new : public QObject
 
 		QString			domainName;
 		ProjectFile_new*	projectFile;
+		QString			targetFile;
 
 		std::map<unsigned int, unsigned int>	newToOldElements;
 		std::map<unsigned int, unsigned int>	oldToNewElements;

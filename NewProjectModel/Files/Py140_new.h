@@ -29,11 +29,13 @@ class Py140_new : public QObject
 		QString					GetFilePath();
 		std::map<unsigned int, unsigned int>	GetNewToOld();
 		std::map<unsigned int, unsigned int>	GetOldToNew();
+		bool					HasOldNode(unsigned int nodeNum);
 
 	private:
 
 		QString			domainName;
 		ProjectFile_new*	projectFile;
+		QString			targetFile;
 
 		std::map<unsigned int, unsigned int>	newToOldNodes;
 		std::map<unsigned int, unsigned int>	oldToNewNodes;

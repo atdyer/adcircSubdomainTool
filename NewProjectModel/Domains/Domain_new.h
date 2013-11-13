@@ -71,10 +71,14 @@ class Domain_new : public QObject
 
 		void	updateGL();
 		void	setCursor(const QCursor &);
+		void	maxSelectedZ(float);
+		void	minSelectedZ(float);
 		void	mouseX(float);
 		void	mouseY(float);
 		void	undoAvailable(bool);
 		void	redoAvailable(bool);
+		void	numNodesSelected(int);
+		void	numElementsSelected(int);
 		
 	public slots:
 

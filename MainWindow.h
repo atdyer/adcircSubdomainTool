@@ -38,6 +38,8 @@ class MainWindow : public QMainWindow
 	public slots:
 
 		void	displayOutput(QString text);
+		void	showMaxSelectedZ(float newZ);
+		void	showMinSelectedZ(float newZ);
 		void	showMouseX(float newX);
 		void	showMouseY(float newY);
 		void	showNumNodes(int numNodes);

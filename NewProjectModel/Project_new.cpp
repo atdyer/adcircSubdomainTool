@@ -78,6 +78,10 @@ FullDomain* Project_new::BuildFullDomain()
 	connect(newFullDomain, SIGNAL(mouseY(float)), this, SIGNAL(mouseY(float)));
 	connect(newFullDomain, SIGNAL(undoAvailable(bool)), this, SIGNAL(undoAvailable(bool)));
 	connect(newFullDomain, SIGNAL(redoAvailable(bool)), this, SIGNAL(redoAvailable(bool)));
+	connect(newFullDomain, SIGNAL(numElementsSelected(int)), this, SIGNAL(numElementsSelected(int)));
+	connect(newFullDomain, SIGNAL(numNodesSelected(int)), this, SIGNAL(numNodesSelected(int)));
+	connect(newFullDomain, SIGNAL(maxSelectedZ(float)), this, SIGNAL(maxSelectedZ(float)));
+	connect(newFullDomain, SIGNAL(minSelectedZ(float)), this, SIGNAL(minSelectedZ(float)));
 
 	return newFullDomain;
 }
@@ -455,7 +459,8 @@ void Project_new::CreateNewSubdomain()
 		if (ok && !newName.isEmpty())
 		{
 			SubdomainCreator_new creator;
-			bool newSubdomain = creator.CreateSubdomain(newName, projectFile, fullDomain);
+			QString targetDir = projectFile->GetFullDomainDirectory() + QDir::separator() + newName;
+			bool newSubdomain = creator.CreateSubdomain(newName, projectFile, targetDir, fullDomain, 2, 1);
 			if (newSubdomain)
 			{
 				BuildSubdomain(newName);

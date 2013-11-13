@@ -46,6 +46,10 @@ class FullDomainSelectionLayer : public SelectionLayer
 		virtual void	Redo();
 		virtual bool	GetRedoAvailable();
 
+		std::vector<unsigned int>	GetInnerBoundaryNodes();
+		std::vector<unsigned int>	GetOuterBoundaryNodes();
+		std::vector<Element*>		GetSelectedElements();
+
 	private:
 
 		Fort14_new	*fort14;

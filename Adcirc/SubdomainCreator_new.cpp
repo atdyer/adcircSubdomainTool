@@ -5,6 +5,8 @@ SubdomainCreator_new::SubdomainCreator_new() :
 	fort015Full(0),
 	fort015Sub(0),
 	fullDomain(0),
+	innerBoundaryNodes(),
+	outerBoundaryNodes(),
 	py140(0),
 	py141(0),
 	projectFile(0),
@@ -30,14 +32,69 @@ SubdomainCreator_new::~SubdomainCreator_new()
 }
 
 
-bool SubdomainCreator_new::CreateSubdomain(QString newName, ProjectFile_new *projFile, FullDomain *fDomain)
+bool SubdomainCreator_new::CreateSubdomain(QString newName,
+					   ProjectFile_new *projFile,
+					   QString targetDir,
+					   FullDomain *fDomain,
+					   int version,
+					   int recordFrequency)
 {
 	fullDomain = fDomain;
 	projectFile = projFile;
 	subdomainName = newName;
 
-	if (fullDomain && projectFile && projectFile->AddSubdomain(subdomainName))
+	// Make sure target directory exists
+	if (!QDir(targetDir).exists())
 	{
+		QDir().mkdir(targetDir);
+		std::cout << QDir(targetDir).exists() << std::endl;
+	} else {
+		if (CheckForExistingSubdomainFiles(targetDir))
+		{
+			if (!WarnSubdomainFilesExist(targetDir))
+				return false;
+		}
+	}
+
+	if (fullDomain && projectFile && !targetDir.isEmpty() && projectFile->AddSubdomain(subdomainName))
+	{
+		// Set the subdomain's target directory
+		projectFile->SetSubDomainDirectory(subdomainName, targetDir);
+
+		// Get the full domain fort.015 file
+		if (fort015Full)
+		{
+			fort015Full->WriteFile();
+			delete fort015Full;
+		}
+		fort015Full = new Fort015_new(projectFile);
+
+		// Check for version and record frequency compatibility
+		int fullVersion = fort015Full->GetSubdomainApproach();
+		int fullFreq = fort015Full->GetRecordFrequency();
+		if (fullVersion != 0 && fullVersion != version)
+		{
+			// Throw version mismatch warning
+		}
+		if (fullFreq != 0 && fullFreq != recordFrequency)
+		{
+			// Throw record frequency mismatch warning
+		}
+		fort015Full->SetSubdomainApproach(version);
+		fort015Full->SetRecordFrequency(recordFrequency);
+
+		// Get the subdomain fort.015
+		if (fort015Sub)
+		{
+			fort015Sub->WriteFile();
+			delete fort015Sub;
+		}
+		fort015Sub = new Fort015_new(subdomainName, projectFile);
+		fort015Sub->SetSubdomainApproach(version);
+		fort015Sub->SetRecordFrequency(recordFrequency);
+		fort015Sub->WriteFile();
+
+
 		// Get elements (and nodes) that are selected in the full domain
 		selectedElements = fullDomain->GetSelectedElements();
 		FindUniqueNodes();
@@ -46,8 +103,19 @@ bool SubdomainCreator_new::CreateSubdomain(QString newName, ProjectFile_new *pro
 		MapOldToNewElements();
 		MapOldToNewNodes();
 
-		// Get the boundaries of the selected elements
-		FindBoundaries();
+		// Get the boundaries of the selected elements, write the bnlist.14 file,
+		// and add the nodes to the full fort.015 file
+		innerBoundaryNodes = fullDomain->GetInnerBoundaryNodes();
+		outerBoundaryNodes = fullDomain->GetOuterBoundaryNodes();
+		FindBoundaries(version);
+		if (version == 1)
+			fort015Full->AddBoundaryNodes(outerBoundaryNodes);
+		else if (version == 2)
+		{
+			fort015Full->AddInnerBoundaryNodes(innerBoundaryNodes);
+			fort015Full->AddOuterBoundaryNodes(outerBoundaryNodes);
+		}
+		fort015Full->WriteFile();
 
 		// Write new fort.14 file
 		return WriteFort14();
@@ -56,27 +124,40 @@ bool SubdomainCreator_new::CreateSubdomain(QString newName, ProjectFile_new *pro
 }
 
 
-void SubdomainCreator_new::FindBoundaries()
+bool SubdomainCreator_new::CheckForExistingSubdomainFiles(QString targetDir)
+{
+	if (QFile(targetDir + QDir::separator() + "fort.14").exists())
+		return true;
+	if (QFile(targetDir + QDir::separator() + "fort.015").exists())
+		return true;
+	if (QFile(targetDir + QDir::separator() + "bnlist.14").exists())
+		return true;
+	return false;
+}
+
+
+void SubdomainCreator_new::FindBoundaries(int version)
 {
 	bnList = new BNList14_new(subdomainName, projectFile);
+	bnList->SetSubdomainVersion(version);
 
 	if (bnList && py140)
 	{
-		BoundarySearch boundarySearch;
-		Boundaries selectedBoundaries = boundarySearch.FindBoundaries(selectedElements);
+//		BoundarySearch boundarySearch;
+//		Boundaries selectedBoundaries = boundarySearch.FindBoundaries(selectedElements);
 
 		std::vector<unsigned int> innerBoundaries;
 		std::vector<unsigned int> outerBoundaries;
 
-		for (std::set<unsigned int>::iterator it=selectedBoundaries.innerBoundaryNodes.begin();
-		     it != selectedBoundaries.innerBoundaryNodes.end();
+		for (std::vector<unsigned int>::iterator it=innerBoundaryNodes.begin();
+		     it != innerBoundaryNodes.end();
 		     ++it)
 		{
 			innerBoundaries.push_back(py140->ConvertOldToNew(*it));
 		}
 
-		for (std::set<unsigned int>::iterator it=selectedBoundaries.outerBoundaryNodes.begin();
-		     it != selectedBoundaries.outerBoundaryNodes.end();
+		for (std::vector<unsigned int>::iterator it=outerBoundaryNodes.begin();
+		     it != outerBoundaryNodes.end();
 		     ++it)
 		{
 			outerBoundaries.push_back(py140->ConvertOldToNew(*it));
@@ -210,5 +291,27 @@ bool SubdomainCreator_new::WriteFort14()
 		return true;
 	} else {
 		return false;
+	}
+}
+
+
+bool SubdomainCreator_new::WarnSubdomainFilesExist(QString targetDir)
+{
+	QMessageBox msgBox;
+	msgBox.setWindowTitle("Adcirc Subdomain Modeling Tool");
+	msgBox.setText("The directory " + targetDir + " already contains ADCIRC files. Would you like to overwrite them?");
+	msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+
+	switch (msgBox.exec())
+	{
+		case QMessageBox::Yes:
+			/* Overwrite the file */
+			return true;
+		case QMessageBox::No:
+			/* Do not overwrite the file */
+			return false;
+		default:
+			/* Should never be reached */
+			return false;
 	}
 }

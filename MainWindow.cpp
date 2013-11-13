@@ -133,14 +133,28 @@ void MainWindow::showNumTS(int numTS)
 }
 
 
+void MainWindow::showMaxSelectedZ(float newZ)
+{
+	ui->createMaxElevation->setText(QString::number(newZ, 'f', 4));
+}
+
+
+void MainWindow::showMinSelectedZ(float newZ)
+{
+	ui->createMinElevation->setText(QString::number(newZ, 'f', 4));
+}
+
+
 void MainWindow::showNumSelectedNodes(int numNodes){
 //	ui->subNodesCount->setText(QString::number(numNodes));
+	ui->createNumNodesSelected->setText(QString::number(numNodes));
 }
 
 
 void MainWindow::showNumSelectedElements(int numElements)
 {
 //	ui->subElementsCount->setText(QString::number(numElements));
+	ui->createNumElementsSelected->setText(QString::number(numElements));
 }
 
 
@@ -414,6 +428,10 @@ void MainWindow::CreateProjectNew(bool newProjectFile)
 	connect(newProject, SIGNAL(mouseY(float)), this, SLOT(showMouseY(float)));
 	connect(newProject, SIGNAL(undoAvailable(bool)), ui->undoButton, SLOT(setEnabled(bool)));
 	connect(newProject, SIGNAL(redoAvailable(bool)), ui->redoButton, SLOT(setEnabled(bool)));
+	connect(newProject, SIGNAL(numElementsSelected(int)), this, SLOT(showNumSelectedElements(int)));
+	connect(newProject, SIGNAL(numNodesSelected(int)), this, SLOT(showNumSelectedNodes(int)));
+	connect(newProject, SIGNAL(maxSelectedZ(float)), this, SLOT(showMaxSelectedZ(float)));
+	connect(newProject, SIGNAL(minSelectedZ(float)), this, SLOT(showMinSelectedZ(float)));
 }
 
 
