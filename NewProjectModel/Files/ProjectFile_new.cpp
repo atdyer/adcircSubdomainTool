@@ -53,7 +53,6 @@ ProjectFile_new::ProjectFile_new()
  */
 bool ProjectFile_new::OpenProjectFile_new(QString filePath)
 {
-	std::cout << "Called" << std::endl;
 	if (!ProjectIsOpen() || WarnProjectAlreadyOpen())
 	{
 		SetProjectFile_new(filePath);

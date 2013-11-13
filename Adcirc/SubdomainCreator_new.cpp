@@ -2,6 +2,8 @@
 
 SubdomainCreator_new::SubdomainCreator_new() :
 	bnList(0),
+	fort015Full(0),
+	fort015Sub(0),
 	fullDomain(0),
 	py140(0),
 	py141(0),
@@ -17,6 +19,10 @@ SubdomainCreator_new::~SubdomainCreator_new()
 {
 	if (bnList)
 		delete bnList;
+	if (fort015Full)
+		delete fort015Sub;
+	if (fort015Sub)
+		delete fort015Sub;
 	if (py140)
 		delete py140;
 	if (py141)

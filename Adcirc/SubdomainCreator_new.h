@@ -23,6 +23,8 @@ class SubdomainCreator_new
 	private:
 
 		BNList14_new*				bnList;
+		Fort015_new*				fort015Full;
+		Fort015_new*				fort015Sub;
 		FullDomain*				fullDomain;
 		Py140_new*				py140;
 		Py141_new*				py141;
