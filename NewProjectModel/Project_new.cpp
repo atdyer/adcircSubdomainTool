@@ -225,6 +225,14 @@ void Project_new::PopulateProjectTree()
 	if (projectTree && projectFile)
 	{
 		projectTree->clear();
+		projectTree->setColumnCount(2);
+//		projectTree->setColumnWidth(0, projectTree->width()-20);
+//		projectTree->setColumnWidth(1, 20);
+		projectTree->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+		projectTree->header()->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+		projectTree->header()->setStretchLastSection(false);
+		projectTree->header()->resizeSection(0, projectTree->header()->width()-25);
+		projectTree->header()->resizeSection(1, 25);
 
 		QString projectName = projectFile->GetProjectName();
 		QString projectDir = projectFile->GetProjectDirectory();
@@ -234,6 +242,7 @@ void Project_new::PopulateProjectTree()
 		QString f63 = projectFile->GetFullDomainFort63();
 		QString f64 = projectFile->GetFullDomainFort64();
 		QString f015 = projectFile->GetFullDomainFort015();
+		QString f065 = projectFile->GetFullDomainFort065();
 		QString f066 = projectFile->GetFullDomainFort066();
 		QString f067 = projectFile->GetFullDomainFort067();
 
@@ -250,6 +259,7 @@ void Project_new::PopulateProjectTree()
 			QTreeWidgetItem *fullTop = new QTreeWidgetItem(treeTop);
 			fullTop->setData(0, Qt::DisplayRole, QString("Full Domain"));
 			fullTop->setData(0, Qt::StatusTipRole, "Full Domain - " + projectDir);
+			fullTop->setIcon(1, QIcon(":/icons/images/icons/16_16/check.png"));
 
 			if (!f14.isEmpty())
 			{
@@ -286,6 +296,13 @@ void Project_new::PopulateProjectTree()
 				item015->setData(0, Qt::StatusTipRole, f015);
 			}
 
+			if (!f065.isEmpty())
+			{
+				QTreeWidgetItem *item065 = new QTreeWidgetItem(fullTop);
+				item065->setData(0, Qt::DisplayRole, QString("fort.065"));
+				item065->setData(0, Qt::StatusTipRole, f065);
+			}
+
 			if (!f066.isEmpty())
 			{
 				QTreeWidgetItem *item066 = new QTreeWidgetItem(fullTop);
@@ -312,21 +329,21 @@ void Project_new::PopulateProjectTree()
 			QString sBN = projectFile->GetSubDomainBNList(currName);
 			QString s14 = projectFile->GetSubDomainFort14(currName);
 			QString s15 = projectFile->GetSubDomainFort15(currName);
-			QString s22 = projectFile->GetSubDomainFort15(currName);
-			QString s63 = projectFile->GetSubDomainFort15(currName);
-			QString s64 = projectFile->GetSubDomainFort15(currName);
-			QString s015 = projectFile->GetSubDomainFort15(currName);
-			QString s020 = projectFile->GetSubDomainFort15(currName);
-			QString s021 = projectFile->GetSubDomainFort15(currName);
-			QString s022 = projectFile->GetSubDomainFort15(currName);
-			QString sME = projectFile->GetSubDomainFort15(currName);
-			QString sMV = projectFile->GetSubDomainFort15(currName);
-			QString s140 = projectFile->GetSubDomainFort15(currName);
-			QString s141 = projectFile->GetSubDomainFort15(currName);
+			QString s63 = projectFile->GetSubDomainFort63(currName);
+			QString s64 = projectFile->GetSubDomainFort64(currName);
+			QString s015 = projectFile->GetSubDomainFort015(currName);
+			QString s019 = projectFile->GetSubDomainFort019(currName);
+			QString s020 = projectFile->GetSubDomainFort020(currName);
+			QString s021 = projectFile->GetSubDomainFort021(currName);
+			QString sME = projectFile->GetSubDomainMaxele(currName);
+			QString sMV = projectFile->GetSubDomainMaxvel(currName);
+			QString s140 = projectFile->GetSubDomainPy140(currName);
+			QString s141 = projectFile->GetSubDomainPy141(currName);
 
 			QTreeWidgetItem *currSub = new QTreeWidgetItem(subTop);
 			currSub->setData(0, Qt::DisplayRole, currName);
 			currSub->setData(0, Qt::StatusTipRole, currName + " - " + currDir);
+			currSub->setIcon(1, QIcon(":/icons/images/icons/16_16/refresh.png"));
 
 			if (!sBN.isEmpty())
 			{
@@ -347,13 +364,6 @@ void Project_new::PopulateProjectTree()
 				QTreeWidgetItem *item15 = new QTreeWidgetItem(currSub);
 				item15->setData(0, Qt::DisplayRole, QString("fort.15"));
 				item15->setData(0, Qt::StatusTipRole, s15);
-			}
-
-			if (!s22.isEmpty())
-			{
-				QTreeWidgetItem *item22 = new QTreeWidgetItem(currSub);
-				item22->setData(0, Qt::DisplayRole, QString("fort.22"));
-				item22->setData(0, Qt::StatusTipRole, s22);
 			}
 
 			if (!s63.isEmpty())
@@ -377,6 +387,13 @@ void Project_new::PopulateProjectTree()
 				item015->setData(0, Qt::StatusTipRole, s015);
 			}
 
+			if (!s019.isEmpty())
+			{
+				QTreeWidgetItem *item019 = new QTreeWidgetItem(currSub);
+				item019->setData(0, Qt::DisplayRole, QString("fort.019"));
+				item019->setData(0, Qt::StatusTipRole, s019);
+			}
+
 			if (!s020.isEmpty())
 			{
 				QTreeWidgetItem *item020 = new QTreeWidgetItem(currSub);
@@ -389,13 +406,6 @@ void Project_new::PopulateProjectTree()
 				QTreeWidgetItem *item021 = new QTreeWidgetItem(currSub);
 				item021->setData(0, Qt::DisplayRole, QString("fort.021"));
 				item021->setData(0, Qt::StatusTipRole, s021);
-			}
-
-			if (!s022.isEmpty())
-			{
-				QTreeWidgetItem *item022 = new QTreeWidgetItem(currSub);
-				item022->setData(0, Qt::DisplayRole, QString("fort.022"));
-				item022->setData(0, Qt::StatusTipRole, s022);
 			}
 
 			if (!sME.isEmpty())

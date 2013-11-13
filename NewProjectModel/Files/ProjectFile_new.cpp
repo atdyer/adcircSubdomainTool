@@ -21,8 +21,10 @@ const QString ProjectFile_new::ATTR_FORT24LOCATION = "fort24Loc";
 const QString ProjectFile_new::ATTR_FORT63LOCATION = "fort63Loc";
 const QString ProjectFile_new::ATTR_FORT64LOCATION = "fort64Loc";
 const QString ProjectFile_new::ATTR_FORT015LOCATION = "fort015Loc";
+const QString ProjectFile_new::ATTR_FORT019LOCATION = "fort019Loc";
 const QString ProjectFile_new::ATTR_FORT020LOCATION = "fort020Loc";
 const QString ProjectFile_new::ATTR_FORT021LOCATION = "fort021Loc";
+const QString ProjectFile_new::ATTR_FORT065LOCATION = "fort065Loc";
 const QString ProjectFile_new::ATTR_FORT066LOCATION = "fort066Loc";
 const QString ProjectFile_new::ATTR_FORT067LOCATION = "fort067Loc";
 const QString ProjectFile_new::ATTR_LASTSAVE = "savedOn";
@@ -185,6 +187,12 @@ QString ProjectFile_new::GetFullDomainFort015()
 }
 
 
+QString ProjectFile_new::GetFullDomainFort065()
+{
+	return GetAttribute(TAG_FULL_DOMAIN, ATTR_FORT065LOCATION);
+}
+
+
 QString ProjectFile_new::GetFullDomainFort066()
 {
 	return GetAttribute(TAG_FULL_DOMAIN, ATTR_FORT066LOCATION);
@@ -194,6 +202,18 @@ QString ProjectFile_new::GetFullDomainFort066()
 QString ProjectFile_new::GetFullDomainFort067()
 {
 	return GetAttribute(TAG_FULL_DOMAIN, ATTR_FORT067LOCATION);
+}
+
+
+QString ProjectFile_new::GetFullDomainMaxele()
+{
+	return GetAttribute(TAG_FULL_DOMAIN, ATTR_MAXELELOCATION);
+}
+
+
+QString ProjectFile_new::GetFullDomainMaxvel()
+{
+	return GetAttribute(TAG_FULL_DOMAIN, ATTR_MAXVELLOCATION);
 }
 
 
@@ -257,6 +277,12 @@ QString ProjectFile_new::GetSubDomainFort015(QString subdomainName)
 }
 
 
+QString ProjectFile_new::GetSubDomainFort019(QString subdomainName)
+{
+	return GetAttributeSubdomain(subdomainName, ATTR_FORT019LOCATION);
+}
+
+
 QString ProjectFile_new::GetSubDomainFort020(QString subdomainName)
 {
 	return GetAttributeSubdomain(subdomainName, ATTR_FORT020LOCATION);
@@ -266,6 +292,18 @@ QString ProjectFile_new::GetSubDomainFort020(QString subdomainName)
 QString ProjectFile_new::GetSubDomainFort021(QString subdomainName)
 {
 	return GetAttributeSubdomain(subdomainName, ATTR_FORT021LOCATION);
+}
+
+
+QString ProjectFile_new::GetSubDomainMaxele(QString subdomainName)
+{
+	return GetAttributeSubdomain(subdomainName, ATTR_MAXELELOCATION);
+}
+
+
+QString ProjectFile_new::GetSubDomainMaxvel(QString subdomainName)
+{
+	return GetAttributeSubdomain(subdomainName, ATTR_MAXVELLOCATION);
 }
 
 
@@ -402,6 +440,12 @@ void ProjectFile_new::SetFullDomainFort015(QString newLoc)
 }
 
 
+void ProjectFile_new::SetFullDomainFort065(QString newLoc)
+{
+	SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT065LOCATION, newLoc);
+}
+
+
 void ProjectFile_new::SetFullDomainFort066(QString newLoc)
 {
 	SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT066LOCATION, newLoc);
@@ -411,6 +455,18 @@ void ProjectFile_new::SetFullDomainFort066(QString newLoc)
 void ProjectFile_new::SetFullDomainFort067(QString newLoc)
 {
 	SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT067LOCATION, newLoc);
+}
+
+
+void ProjectFile_new::SetFullDomainMaxele(QString newLoc)
+{
+	SetAttribute(TAG_FULL_DOMAIN, ATTR_MAXELELOCATION, newLoc);
+}
+
+
+void ProjectFile_new::SetFullDomainMaxvel(QString newLoc)
+{
+	SetAttribute(TAG_FULL_DOMAIN, ATTR_MAXVELLOCATION, newLoc);
 }
 
 
@@ -456,6 +512,12 @@ void ProjectFile_new::SetSubDomainFort015(QString subDomain, QString newLoc)
 }
 
 
+void ProjectFile_new::SetSubDomainFort019(QString subDomain, QString newLoc)
+{
+	SetAttributeSubdomain(subDomain, ATTR_FORT019LOCATION, newLoc);
+}
+
+
 void ProjectFile_new::SetSubDomainFort020(QString subDomain, QString newLoc)
 {
 	SetAttributeSubdomain(subDomain, ATTR_FORT020LOCATION, newLoc);
@@ -465,6 +527,18 @@ void ProjectFile_new::SetSubDomainFort020(QString subDomain, QString newLoc)
 void ProjectFile_new::SetSubDomainFort021(QString subDomain, QString newLoc)
 {
 	SetAttributeSubdomain(subDomain, ATTR_FORT021LOCATION, newLoc);
+}
+
+
+void ProjectFile_new::SetSubDomainMaxele(QString subDomain, QString newLoc)
+{
+	SetAttributeSubdomain(subDomain, ATTR_MAXELELOCATION, newLoc);
+}
+
+
+void ProjectFile_new::SetSubDomainMaxvel(QString subDomain, QString newLoc)
+{
+	SetAttributeSubdomain(subDomain, ATTR_MAXVELLOCATION, newLoc);
 }
 
 

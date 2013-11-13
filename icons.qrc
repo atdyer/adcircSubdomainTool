@@ -15,5 +15,7 @@
         <file>images/icons/16_16/settings.png</file>
         <file>images/icons/16_16/redo.png</file>
         <file>images/icons/16_16/undo.png</file>
+        <file>images/icons/16_16/check.png</file>
+        <file>images/icons/16_16/refresh.png</file>
     </qresource>
 </RCC>

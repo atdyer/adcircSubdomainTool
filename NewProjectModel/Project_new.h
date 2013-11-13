@@ -6,6 +6,7 @@
 #include <QProgressBar>
 #include <QTreeWidget>
 #include <QInputDialog>
+#include <QHeaderView>
 
 #include <vector>
 

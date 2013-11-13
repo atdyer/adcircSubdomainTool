@@ -30,8 +30,11 @@ class ProjectFile_new : public QDomDocument
 		QString		GetFullDomainFort63();
 		QString		GetFullDomainFort64();
 		QString		GetFullDomainFort015();
+		QString		GetFullDomainFort065();
 		QString		GetFullDomainFort066();
 		QString		GetFullDomainFort067();
+		QString		GetFullDomainMaxele();
+		QString		GetFullDomainMaxvel();
 		QDateTime	GetLastFileAccess();
 		QString		GetProjectDirectory();
 		QString		GetProjectName();
@@ -42,8 +45,11 @@ class ProjectFile_new : public QDomDocument
 		QString		GetSubDomainFort63(QString subdomainName);
 		QString		GetSubDomainFort64(QString subdomainName);
 		QString		GetSubDomainFort015(QString subdomainName);
+		QString		GetSubDomainFort019(QString subdomainName);
 		QString		GetSubDomainFort020(QString subdomainName);
 		QString		GetSubDomainFort021(QString subdomainName);
+		QString		GetSubDomainMaxele(QString subdomainName);
+		QString		GetSubDomainMaxvel(QString subdomainName);
 		QStringList	GetSubDomainNames();
 		QString		GetSubDomainPy140(QString subdomainName);
 		QString		GetSubDomainPy141(QString subdomainName);
@@ -64,8 +70,11 @@ class ProjectFile_new : public QDomDocument
 		void	SetFullDomainFort63(QString newLoc, bool symLink);
 		void	SetFullDomainFort64(QString newLoc, bool symLink);
 		void	SetFullDomainFort015(QString newLoc);
+		void	SetFullDomainFort065(QString newLoc);
 		void	SetFullDomainFort066(QString newLoc);
 		void	SetFullDomainFort067(QString newLoc);
+		void	SetFullDomainMaxele(QString newLoc);
+		void	SetFullDomainMaxvel(QString newLoc);
 		void	SetSubDomainBNList(QString subDomain, QString newLoc);
 		void	SetSubDomainDirectory(QString subDomain, QString newLoc);
 		void	SetSubDomainFort14(QString subDomain, QString newLoc);
@@ -73,8 +82,11 @@ class ProjectFile_new : public QDomDocument
 		void	SetSubDomainFort63(QString subDomain, QString newLoc);
 		void	SetSubDomainFort64(QString subDomain, QString newLoc);
 		void	SetSubDomainFort015(QString subDomain, QString newLoc);
+		void	SetSubDomainFort019(QString subDomain, QString newLoc);
 		void	SetSubDomainFort020(QString subDomain, QString newLoc);
 		void	SetSubDomainFort021(QString subDomain, QString newLoc);
+		void	SetSubDomainMaxele(QString subDomain, QString newLoc);
+		void	SetSubDomainMaxvel(QString subDomain, QString newLoc);
 		void	SetSubDomainName(QString oldName, QString newName);
 		void	SetSubDomainPy140(QString subDomain, QString newLoc);
 		void	SetSubDomainPy141(QString subDomain, QString newLoc);
@@ -106,8 +118,10 @@ class ProjectFile_new : public QDomDocument
 		static const QString	ATTR_FORT63LOCATION;
 		static const QString	ATTR_FORT64LOCATION;
 		static const QString	ATTR_FORT015LOCATION;
+		static const QString	ATTR_FORT019LOCATION;
 		static const QString	ATTR_FORT020LOCATION;
 		static const QString	ATTR_FORT021LOCATION;
+		static const QString	ATTR_FORT065LOCATION;
 		static const QString	ATTR_FORT066LOCATION;
 		static const QString	ATTR_FORT067LOCATION;
 		static const QString	ATTR_LASTSAVE;
