@@ -44,7 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
 //	ui->minimizeMainTabButton->setIcon(QIcon::fromTheme("zoom-in"));
 
 	// Expand the project tree
-	ui->projectTree->expandAll();
+//	ui->projectTree->expandAll();
 
 	/* Create the system tray icon */
 	trayIcon = 0;
@@ -432,6 +432,7 @@ void MainWindow::CreateProjectNew(bool newProjectFile)
 	connect(newProject, SIGNAL(numNodesSelected(int)), this, SLOT(showNumSelectedNodes(int)));
 	connect(newProject, SIGNAL(maxSelectedZ(float)), this, SLOT(showMaxSelectedZ(float)));
 	connect(newProject, SIGNAL(minSelectedZ(float)), this, SLOT(showMinSelectedZ(float)));
+	connect(newProject, SIGNAL(showProjectView()), this, SLOT(showProjectExplorerPane()));
 }
 
 

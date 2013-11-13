@@ -22,7 +22,7 @@ SubdomainCreator_new::~SubdomainCreator_new()
 	if (bnList)
 		delete bnList;
 	if (fort015Full)
-		delete fort015Sub;
+		delete fort015Full;
 	if (fort015Sub)
 		delete fort015Sub;
 	if (py140)
@@ -100,8 +100,8 @@ bool SubdomainCreator_new::CreateSubdomain(QString newName,
 		FindUniqueNodes();
 
 		// Map the subdomain nodes/elements to the full domain nodes/elements
-		MapOldToNewElements();
 		MapOldToNewNodes();
+		MapOldToNewElements();
 
 		// Get the boundaries of the selected elements, write the bnlist.14 file,
 		// and add the nodes to the full fort.015 file
@@ -192,7 +192,7 @@ void SubdomainCreator_new::FindUniqueNodes()
 
 void SubdomainCreator_new::MapOldToNewElements()
 {
-	py140 = new Py140_new(subdomainName, projectFile);
+	py141 = new Py141_new(subdomainName, projectFile);
 
 	if (selectedElements.size())
 	{
@@ -207,15 +207,15 @@ void SubdomainCreator_new::MapOldToNewElements()
 				oldToNew[currElement->elementNumber] = nextNewElement++;
 			}
 		}
-		py140->SetOldToNew(oldToNew);
-		py140->SaveFile();
+		py141->SetOldToNew(oldToNew);
+		py141->SaveFile();
 	}
 }
 
 
 void SubdomainCreator_new::MapOldToNewNodes()
 {
-	py141 = new Py141_new(subdomainName, projectFile);
+	py140 = new Py140_new(subdomainName, projectFile);
 
 	if (selectedNodes.size())
 	{
@@ -230,8 +230,8 @@ void SubdomainCreator_new::MapOldToNewNodes()
 				oldToNew[currNode->nodeNumber] = nextNewNode++;
 			}
 		}
-		py141->SetOldToNew(oldToNew);
-		py141->SaveFile();
+		py140->SetOldToNew(oldToNew);
+		py140->SaveFile();
 	}
 }
 
@@ -271,9 +271,9 @@ bool SubdomainCreator_new::WriteFort14()
 			if (currElement)
 			{
 				fort14File << py141->ConvertOldToNew(currElement->elementNumber) << "\t3\t" <<
-					      py141->ConvertOldToNew(currElement->n1->nodeNumber) << "\t" <<
-					      py141->ConvertOldToNew(currElement->n2->nodeNumber) << "\t" <<
-					      py141->ConvertOldToNew(currElement->n3->nodeNumber) << "\n";
+					      py140->ConvertOldToNew(currElement->n1->nodeNumber) << "\t" <<
+					      py140->ConvertOldToNew(currElement->n2->nodeNumber) << "\t" <<
+					      py140->ConvertOldToNew(currElement->n3->nodeNumber) << "\n";
 			}
 		}
 

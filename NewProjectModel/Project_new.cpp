@@ -426,7 +426,8 @@ void Project_new::PopulateProjectTree()
 				item141->setData(0, Qt::StatusTipRole, s141);
 			}
 		}
-		projectTree->expandAll();
+		projectTree->collapseAll();
+		projectTree->expandToDepth(1);
 	}
 }
 
@@ -465,6 +466,8 @@ void Project_new::CreateNewSubdomain()
 			{
 				BuildSubdomain(newName);
 				PopulateProjectTree();
+				emit showProjectView();
+				projectTree->setCurrentItem(projectTree->findItems(newName, Qt::MatchExactly | Qt::MatchRecursive).first());
 			}
 		}
 	}

@@ -15,7 +15,6 @@
 
 #include "NewProjectModel/Domains/FullDomain.h"
 #include "NewProjectModel/Domains/SubDomain.h"
-
 #include "NewProjectModel/Files/ProjectFile_new.h"
 
 #include "OpenGL/OpenGLPanel.h"
@@ -83,6 +82,7 @@ class Project_new : public QObject
 		void	numElementsSelected(int);
 		void	numNodesSelected(int);
 		void	redoAvailable(bool);
+		void	showProjectView();
 		void	undoAvailable(bool);
 
 
