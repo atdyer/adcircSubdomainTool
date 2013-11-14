@@ -13,6 +13,7 @@
 #include "Adcirc/SubdomainCreator_new.h"
 
 #include "Dialogs/CreateProjectDialog.h"
+#include "Dialogs/CreateSubdomainDialog.h"
 
 #include "NewProjectModel/Domains/FullDomain.h"
 #include "NewProjectModel/Domains/SubDomain.h"

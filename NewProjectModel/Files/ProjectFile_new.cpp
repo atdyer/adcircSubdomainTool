@@ -352,85 +352,109 @@ void ProjectFile_new::SetFullDomainDirectory(QString newLoc)
 
 void ProjectFile_new::SetFullDomainFort10(QString newLoc, bool symLink)
 {
-	if (symLink ? LinkFile(newLoc, projectDirectory.absolutePath()) : CopyFile(newLoc, projectDirectory.absolutePath()))
-		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT10LOCATION, newLoc);
+	if (symLink)
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT10LOCATION, LinkFile(newLoc, projectDirectory.absolutePath()));
+	else
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT10LOCATION, CopyFile(newLoc, projectDirectory.absolutePath()));
 }
 
 
 void ProjectFile_new::SetFullDomainFort11(QString newLoc, bool symLink)
 {
-	if (symLink ? LinkFile(newLoc, projectDirectory.absolutePath()) : CopyFile(newLoc, projectDirectory.absolutePath()))
-		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT11LOCATION, newLoc);
+	if (symLink)
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT11LOCATION, LinkFile(newLoc, projectDirectory.absolutePath()));
+	else
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT11LOCATION, CopyFile(newLoc, projectDirectory.absolutePath()));
 }
 
 
 void ProjectFile_new::SetFullDomainFort13(QString newLoc, bool symLink)
 {
-	if (symLink ? LinkFile(newLoc, projectDirectory.absolutePath()) : CopyFile(newLoc, projectDirectory.absolutePath()))
-		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT13LOCATION, newLoc);
+	if (symLink)
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT13LOCATION, LinkFile(newLoc, projectDirectory.absolutePath()));
+	else
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT13LOCATION, CopyFile(newLoc, projectDirectory.absolutePath()));
 }
 
 
 void ProjectFile_new::SetFullDomainFort14(QString newLoc, bool symLink)
 {
-	if (symLink ? LinkFile(newLoc, projectDirectory.absolutePath()) : CopyFile(newLoc, projectDirectory.absolutePath()))
-		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT14LOCATION, newLoc);
+	if (symLink)
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT14LOCATION, LinkFile(newLoc, projectDirectory.absolutePath()));
+	else
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT14LOCATION, CopyFile(newLoc, projectDirectory.absolutePath()));
 }
 
 
 void ProjectFile_new::SetFullDomainFort15(QString newLoc, bool symLink)
 {
-	if (symLink ? LinkFile(newLoc, projectDirectory.absolutePath()) : CopyFile(newLoc, projectDirectory.absolutePath()))
-		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT15LOCATION, newLoc);
+	if (symLink)
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT15LOCATION, LinkFile(newLoc, projectDirectory.absolutePath()));
+	else
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT15LOCATION, CopyFile(newLoc, projectDirectory.absolutePath()));
 }
 
 
 void ProjectFile_new::SetFullDomainFort19(QString newLoc, bool symLink)
 {
-	if (symLink ? LinkFile(newLoc, projectDirectory.absolutePath()) : CopyFile(newLoc, projectDirectory.absolutePath()))
-		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT19LOCATION, newLoc);
+	if (symLink)
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT19LOCATION, LinkFile(newLoc, projectDirectory.absolutePath()));
+	else
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT19LOCATION, CopyFile(newLoc, projectDirectory.absolutePath()));
 }
 
 
 void ProjectFile_new::SetFullDomainFort20(QString newLoc, bool symLink)
 {
-	if (symLink ? LinkFile(newLoc, projectDirectory.absolutePath()) : CopyFile(newLoc, projectDirectory.absolutePath()))
-		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT20LOCATION, newLoc);
+	if (symLink)
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT20LOCATION, LinkFile(newLoc, projectDirectory.absolutePath()));
+	else
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT20LOCATION, CopyFile(newLoc, projectDirectory.absolutePath()));
 }
 
 
 void ProjectFile_new::SetFullDomainFort22(QString newLoc, bool symLink)
 {
-	if (symLink ? LinkFile(newLoc, projectDirectory.absolutePath()) : CopyFile(newLoc, projectDirectory.absolutePath()))
-		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT22LOCATION, newLoc);
+	if (symLink)
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT22LOCATION, LinkFile(newLoc, projectDirectory.absolutePath()));
+	else
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT22LOCATION, CopyFile(newLoc, projectDirectory.absolutePath()));
 }
 
 
 void ProjectFile_new::SetFullDomainFort23(QString newLoc, bool symLink)
 {
-	if (symLink ? LinkFile(newLoc, projectDirectory.absolutePath()) : CopyFile(newLoc, projectDirectory.absolutePath()))
-		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT23LOCATION, newLoc);
+	if (symLink)
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT23LOCATION, LinkFile(newLoc, projectDirectory.absolutePath()));
+	else
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT23LOCATION, CopyFile(newLoc, projectDirectory.absolutePath()));
 }
 
 
 void ProjectFile_new::SetFullDomainFort24(QString newLoc, bool symLink)
 {
-	if (symLink ? LinkFile(newLoc, projectDirectory.absolutePath()) : CopyFile(newLoc, projectDirectory.absolutePath()))
-		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT24LOCATION, newLoc);
+	if (symLink)
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT24LOCATION, LinkFile(newLoc, projectDirectory.absolutePath()));
+	else
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT24LOCATION, CopyFile(newLoc, projectDirectory.absolutePath()));
 }
 
 
 void ProjectFile_new::SetFullDomainFort63(QString newLoc, bool symLink)
 {
-	if (symLink ? LinkFile(newLoc, projectDirectory.absolutePath()) : CopyFile(newLoc, projectDirectory.absolutePath()))
-		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT63LOCATION, newLoc);
+	if (symLink)
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT63LOCATION, LinkFile(newLoc, projectDirectory.absolutePath()));
+	else
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT63LOCATION, CopyFile(newLoc, projectDirectory.absolutePath()));
 }
 
 
 void ProjectFile_new::SetFullDomainFort64(QString newLoc, bool symLink)
 {
-	if (symLink ? LinkFile(newLoc, projectDirectory.absolutePath()) : CopyFile(newLoc, projectDirectory.absolutePath()))
-		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT64LOCATION, newLoc);
+	if (symLink)
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT64LOCATION, LinkFile(newLoc, projectDirectory.absolutePath()));
+	else
+		SetAttribute(TAG_FULL_DOMAIN, ATTR_FORT64LOCATION, CopyFile(newLoc, projectDirectory.absolutePath()));
 }
 
 
@@ -867,7 +891,7 @@ bool ProjectFile_new::CheckForExistingFile(QString filename)
 }
 
 
-bool ProjectFile_new::CopyFile(QString oldFile, QString newDir)
+QString ProjectFile_new::CopyFile(QString oldFile, QString newDir)
 {
 	QString newFile = newDir + QDir::separator() + QFileInfo(oldFile).fileName();
 
@@ -877,20 +901,21 @@ bool ProjectFile_new::CopyFile(QString oldFile, QString newDir)
 		{
 			RemoveFile(newFile);
 		} else {
-			return false;
+			return oldFile;
 		}
 	}
 
 	QFile file (oldFile);
 	if (file.exists())
 	{
-		return file.copy(newFile);
+		if (file.copy(newFile))
+			return newFile;
 	}
-	return false;
+	return oldFile;
 }
 
 
-bool ProjectFile_new::LinkFile(QString oldFile, QString newDir)
+QString ProjectFile_new::LinkFile(QString oldFile, QString newDir)
 {
 	QString newLink = newDir + QDir::separator() + QFileInfo(oldFile).fileName();
 
@@ -904,16 +929,17 @@ bool ProjectFile_new::LinkFile(QString oldFile, QString newDir)
 		{
 			RemoveFile(newLink);
 		} else {
-			return false;
+			return oldFile;
 		}
 	}
 
 	QFile file (oldFile);
 	if (file.exists())
 	{
-		return file.link(newLink);
+		if (file.link(newLink))
+			return newLink;
 	}
-	return false;
+	return oldFile;
 }
 
 

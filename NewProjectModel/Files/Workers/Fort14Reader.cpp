@@ -58,23 +58,24 @@ void Fort14Reader::ReadFile()
 		nodes->reserve(numNodes);
 		elements->reserve(numElements);
 
-//		std::cout << "Reading nodes" << std::endl;
+		std::cout << "Reading nodes" << std::endl;
 
 		if (ReadNodalData(numNodes, &fort14))
 		{
-//			std::cout << "Reading elements" << std::endl;
+			std::cout << "Reading elements" << std::endl;
 			if (ReadElementalData(numElements, &fort14))
 			{
 //				std::cout << "Reading boundaries" << std::endl;
-				ReadBoundaries(&fort14);
+//				ReadBoundaries(&fort14);
 				if (normalizeCoordinates)
 				{
-//					std::cout << "Normalizing coordinates" << std::endl;
+					std::cout << "Normalizing coordinates" << std::endl;
 					NormalizeCoordinates();
 				}
 				emit FinishedReading();
 			}
 		}
+		fort14.close();
 	}
 
 	emit FinishedReading();

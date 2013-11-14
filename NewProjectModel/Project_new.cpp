@@ -128,6 +128,8 @@ void Project_new::CreateProjectFile()
 		{
 			if (projectFile->CreateProjectFile_new(dialog.GetProjectDirectory(), dialog.GetProjectName()))
 			{
+				projectFile->SetFullDomainDirectory(dialog.GetProjectDirectory());
+
 				QString fort10Loc = dialog.GetFort10Location();
 				QString fort11Loc = dialog.GetFort11Location();
 				QString fort13Loc = dialog.GetFort13Location();
@@ -161,6 +163,8 @@ void Project_new::CreateProjectFile()
 				projectFile->SaveProject();
 			}
 		}
+		fullDomain = BuildFullDomain();
+		CreateAllSubdomains();
 	}
 }
 
@@ -460,24 +464,26 @@ void Project_new::CreateNewSubdomain()
 {
 	if (fullDomain && projectFile)
 	{
-		bool ok;
-		QString newName = QInputDialog::getText(0,
-							"Create Subdomain",
-							"Please enter a name for the new subdomain: ",
-							QLineEdit::Normal,
-							"",
-							&ok);
-		if (ok && !newName.isEmpty())
+		CreateSubdomainDialog dlg;
+		dlg.SetDefaultDirectory(projectFile->GetFullDomainDirectory());
+		if (dlg.exec())
 		{
-			SubdomainCreator_new creator;
-			QString targetDir = projectFile->GetFullDomainDirectory() + QDir::separator() + newName;
-			bool newSubdomain = creator.CreateSubdomain(newName, projectFile, targetDir, fullDomain, 2, 1);
-			if (newSubdomain)
+			QString name = dlg.GetSubdomainName();
+			QString targetDir = dlg.GetTargetDirectory();
+			int version = dlg.GetSubdomainVersion();
+			int recordFrequency = dlg.GetRecordFrequency();
+
+			if (!name.isEmpty() && !targetDir.isEmpty() && (version == 1 || version == 2) && recordFrequency > 0)
 			{
-				BuildSubdomain(newName);
-				PopulateProjectTree();
-				emit showProjectView();
-				projectTree->setCurrentItem(projectTree->findItems(newName, Qt::MatchExactly | Qt::MatchRecursive).first());
+				SubdomainCreator_new creator;
+				bool newSubdomain = creator.CreateSubdomain(name, projectFile, targetDir, fullDomain, version, recordFrequency);
+				if (newSubdomain)
+				{
+					BuildSubdomain(name);
+					PopulateProjectTree();
+					emit showProjectView();
+					projectTree->setCurrentItem(projectTree->findItems(name, Qt::MatchExactly | Qt::MatchRecursive).first());
+				}
 			}
 		}
 	}

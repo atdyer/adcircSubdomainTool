@@ -97,7 +97,8 @@ SOURCES += main.cpp\
     SubdomainTools/BoundarySearch.cpp \
     NewProjectModel/Files/Workers/Fort14Reader.cpp \
     NewProjectModel/Domains/Domain_new.cpp \
-    Layers/SelectionLayers/FullDomainSelectionLayer.cpp
+    Layers/SelectionLayers/FullDomainSelectionLayer.cpp \
+    Dialogs/CreateSubdomainDialog.cpp
 
 HEADERS  += MainWindow.h \
     OpenGL/OpenGLPanel.h \
@@ -185,14 +186,16 @@ HEADERS  += MainWindow.h \
     SubdomainTools/BoundarySearch.h \
     NewProjectModel/Files/Workers/Fort14Reader.h \
     NewProjectModel/Domains/Domain_new.h \
-    Layers/SelectionLayers/FullDomainSelectionLayer.h
+    Layers/SelectionLayers/FullDomainSelectionLayer.h \
+    Dialogs/CreateSubdomainDialog.h
 
 FORMS    += MainWindow.ui \
     Dialogs/CreateProjectDialog.ui \
     Dialogs/DisplayOptionsDialog.ui \
     Widgets/ShaderOptionsStackedWidget.ui \
     Dialogs/ProjectSettingsDialog.ui \
-    Dialogs/FullDomainRunOptionsDialog.ui
+    Dialogs/FullDomainRunOptionsDialog.ui \
+    Dialogs/CreateSubdomainDialog.ui
 
 target.path = /usr/local/bin
 desktop.path = /usr/share/applications

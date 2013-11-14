@@ -163,8 +163,8 @@ class ProjectFile_new : public QDomDocument
 		/* File Write Functions */
 		void	FileModified();
 		bool	CheckForExistingFile(QString filename);
-		bool	CopyFile(QString oldFile, QString newDir);
-		bool	LinkFile(QString oldFile, QString newDir);
+		QString	CopyFile(QString oldFile, QString newDir);
+		QString LinkFile(QString oldFile, QString newDir);
 		void	RemoveFile(QString oldFile);
 
 
