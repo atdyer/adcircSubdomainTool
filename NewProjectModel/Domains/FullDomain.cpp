@@ -41,6 +41,12 @@ bool FullDomain::IsFullDomain()
 }
 
 
+Fort015_new* FullDomain::GetFort015()
+{
+	return fort015;
+}
+
+
 std::vector<unsigned int> FullDomain::GetInnerBoundaryNodes()
 {
 	return selectionLayerFullDomain->GetInnerBoundaryNodes();

@@ -38,6 +38,12 @@ void Domain_new::Draw()
 }
 
 
+Fort14_new* Domain_new::GetFort14()
+{
+	return fort14;
+}
+
+
 void Domain_new::MouseClick(QMouseEvent *event)
 {
 	clicking = true;

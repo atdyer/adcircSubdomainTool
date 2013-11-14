@@ -34,7 +34,8 @@ class SubDomain : public Domain_new
 
 		virtual bool	IsFullDomain();
 
-		QString	GetDomainName();
+		Fort015_new*	GetFort015();
+		QString		GetDomainName();
 
 	private:
 

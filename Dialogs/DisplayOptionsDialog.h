@@ -4,6 +4,7 @@
 #include <QDialog>
 
 #include "Domains/Domain.h"
+#include "NewProjectModel/Domains/Domain_new.h"
 
 namespace Ui {
 	class DisplayOptionsDialog;
@@ -18,12 +19,14 @@ class DisplayOptionsDialog : public QDialog
 		~DisplayOptionsDialog();
 
 		void	SetActiveDomain(Domain *newDomain);
+		void	SetActiveDomain(Domain_new *newDomain);
 
 		
 	private:
 		Ui::DisplayOptionsDialog *ui;
 
-		Domain*	currentDomain;
+		Domain*		currentDomain;
+		Domain_new*	currentDomainNew;
 
 		void	DisconnectCurrentDomain();
 		void	DisplayCurrentDomainProperties();

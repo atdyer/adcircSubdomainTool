@@ -458,6 +458,10 @@ void MainWindow::on_actionColor_Options_triggered()
 	{
 		testProject->showDisplayOptions();
 	}
+	if (newProject)
+	{
+		newProject->ShowDisplayOptionsDialog();
+	}
 }
 
 

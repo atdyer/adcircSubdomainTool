@@ -2,6 +2,7 @@
 
 Project_new::Project_new(QObject *parent) :
 	QObject(parent),
+	displayOptions(0),
 	fullDomain(0),
 	glPanel(0),
 	progressBar(0),
@@ -11,11 +12,13 @@ Project_new::Project_new(QObject *parent) :
 	visibleDomain(0)
 {
 	CreateProjectFile();
+	Initialize();
 }
 
 
 Project_new::Project_new(QString projectFile, QObject *parent) :
 	QObject(parent),
+	displayOptions(0),
 	fullDomain(0),
 	glPanel(0),
 	progressBar(0),
@@ -25,6 +28,7 @@ Project_new::Project_new(QString projectFile, QObject *parent) :
 	visibleDomain(0)
 {
 	OpenProjectFile(projectFile);
+	Initialize();
 }
 
 
@@ -32,6 +36,8 @@ Project_new::~Project_new()
 {
 	if (projectFile)
 		delete projectFile;
+	if (displayOptions)
+		delete displayOptions;
 }
 
 
@@ -204,6 +210,12 @@ Domain_new* Project_new::DetermineSelectedDomain(QTreeWidgetItem *item)
 	}
 
 	return 0;
+}
+
+
+void Project_new::Initialize()
+{
+	displayOptions = new DisplayOptionsDialog();
 }
 
 
@@ -546,6 +558,17 @@ void Project_new::SelectFullDomainRectangleElements()
 {
 	if (fullDomain)
 		fullDomain->UseTool(RectangleToolType, ElementSelection);
+}
+
+
+void Project_new::ShowDisplayOptionsDialog()
+{
+	if (visibleDomain && displayOptions)
+	{
+		displayOptions->SetActiveDomain(visibleDomain);
+		displayOptions->show();
+		displayOptions->update();
+	}
 }
 
 

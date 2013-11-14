@@ -8,6 +8,7 @@ DisplayOptionsDialog::DisplayOptionsDialog(QWidget *parent) :
 	ui->setupUi(this);
 	setWindowFlags(Qt::WindowStaysOnTopHint);
 	currentDomain = 0;
+	currentDomainNew = 0;
 
 	ui->outlineShaderOptions->setCurrentIndex(ui->outlineShaderType->currentIndex());
 	ui->fillShaderOptions->setCurrentIndex(ui->fillShaderType->currentIndex());
@@ -36,6 +37,15 @@ void DisplayOptionsDialog::SetActiveDomain(Domain *newDomain)
 }
 
 
+void DisplayOptionsDialog::SetActiveDomain(Domain_new *newDomain)
+{
+	DisconnectCurrentDomain();
+	currentDomainNew = newDomain;
+	DisplayCurrentDomainProperties();
+	ConnectCurrentDomain();
+}
+
+
 void DisplayOptionsDialog::DisconnectCurrentDomain()
 {
 	if (currentDomain)
@@ -48,6 +58,17 @@ void DisplayOptionsDialog::DisconnectCurrentDomain()
 			   currentDomain, SLOT(SetTerrainGradientOutline(QGradientStops)));
 		disconnect(this, SIGNAL(gradientFillChanged(QGradientStops)),
 			   currentDomain, SLOT(SetTerrainGradientFill(QGradientStops)));
+	}
+	else if (currentDomainNew)
+	{
+		disconnect(this, SIGNAL(solidOutlineChanged(QColor)),
+			   currentDomainNew, SLOT(SetTerrainSolidOutline(QColor)));
+		disconnect(this, SIGNAL(solidFillChanged(QColor)),
+			   currentDomainNew, SLOT(SetTerrainSolidFill(QColor)));
+		disconnect(this, SIGNAL(gradientOutlineChanged(QGradientStops)),
+			   currentDomainNew, SLOT(SetTerrainGradientOutline(QGradientStops)));
+		disconnect(this, SIGNAL(gradientFillChanged(QGradientStops)),
+			   currentDomainNew, SLOT(SetTerrainGradientFill(QGradientStops)));
 	}
 }
 
@@ -92,6 +113,45 @@ void DisplayOptionsDialog::DisplayCurrentDomainProperties()
 			showGradientOutlineWindow();
 		}
 	}
+	else if (currentDomainNew)
+	{
+		Fort14_new *fort14 = currentDomainNew->GetFort14();
+		if (fort14)
+		{
+			ui->outlineShaderOptions->SetSolidColor(fort14->GetSolidOutlineColor());
+			ui->outlineShaderOptions->SetGradientRange(fort14->GetMinZ(), fort14->GetMaxZ());
+			ui->outlineShaderOptions->SetGradient(fort14->GetGradientOutlineColors());
+			ui->outlineShaderOptions->update();
+
+			ui->fillShaderOptions->SetSolidColor(fort14->GetSolidFillColor());
+			ui->fillShaderOptions->SetGradientRange(fort14->GetMinZ(), fort14->GetMaxZ());
+			ui->fillShaderOptions->SetGradient(fort14->GetGradientFillColors());
+			ui->fillShaderOptions->update();
+
+			ShaderType currentFill = fort14->GetFillShaderType();
+			ShaderType currentOutline = fort14->GetOutlineShaderType();
+
+			if (currentFill == SolidShaderType)
+			{
+				showSolidFillWindow();
+			}
+			else if (currentFill == GradientShaderType)
+			{
+				showGradientFillWindow();
+				if (currentDomain)
+					fort14->SetGradientFillColors(fort14->GetGradientFillColors());
+			}
+
+			if (currentOutline == SolidShaderType)
+			{
+				showSolidOutlineWindow();
+			}
+			else if (currentOutline == GradientShaderType)
+			{
+				showGradientOutlineWindow();
+			}
+		}
+	}
 }
 
 
@@ -107,6 +167,17 @@ void DisplayOptionsDialog::ConnectCurrentDomain()
 			   currentDomain, SLOT(SetTerrainGradientOutline(QGradientStops)));
 		connect(this, SIGNAL(gradientFillChanged(QGradientStops)),
 			   currentDomain, SLOT(SetTerrainGradientFill(QGradientStops)));
+	}
+	else if (currentDomainNew)
+	{
+		connect(this, SIGNAL(solidOutlineChanged(QColor)),
+			   currentDomainNew, SLOT(SetTerrainSolidOutline(QColor)));
+		connect(this, SIGNAL(solidFillChanged(QColor)),
+			   currentDomainNew, SLOT(SetTerrainSolidFill(QColor)));
+		connect(this, SIGNAL(gradientOutlineChanged(QGradientStops)),
+			   currentDomainNew, SLOT(SetTerrainGradientOutline(QGradientStops)));
+		connect(this, SIGNAL(gradientFillChanged(QGradientStops)),
+			   currentDomainNew, SLOT(SetTerrainGradientFill(QGradientStops)));
 	}
 }
 

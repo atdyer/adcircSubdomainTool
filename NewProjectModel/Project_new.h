@@ -14,6 +14,7 @@
 
 #include "Dialogs/CreateProjectDialog.h"
 #include "Dialogs/CreateSubdomainDialog.h"
+#include "Dialogs/DisplayOptionsDialog.h"
 
 #include "NewProjectModel/Domains/FullDomain.h"
 #include "NewProjectModel/Domains/SubDomain.h"
@@ -37,6 +38,7 @@ class Project_new : public QObject
 
 	private:
 
+		DisplayOptionsDialog*	displayOptions;
 		FullDomain*		fullDomain;
 		OpenGLPanel*		glPanel;
 		QProgressBar*		progressBar;
@@ -51,6 +53,7 @@ class Project_new : public QObject
 		void		CreateAllSubdomains();
 		void		CreateProjectFile();
 		Domain_new*	DetermineSelectedDomain(QTreeWidgetItem *item);
+		void		Initialize();
 		void		OpenProjectFile(QString filePath);
 		void		PopulateProjectTree();
 		void		SetVisibleDomain(Domain_new *newDomain);
@@ -68,6 +71,8 @@ class Project_new : public QObject
 		void	SelectFullDomainClickElements();
 		void	SelectFullDomainPolygonElements();
 		void	SelectFullDomainRectangleElements();
+
+		void	ShowDisplayOptionsDialog();
 
 		void	Undo();
 

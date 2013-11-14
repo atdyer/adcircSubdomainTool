@@ -98,7 +98,8 @@ SOURCES += main.cpp\
     NewProjectModel/Files/Workers/Fort14Reader.cpp \
     NewProjectModel/Domains/Domain_new.cpp \
     Layers/SelectionLayers/FullDomainSelectionLayer.cpp \
-    Dialogs/CreateSubdomainDialog.cpp
+    Dialogs/CreateSubdomainDialog.cpp \
+    Adcirc/BoundaryConditionsExtractor.cpp
 
 HEADERS  += MainWindow.h \
     OpenGL/OpenGLPanel.h \
@@ -187,7 +188,8 @@ HEADERS  += MainWindow.h \
     NewProjectModel/Files/Workers/Fort14Reader.h \
     NewProjectModel/Domains/Domain_new.h \
     Layers/SelectionLayers/FullDomainSelectionLayer.h \
-    Dialogs/CreateSubdomainDialog.h
+    Dialogs/CreateSubdomainDialog.h \
+    Adcirc/BoundaryConditionsExtractor.h
 
 FORMS    += MainWindow.ui \
     Dialogs/CreateProjectDialog.ui \

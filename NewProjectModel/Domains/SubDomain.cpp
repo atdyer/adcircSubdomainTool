@@ -34,6 +34,12 @@ bool SubDomain::IsFullDomain()
 }
 
 
+Fort015_new* SubDomain::GetFort015()
+{
+	return fort015;
+}
+
+
 QString SubDomain::GetDomainName()
 {
 	return domainName;

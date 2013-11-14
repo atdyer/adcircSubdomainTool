@@ -22,6 +22,7 @@ class Domain_new : public QObject
 		~Domain_new();
 
 		void		Draw();
+		Fort14_new*	GetFort14();
 		virtual bool	IsFullDomain() = 0;
 
 		void	MouseClick(QMouseEvent *event);

@@ -35,6 +35,7 @@ class FullDomain : public Domain_new
 
 		virtual bool	IsFullDomain();
 
+		Fort015_new*			GetFort015();
 		std::vector<unsigned int>	GetInnerBoundaryNodes();
 		std::vector<unsigned int>	GetOuterBoundaryNodes();
 		std::vector<Element*>		GetSelectedElements();
