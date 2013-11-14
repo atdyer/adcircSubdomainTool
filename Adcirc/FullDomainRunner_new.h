@@ -10,10 +10,12 @@
 
 #include "NewProjectModel/Domains/FullDomain.h"
 
-class FullDomainRunner_new
+class FullDomainRunner_new : public QObject
 {
+		Q_OBJECT
 	public:
 		FullDomainRunner_new();
+		~FullDomainRunner_new();
 
 		void	SetAdcircExecutable(QString newLoc);
 		void	SetFullDomain(FullDomain *newFull);
@@ -26,12 +28,17 @@ class FullDomainRunner_new
 		QString		adcircExecutableLocation;
 		QString		adcircExecutableName;
 		QStringList	arguments;
+		QProcess*	bash;
 		FullDomain*	fullDomain;
 		QString		fullDomainPath;
 		int		runEnvironment;
 
 		bool	CheckForRequiredFiles();
 		bool	CheckForFile(QString fileName);
+
+	private slots:
+
+		void	killProcess();
 
 };
 

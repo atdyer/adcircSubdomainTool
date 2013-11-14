@@ -4,11 +4,20 @@ FullDomainRunner_new::FullDomainRunner_new() :
 	adcircExecutableLocation(),
 	adcircExecutableName(),
 	arguments(),
+	bash(0),
 	fullDomain(0),
 	fullDomainPath(),
 	runEnvironment(0)
 {
 }
+
+
+FullDomainRunner_new::~FullDomainRunner_new()
+{
+	if (bash)
+		delete bash;
+}
+
 
 void FullDomainRunner_new::SetAdcircExecutable(QString newLoc)
 {
@@ -48,7 +57,12 @@ bool FullDomainRunner_new::PerformFullDomainRun()
 	arguments << "-e";					// Execute command flag
 	arguments << "./"+adcircExecutableName;			// Adcirc executable link in project path
 
-	QProcess *bash = new QProcess();
+	if (bash)
+		delete bash;
+	bash = new QProcess();
+
+	connect(bash, SIGNAL(finished(int)), this, SLOT(killProcess()));
+
 	bash->start("gnome-terminal", arguments);
 	return bash->waitForStarted();
 }
@@ -97,5 +111,12 @@ bool FullDomainRunner_new::CheckForRequiredFiles()
 bool FullDomainRunner_new::CheckForFile(QString fileName)
 {
 	return QFile(fullDomainPath + QDir::separator() + fileName).exists();
+}
+
+
+void FullDomainRunner_new::killProcess()
+{
+	if (bash)
+		bash->kill();
 }
 

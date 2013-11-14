@@ -493,8 +493,24 @@ void Fort14_new::CreateDefaultShaders()
 {
 //	SetSolidFillColor(QColor(0.1*255, 0.8*255, 0.1*255, 1.0*255));
 	QGradientStops defaultStops;
-	defaultStops << QGradientStop(0.0, QColor(0.1*255, 0.8*255, 0.1*255, 1.0*255));
-	defaultStops << QGradientStop(1.0, QColor(0, 102, 0, 255));
+
+	float percentage;
+	float elevations[] = {minZ, 0.0, 0.5, 1.75, -0.5, maxZ};
+	QColor colors[] = {QColor::fromRgb(0, 0, 255),
+			   QColor::fromRgb(255,255,255),
+			   QColor::fromRgb(0,255,0),
+			   QColor::fromRgb(0,175,0),
+			   QColor::fromRgb(0,255,255),
+			   QColor::fromRgb(0, 100, 0)};
+	for (unsigned int i=0; i<6; ++i)
+	{
+		percentage = (maxZ - elevations[i])/(maxZ-minZ);
+		defaultStops << QGradientStop(percentage, colors[i]);
+	}
+
+//	defaultStops << QGradientStop(0.0, QColor(0.1*255, 0.8*255, 0.1*255, 1.0*255));
+//	defaultStops << QGradientStop(1.0, QColor(0, 102, 0, 255));
+
 	SetGradientFillColors(defaultStops);
 	SetSolidOutlineColor(QColor(0.2*255, 0.2*255, 0.2*255, 0.1*255));
 }
