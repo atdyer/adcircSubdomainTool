@@ -40,6 +40,14 @@ Fort015_new* SubDomain::GetFort015()
 }
 
 
+QString SubDomain::GetPath()
+{
+	if (projectFile)
+		return projectFile->GetSubDomainDirectory(domainName);
+	return QString();
+}
+
+
 QString SubDomain::GetDomainName()
 {
 	return domainName;

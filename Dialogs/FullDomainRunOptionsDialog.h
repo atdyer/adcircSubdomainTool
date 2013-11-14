@@ -19,8 +19,8 @@ class FullDomainRunOptionsDialog : public QDialog
 		void	SetAdcircExecutable(QString newPath);
 
 		QString	GetAdcircExecutableLocation();
-		int	GetSubdomainApproach();
-		int	GetRecordFrequency();
+//		int	GetSubdomainApproach();
+//		int	GetRecordFrequency();
 		int	GetRunEnvironment();
 
 		

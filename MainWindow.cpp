@@ -439,6 +439,9 @@ void MainWindow::CreateProjectNew(bool newProjectFile)
 	connect(newProject, SIGNAL(maxSelectedZ(float)), this, SLOT(showMaxSelectedZ(float)));
 	connect(newProject, SIGNAL(minSelectedZ(float)), this, SLOT(showMinSelectedZ(float)));
 	connect(newProject, SIGNAL(showProjectView()), this, SLOT(showProjectExplorerPane()));
+
+	/* Running ADCIRC */
+	connect(ui->actionFull_Domain, SIGNAL(triggered()), newProject, SLOT(RunFullDomain()));
 }
 
 

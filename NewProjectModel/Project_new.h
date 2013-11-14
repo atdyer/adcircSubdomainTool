@@ -10,6 +10,7 @@
 
 #include <vector>
 
+#include "Adcirc/FullDomainRunner_new.h"
 #include "Adcirc/SubdomainCreator_new.h"
 
 #include "Dialogs/CreateProjectDialog.h"
@@ -40,6 +41,7 @@ class Project_new : public QObject
 
 		DisplayOptionsDialog*	displayOptions;
 		FullDomain*		fullDomain;
+		FullDomainRunner_new*	fullDomainRunner;
 		OpenGLPanel*		glPanel;
 		QProgressBar*		progressBar;
 		ProjectFile_new*	projectFile;

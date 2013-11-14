@@ -1,72 +1,47 @@
-#include "FullDomainRunner.h"
+#include "FullDomainRunner_new.h"
 
-FullDomainRunner::FullDomainRunner()
+FullDomainRunner_new::FullDomainRunner_new() :
+	adcircExecutableLocation(),
+	adcircExecutableName(),
+	arguments(),
+	fullDomain(0),
+	fullDomainPath(),
+	runEnvironment(0)
 {
-	fullDomain = 0;
-	fullDomainPath = "";
-	adcircExecutableLocation = "";
-	adcircExecutableName = "";
-	subdomainApproach = -1;
-	recordFrequency = -1;
-	runEnvironment = -1;
 }
 
-
-FullDomainRunner::~FullDomainRunner()
-{
-
-}
-
-
-void FullDomainRunner::SetAdcircExecutable(QString newLoc)
+void FullDomainRunner_new::SetAdcircExecutable(QString newLoc)
 {
 	adcircExecutableLocation = newLoc;
 }
 
 
-void FullDomainRunner::SetFullDomain(Domain *newFull)
+void FullDomainRunner_new::SetFullDomain(FullDomain *newFull)
 {
 	if (newFull)
 	{
 		fullDomain = newFull;
-		fullDomainPath = fullDomain->GetDomainPath();
+		fullDomainPath = fullDomain->GetPath();
 	}
 }
 
 
-void FullDomainRunner::SetSubDomains(std::vector<Domain *> newSubs)
-{
-	if (newSubs.size() > 0)
-	{
-		subDomains = newSubs;
-	}
-}
-
-
-bool FullDomainRunner::PrepareForFullDomainRun()
+bool FullDomainRunner_new::PrepareForFullDomainRun()
 {
 	FullDomainRunOptionsDialog dlg;
 	dlg.SetAdcircExecutable(adcircExecutableLocation);
 	if (dlg.exec())
 	{
-//		adcircExecutableLocation = dlg.GetAdcircExecutableLocation();
-//		subdomainApproach = dlg.GetSubdomainApproach();
-//		recordFrequency = dlg.GetRecordFrequency();
-//		runEnvironment = dlg.GetRunEnvironment();
-//		std::cout << subdomainApproach << recordFrequency << runEnvironment << std::endl;
-//		std::cout << adcircExecutableLocation.toStdString().data() << std::endl;
-//		if (!WriteFort015File())
-//		{
-//			std::cout << "Did not write fort.015 file" << std::endl;
-//			return false;
-//		}
-//		return CheckForRequiredFiles();
+		adcircExecutableLocation = dlg.GetAdcircExecutableLocation();
+		runEnvironment = dlg.GetRunEnvironment();
+		std::cout << "ADCIRC: " << adcircExecutableLocation.toStdString() << std::endl;
+		return CheckForRequiredFiles();
 	}
 	return false;
 }
 
 
-bool FullDomainRunner::PerformFullDomainRun()
+bool FullDomainRunner_new::PerformFullDomainRun()
 {
 	arguments.clear();
 	arguments << "--working-directory="+fullDomainPath;	// Set the working directory of the new terminal
@@ -79,9 +54,9 @@ bool FullDomainRunner::PerformFullDomainRun()
 }
 
 
-bool FullDomainRunner::CheckForRequiredFiles()
+bool FullDomainRunner_new::CheckForRequiredFiles()
 {
-	QFile adcExe (adcircExecutableLocation);
+	QFile adcExe(adcircExecutableLocation);
 	adcircExecutableName = QFileInfo(adcExe).fileName();
 
 	/* Check for fort.14, fort.15, fort.015, ln to adcirc */
@@ -89,8 +64,6 @@ bool FullDomainRunner::CheckForRequiredFiles()
 	bool fort15 = CheckForFile("fort.15");
 	bool fort015 = CheckForFile("fort.015");
 	bool adcirc = CheckForFile(adcircExecutableName);
-
-//	std::cout << fort14 << fort15 << fort015 << adcirc << adcExe.exists() << std::endl;
 
 	if (adcExe.exists() && !adcirc)
 	{
@@ -121,18 +94,8 @@ bool FullDomainRunner::CheckForRequiredFiles()
 }
 
 
-bool FullDomainRunner::CheckForFile(QString fileName)
+bool FullDomainRunner_new::CheckForFile(QString fileName)
 {
 	return QFile(fullDomainPath + QDir::separator() + fileName).exists();
 }
 
-
-bool FullDomainRunner::WriteFort015File()
-{
-	Fort015 fort015;
-	fort015.SetPath(fullDomainPath);
-	fort015.SetSubdomains(subDomains);
-	fort015.SetApproach(subdomainApproach);
-	fort015.SetRecordFrequency(recordFrequency);
-	return fort015.WriteFort015FullDomain();
-}

@@ -62,6 +62,14 @@ std::vector<unsigned int> FullDomain::GetOuterBoundaryNodes()
 }
 
 
+QString FullDomain::GetPath()
+{
+	if (projectFile)
+		return projectFile->GetFullDomainDirectory();
+	return QString();
+}
+
+
 std::vector<Element*> FullDomain::GetSelectedElements()
 {
 	return selectionLayerFullDomain->GetSelectedElements();

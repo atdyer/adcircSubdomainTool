@@ -32,19 +32,19 @@ QString FullDomainRunOptionsDialog::GetAdcircExecutableLocation()
 }
 
 
-int FullDomainRunOptionsDialog::GetSubdomainApproach()
-{
-	if (ui->subdomainMethodSpin->currentText() == "New Approach")
-		return 2;
-	else
-		return 1;
-}
+//int FullDomainRunOptionsDialog::GetSubdomainApproach()
+//{
+//	if (ui->subdomainMethodSpin->currentText() == "New Approach")
+//		return 2;
+//	else
+//		return 1;
+//}
 
 
-int FullDomainRunOptionsDialog::GetRecordFrequency()
-{
-	return ui->recordFrequency->value();
-}
+//int FullDomainRunOptionsDialog::GetRecordFrequency()
+//{
+//	return ui->recordFrequency->value();
+//}
 
 
 int FullDomainRunOptionsDialog::GetRunEnvironment()

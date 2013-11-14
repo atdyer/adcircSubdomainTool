@@ -23,6 +23,7 @@ class Domain_new : public QObject
 
 		void		Draw();
 		Fort14_new*	GetFort14();
+		virtual QString	GetPath() = 0;
 		virtual bool	IsFullDomain() = 0;
 
 		void	MouseClick(QMouseEvent *event);

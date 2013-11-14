@@ -4,6 +4,7 @@ Project_new::Project_new(QObject *parent) :
 	QObject(parent),
 	displayOptions(0),
 	fullDomain(0),
+	fullDomainRunner(0),
 	glPanel(0),
 	progressBar(0),
 	projectFile(0),
@@ -20,6 +21,7 @@ Project_new::Project_new(QString projectFile, QObject *parent) :
 	QObject(parent),
 	displayOptions(0),
 	fullDomain(0),
+	fullDomainRunner(0),
 	glPanel(0),
 	progressBar(0),
 	projectFile(0),
@@ -38,6 +40,8 @@ Project_new::~Project_new()
 		delete projectFile;
 	if (displayOptions)
 		delete displayOptions;
+	if (fullDomainRunner)
+		delete fullDomainRunner;
 }
 
 
@@ -134,7 +138,7 @@ void Project_new::CreateProjectFile()
 		{
 			if (projectFile->CreateProjectFile_new(dialog.GetProjectDirectory(), dialog.GetProjectName()))
 			{
-				projectFile->SetFullDomainDirectory(dialog.GetProjectDirectory());
+				projectFile->SetFullDomainDirectory(dialog.GetProjectDirectory() + QDir::separator() + dialog.GetProjectName());
 
 				QString fort10Loc = dialog.GetFort10Location();
 				QString fort11Loc = dialog.GetFort11Location();
@@ -216,6 +220,7 @@ Domain_new* Project_new::DetermineSelectedDomain(QTreeWidgetItem *item)
 void Project_new::Initialize()
 {
 	displayOptions = new DisplayOptionsDialog();
+	fullDomainRunner = new FullDomainRunner_new();
 }
 
 
@@ -524,7 +529,12 @@ void Project_new::Redo()
 
 void Project_new::RunFullDomain()
 {
-
+	if (fullDomainRunner && fullDomain)
+	{
+		fullDomainRunner->SetFullDomain(fullDomain);
+		if (fullDomainRunner->PrepareForFullDomainRun())
+			fullDomainRunner->PerformFullDomainRun();
+	}
 }
 
 

@@ -38,6 +38,7 @@ class FullDomain : public Domain_new
 		Fort015_new*			GetFort015();
 		std::vector<unsigned int>	GetInnerBoundaryNodes();
 		std::vector<unsigned int>	GetOuterBoundaryNodes();
+		virtual QString			GetPath();
 		std::vector<Element*>		GetSelectedElements();
 
 	private:

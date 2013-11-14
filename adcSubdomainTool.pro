@@ -99,7 +99,8 @@ SOURCES += main.cpp\
     NewProjectModel/Domains/Domain_new.cpp \
     Layers/SelectionLayers/FullDomainSelectionLayer.cpp \
     Dialogs/CreateSubdomainDialog.cpp \
-    Adcirc/BoundaryConditionsExtractor.cpp
+    Adcirc/BoundaryConditionsExtractor.cpp \
+    Adcirc/FullDomainRunner_new.cpp
 
 HEADERS  += MainWindow.h \
     OpenGL/OpenGLPanel.h \
@@ -189,7 +190,8 @@ HEADERS  += MainWindow.h \
     NewProjectModel/Domains/Domain_new.h \
     Layers/SelectionLayers/FullDomainSelectionLayer.h \
     Dialogs/CreateSubdomainDialog.h \
-    Adcirc/BoundaryConditionsExtractor.h
+    Adcirc/BoundaryConditionsExtractor.h \
+    Adcirc/FullDomainRunner_new.h
 
 FORMS    += MainWindow.ui \
     Dialogs/CreateProjectDialog.ui \
