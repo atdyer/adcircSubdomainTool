@@ -73,6 +73,10 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 		ui->paneBox->setCurrentWidget(ui->createSubdomainPage);
 	if (testDomain)
 		testDomain->KeyPress(event);
+	if (event->key() == Qt::Key_O)
+		if (newProject)
+			newProject->ToggleQuadtreeVisible();
+	ui->GLPanel->updateGL();
 }
 
 
@@ -428,6 +432,8 @@ void MainWindow::CreateProjectNew(bool newProjectFile)
 	connect(newProject, SIGNAL(mouseY(float)), this, SLOT(showMouseY(float)));
 	connect(newProject, SIGNAL(undoAvailable(bool)), ui->undoButton, SLOT(setEnabled(bool)));
 	connect(newProject, SIGNAL(redoAvailable(bool)), ui->redoButton, SLOT(setEnabled(bool)));
+	connect(newProject, SIGNAL(numElements(int)), this, SLOT(showNumElements(int)));
+	connect(newProject, SIGNAL(numNodes(int)), this, SLOT(showNumNodes(int)));
 	connect(newProject, SIGNAL(numElementsSelected(int)), this, SLOT(showNumSelectedElements(int)));
 	connect(newProject, SIGNAL(numNodesSelected(int)), this, SLOT(showNumSelectedNodes(int)));
 	connect(newProject, SIGNAL(maxSelectedZ(float)), this, SLOT(showMaxSelectedZ(float)));

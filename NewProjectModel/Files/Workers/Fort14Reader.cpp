@@ -53,6 +53,9 @@ void Fort14Reader::ReadFile()
 		std::getline(fort14, line);
 		std::stringstream(line) >> numElements >> numNodes;
 
+		emit FoundNumElements(numElements);
+		emit FoundNumNodes(numNodes);
+
 		fullProgress = numNodes + numElements;
 
 		nodes->reserve(numNodes);

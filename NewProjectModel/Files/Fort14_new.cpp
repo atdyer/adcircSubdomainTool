@@ -25,6 +25,7 @@ Fort14_new::Fort14_new(QObject *parent) :
 	progressBar(0),
 	projectFile(0),
 	quadtree(0),
+	quadtreeVisible(false),
 	readingLock(false),
 	glLoaded(false),
 	camera(0),
@@ -63,6 +64,7 @@ Fort14_new::Fort14_new(ProjectFile_new *projectFile, QObject *parent) :
 	progressBar(0),
 	projectFile(projectFile),
 	quadtree(0),
+	quadtreeVisible(false),
 	readingLock(false),
 	glLoaded(false),
 	camera(0),
@@ -100,6 +102,7 @@ Fort14_new::Fort14_new(QString domainName, ProjectFile_new *projectFile, QObject
 	progressBar(0),
 	projectFile(projectFile),
 	quadtree(0),
+	quadtreeVisible(false),
 	readingLock(false),
 	glLoaded(false),
 	camera(0),
@@ -169,6 +172,9 @@ void Fort14_new::Draw()
 //				glDrawElements(GL_LINE_STRIP, boundaryNodes.size(), GL_UNSIGNED_INT, (GLvoid*)(0 + sizeof(GLuint)*numElements*3));
 //			glLineWidth(1.0);
 //		}
+
+		if (quadtreeVisible && quadtree)
+			quadtree->DrawOutlines();
 
 		glBindVertexArray(0);
 		glUseProgram(0);
@@ -319,6 +325,18 @@ float Fort14_new::GetMinZ()
 }
 
 
+int Fort14_new::GetNumElements()
+{
+	return numElements;
+}
+
+
+int Fort14_new::GetNumNodes()
+{
+	return numNodes;
+}
+
+
 ShaderType Fort14_new::GetOutlineShaderType()
 {
 	if (outlineShader)
@@ -465,6 +483,12 @@ void Fort14_new::SetSolidOutlineColor(QColor newColor)
 }
 
 
+void Fort14_new::ToggleQuadtreeVisible()
+{
+	quadtreeVisible = !quadtreeVisible;
+}
+
+
 void Fort14_new::CreateDefaultShaders()
 {
 //	SetSolidFillColor(QColor(0.1*255, 0.8*255, 0.1*255, 1.0*255));
@@ -571,6 +595,7 @@ void Fort14_new::PopulateQuadtree()
 	{
 		std::cout << minX << ", " << maxX << std::endl;
 		quadtree = new Quadtree(nodes, elements, 50, (minX-midX)/max, (maxX-midX)/max, (minY-midY)/max, (maxY-midY)/max);
+		quadtree->SetCamera(camera);
 	}
 }
 
@@ -599,6 +624,8 @@ void Fort14_new::ReadFile()
 				connect(worker, SIGNAL(FinishedReading()), progressBar, SLOT(hide()));
 			}
 			connect(worker, SIGNAL(Progress(int)), this, SLOT(Progress(int)));
+			connect(worker, SIGNAL(FoundNumElements(int)), this, SIGNAL(NumElementsSet(int)));
+			connect(worker, SIGNAL(FoundNumNodes(int)), this, SIGNAL(NumNodesSet(int)));
 			connect(worker, SIGNAL(FoundDomainBounds(float,float,float,float,float,float)),
 				this, SLOT(SetDomainBounds(float,float,float,float,float,float)));
 

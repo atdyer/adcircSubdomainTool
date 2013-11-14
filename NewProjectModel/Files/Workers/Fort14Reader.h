@@ -29,6 +29,8 @@ class Fort14Reader : public QObject
 		void	StartedReading();
 		void	Progress(int);
 		void	FoundDomainBounds(float, float, float, float, float, float);
+		void	FoundNumElements(int);
+		void	FoundNumNodes(int);
 		void	FinishedReading();
 		
 	public slots:

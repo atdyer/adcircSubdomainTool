@@ -466,6 +466,13 @@ void Project_new::SetVisibleDomain(Domain_new *newDomain)
 		if (glPanel)
 			glPanel->SetActiveDomainNew(visibleDomain);
 
+		Fort14_new *currFort14 = visibleDomain->GetFort14();
+		if (currFort14)
+		{
+			emit numElements(currFort14->GetNumElements());
+			emit numNodes(currFort14->GetNumNodes());
+		}
+
 		emit undoAvailable(visibleDomain->UndoAvailable());
 		emit redoAvailable(visibleDomain->RedoAvailable());
 	}
@@ -568,6 +575,17 @@ void Project_new::ShowDisplayOptionsDialog()
 		displayOptions->SetActiveDomain(visibleDomain);
 		displayOptions->show();
 		displayOptions->update();
+	}
+}
+
+
+void Project_new::ToggleQuadtreeVisible()
+{
+	if (visibleDomain)
+	{
+		Fort14_new *currFort14 = visibleDomain->GetFort14();
+		if (currFort14)
+			currFort14->ToggleQuadtreeVisible();
 	}
 }
 

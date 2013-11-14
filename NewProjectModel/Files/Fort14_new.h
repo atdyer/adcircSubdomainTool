@@ -43,6 +43,8 @@ class Fort14_new : public QObject
 		float			GetMinX();
 		float			GetMinY();
 		float			GetMinZ();
+		int			GetNumElements();
+		int			GetNumNodes();
 		ShaderType		GetOutlineShaderType();
 		float			GetUnprojectedX(float x);
 		float			GetUnprojectedY(float y);
@@ -60,6 +62,8 @@ class Fort14_new : public QObject
 		void			SetSolidBoundaryColor(QColor newColor);
 		void			SetSolidFillColor(QColor newColor);
 		void			SetSolidOutlineColor(QColor newColor);
+
+		void			ToggleQuadtreeVisible();
 
 	private:
 
@@ -82,6 +86,7 @@ class Fort14_new : public QObject
 		QProgressBar*			progressBar;
 		ProjectFile_new*		projectFile;
 		Quadtree*			quadtree;
+		bool				quadtreeVisible;
 		bool				readingLock;
 
 		/* OpenGL */
@@ -109,6 +114,8 @@ class Fort14_new : public QObject
 	signals:
 
 		void	DataLoadedToGPU(GLuint);
+		void	NumElementsSet(int);
+		void	NumNodesSet(int);
 
 	public slots:
 

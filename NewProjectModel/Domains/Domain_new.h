@@ -78,7 +78,9 @@ class Domain_new : public QObject
 		void	mouseY(float);
 		void	undoAvailable(bool);
 		void	redoAvailable(bool);
+		void	numNodes(int);
 		void	numNodesSelected(int);
+		void	numElements(int);
 		void	numElementsSelected(int);
 		
 	public slots:

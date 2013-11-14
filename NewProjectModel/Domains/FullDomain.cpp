@@ -26,6 +26,9 @@ FullDomain::FullDomain(ProjectFile_new *projectFile, QObject *parent) :
 	connect(selectionLayer, SIGNAL(NumNodesSelected(int)), this, SIGNAL(numNodesSelected(int)));
 	connect(selectionLayer, SIGNAL(MaxSelectedZ(float)), this, SIGNAL(maxSelectedZ(float)));
 	connect(selectionLayer, SIGNAL(MinSelectedZ(float)), this, SIGNAL(minSelectedZ(float)));
+
+	connect(fort14, SIGNAL(NumElementsSet(int)), this, SIGNAL(numElements(int)));
+	connect(fort14, SIGNAL(NumNodesSet(int)), this, SIGNAL(numNodes(int)));
 }
 
 

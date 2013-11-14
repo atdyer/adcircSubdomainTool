@@ -74,6 +74,8 @@ class Project_new : public QObject
 
 		void	ShowDisplayOptionsDialog();
 
+		void	ToggleQuadtreeVisible();
+
 		void	Undo();
 
 	private slots:
@@ -86,7 +88,9 @@ class Project_new : public QObject
 		void	minSelectedZ(float);
 		void	mouseX(float);
 		void	mouseY(float);
-		void	numElementsSelected(int);
+		void	numElements(int);
+		void	numElementsSeleced(int);
+		void	numNodes(int);
 		void	numNodesSelected(int);
 		void	redoAvailable(bool);
 		void	showProjectView();
